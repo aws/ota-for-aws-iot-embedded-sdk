@@ -1,10 +1,9 @@
-set(src_dir "${CMAKE_CURRENT_LIST_DIR}/src")
-set(inc_dir "${CMAKE_CURRENT_LIST_DIR}/include")
+set(src_dir "${CMAKE_CURRENT_LIST_DIR}/source")
 set(test_dir "${CMAKE_CURRENT_LIST_DIR}/test")
 
 add_library(ota
-    "${inc_dir}/aws_iot_ota_agent.h"
-    "${inc_dir}/aws_iot_ota_types.h"
+    "${src_dir}/include/aws_iot_ota_agent.h"
+    "${src_dir}/include/aws_iot_ota_types.h"
     "${src_dir}/aws_iot_ota_agent_internal.h"
     "${src_dir}/aws_iot_ota_agent.c"
     "${src_dir}/aws_iot_ota_interface.c"
@@ -12,13 +11,16 @@ add_library(ota
     "${src_dir}/aws_iot_ota_pal.h"
 )
 
+# TODO, make sure, src_dir is in PRIVATE INCLUDE
 target_include_directories(ota
-    PUBLIC "${inc_dir}"
-    PRIVATE "${src_dir}"
+    PUBLIC "${src_dir}/include" "${src_dir}/portable" "${src_dir}"
+    # PRIVATE "${src_dir}"
 )
 
+# TODO, remove jsmn and mbedtls from dependencies
 target_link_libraries(ota
-    PRIVATE ota_mqtt ota_pal jsmn
+    PUBLIC ota_os
+    PRIVATE ota_mqtt ota_pal jsmn mbedtls
 )
 
 # Link to this INTERFACE target to enable the MQTT backend.
@@ -41,5 +43,3 @@ target_sources(ota_http
     "${src_dir}/http/aws_iot_ota_http.h"
 )
 target_link_libraries(ota_http INTERFACE http)
-
-# TODO, add ota_pal target for Linux
