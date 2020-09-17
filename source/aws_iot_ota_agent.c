@@ -28,7 +28,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 
 /* OTA agent includes. */
 #include "aws_iot_ota_agent.h"

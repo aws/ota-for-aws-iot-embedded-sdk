@@ -53,12 +53,3 @@
 #ifndef i8
     #define i8        int8_t
 #endif
-#ifndef bool_t
-    #define bool_t    uint8_t
-#endif
-#ifndef true
-    #define true      1
-#endif
-#ifndef false
-    #define false     0
-#endif
