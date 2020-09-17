@@ -47,7 +47,8 @@ extern const char cOTA_JSON_FileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 /**
  * @brief Special OTA Agent printing definition.
  */
-// #define OTA_DEBUG_LOG_LEVEL    1
+#define vLoggingPrintf printf
+#define OTA_DEBUG_LOG_LEVEL    1
 #if OTA_DEBUG_LOG_LEVEL >= 1
     #define DEFINE_OTA_METHOD_NAME( name )      \
     static const char OTA_METHOD_NAME[] = name; \
