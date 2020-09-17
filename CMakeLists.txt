@@ -8,7 +8,8 @@ add_library(ota
     "${src_dir}/aws_iot_ota_agent.c"
     "${src_dir}/aws_iot_ota_interface.c"
     "${src_dir}/aws_iot_ota_interface.h"
-    "${src_dir}/aws_iot_ota_pal.h"
+    "${src_dir}/portable/aws_iot_ota_pal.h"
+    "${src_dir}/portable/ota_os_interface.h"
 )
 
 # TODO, make sure, src_dir is in PRIVATE INCLUDE
