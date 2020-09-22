@@ -49,12 +49,12 @@
  */
 typedef struct
 {
-    OTA_Err_t ( * prvRequestJob )( OTA_AgentContext_t * pAgentCtx );
-    OTA_Err_t ( * prvUpdateJobStatus )( OTA_AgentContext_t * pxAgentCtx,
-                                        OTA_JobStatus_t eStatus,
+    OtaErr_t ( * requestJob )( OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * updateJobStatus )( OtaAgentContext_t * pxAgentCtx,
+                                        OtaJobStatus_t eStatus,
                                         int32_t lReason,
                                         int32_t lSubReason );
-} OTA_ControlInterface_t;
+} OtaControlInterface_t;
 
 /**
  * @brief Represents the OTA data interface functions.
@@ -64,17 +64,17 @@ typedef struct
  */
 typedef struct
 {
-    OTA_Err_t ( * prvInitFileTransfer )( OTA_AgentContext_t * pAgentCtx );
-    OTA_Err_t ( * prvRequestFileBlock )( OTA_AgentContext_t * pAgentCtx );
-    OTA_Err_t ( * prvDecodeFileBlock )( uint8_t * pucMessageBuffer,
+    OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * decodeFileBlock )( uint8_t * pucMessageBuffer,
                                         size_t xMessageSize,
                                         int32_t * plFileId,
                                         int32_t * plBlockId,
                                         int32_t * plBlockSize,
                                         uint8_t ** ppucPayload,
                                         size_t * pxPayloadSize );
-    OTA_Err_t ( * prvCleanup )( OTA_AgentContext_t * pAgentCtx );
-} OTA_DataInterface_t;
+    OtaErr_t ( * cleanup )( OtaAgentContext_t * pAgentCtx );
+} OtaDataInterface_t;
 
 /**
  * @brief Set control interface for OTA operations.
@@ -85,7 +85,7 @@ typedef struct
  * @param[out] pxControlInterface OTA Control interface.
  *
  */
-void prvSetControlInterface( OTA_ControlInterface_t * pxControlInterface );
+void setControlInterface( OtaControlInterface_t * pxControlInterface );
 
 /**
  * @brief Set data interface for OTA operations.
@@ -97,7 +97,7 @@ void prvSetControlInterface( OTA_ControlInterface_t * pxControlInterface );
  *
  */
 
-OTA_Err_t prvSetDataInterface( OTA_DataInterface_t * pxDataInterface,
+OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                                const uint8_t * pucProtocol );
 
 #endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */

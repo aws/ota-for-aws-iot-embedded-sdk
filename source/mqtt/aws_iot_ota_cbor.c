@@ -42,11 +42,11 @@
 /**
  * @brief Internal context structure for decoding CBOR arrays.
  */
-typedef struct OTAMessageDecodeContext
+typedef struct OtaMessageDecodeContext
 {
     CborParser xCborParser;
     CborValue xCborRecursedItem;
-} OTAMessageDecodeContext_t, * OTAMessageDecodeContextPtr_t;
+} OtaMessageDecodeContext_t, * OtaMessageDecodeContextPtr_t;
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.

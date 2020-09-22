@@ -35,9 +35,9 @@
  * Aborts access to an existing open file represented by the OTA file context C. This is only valid
  * for jobs that started successfully.
  *
- * @note The input OTA_FileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
  * function is called.
- * This function may be called before the file is opened, so the file pointer C->lFileHandle may be NULL
+ * This function may be called before the file is opened, so the file pointer C->fileHandle may be NULL
  * when this function is called.
  *
  * @param[in] C OTA file context information.
@@ -46,10 +46,10 @@
  * error codes information in aws_iot_ota_agent.h.
  *
  * The file pointer will be set to NULL after this function returns.
- * kOTA_Err_None is returned when aborting access to the open file was successful.
- * kOTA_Err_FileAbort is returned when aborting access to the open file context was unsuccessful.
+ * OTA_ERR_NONE is returned when aborting access to the open file was successful.
+ * OTA_ERR_FILE_ABORT is returned when aborting access to the open file context was unsuccessful.
  */
-OTA_Err_t prvPAL_Abort( OTA_FileContext_t * const C );
+OtaErr_t prvPAL_Abort( OtaFileContext_t * const C );
 
 /**
  * @brief Create a new receive file for the data chunks as they come in.
@@ -59,9 +59,9 @@ OTA_Err_t prvPAL_Abort( OTA_FileContext_t * const C );
  * @note The previous image may be present in the designated image download partition or file, so the partition or file
  * must be completely erased or overwritten in this routine.
  *
- * @note The input OTA_FileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
  * function is called.
- * The device file path is a required field in the OTA job document, so C->pucFilePath is
+ * The device file path is a required field in the OTA job document, so C->pFilePath is
  * checked for NULL by the OTA agent before this function is called.
  *
  * @param[in] C OTA file context information.
@@ -69,22 +69,22 @@ OTA_Err_t prvPAL_Abort( OTA_FileContext_t * const C );
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in aws_iot_ota_agent.h.
  *
- * kOTA_Err_None is returned when file creation is successful.
- * kOTA_Err_RxFileTooLarge is returned if the file to be created exceeds the device's non-volatile memory size contraints.
- * kOTA_Err_BootInfoCreateFailed is returned if the bootloader information file creation fails.
- * kOTA_Err_RxFileCreateFailed is returned for other errors creating the file in the device's non-volatile memory.
+ * OTA_ERR_NONE is returned when file creation is successful.
+ * OTA_ERR_RX_FILE_TOO_LARGE is returned if the file to be created exceeds the device's non-volatile memory size contraints.
+ * OTA_ERR_BOOT_INFO_CREATE_FAILED is returned if the bootloader information file creation fails.
+ * OTA_ERR_RX_FILE_CREATE_FAILED is returned for other errors creating the file in the device's non-volatile memory.
  */
-OTA_Err_t prvPAL_CreateFileForRx( OTA_FileContext_t * const C );
+OtaErr_t prvPAL_CreateFileForRx( OtaFileContext_t * const C );
 
 /* @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
- * @note The input OTA_FileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
  * function is called. This function is called only at the end of block ingestion.
  * prvPAL_CreateFileForRx() must succeed before this function is reached, so
- * C->lFileHandle(or C->pucFile) is never NULL.
+ * C->fileHandle(or C->pFile) is never NULL.
  * The certificate path on the device is a required job document field in the OTA Agent,
- * so C->pucCertFilepath is never NULL.
- * The file signature key is required job document field in the OTA Agent, so C->pxSignature will
+ * so C->pCertFilepath is never NULL.
+ * The file signature key is required job document field in the OTA Agent, so C->pSignature will
  * never be NULL.
  *
  * If the signature verification fails, file close should still be attempted.
@@ -94,19 +94,19 @@ OTA_Err_t prvPAL_CreateFileForRx( OTA_FileContext_t * const C );
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in aws_iot_ota_agent.h.
  *
- * kOTA_Err_None is returned on success.
- * kOTA_Err_SignatureCheckFailed is returned when cryptographic signature verification fails.
- * kOTA_Err_BadSignerCert is returned for errors in the certificate itself.
- * kOTA_Err_FileClose is returned when closing the file fails.
+ * OTA_ERR_NONE is returned on success.
+ * OTA_ERR_SIGNATURE_CHECK_FAILED is returned when cryptographic signature verification fails.
+ * OTA_ERR_BAD_SIGNER_CERT is returned for errors in the certificate itself.
+ * OTA_ERR_FILE_CLOSE is returned when closing the file fails.
  */
-OTA_Err_t prvPAL_CloseFile( OTA_FileContext_t * const C );
+OtaErr_t prvPAL_CloseFile( OtaFileContext_t * const C );
 
 /**
  * @brief Write a block of data to the specified file at the given offset.
  *
- * @note The input OTA_FileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
  * function is called.
- * The file pointer/handle C->pucFile, is checked for NULL by the OTA agent before this
+ * The file pointer/handle C->pFile, is checked for NULL by the OTA agent before this
  * function is called.
  * pacData is checked for NULL by the OTA agent before this function is called.
  * ulBlockSize is validated for range by the OTA agent before this function is called.
@@ -119,7 +119,7 @@ OTA_Err_t prvPAL_CloseFile( OTA_FileContext_t * const C );
  *
  * @return The number of bytes written on a success, or a negative error code from the platform abstraction layer.
  */
-int16_t prvPAL_WriteBlock( OTA_FileContext_t * const C,
+int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
                            uint32_t ulOffset,
                            uint8_t * const pcData,
                            uint32_t ulBlockSize );
@@ -136,7 +136,7 @@ int16_t prvPAL_WriteBlock( OTA_FileContext_t * const C,
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in aws_iot_ota_agent.h.
  */
-OTA_Err_t prvPAL_ActivateNewImage( void );
+OtaErr_t prvPAL_ActivateNewImage( void );
 
 /**
  * @brief Reset the device.
@@ -150,7 +150,7 @@ OTA_Err_t prvPAL_ActivateNewImage( void );
  * error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvPAL_ResetDevice( void );
+OtaErr_t prvPAL_ResetDevice( void );
 
 /**
  * @brief Attempt to set the state of the OTA update image.
@@ -160,18 +160,18 @@ OTA_Err_t prvPAL_ResetDevice( void );
  *
  * @param[in] eState The desired state of the OTA update image.
  *
- * @return The OTA_Err_t error code combined with the MCU specific error code. See aws_iot_ota_agent.h for
+ * @return The OtaErr_t error code combined with the MCU specific error code. See aws_iot_ota_agent.h for
  *         OTA major error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
  *
- *   kOTA_Err_None on success.
- *   kOTA_Err_BadImageState: if you specify an invalid OTA_ImageState_t. No sub error code.
- *   kOTA_Err_AbortFailed: failed to roll back the update image as requested by eOTA_ImageState_Aborted.
- *   kOTA_Err_RejectFailed: failed to roll back the update image as requested by eOTA_ImageState_Rejected.
- *   kOTA_Err_CommitFailed: failed to make the update image permanent as requested by eOTA_ImageState_Accepted.
+ *   OTA_ERR_NONE on success.
+ *   OTA_ERR_BAD_IMAGE_STATE: if you specify an invalid OtaImageState_t. No sub error code.
+ *   OTA_ERR_ABORT_FAILED: failed to roll back the update image as requested by OtaImageStateAborted.
+ *   OTA_ERR_REJECT_FAILED: failed to roll back the update image as requested by OtaImageStateRejected.
+ *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
-OTA_Err_t prvPAL_SetPlatformImageState( OTA_ImageState_t eState );
+OtaErr_t prvPAL_SetPlatformImageState( OtaImageState_t eState );
 
 /**
  * @brief Get the state of the OTA update image.
@@ -187,13 +187,13 @@ OTA_Err_t prvPAL_SetPlatformImageState( OTA_ImageState_t eState );
  * If the update image state is not in "pending commit," the self test timer is
  * not started.
  *
- * @return An OTA_PAL_ImageState_t. One of the following:
- *   eOTA_PAL_ImageState_PendingCommit (the new firmware image is in the self test phase)
- *   eOTA_PAL_ImageState_Valid         (the new firmware image is already committed)
- *   eOTA_PAL_ImageState_Invalid       (the new firmware image is invalid or non-existent)
+ * @return An OtaPalImageState_t. One of the following:
+ *   OtaPalImageStatePendingCommit (the new firmware image is in the self test phase)
+ *   OtaPalImageStateValid         (the new firmware image is already committed)
+ *   OtaPalImageStateInvalid       (the new firmware image is invalid or non-existent)
  *
- *   NOTE: eOTA_PAL_ImageState_Unknown should NEVER be returned and indicates an implementation error.
+ *   NOTE: OtaPalImageStateUnknown should NEVER be returned and indicates an implementation error.
  */
-OTA_PAL_ImageState_t prvPAL_GetPlatformImageState( void );
+OtaPalImageState_t prvPAL_GetPlatformImageState( void );
 
 #endif /* ifndef _AWS_OTA_PAL_H_ */

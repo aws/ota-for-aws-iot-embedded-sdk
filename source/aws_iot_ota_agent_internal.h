@@ -62,7 +62,7 @@
 #define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /* The parameter list is backed by a 32 bit longword bitmap by design. */
 #define OTA_JOB_PARAM_REQUIRED      true                                                                        /* Used to denote a required document model parameter. */
 #define OTA_JOB_PARAM_OPTIONAL      false                                                                       /* Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffffffffUL                                                                /* If ulDestOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_DONT_STORE_PARAM        0xffffffffUL                                                                /* If destOffset in the model is 0xffffffff, do not store the value. */
 #define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /* Header is 19 bytes.*/
 
 
@@ -78,57 +78,57 @@
 
 typedef enum
 {
-    eIngest_Result_FileComplete = -1,       /* The file transfer is complete and the signature check passed. */
-    eIngest_Result_SigCheckFail = -2,       /* The file transfer is complete but the signature check failed. */
-    eIngest_Result_FileCloseFail = -3,      /* There was a problem trying to close the receive file. */
-    eIngest_Result_NullContext = -4,        /* The specified OTA context pointer is null. */
-    eIngest_Result_BadFileHandle = -5,      /* The receive file pointer is invalid. */
-    eIngest_Result_UnexpectedBlock = -6,    /* We were asked to ingest a block but weren't expecting one. */
-    eIngest_Result_BlockOutOfRange = -7,    /* The received block is out of the expected range. */
-    eIngest_Result_BadData = -8,            /* The data block from the server was malformed. */
-    eIngest_Result_WriteBlockFailed = -9,   /* The PAL layer failed to write the file block. */
-    eIngest_Result_NullResultPointer = -10, /* The pointer to the close result pointer was null. */
-    eIngest_Result_Uninitialized = -127,    /* Software BUG: We forgot to set the result code. */
-    eIngest_Result_Accepted_Continue = 0,   /* The block was accepted and we're expecting more. */
-    eIngest_Result_Duplicate_Continue = 1,  /* The block was a duplicate but that's OK. Continue. */
+    IngestResultFileComplete = -1,       /* The file transfer is complete and the signature check passed. */
+    IngestResultSigCheckFail = -2,       /* The file transfer is complete but the signature check failed. */
+    IngestResultFileCloseFail = -3,      /* There was a problem trying to close the receive file. */
+    IngestResultNullContext = -4,        /* The specified OTA context pointer is null. */
+    IngestResultBadFileHandle = -5,      /* The receive file pointer is invalid. */
+    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but weren't expecting one. */
+    IngestResultBlockOutOfRange = -7,    /* The received block is out of the expected range. */
+    IngestResultBadData = -8,            /* The data block from the server was malformed. */
+    IngestResultWriteBlockFailed = -9,   /* The PAL layer failed to write the file block. */
+    IngestResultNullResultPointer = -10, /* The pointer to the close result pointer was null. */
+    IngestResultUninitialized = -127,    /* Software BUG: We forgot to set the result code. */
+    IngestResultAccepted_Continue = 0,   /* The block was accepted and we're expecting more. */
+    IngestResultDuplicate_Continue = 1,  /* The block was a duplicate but that's OK. Continue. */
 } IngestResult_t;
 
 /* Generic JSON document parser errors. */
 
 typedef enum
 {
-    eDocParseErr_Unknown = -1,          /* The error code has not yet been set by a logic path. */
-    eDocParseErr_None = 0,
-    eDocParseErr_OutOfMemory,           /* We failed to allocate enough memory for a field. */
-    eDocParseErr_FieldTypeMismatch,     /* The field type parsed does not match the document model. */
-    eDocParseErr_Base64Decode,          /* There was an error decoding the base64 data. */
-    eDocParseErr_InvalidNumChar,        /* There was an invalid character in a numeric value field. */
-    eDocParseErr_DuplicatesNotAllowed,  /* A duplicate parameter was found in the job document. */
-    eDocParseErr_MalformedDoc,          /* The document didn't fulfill the model requirements. */
-    eDocParseErr_JasmineCountMismatch,  /* The second pass of jsmn_parse() didn't match the first pass. */
-    eDocParseErr_TooManyTokens,         /* We can't support the number of JSON tokens in the document. */
-    eDocParseErr_NoTokens,              /* No JSON tokens were detected in the document. */
-    eDocParseErr_NullModelPointer,      /* The pointer to the document model was NULL. */
-    eDocParseErr_NullBodyPointer,       /* The document model's internal body pointer was NULL. */
-    eDocParseErr_NullDocPointer,        /* The pointer to the JSON document was NULL. */
-    eDocParseErr_TooManyParams,         /* The document model has more parameters than we can handle. */
-    eDocParseErr_ParamKeyNotInModel,    /* The document model doesn't include the specified parameter key. */
-    eDocParseErr_InvalidModelParamType, /* The document model specified an invalid parameter type. */
-    eDocParseErr_InvalidToken           /* The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrUnknown = -1,          /* The error code has not yet been set by a logic path. */
+    DocParseErrNone = 0,
+    DocParseErrOutOfMemory,           /* We failed to allocate enough memory for a field. */
+    DocParseErrFieldTypeMismatch,     /* The field type parsed does not match the document model. */
+    DocParseErrBase64Decode,          /* There was an error decoding the base64 data. */
+    DocParseErrInvalidNumChar,        /* There was an invalid character in a numeric value field. */
+    DocParseErrDuplicatesNotAllowed,  /* A duplicate parameter was found in the job document. */
+    DocParseErrMalformedDoc,          /* The document didn't fulfill the model requirements. */
+    DocParseErrJasmineCountMismatch,  /* The second pass of jsmn_parse() didn't match the first pass. */
+    DocParseErrTooManyTokens,         /* We can't support the number of JSON tokens in the document. */
+    DocParseErrNoTokens,              /* No JSON tokens were detected in the document. */
+    DocParseErrNullModelPointer,      /* The pointer to the document model was NULL. */
+    DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
+    DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
+    DocParseErrTooManyParams,         /* The document model has more parameters than we can handle. */
+    DocParseErrParamKeyNotInModel,    /* The document model doesn't include the specified parameter key. */
+    DocParseErrInvalidModelParamType, /* The document model specified an invalid parameter type. */
+    DocParseErrInvalidToken           /* The Jasmine token was invalid, producing a NULL pointer. */
 } DocParseErr_t;
 
 /* Document model parameter types used by the JSON document parser. */
 
 typedef enum
 {
-    eModelParamType_StringCopy,
-    eModelParamType_StringInDoc, /* Only use this type if you can process before freeing the document memory. */
-    eModelParamType_Object,
-    eModelParamType_Array,
-    eModelParamType_UInt32,
-    eModelParamType_SigBase64,
-    eModelParamType_Ident,
-    eModelParamType_ArrayCopy
+    ModelParamTypeStringCopy,
+    ModelParamTypeStringInDoc, /* Only use this type if you can process before freeing the document memory. */
+    ModelParamTypeObject,
+    ModelParamTypeArray,
+    ModelParamTypeUInt32,
+    ModelParamTypeSigBase64,
+    ModelParamTypeIdent,
+    ModelParamTypeArrayCopy
 } ModelParamType_t;
 
 /* This is a document parameter structure used by the document model. It determines
@@ -136,9 +136,9 @@ typedef enum
  * locally when it is extracted from the JSON document. It also contains the
  * expected Jasmine type of the value field for validation.
  *
- * NOTE: The ulDestOffset field may be either an offset into the models context structure
+ * NOTE: The destOffset field may be either an offset into the models context structure
  *       or an absolute memory pointer, although it is usually an offset.
- *       If the value of ulDestOffset is less than the size of the context structure,
+ *       If the value of destOffset is less than the size of the context structure,
  *       which is fairly small, it will add the offset of the active context structure
  *       to attain the effective address (somewhere in RAM). Otherwise, it is interpreted
  *       as an absolute memory address and used as is (useful for singleton parameters).
@@ -147,16 +147,16 @@ typedef enum
  */
 typedef struct
 {
-    const char * pcSrcKey; /* Expected key name. */
-    const bool bRequired;  /* If true, this parameter must exist in the document. */
+    const char * pSrcKey; /* Expected key name. */
+    const bool required;  /* If true, this parameter must exist in the document. */
     union
     {
-        const uint32_t ulDestOffset;        /* Pointer or offset to where we'll store the value, if not ~0. */
-        void * const pvDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
+        const uint32_t destOffset;        /* Pointer or offset to where we'll store the value, if not ~0. */
+        void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
     };
-    const ModelParamType_t xModelParamType; /* We extract the value, if found, based on this type. */
-    const jsmntype_t eJasmineType;          /* The JSON value type must match that specified here. */
-} JSON_DocParam_t;
+    const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
+    const jsmntype_t jasmineType;          /* The JSON value type must match that specified here. */
+} JsonDocParam_t;
 
 
 /* The document model is currently limited to 32 parameters per the implementation,
@@ -165,39 +165,38 @@ typedef struct
  *
  * The document model is used to control what JSON parameters are expected from a
  * document and where to store the parameters, if desired, in a destination context.
- * We currently only store parameters into an OTA_FileContext_t but it could be used
+ * We currently only store parameters into an OtaFileContext_t but it could be used
  * for any structure since we don't use a type pointer.
  */
 typedef struct
 {
-    uint64_t ulContextBase;            /* The base address of the destination OTA context structure. */
-    uint64_t ulContextSize;            /* The size, in bytes, of the destination context structure. */
-    const JSON_DocParam_t * pxBodyDef; /* Pointer to the document model body definition. */
-    uint16_t usNumModelParams;         /* The number of entries in the document model (limited to 32). */
-    uint32_t ulParamsReceivedBitmap;   /* Bitmap of the parameters received based on the model. */
-    uint32_t ulParamsRequiredBitmap;   /* Bitmap of the parameters required from the model. */
-} JSON_DocModel_t;
+    uint64_t contextBase;            /* The base address of the destination OTA context structure. */
+    uint64_t contextSize;            /* The size, in bytes, of the destination context structure. */
+    const JsonDocParam_t * pBodyDef; /* Pointer to the document model body definition. */
+    uint16_t numModelParams;         /* The number of entries in the document model (limited to 32). */
+    uint32_t paramsReceivedBitmap;   /* Bitmap of the parameters received based on the model. */
+    uint32_t paramsRequiredBitmap;   /* Bitmap of the parameters required from the model. */
+} JsonDocModel_t;
 
-/*lint -esym(749,OTA_JobStatus_t::eJobStatus_Rejected) Until the Job Service supports it, this is unused. */
 typedef enum
 {
-    eJobStatus_InProgress = 0,
-    eJobStatus_Failed,
-    eJobStatus_Succeeded,
-    eJobStatus_Rejected,      /* Not possible today using the "get next job" feature. FUTURE! */
-    eJobStatus_FailedWithVal, /* This shows 2 numeric reason codes. */
-    eNumJobStatusMappings
-} OTA_JobStatus_t;
+    JobStatusInProgress = 0,
+    JobStatusFailed,
+    JobStatusSucceeded,
+    JobStatusRejected,      /* Not possible today using the "get next job" feature. FUTURE! */
+    JobStatusFailedWithVal, /* This shows 2 numeric reason codes. */
+    NumJobStatusMappings
+} OtaJobStatus_t;
 
 enum
 {
-    eJobReason_Receiving = 0,  /* Update progress status. */
-    eJobReason_SigCheckPassed, /* Set status details to Self Test Ready. */
-    eJobReason_SelfTestActive, /* Set status details to Self Test Active. */
-    eJobReason_Accepted,       /* Set job state to Succeeded. */
-    eJobReason_Rejected,       /* Set job state to Failed. */
-    eJobReason_Aborted,        /* Set job state to Failed. */
-    eNumJobReasons
+    JobReasonReceiving = 0,  /* Update progress status. */
+    JobReasonSigCheckPassed, /* Set status details to Self Test Ready. */
+    JobReasonSelfTestActive, /* Set status details to Self Test Active. */
+    JobReasonAccepted,       /* Set job state to Succeeded. */
+    JobReasonRejected,       /* Set job state to Failed. */
+    JobReasonAborted,        /* Set job state to Failed. */
+    NumJobReasons
 };
 
 /* The OTA job document contains parameters that are required for us to build the
@@ -232,57 +231,57 @@ enum
 
 typedef struct ota_agent_statistics
 {
-    uint32_t ulOTA_PacketsReceived;  /* Number of OTA packets received by the MQTT callback. */
-    uint32_t ulOTA_PacketsQueued;    /* Number of OTA packets queued by the MQTT callback. */
-    uint32_t ulOTA_PacketsProcessed; /* Number of OTA packets processed by the OTA task. */
-    uint32_t ulOTA_PacketsDropped;   /* Number of OTA packets dropped due to congestion. */
-} OTA_AgentStatistics_t;
+    uint32_t otaPacketsReceived;  /* Number of OTA packets received by the MQTT callback. */
+    uint32_t otaPacketsQueued;    /* Number of OTA packets queued by the MQTT callback. */
+    uint32_t otaPacketsProcessed; /* Number of OTA packets processed by the OTA task. */
+    uint32_t otaPacketsDropped;   /* Number of OTA packets dropped due to congestion. */
+} OtaAgentStatistics_t;
 
 /* The OTA agent is a singleton today. The structure keeps it nice and organized. */
 
 typedef struct ota_agent_context
 {
-    OTA_State_t eState;                                     /* State of the OTA agent. */
-    uint8_t pcThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /* Thing name + zero terminator. */
-    void * pvConnectionContext;                             /* Connection context for control and data plane. */
-    OTA_FileContext_t pxOTA_Files[ OTA_MAX_FILES ];         /* Static array of OTA file structures. */
-    uint32_t ulFileIndex;                                   /* Index of current file in the array. */
-    uint32_t ulServerFileID;                                /* Variable to store current file ID passed down */
-    uint8_t * pcOTA_Singleton_ActiveJobName;                /* The currently active job name. We only allow one at a time. */
-    uint8_t * pcClientTokenFromJob;                         /* The clientToken field from the latest update job. */
-    uint32_t ulTimestampFromJob;                            /* Timestamp received from the latest job document. */
-    OTA_ImageState_t eImageState;                           /* The current application image state. */
-    OTA_PAL_Callbacks_t xPALCallbacks;                      /* Variable to store PAL callbacks */
-    uint32_t ulNumOfBlocksToReceive;                        /* Number of data blocks to receive per data request. */
-    OTA_AgentStatistics_t xStatistics;                      /* The OTA agent statistics block. */
-    uint32_t ulRequestMomentum;                             /* The number of requests sent before a response was received. */
+    OtaState_t state;                                     /* State of the OTA agent. */
+    uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /* Thing name + zero terminator. */
+    void * pConnectionContext;                             /* Connection context for control and data plane. */
+    OtaFileContext_t pOtaFiles[ OTA_MAX_FILES ];         /* Static array of OTA file structures. */
+    uint32_t fileIndex;                                   /* Index of current file in the array. */
+    uint32_t serverFileID;                                /* Variable to store current file ID passed down */
+    uint8_t * pOtaSingletonActiveJobName;                /* The currently active job name. We only allow one at a time. */
+    uint8_t * pClientTokenFromJob;                         /* The clientToken field from the latest update job. */
+    uint32_t timestampFromJob;                            /* Timestamp received from the latest job document. */
+    OtaImageState_t imageState;                           /* The current application image state. */
+    OtaPalCallbacks_t palCallbacks;                      /* Variable to store PAL callbacks */
+    uint32_t numOfBlocksToReceive;                        /* Number of data blocks to receive per data request. */
+    OtaAgentStatistics_t statistics;                      /* The OTA agent statistics block. */
+    uint32_t requestMomentum;                             /* The number of requests sent before a response was received. */
     OtaOsInterface_t * pOTAOSCtx;
-} OTA_AgentContext_t;
+} OtaAgentContext_t;
 
 /* The OTA Agent event and data structures. */
 
 typedef struct
 {
-    uint8_t ucData[ OTA_DATA_BLOCK_SIZE ];
-    uint32_t ulDataLength;
-    bool bBufferUsed;
-} OTA_EventData_t;
+    uint8_t data[ OTA_DATA_BLOCK_SIZE ];
+    uint32_t dataLength;
+    bool bufferUsed;
+} OtaEventData_t;
 
 typedef struct
 {
-    OTA_EventData_t * pxEventData;
-    OTA_Event_t xEventId;
-} OTA_EventMsg_t;
+    OtaEventData_t * pEventData;
+    OtaEvent_t eventId;
+} OtaEventMsg_t;
 
 /*
  * Get buffer available from static pool of OTA buffers.
  */
-OTA_EventData_t * prvOTAEventBufferGet( void );
+OtaEventData_t * otaEventBufferGet( void );
 
 /*
  * Free OTA buffer.
  */
-void prvOTAEventBufferFree( OTA_EventData_t * const pxBuffer );
+void otaEventBufferFree( OtaEventData_t * const pBuffer );
 
 /*
  * Signal event to the OTA Agent task.
@@ -290,6 +289,6 @@ void prvOTAEventBufferFree( OTA_EventData_t * const pxBuffer );
  * This function adds the event to the back of event queue and used
  * by internal OTA modules to signal agent task.
  */
-bool OTA_SignalEvent( const OTA_EventMsg_t * const pxEventMsg );
+bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
 
 #endif /* ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_ */

@@ -41,7 +41,7 @@
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvRequestJob_Mqtt( OTA_AgentContext_t * pxAgentCtx );
+OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx );
 
 /**
  * @brief Initialize file transfer over MQTT.
@@ -54,7 +54,7 @@ OTA_Err_t prvRequestJob_Mqtt( OTA_AgentContext_t * pxAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvInitFileTransfer_Mqtt( OTA_AgentContext_t * pxAgentCtx );
+OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx );
 
 /**
  * @brief Request File block over MQTT.
@@ -68,7 +68,7 @@ OTA_Err_t prvInitFileTransfer_Mqtt( OTA_AgentContext_t * pxAgentCtx );
  * error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvRequestFileBlock_Mqtt( OTA_AgentContext_t * pxAgentCtx );
+OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx );
 
 /**
  * @brief Decode a cbor encoded fileblock.
@@ -87,7 +87,7 @@ OTA_Err_t prvRequestFileBlock_Mqtt( OTA_AgentContext_t * pxAgentCtx );
  * error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvDecodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
+OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
                                    size_t xMessageSize,
                                    int32_t * plFileId,
                                    int32_t * plBlockId,
@@ -106,7 +106,7 @@ OTA_Err_t prvDecodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvCleanup_Mqtt( OTA_AgentContext_t * pxAgentCtx );
+OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx );
 
 /**
  * @brief Update job status over MQTT.
@@ -116,7 +116,7 @@ OTA_Err_t prvCleanup_Mqtt( OTA_AgentContext_t * pxAgentCtx );
  *
  * @param[in] pxAgentCtx The OTA agent context.
  *
- * @param[in] eStatus The OTA job status which should be updated. @see OTA_JobStatus_t.
+ * @param[in] eStatus The OTA job status which should be updated. @see OtaJobStatus_t.
  *
  * @param[in] lReason The major reason for the status update.
  *
@@ -125,8 +125,8 @@ OTA_Err_t prvCleanup_Mqtt( OTA_AgentContext_t * pxAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OTA_Err_t prvUpdateJobStatus_Mqtt( OTA_AgentContext_t * pxAgentCtx,
-                                   OTA_JobStatus_t eStatus,
+OtaErr_t prvUpdatJobStatusMqtt( OtaAgentContext_t * pxAgentCtx,
+                                   OtaJobStatus_t eStatus,
                                    int32_t lReason,
                                    int32_t lSubReason );
 

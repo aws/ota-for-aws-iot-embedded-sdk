@@ -69,22 +69,22 @@
 #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
 
 
-void prvSetControlInterface( OTA_ControlInterface_t * pxControlInterface )
+void setControlInterface( OtaControlInterface_t * pxControlInterface )
 {
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
-        pxControlInterface->prvRequestJob = prvRequestJob_Mqtt;
-        pxControlInterface->prvUpdateJobStatus = prvUpdateJobStatus_Mqtt;
+        pxControlInterface->requestJob = requestJob_Mqtt;
+        pxControlInterface->updateJobStatus = prvUpdatJobStatusMqtt;
     #else
     #error "Enable MQTT control as control operations are only supported over MQTT."
     #endif
 }
 
-OTA_Err_t prvSetDataInterface( OTA_DataInterface_t * pxDataInterface,
+OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                                const uint8_t * pucProtocol )
 {
-    DEFINE_OTA_METHOD_NAME( "prvSetDataInterface" );
+    DEFINE_OTA_METHOD_NAME( "setDataInterface" );
 
-    OTA_Err_t xErr = kOTA_Err_InvalidDataProtocol;
+    OtaErr_t xErr = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
     for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
@@ -94,14 +94,14 @@ OTA_Err_t prvSetDataInterface( OTA_DataInterface_t * pxDataInterface,
             #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT )
                 if( strcmp( pcProtocolPriority[ i ], "MQTT" ) == 0 )
                 {
-                    pxDataInterface->prvInitFileTransfer = prvInitFileTransfer_Mqtt;
-                    pxDataInterface->prvRequestFileBlock = prvRequestFileBlock_Mqtt;
-                    pxDataInterface->prvDecodeFileBlock = prvDecodeFileBlock_Mqtt;
-                    pxDataInterface->prvCleanup = prvCleanup_Mqtt;
+                    pxDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+                    pxDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+                    pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+                    pxDataInterface->cleanup = cleanup_Mqtt;
 
                     OTA_LOG_L1( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
 
-                    xErr = kOTA_Err_None;
+                    xErr = OTA_ERR_NONE;
                     break;
                 }
             #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) */
@@ -109,14 +109,14 @@ OTA_Err_t prvSetDataInterface( OTA_DataInterface_t * pxDataInterface,
             #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP )
                 if( strcmp( pcProtocolPriority[ i ], "HTTP" ) == 0 )
                 {
-                    pxDataInterface->prvInitFileTransfer = _AwsIotOTA_InitFileTransfer_HTTP;
-                    pxDataInterface->prvRequestFileBlock = _AwsIotOTA_RequestDataBlock_HTTP;
-                    pxDataInterface->prvDecodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
-                    pxDataInterface->prvCleanup = _AwsIotOTA_Cleanup_HTTP;
+                    pxDataInterface->initFileTransfer = _AwsIotOTA_InitFileTransfer_HTTP;
+                    pxDataInterface->requestFileBlock = _AwsIotOTA_RequestDataBlock_HTTP;
+                    pxDataInterface->decodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
+                    pxDataInterface->cleanup = _AwsIotOTA_Cleanup_HTTP;
 
                     OTA_LOG_L1( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME );
 
-                    xErr = kOTA_Err_None;
+                    xErr = OTA_ERR_NONE;
                     break;
                 }
             #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) */
