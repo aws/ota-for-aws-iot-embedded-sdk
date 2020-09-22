@@ -151,7 +151,7 @@ typedef struct
     const bool required;  /* If true, this parameter must exist in the document. */
     union
     {
-        const uint32_t destOffset;        /* Pointer or offset to where we'll store the value, if not ~0. */
+        const uint32_t destOffset;         /* Pointer or offset to where we'll store the value, if not ~0. */
         void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
     };
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
@@ -241,20 +241,20 @@ typedef struct ota_agent_statistics
 
 typedef struct ota_agent_context
 {
-    OtaState_t state;                                     /* State of the OTA agent. */
+    OtaState_t state;                                      /* State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /* Thing name + zero terminator. */
     void * pConnectionContext;                             /* Connection context for control and data plane. */
-    OtaFileContext_t pOtaFiles[ OTA_MAX_FILES ];         /* Static array of OTA file structures. */
-    uint32_t fileIndex;                                   /* Index of current file in the array. */
-    uint32_t serverFileID;                                /* Variable to store current file ID passed down */
-    uint8_t * pOtaSingletonActiveJobName;                /* The currently active job name. We only allow one at a time. */
+    OtaFileContext_t pOtaFiles[ OTA_MAX_FILES ];           /* Static array of OTA file structures. */
+    uint32_t fileIndex;                                    /* Index of current file in the array. */
+    uint32_t serverFileID;                                 /* Variable to store current file ID passed down */
+    uint8_t * pOtaSingletonActiveJobName;                  /* The currently active job name. We only allow one at a time. */
     uint8_t * pClientTokenFromJob;                         /* The clientToken field from the latest update job. */
-    uint32_t timestampFromJob;                            /* Timestamp received from the latest job document. */
-    OtaImageState_t imageState;                           /* The current application image state. */
-    OtaPalCallbacks_t palCallbacks;                      /* Variable to store PAL callbacks */
-    uint32_t numOfBlocksToReceive;                        /* Number of data blocks to receive per data request. */
-    OtaAgentStatistics_t statistics;                      /* The OTA agent statistics block. */
-    uint32_t requestMomentum;                             /* The number of requests sent before a response was received. */
+    uint32_t timestampFromJob;                             /* Timestamp received from the latest job document. */
+    OtaImageState_t imageState;                            /* The current application image state. */
+    OtaPalCallbacks_t palCallbacks;                        /* Variable to store PAL callbacks */
+    uint32_t numOfBlocksToReceive;                         /* Number of data blocks to receive per data request. */
+    OtaAgentStatistics_t statistics;                       /* The OTA agent statistics block. */
+    uint32_t requestMomentum;                              /* The number of requests sent before a response was received. */
     OtaOsInterface_t * pOTAOSCtx;
 } OtaAgentContext_t;
 

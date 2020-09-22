@@ -80,7 +80,7 @@ void setControlInterface( OtaControlInterface_t * pxControlInterface )
 }
 
 OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
-                               const uint8_t * pucProtocol )
+                           const uint8_t * pucProtocol )
 {
     DEFINE_OTA_METHOD_NAME( "setDataInterface" );
 

@@ -88,12 +88,12 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx );
  */
 
 OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
-                                   size_t xMessageSize,
-                                   int32_t * plFileId,
-                                   int32_t * plBlockId,
-                                   int32_t * plBlockSize,
-                                   uint8_t ** ppucPayload,
-                                   size_t * pxPayloadSize );
+                               size_t xMessageSize,
+                               int32_t * plFileId,
+                               int32_t * plBlockId,
+                               int32_t * plBlockSize,
+                               uint8_t ** ppucPayload,
+                               size_t * pxPayloadSize );
 
 /**
  * @brief Cleanup related to OTA over MQTT.
@@ -126,9 +126,9 @@ OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx );
  */
 
 OtaErr_t prvUpdatJobStatusMqtt( OtaAgentContext_t * pxAgentCtx,
-                                   OtaJobStatus_t eStatus,
-                                   int32_t lReason,
-                                   int32_t lSubReason );
+                                OtaJobStatus_t eStatus,
+                                int32_t lReason,
+                                int32_t lSubReason );
 
 
 #endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */

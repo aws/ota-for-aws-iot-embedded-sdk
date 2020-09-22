@@ -51,9 +51,9 @@ typedef struct
 {
     OtaErr_t ( * requestJob )( OtaAgentContext_t * pAgentCtx );
     OtaErr_t ( * updateJobStatus )( OtaAgentContext_t * pxAgentCtx,
-                                        OtaJobStatus_t eStatus,
-                                        int32_t lReason,
-                                        int32_t lSubReason );
+                                    OtaJobStatus_t eStatus,
+                                    int32_t lReason,
+                                    int32_t lSubReason );
 } OtaControlInterface_t;
 
 /**
@@ -67,12 +67,12 @@ typedef struct
     OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx );
     OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx );
     OtaErr_t ( * decodeFileBlock )( uint8_t * pucMessageBuffer,
-                                        size_t xMessageSize,
-                                        int32_t * plFileId,
-                                        int32_t * plBlockId,
-                                        int32_t * plBlockSize,
-                                        uint8_t ** ppucPayload,
-                                        size_t * pxPayloadSize );
+                                    size_t xMessageSize,
+                                    int32_t * plFileId,
+                                    int32_t * plBlockId,
+                                    int32_t * plBlockSize,
+                                    uint8_t ** ppucPayload,
+                                    size_t * pxPayloadSize );
     OtaErr_t ( * cleanup )( OtaAgentContext_t * pAgentCtx );
 } OtaDataInterface_t;
 
@@ -98,6 +98,6 @@ void setControlInterface( OtaControlInterface_t * pxControlInterface );
  */
 
 OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
-                               const uint8_t * pucProtocol );
+                           const uint8_t * pucProtocol );
 
 #endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */

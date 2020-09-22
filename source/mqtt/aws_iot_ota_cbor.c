@@ -46,7 +46,7 @@ typedef struct OtaMessageDecodeContext
 {
     CborParser xCborParser;
     CborValue xCborRecursedItem;
-} OtaMessageDecodeContext_t, * OtaMessageDecodeContextPtr_t;
+} OtaMessageDecodeContext_t, *OtaMessageDecodeContextPtr_t;
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
@@ -166,11 +166,9 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pucMessageBuffer,
     {
         xCborResult = cbor_value_calculate_string_length( &xCborValue,
                                                           pxPayloadSize );
-
-
     }
 
-  if( CborNoError == xCborResult )
+    if( CborNoError == xCborResult )
     {
         *ppucPayload = malloc( *pxPayloadSize );
 

@@ -42,7 +42,7 @@
 
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
-extern  const AppVersion32_t appFirmwareVersion;
+extern const AppVersion32_t appFirmwareVersion;
 
 /* General constants. */
 #define OTA_SUBSCRIBE_WAIT_MS          30000UL
@@ -137,11 +137,11 @@ static void prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * px
 /* Publish a message using the platforms PubSub mechanism. */
 
 static MQTTStatus_t prvPublishMessage( const OtaAgentContext_t * pxAgentCtx,
-                                         const char * const pacTopic,
-                                         uint16_t usTopicLen,
-                                         const char * pcMsg,
-                                         uint32_t ulMsgSize,
-                                         MQTTQoS_t eQOS );
+                                       const char * const pacTopic,
+                                       uint16_t usTopicLen,
+                                       const char * pcMsg,
+                                       uint32_t ulMsgSize,
+                                       MQTTQoS_t eQOS );
 
 /* Subscribe to the OTA job notification topics. */
 
@@ -177,17 +177,16 @@ static bool prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAge
                                      subscriptionCount,
                                      MQTT_GetPacketId( pMqttContext ) );
 
-
-    if( mqttStatus == MQTTSuccess )
-    {
-        /* Wait for the subscription to complete. */
-        mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_SUBSCRIBE_WAIT_MS );
-        if( mqttStatus != MQTTSuccess )
+        if( mqttStatus == MQTTSuccess )
         {
-            OTA_LOG_L1( "[%s] Subscribe wait failed.\n\r", OTA_METHOD_NAME );
-        }
-    }
+            /* Wait for the subscription to complete. */
+            mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_SUBSCRIBE_WAIT_MS );
 
+            if( mqttStatus != MQTTSuccess )
+            {
+                OTA_LOG_L1( "[%s] Subscribe wait failed.\n\r", OTA_METHOD_NAME );
+            }
+        }
 
         if( mqttStatus == MQTTSuccess )
         {
@@ -228,6 +227,7 @@ static bool prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAge
     {
         /* Wait for the subscription to complete. */
         mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_SUBSCRIBE_WAIT_MS );
+
         if( mqttStatus != MQTTSuccess )
         {
             OTA_LOG_L1( "[%s] Subscribe wait failed.\n\r", OTA_METHOD_NAME );
@@ -272,9 +272,9 @@ static bool prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx )
         if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
         {
             mqttStatus = MQTT_Unsubscribe( pMqttContext,
-                                        &subscriptionInfo,
-                                        subscriptionCount,
-                                        MQTT_GetPacketId( pMqttContext ) );
+                                           &subscriptionInfo,
+                                           subscriptionCount,
+                                           MQTT_GetPacketId( pMqttContext ) );
 
             if( mqttStatus == MQTTSuccess )
             {
@@ -295,6 +295,7 @@ static bool prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx )
     {
         /* Wait for the unsubscription to complete. */
         mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_UNSUBSCRIBE_WAIT_MS );
+
         if( mqttStatus != MQTTSuccess )
         {
             OTA_LOG_L1( "[%s] Unsubscribe wait failed.\n\r", OTA_METHOD_NAME );
@@ -336,7 +337,8 @@ static void prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * px
         mqttStatus = MQTT_Unsubscribe( pMqttContext,
                                        &subscriptionInfo,
                                        subscriptionCount,
-                                       MQTT_GetPacketId( pMqttContext ));
+                                       MQTT_GetPacketId( pMqttContext ) );
+
         if( mqttStatus == MQTTSuccess )
         {
             OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, subscriptionInfo.pTopicFilter );
@@ -360,6 +362,7 @@ static void prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * px
                                        &subscriptionInfo,
                                        subscriptionCount,
                                        MQTT_GetPacketId( pMqttContext ) );
+
         if( mqttStatus != MQTTSuccess )
         {
             OTA_LOG_L1( "[%s] Failed: %s\n\r", OTA_METHOD_NAME, subscriptionInfo.pTopicFilter );
@@ -374,6 +377,7 @@ static void prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * px
     {
         /* Wait for the unsubscription to complete. */
         mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_UNSUBSCRIBE_WAIT_MS );
+
         if( mqttStatus != MQTTSuccess )
         {
             OTA_LOG_L1( "[%s] Unsubscribe wait failed.\n\r", OTA_METHOD_NAME );
@@ -385,11 +389,11 @@ static void prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * px
  * Publish a message to the specified client/topic at the given QOS.
  */
 static MQTTStatus_t prvPublishMessage( const OtaAgentContext_t * pxAgentCtx,
-                                         const char * const pacTopic,
-                                         uint16_t usTopicLen,
-                                         const char * pcMsg,
-                                         uint32_t ulMsgSize,
-                                         MQTTQoS_t eQOS )
+                                       const char * const pacTopic,
+                                       uint16_t usTopicLen,
+                                       const char * pcMsg,
+                                       uint32_t ulMsgSize,
+                                       MQTTQoS_t eQOS )
 {
     MQTTStatus_t mqttStatus = MQTTBadParameter;
     MQTTPublishInfo_t publishInfo;
@@ -409,6 +413,7 @@ static MQTTStatus_t prvPublishMessage( const OtaAgentContext_t * pxAgentCtx,
     {
         /* Wait for the publish to complete. */
         mqttStatus = MQTT_ProcessLoop( pMqttContext, OTA_PUBLISH_WAIT_MS );
+
         if( mqttStatus != MQTTSuccess )
         {
             OTA_LOG_L1( " Publish ack wait failed.\n\r" );
@@ -738,9 +743,9 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
  * Update the job status on the service side with progress or completion info.
  */
 OtaErr_t prvUpdatJobStatusMqtt( OtaAgentContext_t * pxAgentCtx,
-                                   OtaJobStatus_t eStatus,
-                                   int32_t lReason,
-                                   int32_t lSubReason )
+                                OtaJobStatus_t eStatus,
+                                int32_t lReason,
+                                int32_t lSubReason )
 {
     DEFINE_OTA_METHOD_NAME( "prvUpdatJobStatusMqtt" );
 
@@ -958,12 +963,12 @@ OtaErr_t prvUpdatJobStatusMqtt( OtaAgentContext_t * pxAgentCtx,
  * Decode a cbor encoded fileblock received from streaming service.
  */
 OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
-                                   size_t xMessageSize,
-                                   int32_t * plFileId,
-                                   int32_t * plBlockId,
-                                   int32_t * plBlockSize,
-                                   uint8_t ** ppucPayload,
-                                   size_t * pxPayloadSize )
+                               size_t xMessageSize,
+                               int32_t * plFileId,
+                               int32_t * plBlockId,
+                               int32_t * plBlockSize,
+                               uint8_t ** ppucPayload,
+                               size_t * pxPayloadSize )
 {
     DEFINE_OTA_METHOD_NAME( "decodeFileBlock_Mqtt" );
     OtaErr_t xErr = OTA_ERR_UNINITIALIZED;

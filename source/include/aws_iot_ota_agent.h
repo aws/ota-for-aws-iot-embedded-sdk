@@ -55,7 +55,7 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 /**
  * @brief Special OTA Agent printing definition.
  */
-#define vLoggingPrintf printf
+#define vLoggingPrintf         printf
 #define OTA_DEBUG_LOG_LEVEL    1
 #if OTA_DEBUG_LOG_LEVEL >= 1
     #define DEFINE_OTA_METHOD_NAME( name )      \
@@ -221,7 +221,7 @@ typedef enum
     OtaImageStateAccepted = 2, /*!< The state of the OTA MCU Image post successful download and successful self_test. */
     OtaImageStateRejected = 3, /*!< The state of the OTA MCU Image when the job has been rejected. */
     OtaImageStateAborted = 4,  /*!< The state of the OTA MCU Image after a timeout publish to the stream request fails.
-                                   *   Also if the OTA MCU image is aborted in the middle of a stream. */
+                                *   Also if the OTA MCU image is aborted in the middle of a stream. */
     OtaLastImageState = OtaImageStateAborted
 } OtaImageState_t;
 
@@ -238,7 +238,7 @@ typedef struct OtaFileContext   OtaFileContext_t;
 /**
  * @brief OTA Error type.
  */
-typedef uint32_t                 OtaErr_t;
+typedef uint32_t                OtaErr_t;
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -348,7 +348,7 @@ typedef OtaErr_t (* OtaPALResetDeviceCallback_t)( uint32_t serverFileID );
  * @param[in] eState Platform Image State to be state
  */
 typedef OtaErr_t (* OtaPALSetPlatformImageStateCallback_t)( uint32_t serverFileID,
-                                                               OtaImageState_t eState );
+                                                            OtaImageState_t eState );
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -363,9 +363,9 @@ typedef OtaErr_t (* OtaPALSetPlatformImageStateCallback_t)( uint32_t serverFileI
  * @param[in] iBlocksize Block size of the data to be written
  */
 typedef int16_t (* OtaPALWriteBlockCallback_t)( OtaFileContext_t * const C,
-                                                  uint32_t iOffset,
-                                                  uint8_t * const pacData,
-                                                  uint32_t iBlockSize );
+                                                uint32_t iOffset,
+                                                uint8_t * const pacData,
+                                                uint32_t iBlockSize );
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -378,7 +378,7 @@ typedef int16_t (* OtaPALWriteBlockCallback_t)( OtaFileContext_t * const C,
  * @param[in] ulMsgLen Length of the json document received by the agent
  */
 typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
-                                                        uint32_t ulMsgLen );
+                                                     uint32_t ulMsgLen );
 
 
 /*--------------------------- OTA structs ----------------------------*/
@@ -409,12 +409,12 @@ struct OtaFileContext
     uint8_t * pFilePath; /*!< Local file pathname. */
     union
     {
-        int32_t fileHandle;    /*!< Device internal file pointer or handle.
-                                 * File type is handle after file is open for write. */
-        #if defined(WIN32) || defined(__linux__)
-            FILE * pFile;      /*!< File type is stdio FILE structure after file is open for write. */
+        int32_t fileHandle;  /*!< Device internal file pointer or handle.
+                              * File type is handle after file is open for write. */
+        #if defined( WIN32 ) || defined( __linux__ )
+            FILE * pFile;    /*!< File type is stdio FILE structure after file is open for write. */
         #else
-            uint8_t * pFile;      /*!< File type is RAM/Flash image pointer after file is open for write. */
+            uint8_t * pFile; /*!< File type is RAM/Flash image pointer after file is open for write. */
         #endif
     };
     uint32_t fileSize;        /*!< The size of the file in bytes. */
@@ -423,13 +423,13 @@ struct OtaFileContext
     uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
     uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
     uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    Sig256_t * pSignature;     /*!< Pointer to the file's signature structure. */
+    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
     uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for de-duping and missing block request). */
     uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
     uint8_t * pUpdateUrlPath; /*!< Url for the file. */
     uint8_t * pAuthScheme;    /*!< Authorization scheme. */
     uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of FW that did the update. */
-    bool isInSelfTest;         /*!< True if the job is in self test mode. */
+    bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
 };
 
@@ -488,48 +488,48 @@ typedef struct
  */
 
 /* @[define_ota_err_codes] */
-#define OTA_ERR_PANIC                   0xfe000000UL     /*!< Unrecoverable FW error. Probably should log error and reboot. */
-#define OTA_ERR_UNINITIALIZED           0xff000000UL     /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                    0x00000000UL
-#define OTA_ERR_SIGNATURE_CHECK_FAILED    0x01000000UL     /*!< The signature check failed for the specified file. */
-#define OTA_ERR_BAD_SIGNER_CERT           0x02000000UL     /*!< The signer certificate was not readable or zero length. */
-#define OTA_ERR_OUT_OF_MEMORY             0x03000000UL     /*!< General out of memory error. */
-#define OTA_ERR_ACTIVATE_FAILED          0x04000000UL     /*!< The activation of the new OTA image failed. */
-#define OTA_ERR_COMMIT_FAILED            0x05000000UL     /*!< The acceptance commit of the new OTA image failed. */
-#define OTA_ERR_REJECT_FAILED            0x06000000UL     /*!< Error trying to reject the OTA image. */
-#define OTA_ERR_ABORT_FAILED             0x07000000UL     /*!< Error trying to abort the OTA. */
-#define OTA_ERR_PUBLISH_FAILED           0x08000000UL     /*!< Attempt to publish a MQTT message failed. */
-#define OTA_ERR_BAD_IMAGE_STATE           0x09000000UL     /*!< The specified OTA image state was out of range. */
-#define OTA_ERR_NO_ACTIVE_JOB             0x0a000000UL     /*!< Attempt to set final image state without an active job. */
-#define OTA_ERR_NO_FREE_CONTEXT           0x0b000000UL     /*!< There wasn't an OTA file context available for processing. */
-#define OTA_ERR_HTTP_INIT_FAILED          0x0c000000UL     /*!< Error initializing the HTTP connection. */
-#define OTA_ERR_HTTP_REQUEST_FAILED       0x0d000000UL     /*!< Error sending the HTTP request. */
-#define OTA_ERR_FILE_ABORT               0x10000000UL     /*!< Error in low level file abort. */
-#define OTA_ERR_FILE_CLOSE               0x11000000UL     /*!< Error in low level file close. */
-#define OTA_ERR_RX_FILE_CREATE_FAILED      0x12000000UL     /*!< The PAL failed to create the OTA receive file. */
-#define OTA_ERR_BOOT_INFO_CREATE_FAILED    0x13000000UL     /*!< The PAL failed to create the OTA boot info file. */
-#define OTA_ERR_RX_FILE_TOO_LARGE          0x14000000UL     /*!< The OTA receive file is too big for the platform to support. */
-#define OTA_ERR_NULL_FILE_PTR             0x20000000UL     /*!< Attempt to use a null file pointer. */
-#define OTA_ERR_MOMENTUM_ABORT           0x21000000UL     /*!< Too many OTA stream requests without any response. */
-#define OTA_ERR_DOWNGRADE_NOT_ALLOWED     0x22000000UL     /*!< Firmware version is older than the previous version. */
-#define OTA_ERR_SAME_FIRMWARE_VERSION     0x23000000UL     /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-#define OTA_ERR_JOB_PARSER_ERROR          0x24000000UL     /*!< An error occurred during job document parsing. See reason sub-code. */
-#define OTA_ERR_FAILED_TO_ENCODE_CBOR      0x25000000UL     /*!< Failed to encode CBOR object. */
-#define OTA_ERR_IMAGE_STATE_MISMATCH      0x26000000UL     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-#define OTA_ERR_GENERIC_INGEST_ERROR      0x27000000UL     /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
-#define OTA_ERR_USER_ABORT               0x28000000UL     /*!< User aborted the active OTA. */
-#define OTA_ERR_RESET_NOT_SUPPORTED       0x29000000UL     /*!< We tried to reset the device but the device doesn't support it. */
-#define OTA_ERR_TOPIC_TOO_LARGE           0x2a000000UL     /*!< Attempt to build a topic string larger than the supplied buffer. */
-#define OTA_ERR_SELF_TEST_TIMER_FAILED     0x2b000000UL     /*!< Attempt to start self-test timer faield. */
-#define OTA_ERR_EVENT_QUEUE_SEND_FAILED    0x2c000000UL     /*!< Posting event message to the event queue failed. */
-#define OTA_ERR_INVALID_DATA_PROTOCOL     0x2d000000UL     /*!< Job does not have a valid protocol for data transfer. */
-#define OTA_ERR_OTA_AGENT_STOPPED         0x2e000000UL     /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+#define OTA_ERR_PANIC                      0xfe000000UL  /*!< Unrecoverable FW error. Probably should log error and reboot. */
+#define OTA_ERR_UNINITIALIZED              0xff000000UL  /*!< The error code has not yet been set by a logic path. */
+#define OTA_ERR_NONE                       0x00000000UL
+#define OTA_ERR_SIGNATURE_CHECK_FAILED     0x01000000UL  /*!< The signature check failed for the specified file. */
+#define OTA_ERR_BAD_SIGNER_CERT            0x02000000UL  /*!< The signer certificate was not readable or zero length. */
+#define OTA_ERR_OUT_OF_MEMORY              0x03000000UL  /*!< General out of memory error. */
+#define OTA_ERR_ACTIVATE_FAILED            0x04000000UL  /*!< The activation of the new OTA image failed. */
+#define OTA_ERR_COMMIT_FAILED              0x05000000UL  /*!< The acceptance commit of the new OTA image failed. */
+#define OTA_ERR_REJECT_FAILED              0x06000000UL  /*!< Error trying to reject the OTA image. */
+#define OTA_ERR_ABORT_FAILED               0x07000000UL  /*!< Error trying to abort the OTA. */
+#define OTA_ERR_PUBLISH_FAILED             0x08000000UL  /*!< Attempt to publish a MQTT message failed. */
+#define OTA_ERR_BAD_IMAGE_STATE            0x09000000UL  /*!< The specified OTA image state was out of range. */
+#define OTA_ERR_NO_ACTIVE_JOB              0x0a000000UL  /*!< Attempt to set final image state without an active job. */
+#define OTA_ERR_NO_FREE_CONTEXT            0x0b000000UL  /*!< There wasn't an OTA file context available for processing. */
+#define OTA_ERR_HTTP_INIT_FAILED           0x0c000000UL  /*!< Error initializing the HTTP connection. */
+#define OTA_ERR_HTTP_REQUEST_FAILED        0x0d000000UL  /*!< Error sending the HTTP request. */
+#define OTA_ERR_FILE_ABORT                 0x10000000UL  /*!< Error in low level file abort. */
+#define OTA_ERR_FILE_CLOSE                 0x11000000UL  /*!< Error in low level file close. */
+#define OTA_ERR_RX_FILE_CREATE_FAILED      0x12000000UL  /*!< The PAL failed to create the OTA receive file. */
+#define OTA_ERR_BOOT_INFO_CREATE_FAILED    0x13000000UL  /*!< The PAL failed to create the OTA boot info file. */
+#define OTA_ERR_RX_FILE_TOO_LARGE          0x14000000UL  /*!< The OTA receive file is too big for the platform to support. */
+#define OTA_ERR_NULL_FILE_PTR              0x20000000UL  /*!< Attempt to use a null file pointer. */
+#define OTA_ERR_MOMENTUM_ABORT             0x21000000UL  /*!< Too many OTA stream requests without any response. */
+#define OTA_ERR_DOWNGRADE_NOT_ALLOWED      0x22000000UL  /*!< Firmware version is older than the previous version. */
+#define OTA_ERR_SAME_FIRMWARE_VERSION      0x23000000UL  /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
+#define OTA_ERR_JOB_PARSER_ERROR           0x24000000UL  /*!< An error occurred during job document parsing. See reason sub-code. */
+#define OTA_ERR_FAILED_TO_ENCODE_CBOR      0x25000000UL  /*!< Failed to encode CBOR object. */
+#define OTA_ERR_IMAGE_STATE_MISMATCH       0x26000000UL  /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+#define OTA_ERR_GENERIC_INGEST_ERROR       0x27000000UL  /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
+#define OTA_ERR_USER_ABORT                 0x28000000UL  /*!< User aborted the active OTA. */
+#define OTA_ERR_RESET_NOT_SUPPORTED        0x29000000UL  /*!< We tried to reset the device but the device doesn't support it. */
+#define OTA_ERR_TOPIC_TOO_LARGE            0x2a000000UL  /*!< Attempt to build a topic string larger than the supplied buffer. */
+#define OTA_ERR_SELF_TEST_TIMER_FAILED     0x2b000000UL  /*!< Attempt to start self-test timer faield. */
+#define OTA_ERR_EVENT_QUEUE_SEND_FAILED    0x2c000000UL  /*!< Posting event message to the event queue failed. */
+#define OTA_ERR_INVALID_DATA_PROTOCOL      0x2d000000UL  /*!< Job does not have a valid protocol for data transfer. */
+#define OTA_ERR_OTA_AGENT_STOPPED          0x2e000000UL  /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
 /* @[define_ota_err_codes] */
 
 /* @[define_ota_err_code_helpers] */
-#define OTA_PAL_ERR_MASK             0xffffffUL       /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
-#define OTA_MAIN_ERR_MASK            0xff000000UL     /*!< Mask out all but the OTA Agent error code (high 8 bits). */
-#define OTA_MAIN_ERR_SHIFT_DOWN_BITS    24U              /*!< The OTA Agent error code is the highest 8 bits of the word. */
+#define OTA_PAL_ERR_MASK                0xffffffUL    /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
+#define OTA_MAIN_ERR_MASK               0xff000000UL  /*!< Mask out all but the OTA Agent error code (high 8 bits). */
+#define OTA_MAIN_ERR_SHIFT_DOWN_BITS    24U           /*!< The OTA Agent error code is the highest 8 bits of the word. */
 /* @[define_ota_err_code_helpers] */
 
 
@@ -588,10 +588,10 @@ typedef struct
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
 OtaState_t OTA_AgentInit( void * pConnectionContext,
-                           void * pOtaOSCtx,
-                           const uint8_t * pThingName,
-                           OtaCompleteCallback_t completeCallback,
-                           uint32_t ticksToWait );
+                          void * pOtaOSCtx,
+                          const uint8_t * pThingName,
+                          OtaCompleteCallback_t completeCallback,
+                          uint32_t ticksToWait );
 
 /**
  * @brief Internal OTA Agent initialization function.
@@ -613,10 +613,10 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
 OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
-                                    void * pOtaOSCtx,
-                                    const uint8_t * pThingName,
-                                    const OtaPalCallbacks_t * pCallbacks,
-                                    uint32_t ticksToWait );
+                                   void * pOtaOSCtx,
+                                   const uint8_t * pThingName,
+                                   const OtaPalCallbacks_t * pCallbacks,
+                                   uint32_t ticksToWait );
 
 /**
  * @brief Signal to the OTA Agent to shut down.

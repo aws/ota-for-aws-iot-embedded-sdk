@@ -55,7 +55,7 @@
 extern const AppVersion32_t appFirmwareVersion;
 
 /* ToDo: Cleanup BaseType_t. */
-#define BaseType_t uint32_t
+#define BaseType_t    uint32_t
 
 /* OTA event handler definiton. */
 
@@ -104,8 +104,8 @@ static OtaDataInterface_t otaDataInterface;
  */
 
 static bool jsonIsCStringEqual( const char * pJsonString,
-                                 uint32_t length,
-                                 const char * pCString );
+                                uint32_t length,
+                                const char * pCString );
 
 /* OTA agent private function prototypes. */
 
@@ -135,19 +135,19 @@ static void stopSelfTestTimer( void );
 
 /* Self-test timer callback, reset the device if this timer expires. */
 
-static void selfTestTimerCallback( /*TimerHandle_t T*/ void * pParam);
+static void selfTestTimerCallback( /*TimerHandle_t T*/ void * pParam );
 
 /* Called when the OTA agent receives a file data block message. */
 
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                          uint8_t * pRawMsg,
-                                          uint32_t messageSize,
-                                          OtaErr_t * pCloseResult );
+                                       uint8_t * pRawMsg,
+                                       uint32_t messageSize,
+                                       OtaErr_t * pCloseResult );
 
 /* Called to update the filecontext structure from the job. */
 
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                     uint32_t messageLength );
+                                                 uint32_t messageLength );
 
 /* Get an available OTA file context structure or NULL if none available. */
 
@@ -156,14 +156,14 @@ static OtaFileContext_t * getFreeContext( void );
 /* Parse a JSON document using the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
-                                          uint32_t messageLength,
-                                          JsonDocModel_t * pDocModel );
+                                       uint32_t messageLength,
+                                       JsonDocModel_t * pDocModel );
 
 /* Parse the OTA job document, validate and return the populated OTA context if valid. */
 
 static OtaFileContext_t * parseJobDoc( const char * pJson,
-                                           uint32_t messageLength,
-                                           bool * pUpdateJob );
+                                       uint32_t messageLength,
+                                       bool * pUpdateJob );
 
 /* Close an open OTA file context and free it. */
 
@@ -173,7 +173,7 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 /* Internal function to set the image state including an optional reason code. */
 
 static OtaErr_t setImageStateWithReason( OtaImageState_t state,
-                                             uint32_t reason );
+                                         uint32_t reason );
 
 /* The default OTA callback handler if not provided to OTA_AgentInit(). */
 
@@ -182,7 +182,7 @@ static void defaultOTACompleteCallback( OtaJobEvent_t event );
 /* Default Custom Callback handler if not provided to OTA_AgentInit() */
 
 static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
-                                                      uint32_t messageLength );
+                                                  uint32_t messageLength );
 
 /* Default Reset Device handler if not provided to OTA_AgentInit() */
 
@@ -195,7 +195,7 @@ static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID
 /* Default Set Platform Image State handler if not provided to OTA_AgentInit() */
 
 static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
-                                                      OtaImageState_t state );
+                                                 OtaImageState_t state );
 
 /* Default Activate New Image handler if not provided to OTA_AgentInit() */
 
@@ -208,9 +208,9 @@ static void agentShutdownCleanup( void );
 /* Search the document model for a key that matches the specified JSON key. */
 
 static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
-                                                const char * pJsonString,
-                                                uint32_t strLength,
-                                                uint16_t * pMatchingIndexResult );
+                                             const char * pJsonString,
+                                             uint32_t strLength,
+                                             uint16_t * pMatchingIndexResult );
 
 /*
  * Prepare the document model for use by sanity checking the initialization parameters
@@ -218,10 +218,10 @@ static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
  */
 
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
-                                      const JsonDocParam_t * pBodyDef,
-                                      uint64_t contextBaseAddr,
-                                      uint32_t contextSize,
-                                      uint16_t numJobParams );
+                                   const JsonDocParam_t * pBodyDef,
+                                   uint64_t contextBaseAddr,
+                                   uint32_t contextSize,
+                                   uint16_t numJobParams );
 
 /* Attempt to force reset the device. Normally called by the agent when a self test rejects the update. */
 
@@ -253,37 +253,37 @@ static OtaErr_t jobNotificationHandler( OtaEventData_t * pEventData );
 
 /* OTA default callback initializer. */
 
-#define OTA_JOB_CALLBACK_DEFAULT_INITIALIZER                           \
-    {                                                                  \
-        .abort = prvPAL_Abort,                                        \
+#define OTA_JOB_CALLBACK_DEFAULT_INITIALIZER                      \
+    {                                                             \
+        .abort = prvPAL_Abort,                                    \
         .activateNewImage = palDefaultActivateNewImage,           \
-        .closeFile = prvPAL_CloseFile,                                \
-        .createFileForRx = prvPAL_CreateFileForRx,                    \
+        .closeFile = prvPAL_CloseFile,                            \
+        .createFileForRx = prvPAL_CreateFileForRx,                \
         .getPlatformImageState = palDefaultGetPlatformImageState, \
         .resetDevice = palDefaultResetDevice,                     \
         .setPlatformImageState = palDefaultSetPlatformImageState, \
-        .writeBlock = prvPAL_WriteBlock,                              \
-        .completeCallback = defaultOTACompleteCallback,            \
-        .customJobCallback = defaultCustomJobCallback              \
+        .writeBlock = prvPAL_WriteBlock,                          \
+        .completeCallback = defaultOTACompleteCallback,           \
+        .customJobCallback = defaultCustomJobCallback             \
     }
 
 /* This is THE OTA agent context and initialization state. */
 
 static OtaAgentContext_t otaAgent =
 {
-    .state                        = OtaAgentStateStopped,
-    .pThingName                   = { 0 },
-    .pConnectionContext           = NULL,
-    .pOtaFiles                   = { { 0 } }, /*lint !e910 !e9080 Zero initialization of all members of the single file context structure.*/
-    .serverFileID                = 0,
+    .state                      = OtaAgentStateStopped,
+    .pThingName                 = { 0 },
+    .pConnectionContext         = NULL,
+    .pOtaFiles                  = { { 0 } },  /*lint !e910 !e9080 Zero initialization of all members of the single file context structure.*/
+    .serverFileID               = 0,
     .pOtaSingletonActiveJobName = NULL,
-    .pClientTokenFromJob          = NULL,
-    .timestampFromJob            = 0,
-    .imageState                   = OtaImageStateUnknown,
-    .palCallbacks                 = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER,
-    .numOfBlocksToReceive        = 1,
-    .statistics                   = { 0 },
-    .requestMomentum             = 0
+    .pClientTokenFromJob        = NULL,
+    .timestampFromJob           = 0,
+    .imageState                 = OtaImageStateUnknown,
+    .palCallbacks               = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER,
+    .numOfBlocksToReceive       = 1,
+    .statistics                 = { 0 },
+    .requestMomentum            = 0
 };
 
 static OtaStateTableEntry_t otaTransitionTable[] =
@@ -399,7 +399,7 @@ static void stopSelfTestTimer( void )
 }
 
 static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
-                                                   int32_t subReason )
+                                               int32_t subReason )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     int32_t reason = 0;
@@ -438,7 +438,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
 }
 
 static OtaErr_t setImageStateWithReason( OtaImageState_t state,
-                                             uint32_t reason )
+                                         uint32_t reason )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
 
@@ -494,7 +494,7 @@ static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID
 }
 
 static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
-                                                      OtaImageState_t state )
+                                                 OtaImageState_t state )
 {
     ( void ) serverFileID;
     ( void ) state;
@@ -559,7 +559,7 @@ static void defaultOTACompleteCallback( OtaJobEvent_t event )
 }
 
 static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
-                                                      uint32_t messageLength )
+                                                  uint32_t messageLength )
 {
     DEFINE_OTA_METHOD_NAME( "defaultCustomJobCallback" );
     ( void ) messageLength;
@@ -742,7 +742,6 @@ static OtaErr_t requestJobHandler( OtaEventData_t * pEventData )
         }
         else
         {
-
             /* Send shutdown event to the OTA Agent task. */
             eventMsg.eventId = OtaAgentEventShutdown;
 
@@ -781,7 +780,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
      * Parse the job document and update file information in the file context.
      */
     pOtaFileContext = getFileContextFromJob( ( const char * ) pEventData->data,
-                                                pEventData->dataLength );
+                                             pEventData->dataLength );
 
     /*
      * A null context here could either mean we didn't receive a valid job or it could
@@ -882,7 +881,6 @@ static OtaErr_t initFileHandler( OtaEventData_t * pEventData )
     {
         if( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM )
         {
-
             otaAgent.requestMomentum++;
             err = OTA_ERR_PUBLISH_FAILED;
         }
@@ -976,9 +974,9 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
 
     /* Ingest data blocks received. */
     IngestResult_t result = ingestDataBlock( pxFileContext,
-                                                 pEventData->data,
-                                                 pEventData->dataLength,
-                                                 &closeResult );
+                                             pEventData->data,
+                                             pEventData->dataLength,
+                                             &closeResult );
 
     if( result < IngestResultAccepted_Continue )
     {
@@ -1056,7 +1054,6 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
         }
         else
         {
-
             eventMsg.eventId = OtaAgentEventRequestFileBlock;
 
             if( !OTA_SignalEvent( &eventMsg ) )
@@ -1120,7 +1117,7 @@ static OtaErr_t shutdownHandler( OtaEventData_t * pEventData )
     otaAgent.state = OtaAgentStateStopped;
 
     /* Terminate the OTA Agent Thread. */
-	pthread_exit( NULL );
+    pthread_exit( NULL );
 
     return OTA_ERR_NONE;
 }
@@ -1220,7 +1217,6 @@ void otaEventBufferFree( OtaEventData_t * const pBuffer )
 
     /* Release the buffer */
     pBuffer->bufferUsed = false;
-
 }
 
 OtaEventData_t * otaEventBufferGet( void )
@@ -1231,14 +1227,14 @@ OtaEventData_t * otaEventBufferGet( void )
     OtaEventData_t * pOtaFreeMsg = NULL;
 
     for( index = 0; index < otaconfigMAX_NUM_OTA_DATA_BUFFERS; index++ )
+    {
+        if( pEventBuffer[ index ].bufferUsed == false )
         {
-            if( pEventBuffer[ index ].bufferUsed == false )
-            {
-                pEventBuffer[ index ].bufferUsed = true;
-                pOtaFreeMsg = &pEventBuffer[ index ];
-                break;
-            }
+            pEventBuffer[ index ].bufferUsed = true;
+            pOtaFreeMsg = &pEventBuffer[ index ];
+            break;
         }
+    }
 
     return pOtaFreeMsg;
 }
@@ -1366,8 +1362,8 @@ static OtaFileContext_t * getFreeContext( void )
 }
 
 static bool jsonIsCStringEqual( const char * pJsonString,
-                                 uint32_t length,
-                                 const char * pCString )
+                                uint32_t length,
+                                const char * pCString )
 {
     bool result;
 
@@ -1389,9 +1385,9 @@ static bool jsonIsCStringEqual( const char * pJsonString,
 /* Search our document model for a key match with the given token. */
 
 static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
-                                                const char * pJsonString,
-                                                uint32_t strLength,
-                                                uint16_t * pMatchingIndexResult )
+                                             const char * pJsonString,
+                                             uint32_t strLength,
+                                             uint16_t * pMatchingIndexResult )
 {
     DocParseErr_t err = DocParseErrParamKeyNotInModel;
     uint16_t paramIndex;
@@ -1399,7 +1395,7 @@ static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
     for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
     {
         if( jsonIsCStringEqual( pJsonString, strLength,
-                                 pDocModel->pBodyDef[ paramIndex ].pSrcKey ) )
+                                pDocModel->pBodyDef[ paramIndex ].pSrcKey ) )
         {
             /* Per Security, don't allow multiple entries of the same parameter. */
             if( ( pDocModel->paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
@@ -1410,8 +1406,8 @@ static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
             {
                 /* Mark parameter as received in the bitmap. */
                 pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-                *pMatchingIndexResult = paramIndex;                                    /* Save result index for caller. */
-                err = DocParseErrNone;                                                  /* We found a matching key in the document model. */
+                *pMatchingIndexResult = paramIndex;                                   /* Save result index for caller. */
+                err = DocParseErrNone;                                                /* We found a matching key in the document model. */
             }
 
             break; /* We found a key match so stop searching. */
@@ -1424,14 +1420,14 @@ static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
 /* Extract the desired fields from the JSON document based on the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
-                                          uint32_t messageLength,
-                                          JsonDocModel_t * pDocModel )
+                                       uint32_t messageLength,
+                                       JsonDocModel_t * pDocModel )
 {
     DEFINE_OTA_METHOD_NAME( "parseJSONbyModel" );
 
     const JsonDocParam_t * pModelParam = NULL;
     jsmn_parser parser;
-    jsmntok_t *pTokens = NULL;
+    jsmntok_t * pTokens = NULL;
     const jsmntok_t * pValTok = NULL;
     int32_t jsmnResult = 0;
     uint32_t numTokens = 0, tokenLen = 0;
@@ -1559,7 +1555,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                         index++; /* Skip over all descendants of the unknown parent. */
                     }
 
-                    --index;                /* Adjust for outer for-loop increment. */
+                    --index;               /* Adjust for outer for-loop increment. */
                     err = DocParseErrNone; /* Unknown key structures are simply skipped so clear the error state to continue. */
                 }
                 else if( err == DocParseErrNone )
@@ -1608,7 +1604,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                             if( pvStringCopy != NULL )
                             {
                                 *paramAddr.pVoidPtr = pvStringCopy;
-                                char * pcStringCopy = ( char * )pvStringCopy;
+                                char * pcStringCopy = ( char * ) pvStringCopy;
                                 /* Copy parameter string into newly allocated memory. */
                                 ( void ) memcpy( pvStringCopy, &pJson[ pValTok->start ], tokenLen );
                                 /* Zero terminate the new string. */
@@ -1702,7 +1698,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                             if( pvStringCopy != NULL )
                             {
                                 *paramAddr.pVoidPtr = pvStringCopy;
-                                char * pcStringCopy = (char *) pvStringCopy;
+                                char * pcStringCopy = ( char * ) pvStringCopy;
                                 /* Copy parameter string into newly allocated memory. */
                                 ( void ) memcpy( pcStringCopy, &pJson[ pValTok->start ], tokenLen );
                                 /* Zero terminate the new string. */
@@ -1775,10 +1771,10 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
  * and detecting all required parameters. */
 
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
-                                      const JsonDocParam_t * pBodyDef,
-                                      uint64_t contextBaseAddr,
-                                      uint32_t contextSize,
-                                      uint16_t numJobParams )
+                                   const JsonDocParam_t * pBodyDef,
+                                   uint64_t contextBaseAddr,
+                                   uint32_t contextSize,
+                                   uint16_t numJobParams )
 {
     DEFINE_OTA_METHOD_NAME( "initDocModel" );
 
@@ -1882,8 +1878,8 @@ static OtaErr_t prvValidateUpdateVersion( OtaFileContext_t * pFileContext )
  */
 
 static OtaFileContext_t * parseJobDoc( const char * pJson,
-                                           uint32_t messageLength,
-                                           bool * pUpdateJob )
+                                       uint32_t messageLength,
+                                       bool * pUpdateJob )
 {
     DEFINE_OTA_METHOD_NAME( "parseJobDoc" );
 
@@ -1892,26 +1888,26 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     /* Namely union initialization and pointers converted to values. */
     static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
     {
-        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeStringInDoc, JSMN_STRING    }, /*lint !e9078 !e923 Get address of token as value. */
-        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
-        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )     }, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )  }, ModelParamTypeIdent,       JSMN_STRING    },
-        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32,     JSMN_STRING    },
-        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )  }, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )   }, ModelParamTypeArrayCopy,   JSMN_ARRAY     },
-        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM                          }, ModelParamTypeArray,       JSMN_ARRAY     },
-        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )    }, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )     }, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
-        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID ) }, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
+        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeStringInDoc, JSMN_STRING    },                          /*lint !e9078 !e923 Get address of token as value. */
+        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
+        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
+        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy,  JSMN_STRING    },
+        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
+        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent,       JSMN_STRING    },
+        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32,      JSMN_STRING    },
+        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
+        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
+        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy,  JSMN_STRING    },
+        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy,   JSMN_ARRAY     },
+        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeArray,       JSMN_ARRAY     },
+        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
+        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
+        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
         { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy, JSMN_STRING    },
-        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )  }, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JsonFileSignatureKey,   OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )    }, ModelParamTypeSigBase64,   JSMN_STRING    },
-        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32,     JSMN_PRIMITIVE },
+        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
+        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy,  JSMN_STRING    },
+        { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64,   JSMN_STRING    },
+        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
     };
 
     OtaErr_t otaErr = OTA_ERR_NONE;
@@ -1924,10 +1920,10 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     JsonDocModel_t otaJobDocModel;
 
     if( initDocModel( &otaJobDocModel,
-                         otaJobDocModelParamStructure,
-                         ( uint64_t ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
-                         sizeof( OtaFileContext_t ),
-                         OTA_NUM_JOB_PARAMS ) != DocParseErrNone )
+                      otaJobDocModelParamStructure,
+                      ( uint64_t ) pFileContext,    /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                      sizeof( OtaFileContext_t ),
+                      OTA_NUM_JOB_PARAMS ) != DocParseErrNone )
     {
         err = OtaJobParseErrBadModelInitParams;
     }
@@ -2073,9 +2069,9 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                 otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
                 pFileContext->pJobName = NULL;
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                                    JobStatusSucceeded,
-                                                                    JobReasonAccepted,
-                                                                    0 );
+                                                              JobStatusSucceeded,
+                                                              JobReasonAccepted,
+                                                              0 );
 
                 if( otaErr != OTA_ERR_NONE )
                 {
@@ -2123,9 +2119,9 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
             otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
             pFileContext->pJobName = NULL;
             otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                                JobStatusFailedWithVal,
-                                                                ( int32_t ) OTA_ERR_JOB_PARSER_ERROR,
-                                                                ( int32_t ) err );
+                                                          JobStatusFailedWithVal,
+                                                          ( int32_t ) OTA_ERR_JOB_PARSER_ERROR,
+                                                          ( int32_t ) err );
 
             if( otaErr != OTA_ERR_NONE )
             {
@@ -2164,13 +2160,13 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
  */
 
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                     uint32_t messageLength )
+                                                 uint32_t messageLength )
 {
     DEFINE_OTA_METHOD_NAME( "getFileContextFromJob" );
 
     uint32_t index;
-    uint32_t numBlocks;              /* How many data pages are in the expected update image. */
-    uint32_t bitmapLen;              /* Length of the file block bitmap in bytes. */
+    uint32_t numBlocks;             /* How many data pages are in the expected update image. */
+    uint32_t bitmapLen;             /* Length of the file block bitmap in bytes. */
     OtaFileContext_t * pUpdateFile; /* Pointer to an OTA update context. */
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
 
@@ -2280,9 +2276,9 @@ static bool prvValidateDataBlock( const OtaFileContext_t * pFileContext,
  * the file transfer and return the result and any available details to the caller.
  */
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                          uint8_t * pRawMsg,
-                                          uint32_t messageSize,
-                                          OtaErr_t * pCloseResult )
+                                       uint8_t * pRawMsg,
+                                       uint32_t messageSize,
+                                       OtaErr_t * pCloseResult )
 {
     DEFINE_OTA_METHOD_NAME( "ingestDataBlock" );
 
@@ -2577,7 +2573,7 @@ static void handleUnexpectedEvents( OtaEventMsg_t * pEventMsg )
  * Execute the handler for selected index from the transition table.
  */
 static void executeHandler( uint32_t index,
-                               const OtaEventMsg_t * const pEventMsg )
+                            const OtaEventMsg_t * const pEventMsg )
 {
     DEFINE_OTA_METHOD_NAME( "executeHandler" );
 
@@ -2631,7 +2627,7 @@ static void otaAgentTask( void * pUnused )
         /*
          * Receive the next event form the OTA event queue to process.
          */
-        if( otaAgent.pOTAOSCtx->event.recv(otaAgent.pOTAOSCtx->event.pEventCtx, &eventMsg , 0))
+        if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pEventCtx, &eventMsg, 0 ) )
         {
             /*
              * Search for the state and event from the table.
@@ -2662,18 +2658,17 @@ static void otaAgentTask( void * pUnused )
                  */
                 handleUnexpectedEvents( &eventMsg );
             }
-
         }
     }
 }
 
 static BaseType_t startOTAAgentTask( void * pConnectionContext,
-                                        void *  pOTAOSCtx,
-                                        uint32_t ticksToWait )
+                                     void * pOTAOSCtx,
+                                     uint32_t ticksToWait )
 {
     BaseType_t retVal = 0;
     uint32_t index = 0;
-	int ret = 0;
+    int ret = 0;
 
     /*
      * The actual OTA Task and queue control structure. Only created once.
@@ -2690,9 +2685,9 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
      */
     otaAgent.pConnectionContext = pConnectionContext;
 
-    otaAgent.pOTAOSCtx = (OtaOsInterface_t *)pOTAOSCtx;
+    otaAgent.pOTAOSCtx = ( OtaOsInterface_t * ) pOTAOSCtx;
 
-	otaAgent.pOTAOSCtx->event.init(otaAgent.pOTAOSCtx->event.pEventCtx);
+    otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pEventCtx );
 
     /*
      * Initialize all file paths to NULL.
@@ -2713,7 +2708,7 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
     /*
      * Create the OTA Agent thread.
      */
-	ret = pthread_create( &otaThreadHandle, NULL, otaAgentTask, NULL);
+    ret = pthread_create( &otaThreadHandle, NULL, otaAgentTask, NULL );
 
     //portEXIT_CRITICAL(); /* Protected elements are initialized. It's now safe to context switch. */
 
@@ -2744,8 +2739,8 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
      */
     {
         err = otaAgent.pOTAOSCtx->event.send( otaAgent.pOTAOSCtx->event.pEventCtx,
-                                                 pEventMsg,
-                                                 0) ;
+                                              pEventMsg,
+                                              0 );
     }
 
     if( err == 0 )
@@ -2771,10 +2766,10 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
  * successfully.
  */
 OtaState_t OTA_AgentInit( void * pConnectionContext,
-                           void * pOtaOSCtx,
-                           const uint8_t * pThingName,
-                           OtaCompleteCallback_t completeCallback,
-                           uint32_t ticksToWait )
+                          void * pOtaOSCtx,
+                          const uint8_t * pThingName,
+                          OtaCompleteCallback_t completeCallback,
+                          uint32_t ticksToWait )
 {
     OtaState_t state;
 
@@ -2806,10 +2801,10 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
 }
 
 OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
-                                    void * pOtaOSCtx,
-                                    const uint8_t * pThingName,
-                                    const OtaPalCallbacks_t * pCallbacks,
-                                    uint32_t ticksToWait )
+                                   void * pOtaOSCtx,
+                                   const uint8_t * pThingName,
+                                   const OtaPalCallbacks_t * pCallbacks,
+                                   uint32_t ticksToWait )
 {
     DEFINE_OTA_METHOD_NAME( "OTA_AgentInit_internal" );
 
