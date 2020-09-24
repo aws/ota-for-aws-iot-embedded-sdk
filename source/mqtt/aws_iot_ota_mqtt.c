@@ -33,7 +33,7 @@
 #include <stdio.h>
 
 /* MQTT includes. */
-#include "mqtt.h"
+#include "core_mqtt.h"
 
 /* OTA includes. */
 #include "aws_iot_ota_agent.h"
@@ -421,7 +421,7 @@ static MQTTStatus_t prvPublishMessage( const OtaAgentContext_t * pxAgentCtx,
     }
     else
     {
-        OTA_LOG_L1( "[%s] Failed to send PUBLISH packet to broker with error = %u.", mqttStatus );
+        OTA_LOG_L1( "Failed to send PUBLISH packet to broker with error = %u.", mqttStatus );
     }
 
     return mqttStatus;

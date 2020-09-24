@@ -1452,7 +1452,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     {
         if( pDocModel->pBodyDef == NULL )
         {
-            OTA_LOG_L1( "[%s] Document model 0x%08x body pointer is NULL.\r\n", OTA_METHOD_NAME, pDocModel );
+            OTA_LOG_L1( "[%s] Document model %p body pointer is NULL.\r\n", OTA_METHOD_NAME, pDocModel );
             err = DocParseErrNullBodyPointer;
         }
     }
@@ -1638,7 +1638,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
                             if( pEnd == &pJson[ pValTok->end ] )
                             {
-                                OTA_LOG_L1( "[%s] Extracted parameter [ %s: %u ]\r\n",
+                                OTA_LOG_L1( "[%s] Extracted parameter [ %s: %lu ]\r\n",
                                             OTA_METHOD_NAME,
                                             pModelParam[ modelParamIndex ].pSrcKey,
                                             *paramAddr.pIntPtr );
@@ -1791,7 +1791,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
     }
     else if( pBodyDef == NULL )
     {
-        OTA_LOG_L1( "[%s] Document model 0x%08x body pointer is NULL.\r\n", OTA_METHOD_NAME, pDocModel );
+        OTA_LOG_L1( "[%s] Document model %p body pointer is NULL.\r\n", OTA_METHOD_NAME, pDocModel );
         err = DocParseErrNullBodyPointer;
     }
     else if( numJobParams > OTA_DOC_MODEL_MAX_PARAMS )
@@ -2773,7 +2773,7 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
 {
     OtaState_t state;
 
-    printf( "Size of ptr%d", sizeof( OtaAgentEventReceivedJobDocument ) );
+    printf( "Size of ptr%ld", sizeof( OtaAgentEventReceivedJobDocument ) );
 
     if( otaAgent.state == OtaAgentStateStopped )
     {
@@ -2873,7 +2873,7 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
     }
     else
     {
-        OTA_LOG_L1( "[%s] Failed to start the OTA Task, Error Code :%08x  Queue:%08x\r\n", OTA_METHOD_NAME, retVal );
+        OTA_LOG_L1( "[%s] Failed to start the OTA Task, Error Code :%08x\r\n", OTA_METHOD_NAME, retVal );
 
         otaAgent.state = OtaAgentStateStopped;
     }
