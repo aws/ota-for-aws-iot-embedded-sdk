@@ -47,6 +47,28 @@ set( OTA_INCLUDE_PRIVATE_DIRS
     "${CMAKE_CURRENT_LIST_DIR}/source"
 )
 
+# OTA library POSIX OS porting source files.
+# Note: user needs to call find_library(LIB_RT rt REQUIRED) and link with
+# ${LIB_RT} because librt is required to use OTA OS POSIX port.
+set( OTA_OS_POSIX_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/posix/ota_os_posix.c"
+)
+
+# OTA library POSIX OS porting source files.
+set( OTA_INCLUDE_OS_POSIX_DIRS
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/posix"
+)
+
+# OTA library FreeRTOS OS porting source files.
+set( OTA_OS_FREERTOS_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/freertos/ota_os_freertos.c"
+)
+
+# OTA library FreeRTOS OS porting source files.
+set( OTA_INCLUDE_OS_FREERTOS_DIRS
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/freertos"
+)
+
 # OTA library MQTT backend source files.
 set( OTA_MQTT_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_cbor_internal.h"
