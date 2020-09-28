@@ -125,7 +125,7 @@ OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t prvUpdatJobStatusMqtt( OtaAgentContext_t * pxAgentCtx,
+OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
                                 OtaJobStatus_t eStatus,
                                 int32_t lReason,
                                 int32_t lSubReason );
