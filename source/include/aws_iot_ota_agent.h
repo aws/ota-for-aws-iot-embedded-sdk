@@ -587,11 +587,12 @@ typedef struct
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
-OtaState_t OTA_AgentInit( void * pConnectionContext,
-                          void * pOtaOSCtx,
-                          const uint8_t * pThingName,
-                          OtaCompleteCallback_t completeCallback,
-                          uint32_t ticksToWait );
+OtaState_t OTA_AgentInit( void * pvConnectionContext,
+                           void * pOtaOSCtx,
+                           void * pOtaMqttInterface,
+                           const uint8_t * pucThingName,
+                           OtaCompleteCallback_t xFunc,
+                           uint32_t xTicksToWait );
 
 /**
  * @brief Internal OTA Agent initialization function.
@@ -702,6 +703,10 @@ OtaErr_t OTA_Suspend( void );
  * list above.
  */
 OtaErr_t OTA_Resume( void * pConnection );
+
+/* OTA agent task fucntion. */
+
+void otaAgentTask( void * pUnused );
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */

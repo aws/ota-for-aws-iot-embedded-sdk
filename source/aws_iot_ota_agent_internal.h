@@ -255,7 +255,7 @@ typedef struct ota_agent_context
     uint32_t numOfBlocksToReceive;                         /* Number of data blocks to receive per data request. */
     OtaAgentStatistics_t statistics;                       /* The OTA agent statistics block. */
     uint32_t requestMomentum;                              /* The number of requests sent before a response was received. */
-    OtaOsInterface_t * pOTAOSCtx;
+    OtaOSInterface_t * pOTAOSCtx;
 } OtaAgentContext_t;
 
 /* The OTA Agent event and data structures. */

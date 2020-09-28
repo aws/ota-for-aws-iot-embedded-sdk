@@ -109,10 +109,6 @@ static bool jsonIsCStringEqual( const char * pJsonString,
 
 /* OTA agent private function prototypes. */
 
-/* OTA agent task fucntion. */
-
-static void otaAgentTask( void * pUnused );
-
 /* Start a timer used for sending data requests. */
 
 static void startRequestTimer( uint32_t periodMS );
@@ -2607,7 +2603,7 @@ static void executeHandler( uint32_t index,
     }
 }
 
-static void otaAgentTask( void * pUnused )
+void otaAgentTask( void * pUnused )
 {
     DEFINE_OTA_METHOD_NAME( "otaAgentTask" );
 
@@ -2627,7 +2623,7 @@ static void otaAgentTask( void * pUnused )
         /*
          * Receive the next event form the OTA event queue to process.
          */
-        if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pEventCtx, &eventMsg, 0 ) )
+        if( otaAgent.pOTAOSCtx->event.recv( &eventMsg, 0 ) )
         {
             /*
              * Search for the state and event from the table.
@@ -2685,9 +2681,9 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
      */
     otaAgent.pConnectionContext = pConnectionContext;
 
-    otaAgent.pOTAOSCtx = ( OtaOsInterface_t * ) pOTAOSCtx;
+    otaAgent.pOTAOSCtx = ( OtaOSInterface_t * ) pOTAOSCtx;
 
-    otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pEventCtx );
+    otaAgent.pOTAOSCtx->event.init( );
 
     /*
      * Initialize all file paths to NULL.
@@ -2738,8 +2734,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
      * Send event to back of the queue.
      */
     {
-        err = otaAgent.pOTAOSCtx->event.send( otaAgent.pOTAOSCtx->event.pEventCtx,
-                                              pEventMsg,
+        err = otaAgent.pOTAOSCtx->event.send( pEventMsg,
                                               0 );
     }
 
@@ -2766,10 +2761,11 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
  * successfully.
  */
 OtaState_t OTA_AgentInit( void * pConnectionContext,
-                          void * pOtaOSCtx,
-                          const uint8_t * pThingName,
-                          OtaCompleteCallback_t completeCallback,
-                          uint32_t ticksToWait )
+                           void * pOtaOSCtx,
+                           void * pOtaMqttInterface,
+                           const uint8_t * pThingName,
+                           OtaCompleteCallback_t completeCallback,
+                           uint32_t ticksToWait )
 {
     OtaState_t state;
 

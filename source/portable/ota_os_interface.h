@@ -52,7 +52,7 @@ typedef struct OtaTimerContext   OtaTimerContext_t;
  * @return               OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef int32_t ( * ota_InitEvent_t ) ( OtaEventContext_t * pContext );
+typedef int32_t ( * ota_InitEvent_t ) ( );
 
 /**
  * @brief Sends an OTA event.
@@ -67,8 +67,7 @@ typedef int32_t ( * ota_InitEvent_t ) ( OtaEventContext_t * pContext );
  *
  * @return               OTA_OS_ERR_OK if success , other error code on failure.
  */
-typedef int32_t ( * ota_SendEvent_t )( OtaEventContext_t * pContext,
-                                       const void * pEventMsg,
+typedef int32_t ( * ota_SendEvent_t )( const void * pEventMsg,
                                        unsigned int timeout );
 
 /**
@@ -84,8 +83,7 @@ typedef int32_t ( * ota_SendEvent_t )( OtaEventContext_t * pContext,
  *
  * @return               OTA_OS_ERR_OK if success , other error code on failure.
  */
-typedef int32_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
-                                          void * pEventMsg,
+typedef int32_t ( * ota_ReceiveEvent_t )( void * pEventMsg,
                                           uint32_t timeout );
 
 /**
@@ -99,7 +97,7 @@ typedef int32_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
  * @return               None
  */
 
-typedef void ( * ota_DeinitEvent_t )( OtaEventContext_t * pContext );
+typedef void ( * ota_DeinitEvent_t )( );
 
 /**
  * @brief Create timer.
@@ -178,7 +176,6 @@ typedef struct OtaEventInterface
     ota_SendEvent_t send;
     ota_ReceiveEvent_t recv;
     ota_DeinitEvent_t deinit;
-    OtaEventContext_t * pEventCtx; /**< Implementation-defined ota event context. */
 } OtaEventInterface_t;
 
 /**
@@ -200,6 +197,6 @@ typedef struct OtaOSInterface
 {
     OtaEventInterface_t event; /**< OTA Event interface. */
     OtaTimerInterface_t timer; /**< OTA Timer interface. */
-} OtaOsInterface_t;
+} OtaOSInterface_t;
 
 #endif /* ifndef _AWS_OTA_OS_INTERFACE_H_ */
