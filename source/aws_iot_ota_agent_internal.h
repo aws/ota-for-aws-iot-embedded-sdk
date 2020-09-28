@@ -39,6 +39,7 @@
 #include "jsmn.h"
 
 #include "ota_os_interface.h"
+#include "ota_mqtt_interface.h"
 
 
 /* General constants. */
@@ -256,6 +257,7 @@ typedef struct ota_agent_context
     OtaAgentStatistics_t statistics;                       /* The OTA agent statistics block. */
     uint32_t requestMomentum;                              /* The number of requests sent before a response was received. */
     OtaOSInterface_t * pOTAOSCtx;
+    OtaMqttInterface_t * pOTAMqttInterface;
 } OtaAgentContext_t;
 
 /* The OTA Agent event and data structures. */
