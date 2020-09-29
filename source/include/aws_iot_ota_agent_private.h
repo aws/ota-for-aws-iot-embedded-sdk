@@ -24,7 +24,7 @@
  */
 
 /**
- * @file aws_iot_ota_agent_internal.h
+ * @file aws_iot_ota_agent_private.h
  * @brief Macros, enums, variables, and definitions internal to the OTA Agent module and
  * shared by other OTA modules and testing files.
  */

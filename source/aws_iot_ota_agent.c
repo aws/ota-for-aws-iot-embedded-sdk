@@ -37,7 +37,7 @@
 #include "aws_iot_ota_pal.h"
 
 /* Internal header file for shared OTA definitions. */
-#include "aws_iot_ota_agent_internal.h"
+#include "aws_iot_ota_agent_private.h"
 
 /* JSON job document parser includes. */
 #include "jsmn.h"
@@ -46,7 +46,7 @@
 #include "mbedtls/base64.h"
 
 /* OTA interface includes. */
-#include "aws_iot_ota_interface.h"
+#include "aws_iot_ota_interface_private.h"
 #include "ota_os_posix.h"
 #include "ota_os_interface.h"
 

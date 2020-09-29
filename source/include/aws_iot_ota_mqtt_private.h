@@ -28,7 +28,7 @@
 
 /* OTA includes. */
 #include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_internal.h"
+#include "aws_iot_ota_agent_private.h"
 
 /**
  * @brief Check for available OTA job over MQTT.

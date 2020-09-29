@@ -34,8 +34,8 @@
 
 /* OTA includes. */
 #include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_internal.h"
-#include "aws_iot_ota_cbor.h"
+#include "aws_iot_ota_agent_private.h"
+#include "aws_iot_ota_cbor_private.h"
 
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"

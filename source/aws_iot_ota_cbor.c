@@ -30,8 +30,7 @@
 
 #include <stdlib.h>
 #include "cbor.h"
-#include "aws_iot_ota_cbor.h"
-#include "aws_iot_ota_cbor_internal.h"
+#include "aws_iot_ota_cbor_private.h"
 
 /**
  * @brief Message field definitions, per the server specification.

@@ -9,12 +9,12 @@
 set( OTA_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_agent.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_types.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_agent_internal.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/ota_os_interface.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_pal.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_agent_private.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_interface_private.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_agent.c"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_interface.c"
-    "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_interface.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/aws_iot_ota_pal.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/ota_os_interface.h"
 )
 
 # OTA library public include directories.
@@ -51,35 +51,34 @@ set( OTA_INCLUDE_PRIVATE_DIRS
 # Note: user needs to call find_library(LIB_RT rt REQUIRED) and link with
 # ${LIB_RT} because librt is required to use OTA OS POSIX port.
 set( OTA_OS_POSIX_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/posix/ota_os_posix.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/os/ota_os_posix.c"
 )
 
 # OTA library POSIX OS porting source files.
 set( OTA_INCLUDE_OS_POSIX_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/posix"
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/os"
 )
 
 # OTA library FreeRTOS OS porting source files.
 set( OTA_OS_FREERTOS_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/freertos/ota_os_freertos.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/os/ota_os_freertos.c"
 )
 
 # OTA library FreeRTOS OS porting source files.
 set( OTA_INCLUDE_OS_FREERTOS_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/source/portable/freertos"
+    "${CMAKE_CURRENT_LIST_DIR}/source/portable/os"
 )
 
 # OTA library MQTT backend source files.
 set( OTA_MQTT_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_cbor_internal.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_cbor.c"
-    "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_cbor.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_mqtt.c"
-    "${CMAKE_CURRENT_LIST_DIR}/source/mqtt/aws_iot_ota_mqtt.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_mqtt.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_cbor.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_mqtt_private.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_cbor_private.h"
 )
 
 # OTA library HTTP backend source files.
 set( OTA_HTTP_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/source/http/aws_iot_ota_http.c"
-    "${CMAKE_CURRENT_LIST_DIR}/source/http/aws_iot_ota_http.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_http.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_http_private.h"
 )
