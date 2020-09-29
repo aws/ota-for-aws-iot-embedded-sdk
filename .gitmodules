@@ -1,6 +1,6 @@
 [submodule "coreJSON"]
-	path = coreJSON
+	path = dependency/coreJSON
 	url = https://github.com/FreeRTOS/coreJSON.git
 [submodule "tinycbor"]
-	path = tinycbor
+	path = dependency/3rdparty/tinycbor
 	url = https://github.com/intel/tinycbor.git

@@ -24,21 +24,21 @@ set( OTA_INCLUDE_PUBLIC_DIRS
 )
 
 # OTA library 3rdparty source files.
-include( ${CMAKE_CURRENT_LIST_DIR}/coreJSON/jsonFilePaths.cmake )
+include( ${CMAKE_CURRENT_LIST_DIR}/dependency/coreJSON/jsonFilePaths.cmake )
 set( OTA_THIRD_PARTY_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborpretty.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborpretty_stdio.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborencoder.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborencoder_close_container_checked.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborerrorstrings.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborparser.c"
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src/cborparser_dup_string.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty_stdio.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder_close_container_checked.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborerrorstrings.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser_dup_string.c"
     ${JSON_SOURCES}
 )
 
 # OTA library 3rdparty include directories.
 set( OTA_INCLUDE_THIRD_PARTY_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/tinycbor/src"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src"
     ${JSON_INCLUDE_PUBLIC_DIRS}
 )
 
