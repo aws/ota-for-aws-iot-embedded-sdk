@@ -682,7 +682,7 @@ static OtaErr_t startHandler( OtaEventData_t * pEventData )
 
     if( !OTA_SignalEvent( &eventMsg ) )
     {
-        retVal = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+        retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
     }
 
     return retVal;
@@ -743,7 +743,7 @@ static OtaErr_t requestJobHandler( OtaEventData_t * pEventData )
 
             if( !OTA_SignalEvent( &eventMsg ) )
             {
-                retVal = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
             }
             else
             {
@@ -796,7 +796,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
 
             if( !OTA_SignalEvent( &eventMsg ) )
             {
-                retVal = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
             }
             else
             {
@@ -836,7 +836,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
                 /*Send the event to OTA Agent task. */
                 if( !OTA_SignalEvent( &eventMsg ) )
                 {
-                    retVal = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                    retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
                 }
             }
             else
@@ -887,7 +887,7 @@ static OtaErr_t initFileHandler( OtaEventData_t * pEventData )
 
             if( !OTA_SignalEvent( &eventMsg ) )
             {
-                err = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                err = OTA_ERR_EVENT_Q_SEND_FAILED;
             }
             else
             {
@@ -906,7 +906,7 @@ static OtaErr_t initFileHandler( OtaEventData_t * pEventData )
 
         if( !OTA_SignalEvent( &eventMsg ) )
         {
-            err = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+            err = OTA_ERR_EVENT_Q_SEND_FAILED;
         }
     }
 
@@ -940,7 +940,7 @@ static OtaErr_t requestDataHandler( OtaEventData_t * pEventData )
 
             if( !OTA_SignalEvent( &eventMsg ) )
             {
-                err = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                err = OTA_ERR_EVENT_Q_SEND_FAILED;
             }
             else
             {
@@ -1152,7 +1152,7 @@ static OtaErr_t resumeHandler( OtaEventData_t * pEventData )
      */
     eventMsg.eventId = OtaAgentEventRequestJobDocument;
 
-    return OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+    return OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
 }
 
 static OtaErr_t jobNotificationHandler( OtaEventData_t * pEventData )
@@ -1177,7 +1177,7 @@ static OtaErr_t jobNotificationHandler( OtaEventData_t * pEventData )
      */
     eventMsg.eventId = OtaAgentEventRequestJobDocument;
 
-    return OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+    return OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
 }
 
 /*
@@ -2623,7 +2623,7 @@ void otaAgentTask( void * pUnused )
         /*
          * Receive the next event form the OTA event queue to process.
          */
-        if( otaAgent.pOTAOSCtx->event.recv( &eventMsg, 0 ) )
+        if( otaAgent.pOTAOSCtx->event.recv(otaAgent.pOTAOSCtx->event.pContext, &eventMsg, 0 ) )
         {
             /*
              * Search for the state and event from the table.
@@ -2683,7 +2683,7 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
 
     otaAgent.pOTAOSCtx = ( OtaOSInterface_t * ) pOTAOSCtx;
 
-    otaAgent.pOTAOSCtx->event.init( );
+    otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pContext );
 
     /*
      * Initialize all file paths to NULL.
@@ -2734,7 +2734,8 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
      * Send event to back of the queue.
      */
     {
-        err = otaAgent.pOTAOSCtx->event.send( pEventMsg,
+        err = otaAgent.pOTAOSCtx->event.send( otaAgent.pOTAOSCtx->event.pContext,
+                                              pEventMsg,
                                               0 );
     }
 
@@ -2979,7 +2980,7 @@ OtaErr_t OTA_CheckForUpdate( void )
 
     if( !OTA_SignalEvent( &eventMsg ) )
     {
-        retVal = OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+        retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
     }
 
     /*
@@ -3045,7 +3046,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t eState )
                 /*
                  * Send the event, otaAgent.imageState will be set later when the event is processed.
                  */
-                err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+                err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
             }
             else
             {
@@ -3110,7 +3111,7 @@ OtaErr_t OTA_Suspend( void )
          * Send event to OTA agent task.
          */
         eventMsg.eventId = OtaAgentEventSuspend;
-        err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+        err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
     }
     else
     {
@@ -3141,7 +3142,7 @@ OtaErr_t OTA_Resume( void * pConnection )
          * Send event to OTA agent task.
          */
         eventMsg.eventId = OtaAgentEventResume;
-        err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_QUEUE_SEND_FAILED;
+        err = OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
     }
     else
     {

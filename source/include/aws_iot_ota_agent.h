@@ -521,9 +521,13 @@ typedef struct
 #define OTA_ERR_RESET_NOT_SUPPORTED        0x29000000UL  /*!< We tried to reset the device but the device doesn't support it. */
 #define OTA_ERR_TOPIC_TOO_LARGE            0x2a000000UL  /*!< Attempt to build a topic string larger than the supplied buffer. */
 #define OTA_ERR_SELF_TEST_TIMER_FAILED     0x2b000000UL  /*!< Attempt to start self-test timer faield. */
-#define OTA_ERR_EVENT_QUEUE_SEND_FAILED    0x2c000000UL  /*!< Posting event message to the event queue failed. */
+#define OTA_ERR_EVENT_Q_SEND_FAILED        0x2c000000UL  /*!< Posting event message to the event queue failed. */
 #define OTA_ERR_INVALID_DATA_PROTOCOL      0x2d000000UL  /*!< Job does not have a valid protocol for data transfer. */
 #define OTA_ERR_OTA_AGENT_STOPPED          0x2e000000UL  /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+#define OTA_ERR_EVENT_Q_CREATE_FAILED      0x2f000000UL  /*!< Failed to create the event queue. */
+#define OTA_ERR_EVENT_Q_RECEIVE_FAILED     0x30000000UL  /*!< Failed to receive from the event queue. */
+#define OTA_ERR_EVENT_Q_DELETE_FAILED      0x31000000UL  /*!< Failed to delete the event queue. */
+
 /* @[define_ota_err_codes] */
 
 /* @[define_ota_err_code_helpers] */
