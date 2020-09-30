@@ -28,9 +28,6 @@
 
  /* Standard library includes. */
 #include <stddef.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
  /* OTA library interface includes. */
 #include "ota_os_interface.h"
@@ -44,12 +41,12 @@ struct OtaEventContext
 OtaErr_t ota_InitEvent( OtaEventContext_t * pContext );
 
 OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
-	                   const void* pEventMsg,
-	                   unsigned int timeout );
+	                    const void* pEventMsg,
+	                    unsigned int timeout );
 
 OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
-	                      void* pEventMsg,
-                          uint32_t timeout );
+	                       void* pEventMsg,
+                           uint32_t timeout );
 
 OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext );
 
