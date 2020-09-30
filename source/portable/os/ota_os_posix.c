@@ -24,19 +24,13 @@
  */
 
 /* Standard Includes.*/
-#include <string.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
 #include <mqueue.h>
+#include <sys/time.h>
 
 /* Include Demo Config as the first non-system header. */
 #include "demo_config.h"
-
-/* OTA OS Interface Includes.*/
-#include "ota_os_interface.h"
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
@@ -50,15 +44,17 @@
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
 
-int32_t ota_InitEvent( OtaEventContext_t* pContext )
+OtaErr_t ota_InitEvent( OtaEventContext_t* pContext )
 {
     (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
     struct mq_attr attr;
 
     /* Unlink the event queue.*/
     mq_unlink( OTA_QUEUE_NAME );
 
-    /* Initialize the attributes.*/
+    /* Initialize queue attributes.*/
     attr.mq_flags = 0;
     attr.mq_maxmsg = MAX_MESSAGES;
     attr.mq_msgsize = MAX_MSG_SIZE;
@@ -67,16 +63,21 @@ int32_t ota_InitEvent( OtaEventContext_t* pContext )
     /* Open the OTA event queue .*/
     if ( ( otaEventQueue = mq_open ( OTA_QUEUE_NAME, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr ) ) == -1 )
     {
-        LogInfo( (  "OTA Event Queue created." ) );
+        LogError( (  "OTA Event Queue create failed." ) );
 
-        /* This is fatal error , exit the application */
-        exit ( 1 );
+        otaErrRet = OTA_ERR_EVENT_Q_CREATE_FAILED;
     }
-
-    return 0;
+    else
+    {
+        LogInfo( (  "OTA Event Queue created." ) );
+        
+        otaErrRet = OTA_ERR_NONE;
+    }
+    
+    return otaErrRet;
 }
 
-int32_t ota_SendEvent( OtaEventContext_t* pContext,
+OtaErr_t ota_SendEvent( OtaEventContext_t* pContext,
                        const void* pEventMsg,
                        unsigned int timeout)
 {
@@ -84,52 +85,77 @@ int32_t ota_SendEvent( OtaEventContext_t* pContext,
     (void) pContext;
     (void) timeout;
 
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
     /* Send the event to OTA event queue.*/
     if ( mq_send ( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1)
     {
-        LogInfo( (  "OTA Event Sent." ) );
-        exit (1);
+        LogError( (  "OTA Event Send failed." ) );
+
+        otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
 
     }else
     {
-        LogDebug ( ( "OTA Event Queue busy." ) );
-        return 0;
+        LogInfo( (  "OTA Event Sent." ) );
+
+        otaErrRet = OTA_ERR_NONE;
     }
 
 }
 
-int32_t ota_ReceiveEvent( OtaEventContext_t* pContext,
+OtaErr_t ota_ReceiveEvent( OtaEventContext_t* pContext,
                           void* pEventMsg,
                           uint32_t timeout)
 {
     (void) pContext;
     (void) timeout;
 
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
     char buff[MAX_MSG_SIZE];
 
     /* Delay a bit.*/
     sleep(1);
 
-        if ( mq_receive ( otaEventQueue, buff, sizeof(buff), NULL) == -1 )
-        {
-            LogInfo( (  "OTA Event receive fatal error." ) );
-            exit (1);
-        }
-        else
-        {
-            LogInfo( (  "OTA Event received" ) );
+    if ( mq_receive ( otaEventQueue, buff, sizeof(buff), NULL) == -1 )
+    {
+        LogError( (  "OTA Event receive fatal error." ) );
 
-            /* copy the data from local buffer.*/
-            memcpy( pEventMsg, buff, MAX_MSG_SIZE );
-            return 1;
-        }
-    return 0;
+        otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Event received" ) );
+
+        /* copy the data from local buffer.*/
+        memcpy( pEventMsg, buff, MAX_MSG_SIZE );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+
+    return otaErrRet;
 }
 
-void ota_DeinitEvent( OtaEventContext_t* pContext )
+OtaErr_t ota_DeinitEvent( OtaEventContext_t* pContext )
 {
   (void) pContext;
 
+  OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
   /* Remove the event queue.*/
-  mq_unlink( OTA_QUEUE_NAME );
+  if ( mq_unlink( OTA_QUEUE_NAME ) == -1 )
+  {
+        LogError( (  "OTA Event queue delete failed." ) );
+
+        otaErrRet = OTA_ERR_EVENT_Q_DELETE_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Event queue deleted." ) );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+
+    return otaErrRet;
+
 }

@@ -41,16 +41,16 @@ struct OtaEventContext
 	uint32_t dummy;
 };
 
-int32_t ota_InitEvent( OtaEventContext_t * pContext );
+OtaErr_t ota_InitEvent( OtaEventContext_t * pContext );
 
-int32_t ota_SendEvent( OtaEventContext_t * pContext,
+OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
 	                   const void* pEventMsg,
 	                   unsigned int timeout );
 
-int32_t ota_ReceiveEvent( OtaEventContext_t * pContext,
+OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
 	                      void* pEventMsg,
                           uint32_t timeout );
 
-void ota_DeinitEvent( OtaEventContext_t * pContext );
+OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext );
 
 #endif
