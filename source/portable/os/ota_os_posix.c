@@ -50,13 +50,13 @@
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
 
-/* OTA Timer.*/
-timer_t otaTimer;
-
 int32_t ota_InitEvent( OtaEventContext_t* pContext )
 {
     (void) pContext;
     struct mq_attr attr;
+
+    /* Unlink the event queue.*/
+    mq_unlink( OTA_QUEUE_NAME );
 
     /* Initialize the attributes.*/
     attr.mq_flags = 0;
@@ -132,48 +132,4 @@ void ota_DeinitEvent( OtaEventContext_t* pContext )
 
   /* Remove the event queue.*/
   mq_unlink( OTA_QUEUE_NAME );
-}
-
-
-int32_t ota_StartTimer(  OtaTimerContext_t* pContext,
-	                     const char* const pTimerName,
-	                     const uint32_t timeout,
-	                     void (*callback)(void*) )
-{
-
-    struct sigevent sev;
-    struct itimerspec trigger;
-
-    char eventStr[] = "OTA Timer Expired.";
-
-    memset(&sev, 0, sizeof(struct sigevent));
-    memset(&trigger, 0, sizeof(struct itimerspec));
-
-    //Add handler, thread
-    sev.sigev_value.sival_ptr = &eventStr;
-
-    timer_create(CLOCK_REALTIME, &sev, &otaTimer);
-
-    trigger.it_value.tv_sec = timeout;
-
-    timer_settime(otaTimer, 0, &trigger, NULL);
-
-    // Add OTA error codes
-    return 0;
-}
-
-int32_t ota_StopTimer( OtaTimerContext_t* pContext )
-{
-    struct itimerspec trigger;
-
-    trigger.it_value.tv_sec = 0;
-
-    /* Stop the timer*/
-      timer_settime(otaTimer, 0, &trigger, NULL);
-}
-
-void ota_DeleteTimer ( OtaTimerContext_t* pContext )
-{
-    /* Delete the timer*/
-    timer_delete( otaTimer) ;
 }
