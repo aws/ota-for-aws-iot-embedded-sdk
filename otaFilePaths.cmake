@@ -13,8 +13,10 @@ set( OTA_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_pal.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_agent_private.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_interface_private.h"
+    "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_ota_base64_private.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_agent.c"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_interface.c"
+    "${CMAKE_CURRENT_LIST_DIR}/source/aws_ota_base64.c"
 )
 
 # OTA library public include directories.
