@@ -92,6 +92,8 @@ OtaErr_t ota_SendEvent( OtaEventContext_t* pContext,
     {
         LogError( (  "OTA Event Send failed." ) );
 
+        perror("Blah blah");
+
         otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
 
     }else
@@ -100,6 +102,8 @@ OtaErr_t ota_SendEvent( OtaEventContext_t* pContext,
 
         otaErrRet = OTA_ERR_NONE;
     }
+
+    return otaErrRet;
 
 }
 
