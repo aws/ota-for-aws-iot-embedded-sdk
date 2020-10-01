@@ -5,7 +5,23 @@
 # Files specific to the repository such as test runner, platform tests
 # are not added to the variables.
 
-# OTA library source files.
+# 3rdparty source files.
+include( ${CMAKE_CURRENT_LIST_DIR}/dependency/coreJSON/jsonFilePaths.cmake )
+
+set( TINYCBOR_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty_stdio.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder_close_container_checked.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborerrorstrings.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser.c"
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser_dup_string.c"
+)
+set(TINYCBOR_INCLUDE_DIRS
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src"
+)
+
+# OTA library source files, including 3rdparties.
 set( OTA_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_agent.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/aws_iot_ota_types.h"
@@ -17,6 +33,8 @@ set( OTA_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_agent.c"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_iot_ota_interface.c"
     "${CMAKE_CURRENT_LIST_DIR}/source/aws_ota_base64.c"
+    ${JSON_SOURCES}
+    ${TINYCBOR_SOURCES}
 )
 
 # OTA library public include directories.
@@ -25,28 +43,11 @@ set( OTA_INCLUDE_PUBLIC_DIRS
     "${CMAKE_CURRENT_LIST_DIR}/source/portable"
 )
 
-# OTA library 3rdparty source files.
-include( ${CMAKE_CURRENT_LIST_DIR}/dependency/coreJSON/jsonFilePaths.cmake )
-set( OTA_THIRD_PARTY_SOURCES
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborpretty_stdio.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborencoder_close_container_checked.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborerrorstrings.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser.c"
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src/cborparser_dup_string.c"
-    ${JSON_SOURCES}
-)
-
-# OTA library 3rdparty include directories.
-set( OTA_INCLUDE_THIRD_PARTY_DIRS
-    "${CMAKE_CURRENT_LIST_DIR}/dependency/3rdparty/tinycbor/src"
-    ${JSON_INCLUDE_PUBLIC_DIRS}
-)
-
 # OTA library private include directories.
 set( OTA_INCLUDE_PRIVATE_DIRS
     "${CMAKE_CURRENT_LIST_DIR}/source"
+    ${JSON_INCLUDE_PUBLIC_DIRS}
+    ${TINYCBOR_INCLUDE_DIRS}
 )
 
 # OTA library POSIX OS porting source files.

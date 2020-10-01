@@ -42,7 +42,6 @@
 /* Internal header file for shared OTA definitions. */
 #include "aws_iot_ota_agent_private.h"
 
-
 /* OTA interface includes. */
 #include "aws_iot_ota_interface_private.h"
 #include "ota_os_posix.h"
@@ -1451,7 +1450,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
                 if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].destOffset )
                 {
-                    /* If the Source Key is 'files': Store the file details into a separate json as 
+                    /* If the Source Key is 'files': Store the file details into a separate json as
                     it is embedded in an array value and can not be parsed directy via core_json */
                     if( pModelParam[ paramIndex ].pSrcKey == OTA_JSON_FILE_GROUP_KEY )
                     {
@@ -1466,7 +1465,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                         else
                         { /* Stop processing on error. */
                             err = DocParseErrOutOfMemory;
-                        }   
+                        }
                     }
                 }
                 else
@@ -1577,10 +1576,10 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                     {
                         /* Ignore if invalid type */
                     }
-                    
+
                 }
             }
-            
+
         }
     }
 
@@ -1962,7 +1961,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         if( pFileContext->pJobName != NULL )
         {
             OTA_LOG_L1( "[%s] Rejecting job due to OtaJobParseErr_t %d, JobName: %s\r\n", OTA_METHOD_NAME, err , ( char * ) pFileContext->pJobName);
-            
+
             /* Assume control of the job name from the context. */
             otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
             pFileContext->pJobName = NULL;
