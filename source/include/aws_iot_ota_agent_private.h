@@ -32,11 +32,8 @@
 #ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
 #define _AWS_IOT_OTA_AGENT_INTERNAL_H_
 
-#define JSMN_STATIC
-#define JSMN_PARENT_LINKS
-
 #include "aws_ota_agent_config.h"
-#include "jsmn.h"
+#include "core_json.h"
 
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
@@ -106,9 +103,7 @@ typedef enum
     DocParseErrInvalidNumChar,        /* There was an invalid character in a numeric value field. */
     DocParseErrDuplicatesNotAllowed,  /* A duplicate parameter was found in the job document. */
     DocParseErrMalformedDoc,          /* The document didn't fulfill the model requirements. */
-    DocParseErrJasmineCountMismatch,  /* The second pass of jsmn_parse() didn't match the first pass. */
-    DocParseErrTooManyTokens,         /* We can't support the number of JSON tokens in the document. */
-    DocParseErrNoTokens,              /* No JSON tokens were detected in the document. */
+    DocParseErr_InvalidJSONBuffer,     /* When the JSON is malformed and not parsed correctly. */
     DocParseErrNullModelPointer,      /* The pointer to the document model was NULL. */
     DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
     DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
@@ -156,7 +151,6 @@ typedef struct
         void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
     };
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
-    const jsmntype_t jasmineType;          /* The JSON value type must match that specified here. */
 } JsonDocParam_t;
 
 
@@ -208,22 +202,23 @@ enum
 #define OTA_NUM_JOB_PARAMS              ( 20 ) /* Number of parameters in the job document. */
 
 /* Keys in OTA job doc . */
+#define OTA_JSON_SEPARATOR              "."
 #define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"
 #define OTA_JSON_TIMESTAMP_KEY          "timestamp"
-#define OTA_JSON_EXECUTION_KEY          "execution"
-#define OTA_JSON_JOB_ID_KEY             "jobId"
+#define OTA_JSON_EXECUTION_KEY          "execution" 
+#define OTA_JSON_JOB_ID_KEY             OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobId"
 #define OTA_JSON_STATUS_DETAILS_KEY     "statusDetails"
 #define OTA_JSON_SELF_TEST_KEY          "self_test"
 #define OTA_JSON_UPDATED_BY_KEY         "updatedBy"
-#define OTA_JSON_JOB_DOC_KEY            "jobDocument"
-#define OTA_JSON_OTA_UNIT_KEY           "afr_ota"
-#define OTA_JSON_PROTOCOLS_KEY          "protocols"
-#define OTA_JSON_FILE_GROUP_KEY         "files"
-#define OTA_JSON_STREAM_NAME_KEY        "streamname"
+#define OTA_JSON_JOB_DOC_KEY            OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobDocument"
+#define OTA_JSON_OTA_UNIT_KEY           OTA_JSON_JOB_DOC_KEY OTA_JSON_SEPARATOR "afr_ota"
+#define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"
+#define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"
+#define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"
 #define OTA_JSON_FILE_PATH_KEY          "filepath"
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"
 #define OTA_JSON_FILE_ID_KEY            "fileid"
-#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"
+#define OTA_JSON_FILE_ATTRIBUTE_KEY     OTA_JSON_FILE_GROUP_KEY OTA_JSON_SEPARATOR "attr"
 #define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"
 #define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"
 #define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"

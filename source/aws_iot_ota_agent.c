@@ -98,16 +98,8 @@ static OtaControlInterface_t otaControlInterface;
 
 static OtaDataInterface_t otaDataInterface;
 
-/*
- * Test a null terminated string against a JSON string of known length and return whether
- * it is the same or not.
- */
-
-static bool jsonIsCStringEqual( const char * pJsonString,
-                                uint32_t length,
-                                const char * pCString );
-
 /* OTA agent private function prototypes. */
+
 
 /* Start a timer used for sending data requests. */
 
@@ -200,13 +192,6 @@ static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID );
 /* A helper function to cleanup resources during OTA agent shutdown. */
 
 static void agentShutdownCleanup( void );
-
-/* Search the document model for a key that matches the specified JSON key. */
-
-static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
-                                             const char * pJsonString,
-                                             uint32_t strLength,
-                                             uint16_t * pMatchingIndexResult );
 
 /*
  * Prepare the document model for use by sanity checking the initialization parameters
@@ -1357,62 +1342,6 @@ static OtaFileContext_t * getFreeContext( void )
     return pFileContext;
 }
 
-static bool jsonIsCStringEqual( const char * pJsonString,
-                                uint32_t length,
-                                const char * pCString )
-{
-    bool result;
-
-    if( ( length <= OTA_MAX_JSON_STR_LEN ) &&
-        ( strncmp( pJsonString, pCString, length ) == 0 ) && /*lint !e9007 I see no side effect. Possibly a lint bug. */
-        ( pCString[ length ] == '\0' ) )
-    {
-        result = true;
-    }
-    else
-    {
-        result = false;
-    }
-
-    return result;
-}
-
-
-/* Search our document model for a key match with the given token. */
-
-static DocParseErr_t searchModelForTokenKey( JsonDocModel_t * pDocModel,
-                                             const char * pJsonString,
-                                             uint32_t strLength,
-                                             uint16_t * pMatchingIndexResult )
-{
-    DocParseErr_t err = DocParseErrParamKeyNotInModel;
-    uint16_t paramIndex;
-
-    for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
-    {
-        if( jsonIsCStringEqual( pJsonString, strLength,
-                                pDocModel->pBodyDef[ paramIndex ].pSrcKey ) )
-        {
-            /* Per Security, don't allow multiple entries of the same parameter. */
-            if( ( pDocModel->paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-            {
-                err = DocParseErrDuplicatesNotAllowed;
-            }
-            else
-            {
-                /* Mark parameter as received in the bitmap. */
-                pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-                *pMatchingIndexResult = paramIndex;                                   /* Save result index for caller. */
-                err = DocParseErrNone;                                                /* We found a matching key in the document model. */
-            }
-
-            break; /* We found a key match so stop searching. */
-        }
-    }
-
-    return err;
-}
-
 /* Extract the desired fields from the JSON document based on the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -1422,19 +1351,14 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     DEFINE_OTA_METHOD_NAME( "parseJSONbyModel" );
 
     const JsonDocParam_t * pModelParam = NULL;
-    jsmn_parser parser;
-    jsmntok_t * pTokens = NULL;
-    const jsmntok_t * pValTok = NULL;
-    int32_t jsmnResult = 0;
-    uint32_t numTokens = 0, tokenLen = 0;
     MultiParmPtr_t paramAddr; /*lint !e9018 We intentionally use this union to cast the parameter address to the proper type. */
-    uint32_t index = 0;
     uint16_t modelParamIndex = 0;
     uint32_t scanIndex = 0;
     DocParseErr_t err = DocParseErrNone;
-
-    /* Reset the Jasmine tokenizer. */
-    jsmn_init( &parser );
+    JSONStatus_t result;
+    uint16_t paramIndex;
+    char * fileParams = NULL;
+    uint32_t fileParamsLength;
 
     /* Check if document model is valid. */
     if( pDocModel == NULL )
@@ -1473,264 +1397,193 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         }
     }
 
-    /* Check if token numbe is valid. */
+     /* Check if the JSON document is valid*/
     if( err == DocParseErrNone )
     {
-        pModelParam = pDocModel->pBodyDef;
-
-        /* Count the total number of tokens in our JSON document. */
-        jsmnResult = jsmn_parse( &parser, pJson, ( size_t ) messageLength, NULL, 1UL );
-        numTokens = jsmnResult < 0 ? 0 : ( uint32_t ) jsmnResult;
-
-        if( numTokens == 0 )
+        result = JSON_Validate(pJson, ( size_t ) messageLength);
+        if( result != JSONSuccess )
         {
-            OTA_LOG_L1( "[%s] Invalid JSON document. No tokens parsed. \r\n", OTA_METHOD_NAME );
-            err = DocParseErrNoTokens;
+            OTA_LOG_L1( "[%s] Invalid JSON document \r\n", OTA_METHOD_NAME );
+            err = DocParseErr_InvalidJSONBuffer;
+        }
+        else
+        {
+            OTA_LOG_L1( "[%s] JSON Validation complete\r\n", OTA_METHOD_NAME );
+            pModelParam = pDocModel->pBodyDef;
         }
     }
 
-    /* Check if the JSON document isn't too big for our token array. */
-    if( err == DocParseErrNone )
+    /* Check if any tokens specified in the docModel are present in the JSON */
+    if( err == DocParseErrNone)
     {
-        if( numTokens > OTA_MAX_JSON_TOKENS )
+        // char pJsonCopy[messageLength];
+        // strcpy(pJsonCopy, pJson);
+        // pJsonCopy[messageLength] = '\0';
+        // OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson);
+
+        /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
+        for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
         {
-            OTA_LOG_L1( "[%s] Document has too many keys.\r\n", OTA_METHOD_NAME );
-            err = DocParseErrTooManyTokens;
-        }
-    }
+            char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
+            size_t queryKeyLength = strlen(pQueryKey);
+            char * pValueInJson;
+            size_t valueLength;
+            result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[0], &pValueInJson, &valueLength ); //TODO check if we need to use a copy of pJson
+            //OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result);
 
-    /* Allocate space on heap for temporary token array. */
-    if( err == DocParseErrNone )
-    {
-        /* Allocate space for the document JSON tokens. */
-        pTokens = ( jsmntok_t * ) malloc( numTokens * sizeof( jsmntok_t ) );
-
-        if( pTokens == NULL )
-        {
-            OTA_LOG_L1( "[%s] No memory for JSON tokens.\r\n", OTA_METHOD_NAME );
-            err = DocParseErrOutOfMemory;
-        }
-    }
-
-    /* Init Jasmine and check number of tokens.*/
-    if( err == DocParseErrNone )
-    {
-        /* Reset Jasmine again and tokenize the document for real. */
-        jsmn_init( &parser );
-        index = ( uint32_t ) jsmn_parse( &parser, pJson, messageLength, pTokens, numTokens );
-
-        if( index != numTokens )
-        {
-            OTA_LOG_L1( "[%s] jsmn_parse didn't match token count when parsing.\r\n", OTA_METHOD_NAME );
-            err = DocParseErrJasmineCountMismatch;
-        }
-    }
-
-    /* Process JSON tokens. */
-    if( err == DocParseErrNone )
-    {
-        /* Examine each JSON token, searching for job parameters based on our document model. */
-        for( index = 0U; ( err == DocParseErrNone ) && ( index < numTokens ); index++ )
-        {
-            /* All parameter keys are JSON strings. */
-            if( pTokens[ index ].type == JSMN_STRING )
+            /* If not found in pJSon search for the key in FileParameters JSON*/
+            if(result != JSONSuccess && fileParams != NULL)
             {
-                /* Search the document model to see if it matches the current key. */
-                tokenLen = ( uint32_t ) pTokens[ index ].end - ( uint32_t ) pTokens[ index ].start;
-                err = searchModelForTokenKey( pDocModel, &pJson[ pTokens[ index ].start ], tokenLen, &modelParamIndex );
-
-                /* If we didn't find a match in the model, skip over it and its descendants. */
-                if( err == DocParseErrParamKeyNotInModel )
+                result = JSON_Search( fileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[0], &pValueInJson, &valueLength );
+                //OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result);
+            }
+            if( result == JSONSuccess )
+            {
+                /* Check for duplicates of the token*/
+                if( ( pDocModel->paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
                 {
-                    int32_t iRoot = ( int32_t ) index; /* Create temp root from the unrecognized tokens index. Use signed int since the parent index is signed. */
-                    index++;                           /* Skip the active key since it's the one we don't recognize. */
-
-                    /* Skip tokens whose parents are equal to or deeper than the unrecognized temporary root token level. */
-                    while( ( index < numTokens ) && ( pTokens[ index ].parent >= iRoot ) )
-                    {
-                        index++; /* Skip over all descendants of the unknown parent. */
-                    }
-
-                    --index;               /* Adjust for outer for-loop increment. */
-                    err = DocParseErrNone; /* Unknown key structures are simply skipped so clear the error state to continue. */
+                    err = DocParseErrDuplicatesNotAllowed;
+                    OTA_LOG_L1( "[%s] Duplicate found for %s!\r\n", OTA_METHOD_NAME , pModelParam[ paramIndex ].pSrcKey);
                 }
-                else if( err == DocParseErrNone )
+                else
                 {
-                    /* We found the parameter key in the document model. */
+                    /* Mark parameter as received in the bitmap. */
+                    pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
+                }
 
-                    /* Get the value field (i.e. the following token) for the parameter. */
-                    pValTok = &pTokens[ index + 1UL ];
-
-                    /* Verify the field type is what we expect for this parameter. */
-                    if( pValTok->type != pModelParam[ modelParamIndex ].jasmineType )
+                if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].destOffset )
+                {
+                    /* If the Source Key is 'files': Store the file details into a separate json as 
+                    it is embedded in an array value and can not be parsed directy via core_json */
+                    if( pModelParam[ paramIndex ].pSrcKey == OTA_JSON_FILE_GROUP_KEY )
                     {
-                        tokenLen = ( uint32_t ) ( pValTok->end ) - ( uint32_t ) ( pValTok->start );
-                        OTA_LOG_L1( "[%s] parameter type mismatch [ %s : %.*s ] type %u, expected %u\r\n",
-                                    OTA_METHOD_NAME, pModelParam[ modelParamIndex ].pSrcKey, tokenLen,
-                                    &pJson[ pValTok->start ],
-                                    pValTok->type, pModelParam[ modelParamIndex ].jasmineType );
-                        err = DocParseErrFieldTypeMismatch;
-                    }
-                    else if( OTA_DONT_STORE_PARAM == pModelParam[ modelParamIndex ].destOffset )
-                    {
-                        /* Nothing to do with this parameter since we're not storing it. */
-                        continue;
-                    }
-                    else
-                    {
-                        /* Get destination offset to parameter storage location. */
-
-                        /* If it's within the models context structure, add in the context instance base address. */
-                        if( pModelParam[ modelParamIndex ].destOffset < pDocModel->contextSize )
+                        fileParams = malloc( valueLength );
+                        if ( fileParams != NULL )
                         {
-                            paramAddr.intVal = pDocModel->contextBase + pModelParam[ modelParamIndex ].destOffset;
+                            memcpy( fileParams, ++pValueInJson, valueLength - 2U );
+                            fileParamsLength = valueLength - 2U;
+                            fileParams[fileParamsLength] = '\0';
+                            //OTA_LOG_L1( "[%s] File JSON(%d) : %s \r \n", OTA_METHOD_NAME, fileParamsLength, fileParams);
                         }
                         else
-                        {
-                            /* It's a raw pointer so keep it as is. */
-                            paramAddr.intVal = pModelParam[ modelParamIndex ].destOffset;
-                        }
-
-                        if( ModelParamTypeStringCopy == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            /* Malloc memory for a copy of the value string plus a zero terminator. */
-                            tokenLen = ( uint32_t ) ( pValTok->end ) - ( uint32_t ) ( pValTok->start );
-                            void * pvStringCopy = malloc( tokenLen + 1U );
-
-                            if( pvStringCopy != NULL )
-                            {
-                                *paramAddr.pVoidPtr = pvStringCopy;
-                                char * pcStringCopy = ( char * ) pvStringCopy;
-                                /* Copy parameter string into newly allocated memory. */
-                                ( void ) memcpy( pvStringCopy, &pJson[ pValTok->start ], tokenLen );
-                                /* Zero terminate the new string. */
-                                pcStringCopy[ tokenLen ] = '\0';
-                                OTA_LOG_L1( "[%s] Extracted parameter [ %s: %s ]\r\n",
-                                            OTA_METHOD_NAME,
-                                            pModelParam[ modelParamIndex ].pSrcKey,
-                                            pcStringCopy );
-                            }
-                            else
-                            { /* Stop processing on error. */
-                                err = DocParseErrOutOfMemory;
-                            }
-                        }
-                        else if( ModelParamTypeStringInDoc == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            /* Copy pointer to source string instead of duplicating the string. */
-                            const char * pcStringInDoc = &pJson[ pValTok->start ];
-                            *paramAddr.pConstCharPtr = pcStringInDoc;
-                            tokenLen = ( uint32_t ) ( pValTok->end ) - ( uint32_t ) ( pValTok->start );
-                            OTA_LOG_L1( "[%s] Extracted parameter [ %s: %.*s ]\r\n",
-                                        OTA_METHOD_NAME,
-                                        pModelParam[ modelParamIndex ].pSrcKey,
-                                        tokenLen, pcStringInDoc );
-                        }
-                        else if( ModelParamTypeUInt32 == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            char * pEnd;
-                            const char * pStart = &pJson[ pValTok->start ];
-                            *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
-
-                            if( pEnd == &pJson[ pValTok->end ] )
-                            {
-                                OTA_LOG_L1( "[%s] Extracted parameter [ %s: %lu ]\r\n",
-                                            OTA_METHOD_NAME,
-                                            pModelParam[ modelParamIndex ].pSrcKey,
-                                            *paramAddr.pIntPtr );
-                            }
-                            else
-                            {
-                                err = DocParseErrInvalidNumChar;
-                            }
-                        }
-                        else if( ModelParamTypeSigBase64 == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            /* Allocate space for and decode the base64 signature. */
-                            void * pvSignature = malloc( sizeof( Sig256_t ) );
-
-                            if( pvSignature != NULL )
-                            {
-                                size_t xActualLen = 0;
-                                *paramAddr.pVoidPtr = pvSignature;
-                                Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-                                tokenLen = ( uint32_t ) ( pValTok->end ) - ( uint32_t ) ( pValTok->start );
-
-                                if( mbedtls_base64_decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
-                                                           ( const uint8_t * ) &pJson[ pValTok->start ], tokenLen ) != 0 )
-                                { /* Stop processing on error. */
-                                    OTA_LOG_L1( "[%s] mbedtls_base64_decode failed.\r\n", OTA_METHOD_NAME );
-                                    err = DocParseErrBase64Decode;
-                                }
-                                else
-                                {
-                                    pxSig256->size = ( uint16_t ) xActualLen;
-                                    OTA_LOG_L1( "[%s] Extracted parameter [ %s: %.32s... ]\r\n",
-                                                OTA_METHOD_NAME,
-                                                pModelParam[ modelParamIndex ].pSrcKey,
-                                                &pJson[ pValTok->start ] );
-                                }
-                            }
-                            else
-                            {
-                                /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-                                err = DocParseErrOutOfMemory;
-                            }
-                        }
-                        else if( ModelParamTypeIdent == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            OTA_LOG_L1( "[%s] Identified parameter [ %s ]\r\n",
-                                        OTA_METHOD_NAME,
-                                        pModelParam[ modelParamIndex ].pSrcKey );
-                            *paramAddr.pBoolPtr = true;
-                        }
-
-                        if( ModelParamTypeArrayCopy == pModelParam[ modelParamIndex ].modelParamType )
-                        {
-                            /* Malloc memory for a copy of the value string plus a zero terminator. */
-                            tokenLen = ( uint32_t ) ( pValTok->end ) - ( uint32_t ) ( pValTok->start );
-                            void * pvStringCopy = malloc( tokenLen + 1U );
-
-                            if( pvStringCopy != NULL )
-                            {
-                                *paramAddr.pVoidPtr = pvStringCopy;
-                                char * pcStringCopy = ( char * ) pvStringCopy;
-                                /* Copy parameter string into newly allocated memory. */
-                                ( void ) memcpy( pcStringCopy, &pJson[ pValTok->start ], tokenLen );
-                                /* Zero terminate the new string. */
-                                pcStringCopy[ tokenLen ] = '\0';
-                                OTA_LOG_L1( "[%s] Extracted parameter [ %s: %s ]\r\n",
-                                            OTA_METHOD_NAME,
-                                            pModelParam[ modelParamIndex ].pSrcKey,
-                                            pcStringCopy );
-                            }
-                            else
-                            { /* Stop processing on error. */
-                                err = DocParseErrOutOfMemory;
-                            }
-                        }
-                        else
-                        {
-                            /* Ignore invalid document model type. */
-                        }
+                        { /* Stop processing on error. */
+                            err = DocParseErrOutOfMemory;
+                        }   
                     }
                 }
                 else
                 {
-                    /* Nothing special to do. The error will break us out of the loop. */
+                    /* Get destination offset to parameter storage location. */
+
+                    /* If it's within the models context structure, add in the context instance base address. */
+                    if( pModelParam[ paramIndex ].destOffset < pDocModel->contextSize )
+                    {
+                        paramAddr.intVal = pDocModel->contextBase + pModelParam[ paramIndex ].destOffset;
+                    }
+                    else
+                    {
+                        /* It's a raw pointer so keep it as is. */
+                        paramAddr.intVal = pModelParam[ paramIndex ].destOffset;
+                    }
+                    if( ModelParamTypeStringCopy == pModelParam[ paramIndex ].modelParamType || ModelParamTypeArrayCopy == pModelParam[ paramIndex ].modelParamType)
+                    {
+                        /* Malloc memory for a copy of the value string plus a zero terminator. */
+                        void * pvStringCopy = malloc( valueLength + 1U );
+
+                        if( pvStringCopy != NULL )
+                        {
+                            *paramAddr.pVoidPtr = pvStringCopy;
+                            char * pcStringCopy = ( char * ) pvStringCopy;
+                            /* Copy parameter string into newly allocated memory. */
+                            ( void ) memcpy( pvStringCopy, pValueInJson, valueLength );
+                            /* Zero terminate the new string. */
+                            pcStringCopy[ valueLength ] = '\0';
+                            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %s]\r\n",
+                                        OTA_METHOD_NAME,
+                                        pModelParam[ paramIndex ].pSrcKey,
+                                        pcStringCopy );
+                        }
+                        else
+                        { /* Stop processing on error. */
+                            err = DocParseErrOutOfMemory;
+                        }
+                    }
+                    else if( ModelParamTypeStringInDoc == pModelParam[ paramIndex ].modelParamType )
+                    {
+                        /* Copy pointer to source string instead of duplicating the string. */
+                        const char * pcStringInDoc = pValueInJson;
+                        *paramAddr.pConstCharPtr = pcStringInDoc;
+                        OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.*s ]\r\n",
+                                    OTA_METHOD_NAME,
+                                    pModelParam[ paramIndex ].pSrcKey,
+                                    valueLength, pcStringInDoc );
+                    }
+                    else if( ModelParamTypeUInt32 == pModelParam[ paramIndex ].modelParamType )
+                    {
+                        char * pEnd;
+                        const char * pStart = pValueInJson;
+                        *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
+
+                        if( pEnd == &pValueInJson[ valueLength ] )
+                        {
+                            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %lu ]\r\n",
+                                        OTA_METHOD_NAME,
+                                        pModelParam[ paramIndex ].pSrcKey,
+                                        *paramAddr.pIntPtr );
+                        }
+                        else
+                        {
+                            err = DocParseErrInvalidNumChar;
+                        }
+                    }
+                    else if( ModelParamTypeSigBase64 == pModelParam[ paramIndex ].modelParamType )
+                    {
+                        /* Allocate space for and decode the base64 signature. */
+                        void * pvSignature = malloc( sizeof( Sig256_t ) );
+
+                        if( pvSignature != NULL )
+                        {
+                            size_t xActualLen = 0;
+                            *paramAddr.pVoidPtr = pvSignature;
+                            Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
+
+                            if( mbedtls_base64_decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+                                                        ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
+                            { /* Stop processing on error. */
+                                OTA_LOG_L1( "[%s] mbedtls_base64_decode failed.\r\n", OTA_METHOD_NAME );
+                                err = DocParseErrBase64Decode;
+                            }
+                            else
+                            {
+                                pxSig256->size = ( uint16_t ) xActualLen;
+                                OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
+                                            OTA_METHOD_NAME,
+                                            pModelParam[ paramIndex ].pSrcKey,
+                                            pValueInJson );
+                            }
+                        }
+                        else
+                        {
+                            /* We failed to allocate needed memory. Everything will be freed below upon failure. */
+                            err = DocParseErrOutOfMemory;
+                        }
+                    }
+                    else if( ModelParamTypeIdent == pModelParam[ paramIndex ].modelParamType )
+                    {
+                        OTA_LOG_L1( "[%s] New Identified parameter [ %s ]\r\n",
+                                    OTA_METHOD_NAME,
+                                    pModelParam[ paramIndex ].pSrcKey );
+                        *paramAddr.pBoolPtr = true;
+                    }
+                    else
+                    {
+                        /* Ignore if invalid type */
+                    }
+                    
                 }
             }
-            else
-            {
-                /* Ignore tokens that are not strings and move on to the next. */
-            }
+            
         }
-    }
-
-    if( pTokens != NULL )
-    {
-        /* Free the token memory. */
-        free( pTokens ); /*lint !e850 index is intentionally modified within the loop to skip over unknown tags. */
     }
 
     if( err == DocParseErrNone )
@@ -1884,26 +1737,26 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     /* Namely union initialization and pointers converted to values. */
     static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
     {
-        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeStringInDoc, JSMN_STRING    },                          /*lint !e9078 !e923 Get address of token as value. */
-        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
-        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent,       JSMN_STRING    },
-        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32,      JSMN_STRING    },
-        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject,      JSMN_OBJECT    },
-        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy,   JSMN_ARRAY     },
-        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeArray,       JSMN_ARRAY     },
-        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
-        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
-        { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy,  JSMN_STRING    },
-        { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64,   JSMN_STRING    },
-        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32,      JSMN_PRIMITIVE },
+        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeStringInDoc },                          /*lint !e9078 !e923 Get address of token as value. */
+        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeUInt32 },
+        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy },
+        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject},
+        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent },
+        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32 },
+        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy },
+        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy },
+        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeArray },
+        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy },
+        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32 },
+        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32 },
+        { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy },
+        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy },
+        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy },
+        { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64 },
+        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32 },
     };
 
     OtaErr_t otaErr = OTA_ERR_NONE;
@@ -2110,7 +1963,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
          * a reason code.  Without a job ID, we can't update the status in the job service. */
         if( pFileContext->pJobName != NULL )
         {
-            OTA_LOG_L1( "[%s] Rejecting job due to OtaJobParseErr_t %d\r\n", OTA_METHOD_NAME, err );
+            OTA_LOG_L1( "[%s] Rejecting job due to OtaJobParseErr_t %d, JobName: %s\r\n", OTA_METHOD_NAME, err , ( char * ) pFileContext->pJobName);
+            
             /* Assume control of the job name from the context. */
             otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
             pFileContext->pJobName = NULL;
@@ -2623,7 +2477,7 @@ void otaAgentTask( void * pUnused )
         /*
          * Receive the next event form the OTA event queue to process.
          */
-        if( otaAgent.pOTAOSCtx->event.recv(otaAgent.pOTAOSCtx->event.pContext, &eventMsg, 0 ) )
+        if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pContext, &eventMsg, 0 ) )
         {
             /*
              * Search for the state and event from the table.
@@ -2762,11 +2616,11 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
  * successfully.
  */
 OtaState_t OTA_AgentInit( void * pConnectionContext,
-                           void * pOtaOSCtx,
-                           void * pOtaMqttInterface,
-                           const uint8_t * pThingName,
-                           OtaCompleteCallback_t completeCallback,
-                           uint32_t ticksToWait )
+                          void * pOtaOSCtx,
+                          void * pOtaMqttInterface,
+                          const uint8_t * pThingName,
+                          OtaCompleteCallback_t completeCallback,
+                          uint32_t ticksToWait )
 {
     OtaState_t state;
 
