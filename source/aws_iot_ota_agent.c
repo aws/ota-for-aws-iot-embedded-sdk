@@ -2552,25 +2552,6 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
         pEventBuffer[ index ].bufferUsed = false;
     }
 
-    /*
-     * Create the OTA Agent thread.
-     */
-    ret = pthread_create( &otaThreadHandle, NULL, otaAgentTask, NULL );
-
-    //portEXIT_CRITICAL(); /* Protected elements are initialized. It's now safe to context switch. */
-
-    /*
-     * If task creation succeed, wait for the OTA agent to be ready before proceeding. Otherwise,
-     * let it fall through to exit.
-     */
-    if( ret == 0 )
-    {
-        while( ( ticksToWait-- > 0U ) && ( otaAgent.state != OtaAgentStateReady ) )
-        {
-            //vTaskDelay( 1 );
-        }
-    }
-
     return retVal;
 }
 
@@ -2620,8 +2601,6 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
                           uint32_t ticksToWait )
 {
     OtaState_t state;
-
-    printf( "Size of ptr%ld", sizeof( OtaAgentEventReceivedJobDocument ) );
 
     if( otaAgent.state == OtaAgentStateStopped )
     {
