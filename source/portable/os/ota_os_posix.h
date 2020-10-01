@@ -26,10 +26,10 @@
 #ifndef _AWS_OTA_OS_FREERTOS_H_
 #define _AWS_OTA_OS_FREERTOS_H_
 
- /* Standard library includes. */
+ /* Standard library include. */
 #include <stddef.h>
 
- /* OTA library interface includes. */
+ /* OTA library interface include. */
 #include "ota_os_interface.h"
 
 struct OtaEventContext

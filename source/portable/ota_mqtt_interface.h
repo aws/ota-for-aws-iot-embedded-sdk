@@ -54,7 +54,7 @@
 typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
                                              uint16_t topicFilterLength,
                                              uint8_t ucQoS,
-											 void * pvCallback );
+					      void * pvCallback );
 
 /**
  * @brief Unsubscribe to the Mqtt topics.

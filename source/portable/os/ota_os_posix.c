@@ -60,7 +60,7 @@ OtaErr_t ota_InitEvent( OtaEventContext_t* pContext )
     attr.mq_msgsize = MAX_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
-    /* Open the OTA event queue .*/
+    /* Open the event queue .*/
     if ( ( otaEventQueue = mq_open ( OTA_QUEUE_NAME, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr ) ) == -1 )
     {
         LogError( (  "OTA Event Queue create failed." ) );
