@@ -39,9 +39,6 @@
 /* Internal header file for shared OTA definitions. */
 #include "aws_iot_ota_agent_private.h"
 
-/* JSON job document parser includes. */
-#include "jsmn.h"
-
 /* Mbed tls base64 includes. */
 #include "mbedtls/base64.h"
 
