@@ -218,7 +218,7 @@ enum
 #define OTA_JSON_FILE_PATH_KEY          "filepath"
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"
 #define OTA_JSON_FILE_ID_KEY            "fileid"
-#define OTA_JSON_FILE_ATTRIBUTE_KEY     OTA_JSON_FILE_GROUP_KEY OTA_JSON_SEPARATOR "attr"
+#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"
 #define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"
 #define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"
 #define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"
