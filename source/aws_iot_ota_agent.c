@@ -33,14 +33,15 @@
 #include "aws_iot_ota_agent.h"
 #include "aws_ota_agent_config.h"
 
+/* OTA Base64 includes */
+#include "aws_ota_base64_private.h"
+
 /* OTA pal includes. */
 #include "aws_iot_ota_pal.h"
 
 /* Internal header file for shared OTA definitions. */
 #include "aws_iot_ota_agent_private.h"
 
-/* Mbed tls base64 includes. */
-#include "mbedtls/base64.h"
 
 /* OTA interface includes. */
 #include "aws_iot_ota_interface_private.h"

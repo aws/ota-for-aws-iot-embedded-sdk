@@ -95,7 +95,7 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
 {
     uint32_t dataBuffer = 0; /* A buffer that will store up to 4 pieces of encoded data before being decoded. */
     size_t numDataInBuffer = 0;
-    unsigned char* pCurrBase64Symbol = pEncodedData;
+    const unsigned char* pCurrBase64Symbol = pEncodedData;
     size_t outputLen = 0;
     size_t numPadding = 0;
     size_t numWhitespace = 0;
