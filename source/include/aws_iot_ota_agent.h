@@ -619,6 +619,7 @@ OtaState_t OTA_AgentInit( void * pvConnectionContext,
  */
 OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
                                    void * pOtaOSCtx,
+                                   void * pOtaMqttInterface,
                                    const uint8_t * pThingName,
                                    const OtaPalCallbacks_t * pCallbacks,
                                    uint32_t ticksToWait );

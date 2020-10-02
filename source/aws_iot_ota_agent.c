@@ -2511,6 +2511,7 @@ void otaAgentTask( void * pUnused )
 
 static BaseType_t startOTAAgentTask( void * pConnectionContext,
                                      void * pOTAOSCtx,
+                                     void * pOtaMqttInterface,
                                      uint32_t ticksToWait )
 {
     BaseType_t retVal = 0;
@@ -2535,6 +2536,8 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
     otaAgent.pOTAOSCtx = ( OtaOSInterface_t * ) pOTAOSCtx;
 
     otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pContext );
+
+    otaAgent.pOTAMqttInterface = pOtaMqttInterface;
 
     /*
      * Initialize all file paths to NULL.
@@ -2610,7 +2613,7 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
         /* Set the OTA complete callback. */
         palCallbacks.completeCallback = completeCallback;
 
-        state = OTA_AgentInit_internal( pConnectionContext, pOtaOSCtx, pThingName, &palCallbacks, ticksToWait );
+        state = OTA_AgentInit_internal( pConnectionContext, pOtaOSCtx, pOtaMqttInterface  , pThingName, &palCallbacks, ticksToWait );
     }
     /* If OTA agent is already running, just update the CompleteCallback and reset the statistics. */
     else
@@ -2629,6 +2632,7 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
 
 OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
                                    void * pOtaOSCtx,
+                                   void * pOtaMqttInterface,
                                    const uint8_t * pThingName,
                                    const OtaPalCallbacks_t * pCallbacks,
                                    uint32_t ticksToWait )
@@ -2680,7 +2684,7 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
             ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL ); /* Include zero terminator when saving the Thing name. */
         }
 
-        retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, ticksToWait );
+        retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
     }
 
     if( otaAgent.state == OtaAgentStateReady )
