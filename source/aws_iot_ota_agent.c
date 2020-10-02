@@ -33,14 +33,15 @@
 #include "aws_iot_ota_agent.h"
 #include "aws_ota_agent_config.h"
 
+/* OTA Base64 includes */
+#include "aws_ota_base64_private.h"
+
 /* OTA pal includes. */
 #include "aws_iot_ota_pal.h"
 
 /* Internal header file for shared OTA definitions. */
 #include "aws_iot_ota_agent_private.h"
 
-/* Mbed tls base64 includes. */
-#include "mbedtls/base64.h"
 
 /* OTA interface includes. */
 #include "aws_iot_ota_interface_private.h"
@@ -1544,10 +1545,10 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                             *paramAddr.pVoidPtr = pvSignature;
                             Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
 
-                            if( mbedtls_base64_decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+                            if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
                                                         ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
                             { /* Stop processing on error. */
-                                OTA_LOG_L1( "[%s] mbedtls_base64_decode failed.\r\n", OTA_METHOD_NAME );
+                                OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
                                 err = DocParseErrBase64Decode;
                             }
                             else
