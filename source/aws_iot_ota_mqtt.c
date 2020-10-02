@@ -103,14 +103,21 @@ const char * pcOTA_JobStatus_Strings[ NumJobStatusMappings ] =
  */
 const char * pcOTA_JobReason_Strings[ NumJobReasons ] = { "", "ready", "active", "accepted", "rejected", "aborted" };
 
-
 /* Subscribe to the jobs notification topic (i.e. New file version available). */
 
-static bool prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx );
+static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx );
+
+/* UnSubscribe from the firmware update receive topic. */
+
+static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx );
+
+/* UnSubscribe from the jobs notification topic. */
+
+static OtaErr_t prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx );
 
 /* Subscribe to the OTA job notification topics. */
 
-static bool prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx )
+static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx )
 {
     DEFINE_OTA_METHOD_NAME( "prvSubscribeToJobNotificationTopics" );
 
@@ -158,13 +165,93 @@ static bool prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAge
 }
 
 /*
+ * UnSubscribe from the OTA data stream topic.
+ */
+static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx )
+{
+    DEFINE_OTA_METHOD_NAME( "prvUnSubscribeFromDataStream" );
+
+    bool bResult = false;
+    char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+    uint16_t usTopicLen = 0;
+
+    const OtaFileContext_t * pFileContext = &( pxAgentCtx->pOtaFiles[ pxAgentCtx->fileIndex ] );
+
+    if( ( pFileContext != NULL ) && ( pFileContext->pStreamName != NULL ) )
+    {
+        /* Try to build the dynamic data stream topic and un-subscribe from it. */
+
+        usTopicLen = ( uint16_t ) snprintf( pcOTA_RxStreamTopic, /*lint -e586 Intentionally using snprintf. */
+                                            sizeof( pcOTA_RxStreamTopic ),
+                                            pcOTA_StreamData_TopicTemplate,
+                                            pxAgentCtx->pThingName,
+                                            ( const char * ) pFileContext->pStreamName );
+
+        if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
+        {
+
+            pxAgentCtx->pOTAMqttInterface->unsubscribe( pcOTA_RxStreamTopic ,
+                                                        usTopicLen, 
+                                                        1 );
+
+        }
+        else
+        {
+            OTA_LOG_L1( "[%s] Failed to build stream topic.\n\r", OTA_METHOD_NAME );
+        }
+    }
+
+    return bResult;
+}
+
+/*
+ * Unsubscribe from the OTA job notification topics.
+ */
+static OtaErr_t prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx )
+{
+    DEFINE_OTA_METHOD_NAME( "prvUnSubscribeFromJobNotificationTopic" );
+
+    char pcJobTopic[ OTA_MAX_TOPIC_LEN ];
+    uint16_t usTopicLen = 0;
+
+    /* Try to unsubscribe from the first of two job topics. */
+
+    usTopicLen = ( uint16_t ) snprintf( pcJobTopic, /*lint -e586 Intentionally using snprintf. */
+                                        sizeof( pcJobTopic ),
+                                        pcOTA_JobsNotifyNext_TopicTemplate,
+                                        pxAgentCtx->pThingName );
+
+    if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
+    {
+        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic ,
+                                                    usTopicLen, 
+                                                    0 );
+
+    }
+
+    /* Try to unsubscribe from the second of two job topics. */
+    usTopicLen= ( uint16_t ) snprintf( pcJobTopic, /*lint -e586 Intentionally using snprintf. */
+                                                      sizeof( pcJobTopic ),
+                                                      pcOTA_JobsGetNextAccepted_TopicTemplate,
+                                                      pxAgentCtx->pThingName );
+
+    if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
+    {
+        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic ,
+                                                    usTopicLen, 
+                                                    0 );
+    }
+
+}
+
+/*
  * Publish a message to the job status topic.
  */
-static void prvPublishStatusMessage( OtaAgentContext_t * pxAgentCtx,
-                                     OtaJobStatus_t eStatus,
-                                     const char * pcMsg,
-                                     uint32_t ulMsgSize,
-                                     uint8_t ucQoS )
+static OtaErr_t prvPublishStatusMessage( OtaAgentContext_t * pxAgentCtx,
+                                         OtaJobStatus_t eStatus,
+                                         const char * pcMsg,
+                                         uint32_t ulMsgSize,
+                                         uint8_t ucQoS )
 {
     DEFINE_OTA_METHOD_NAME( "prvPublishStatusMessage" );
 
