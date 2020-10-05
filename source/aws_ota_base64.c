@@ -20,6 +20,7 @@
 #define SIZE_OF_PADDING_WITH_THREE_SEXTETS 2
 
 /* Error defines. */
+#define SUCCESS 0
 #define INVALID_SYMBOL_ERROR -1
 #define INVALID_SYMBOL_ORDERING -2
 #define INVALID_DATA_SIZE -3
@@ -99,10 +100,11 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
     size_t outputLen = 0;
     size_t numPadding = 0;
     size_t numWhitespace = 0;
+    int return_val = SUCCESS;
 
     if ( pEncodedData == NULL || pDest == NULL || pResultLen == NULL )
     {
-        return NULL_PTR_ERROR;
+        return_val = NULL_PTR_ERROR;
     }
 
     /* The smallest amount of data that can be base64 encoded is a byte. Encoding a single byte of data results
@@ -110,11 +112,11 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
      * the data */
     if ( encodedLen < MIN_VALID_ENCODED_DATA_SIZE )
     {
-        return INVALID_DATA_SIZE;
+        return_val = INVALID_DATA_SIZE;
     }
 
     /* This loop will decode the first (encodedLen - (encodedLen % 4)) amount of data. */
-    while ( pCurrBase64Symbol < pEncodedData + encodedLen )
+    while ( return_val == SUCCESS && ( pCurrBase64Symbol < ( pEncodedData + encodedLen ) ) )
     {
         unsigned char base64Index = 0;
         /* Read in the next Ascii character that represents the current base64 symbol.*/
@@ -130,11 +132,12 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
         case PADDING_SYMBOL:
             if ( ++numPadding > MAX_EXPECTED_NUM_PADDING )
             {
-                return INVALID_NUMBER_OF_PADDING_SYMBOL;
+                return_val = INVALID_NUMBER_OF_PADDING_SYMBOL;
+                continue;
             }
             if ( numWhitespace != 0 )
             {
-                return INVALID_SYMBOL_ORDERING;
+                return_val = INVALID_SYMBOL_ORDERING;
             }
             continue;
         case WHITESPACE:
@@ -146,7 +149,8 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
             /* Whitespace characters and padding are only valid if they are at the end of the data. */
             if ( numWhitespace != 0 || numPadding != 0 )
             {
-                return INVALID_SYMBOL_ORDERING;
+                return_val = INVALID_SYMBOL_ORDERING;
+                continue;
             }
         }
 
@@ -173,7 +177,8 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
             }
             else
             {
-                return DST_BUFFER_TOO_SMALL_ERROR;
+                return_val = DST_BUFFER_TOO_SMALL_ERROR;
+                continue;
             }
         }
     }
@@ -192,11 +197,14 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
          * bits are ignored and the following sixteen least significant bits are converted into two octets of data. */
         if ( dataBuffer & 0x3 )
         {
-            return NON_ZERO_PADDING_ERROR;
+            return_val = NON_ZERO_PADDING_ERROR;
         }
-        dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
-        pDest[ outputLen++ ] = ( dataBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
-        pDest[ outputLen++ ] = dataBuffer & 0xFF;
+        if ( return_val == SUCCESS )
+        {
+            dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
+            pDest[ outputLen++ ] = ( dataBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
+            pDest[ outputLen++ ] = dataBuffer & 0xFF;
+        }
     }
     else if ( numDataInBuffer == 2 )
     {
@@ -205,22 +213,25 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
          * bits are ignored and the following eight least significant bits are converted into one octet of data. */
         if ( dataBuffer & 0xF )
         {
-            return NON_ZERO_PADDING_ERROR;
+            return_val = NON_ZERO_PADDING_ERROR;
         }
-        dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
-        pDest[ outputLen++ ] = dataBuffer & 0xFF;
-    } 
+        if ( return_val == SUCCESS )
+        {
+            dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
+            pDest[ outputLen++ ] = dataBuffer & 0xFF;
+        }
+    }
     /* This scenario is only possible when the number of encoded symbols ( excluding newlines and padding ) being
      * decoded mod four is equal to one. There is no valid scenario where unencoded data can be encoded to create
      * a result of this size. Therefore if this size is encountered, it is assumed to have been a mistake and is
      * considered an error. */
     else if ( numDataInBuffer == 1 )
     {
-        return UNEXPECTED_NUMBER_OF_DATA;
+        return_val = UNEXPECTED_NUMBER_OF_DATA;
     }
 
     *pResultLen = outputLen;
-    return 0;
+    return return_val;
 }
 
 /*-----------------------------------------------------------*/
