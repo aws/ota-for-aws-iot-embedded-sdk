@@ -138,6 +138,24 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
 static OtaFileContext_t * getFreeContext( void );
 
+/* Validate JSON document */
+
+static DocParseErr_t validateJSON( const char * pJson,
+                                   uint32_t messageLength );
+
+/* Checks for duplicate entries in the JSON document */
+
+static DocParseErr_t checkDuplicates(   uint32_t * paramsReceivedBitmap, 
+                                        uint16_t paramIndex);
+
+/* Store the parameter from the json to the offset specified by the document model*/
+
+static DocParseErr_t extractParameter( JsonDocParam_t docParam,
+                                       uint64_t modelContextBase,
+                                       uint64_t modelContextSize,
+                                       char * pValueInJson,
+                                       size_t valueLength );
+
 /* Parse a JSON document using the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -1339,6 +1357,195 @@ static OtaFileContext_t * getFreeContext( void )
     return pFileContext;
 }
 
+/* Validate JSON document and the DocModel*/
+static DocParseErr_t validateJSON( const char * pJson,
+                                   uint32_t messageLength )
+{
+    DEFINE_OTA_METHOD_NAME( "validateJSON" );
+
+    DocParseErr_t err = DocParseErrNone;
+    JSONStatus_t result;
+
+    /* Check JSON document pointer is valid.*/
+    if( pJson == NULL )
+    {
+        OTA_LOG_L1( "[%s] JSON document pointer is NULL!\r\n", OTA_METHOD_NAME );
+        err = DocParseErrNullDocPointer;
+    }
+
+    /* Check if the JSON document is valid*/
+    if( err == DocParseErrNone )
+    {
+        result = JSON_Validate( pJson, ( size_t ) messageLength );
+
+        if( result != JSONSuccess )
+        {
+            OTA_LOG_L1( "[%s] Invalid JSON document \r\n", OTA_METHOD_NAME );
+            err = DocParseErr_InvalidJSONBuffer;
+        }
+    }
+
+    return err;
+}
+
+/* Store the parameter from the json to the offset specified by the document model*/
+
+static DocParseErr_t extractParameter( JsonDocParam_t docParam,
+                                       uint64_t modelContextBase,
+                                       uint64_t modelContextSize,
+                                       char * pValueInJson,
+                                       size_t valueLength )
+{
+    DEFINE_OTA_METHOD_NAME( "extractParameter" );
+
+    MultiParmPtr_t paramAddr; /*lint !e9018 We intentionally use this union to cast the parameter address to the proper type. */
+    DocParseErr_t err = DocParseErrNone;
+
+    /* Get destination offset to parameter storage location. */
+
+    /* If it's within the models context structure, add in the context instance base address. */
+    if( docParam.destOffset < modelContextSize )
+    {
+        paramAddr.intVal = modelContextBase + docParam.destOffset;
+    }
+    else
+    {
+        /* It's a raw pointer so keep it as is. */
+        paramAddr.intVal = docParam.destOffset;
+    }
+
+    if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
+    {
+        /* Malloc memory for a copy of the value string plus a zero terminator. */
+        void * pvStringCopy = malloc( valueLength + 1U );
+
+        if( pvStringCopy != NULL )
+        {
+            *paramAddr.pVoidPtr = pvStringCopy;
+            char * pcStringCopy = ( char * ) pvStringCopy;
+            /* Copy parameter string into newly allocated memory. */
+            ( void ) memcpy( pvStringCopy, pValueInJson, valueLength );
+            /* Zero terminate the new string. */
+            pcStringCopy[ valueLength ] = '\0';
+            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %s]\r\n",
+                        OTA_METHOD_NAME,
+                        docParam.pSrcKey,
+                        pcStringCopy );
+        }
+        else
+        { /* Stop processing on error. */
+            err = DocParseErrOutOfMemory;
+        }
+    }
+    else if( ModelParamTypeStringInDoc == docParam.modelParamType )
+    {
+        /* Copy pointer to source string instead of duplicating the string. */
+        const char * pcStringInDoc = pValueInJson;
+        *paramAddr.pConstCharPtr = pcStringInDoc;
+        OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.*s ]\r\n",
+                    OTA_METHOD_NAME,
+                    docParam.pSrcKey,
+                    valueLength, pcStringInDoc );
+    }
+    else if( ModelParamTypeUInt32 == docParam.modelParamType )
+    {
+        char * pEnd;
+        const char * pStart = pValueInJson;
+        *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
+
+        if( pEnd == &pValueInJson[ valueLength ] )
+        {
+            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %lu ]\r\n",
+                        OTA_METHOD_NAME,
+                        docParam.pSrcKey,
+                        *paramAddr.pIntPtr );
+        }
+        else
+        {
+            err = DocParseErrInvalidNumChar;
+        }
+    }
+    else if( ModelParamTypeSigBase64 == docParam.modelParamType )
+    {
+        /* Allocate space for and decode the base64 signature. */
+        void * pvSignature = malloc( sizeof( Sig256_t ) );
+
+        if( pvSignature != NULL )
+        {
+            size_t xActualLen = 0;
+            *paramAddr.pVoidPtr = pvSignature;
+            Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
+            /* Allocate space for and decode the base64 signature. */
+            void * pvSignature = malloc( sizeof( Sig256_t ) );
+
+            if( pvSignature != NULL )
+            {
+                size_t xActualLen = 0;
+                *paramAddr.pVoidPtr = pvSignature;
+                Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
+
+                if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+                                            ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
+                { /* Stop processing on error. */
+                    OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
+                    err = DocParseErrBase64Decode;
+                }
+                else
+                {
+                    pxSig256->size = ( uint16_t ) xActualLen;
+                    OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
+                                OTA_METHOD_NAME,
+                                docParam.pSrcKey,
+                                pValueInJson );
+                }
+            }
+            else
+            {
+                /* We failed to allocate needed memory. Everything will be freed below upon failure. */
+                err = DocParseErrOutOfMemory;
+            }
+
+        }
+        else
+        {
+            /* We failed to allocate needed memory. Everything will be freed below upon failure. */
+            err = DocParseErrOutOfMemory;
+        }
+    }
+    else if( ModelParamTypeIdent == docParam.modelParamType )
+    {
+        OTA_LOG_L1( "[%s] New Identified parameter [ %s ]\r\n",
+                    OTA_METHOD_NAME,
+                    docParam.pSrcKey );
+        *paramAddr.pBoolPtr = true;
+    }
+    else
+    {
+        /* Ignore if invalid type */
+    }
+
+    return err;
+}
+
+/* Checks for duplicate entries in the JSON document*/
+static DocParseErr_t checkDuplicates(uint32_t * paramsReceivedBitmap, uint16_t paramIndex)
+{
+    DocParseErr_t err = DocParseErrNone;
+    // TODO need to change this implementation because duplicates are not searched properly
+    /* Check for duplicates of the token*/
+    if( (* paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U )             /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
+    {
+        err = DocParseErrDuplicatesNotAllowed;
+    }
+    else
+    {
+        /* Mark parameter as received in the bitmap. */
+        * paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex );             /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
+    }
+
+    return err;
+}
+
 /* Extract the desired fields from the JSON document based on the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -1348,268 +1555,92 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     DEFINE_OTA_METHOD_NAME( "parseJSONbyModel" );
 
     const JsonDocParam_t * pModelParam = NULL;
-    MultiParmPtr_t paramAddr; /*lint !e9018 We intentionally use this union to cast the parameter address to the proper type. */
     uint16_t modelParamIndex = 0;
     uint32_t scanIndex = 0;
-    DocParseErr_t err = DocParseErrNone;
+    DocParseErr_t err;
     JSONStatus_t result;
     uint16_t paramIndex;
-    char * fileParams = NULL;
+    char * pFileParams = NULL;
     uint32_t fileParamsLength;
 
-    /* Check if document model is valid. */
-    if( pDocModel == NULL )
-    {
-        OTA_LOG_L1( "[%s] The pointer to the document model is NULL.\r\n", OTA_METHOD_NAME );
-        err = DocParseErrNullModelPointer;
-    }
-
-    /* Check if document model body ponter is valid.*/
-    if( err == DocParseErrNone )
-    {
-        if( pDocModel->pBodyDef == NULL )
-        {
-            OTA_LOG_L1( "[%s] Document model %p body pointer is NULL.\r\n", OTA_METHOD_NAME, pDocModel );
-            err = DocParseErrNullBodyPointer;
-        }
-    }
-
-    /* Check number of parameters is valid.*/
-    if( err == DocParseErrNone )
-    {
-        if( pDocModel->numModelParams > OTA_DOC_MODEL_MAX_PARAMS )
-        {
-            OTA_LOG_L1( "[%s] Model has too many parameters (%u).\r\n", OTA_METHOD_NAME, pDocModel->numModelParams );
-            err = DocParseErrTooManyParams;
-        }
-    }
-
-    /* Check JSON document pointer is valid.*/
-    if( err == DocParseErrNone )
-    {
-        if( pJson == NULL )
-        {
-            OTA_LOG_L1( "[%s] JSON document pointer is NULL!\r\n", OTA_METHOD_NAME );
-            err = DocParseErrNullDocPointer;
-        }
-    }
-
-     /* Check if the JSON document is valid*/
-    if( err == DocParseErrNone )
-    {
-        result = JSON_Validate(pJson, ( size_t ) messageLength);
-        if( result != JSONSuccess )
-        {
-            OTA_LOG_L1( "[%s] Invalid JSON document \r\n", OTA_METHOD_NAME );
-            err = DocParseErr_InvalidJSONBuffer;
-        }
-        else
-        {
-            OTA_LOG_L1( "[%s] JSON Validation complete\r\n", OTA_METHOD_NAME );
-            pModelParam = pDocModel->pBodyDef;
-        }
-    }
+    /* Check the validity of the JSON document */
+    err = validateJSON( pJson, messageLength );
 
     /* Check if any tokens specified in the docModel are present in the JSON */
-    if( err == DocParseErrNone)
+    if( err == DocParseErrNone )
     {
-        // char pJsonCopy[messageLength];
-        // strcpy(pJsonCopy, pJson);
-        // pJsonCopy[messageLength] = '\0';
-        // OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson);
+        /* Fetch the model parameters from the DocModel*/
+        pModelParam = pDocModel->pBodyDef;
+        /* char pJsonCopy[messageLength]; */
+        /* strcpy(pJsonCopy, pJson); */
+        /* pJsonCopy[messageLength] = '\0'; */
+        OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
 
         /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
         for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
         {
             char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
-            size_t queryKeyLength = strlen(pQueryKey);
+            size_t queryKeyLength = strlen( pQueryKey );
             char * pValueInJson;
             size_t valueLength;
-            result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[0], &pValueInJson, &valueLength ); //TODO check if we need to use a copy of pJson
-            //OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result);
+            result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength ); /*TODO check if we need to use a copy of pJson */
+            OTA_LOG_L1( "[%s]Searching for Token in pJson: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
 
             /* If not found in pJSon search for the key in FileParameters JSON*/
-            if(result != JSONSuccess && fileParams != NULL)
+            if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
             {
-                result = JSON_Search( fileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[0], &pValueInJson, &valueLength );
-                //OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result);
+                result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
+                OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
             }
+
             if( result == JSONSuccess )
             {
-                /* Check for duplicates of the token*/
-                if( ( pDocModel->paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-                {
-                    err = DocParseErrDuplicatesNotAllowed;
-                    OTA_LOG_L1( "[%s] Duplicate found for %s!\r\n", OTA_METHOD_NAME , pModelParam[ paramIndex ].pSrcKey);
-                }
-                else
-                {
-                    /* Mark parameter as received in the bitmap. */
-                    pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-                }
+                err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
 
                 if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].destOffset )
                 {
-                    /* If the Source Key is 'files': Store the file details into a separate json as
-                    it is embedded in an array value and can not be parsed directy via core_json */
-                    if( pModelParam[ paramIndex ].pSrcKey == OTA_JSON_FILE_GROUP_KEY )
-                    {
-                        fileParams = malloc( valueLength );
-                        if ( fileParams != NULL )
-                        {
-                            memcpy( fileParams, ++pValueInJson, valueLength - 2U );
-                            fileParamsLength = valueLength - 2U;
-                            fileParams[fileParamsLength] = '\0';
-                            //OTA_LOG_L1( "[%s] File JSON(%d) : %s \r \n", OTA_METHOD_NAME, fileParamsLength, fileParams);
-                        }
-                        else
-                        { /* Stop processing on error. */
-                            err = DocParseErrOutOfMemory;
-                        }
-                    }
+                   /* Do nothing if we don't need to store the parameter */
+                   continue;
+                }
+                else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].destOffset )
+                {
+                    pFileParams = pValueInJson+1;
+                    fileParamsLength = valueLength-2U;
+                    OTA_LOG_L1( "File JSON(%d) : %.*s \r \n", fileParamsLength, fileParamsLength, pFileParams);
                 }
                 else
                 {
-                    /* Get destination offset to parameter storage location. */
-
-                    /* If it's within the models context structure, add in the context instance base address. */
-                    if( pModelParam[ paramIndex ].destOffset < pDocModel->contextSize )
-                    {
-                        paramAddr.intVal = pDocModel->contextBase + pModelParam[ paramIndex ].destOffset;
-                    }
-                    else
-                    {
-                        /* It's a raw pointer so keep it as is. */
-                        paramAddr.intVal = pModelParam[ paramIndex ].destOffset;
-                    }
-                    if( ModelParamTypeStringCopy == pModelParam[ paramIndex ].modelParamType || ModelParamTypeArrayCopy == pModelParam[ paramIndex ].modelParamType)
-                    {
-                        /* Malloc memory for a copy of the value string plus a zero terminator. */
-                        void * pvStringCopy = malloc( valueLength + 1U );
-
-                        if( pvStringCopy != NULL )
-                        {
-                            *paramAddr.pVoidPtr = pvStringCopy;
-                            char * pcStringCopy = ( char * ) pvStringCopy;
-                            /* Copy parameter string into newly allocated memory. */
-                            ( void ) memcpy( pvStringCopy, pValueInJson, valueLength );
-                            /* Zero terminate the new string. */
-                            pcStringCopy[ valueLength ] = '\0';
-                            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %s]\r\n",
-                                        OTA_METHOD_NAME,
-                                        pModelParam[ paramIndex ].pSrcKey,
-                                        pcStringCopy );
-                        }
-                        else
-                        { /* Stop processing on error. */
-                            err = DocParseErrOutOfMemory;
-                        }
-                    }
-                    else if( ModelParamTypeStringInDoc == pModelParam[ paramIndex ].modelParamType )
-                    {
-                        /* Copy pointer to source string instead of duplicating the string. */
-                        const char * pcStringInDoc = pValueInJson;
-                        *paramAddr.pConstCharPtr = pcStringInDoc;
-                        OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.*s ]\r\n",
-                                    OTA_METHOD_NAME,
-                                    pModelParam[ paramIndex ].pSrcKey,
-                                    valueLength, pcStringInDoc );
-                    }
-                    else if( ModelParamTypeUInt32 == pModelParam[ paramIndex ].modelParamType )
-                    {
-                        char * pEnd;
-                        const char * pStart = pValueInJson;
-                        *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
-
-                        if( pEnd == &pValueInJson[ valueLength ] )
-                        {
-                            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %lu ]\r\n",
-                                        OTA_METHOD_NAME,
-                                        pModelParam[ paramIndex ].pSrcKey,
-                                        *paramAddr.pIntPtr );
-                        }
-                        else
-                        {
-                            err = DocParseErrInvalidNumChar;
-                        }
-                    }
-                    else if( ModelParamTypeSigBase64 == pModelParam[ paramIndex ].modelParamType )
-                    {
-                        /* Allocate space for and decode the base64 signature. */
-                        void * pvSignature = malloc( sizeof( Sig256_t ) );
-
-                        if( pvSignature != NULL )
-                        {
-                            size_t xActualLen = 0;
-                            *paramAddr.pVoidPtr = pvSignature;
-                            Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-
-                            if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
-                                                        ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
-                            { /* Stop processing on error. */
-                                OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
-                                err = DocParseErrBase64Decode;
-                            }
-                            else
-                            {
-                                pxSig256->size = ( uint16_t ) xActualLen;
-                                OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
-                                            OTA_METHOD_NAME,
-                                            pModelParam[ paramIndex ].pSrcKey,
-                                            pValueInJson );
-                            }
-                        }
-                        else
-                        {
-                            /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-                            err = DocParseErrOutOfMemory;
-                        }
-                    }
-                    else if( ModelParamTypeIdent == pModelParam[ paramIndex ].modelParamType )
-                    {
-                        OTA_LOG_L1( "[%s] New Identified parameter [ %s ]\r\n",
-                                    OTA_METHOD_NAME,
-                                    pModelParam[ paramIndex ].pSrcKey );
-                        *paramAddr.pBoolPtr = true;
-                    }
-                    else
-                    {
-                        /* Ignore if invalid type */
-                    }
-
+                    err = extractParameter( pModelParam[ paramIndex ], pDocModel->contextBase, pDocModel->contextSize, pValueInJson, valueLength );
                 }
             }
-
         }
     }
 
-    if( err == DocParseErrNone )
-    {
-        uint32_t ulMissingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap )
-                                   ^ pDocModel->paramsRequiredBitmap;
+     if( err == DocParseErrNone ) 
+     { 
+         uint32_t ulMissingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap ) 
+                                    ^ pDocModel->paramsRequiredBitmap;
+         if( ulMissingParams != 0U ) 
+         { 
+             /* The job document did not have all required document model parameters. */
+             for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ ) 
+             { 
+                 if( ( ulMissingParams & ( 1UL << scanIndex ) ) != 0UL ) 
+                 {
+                     OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
+                                 OTA_METHOD_NAME, 
+                                 pModelParam[ scanIndex ].pSrcKey );
+                 }
+             } 
+             err = DocParseErrMalformedDoc;
+         } 
+     } 
+     else 
+     { 
+         OTA_LOG_L1( "[%s] Error (%d) parsing JSON document.\r\n", OTA_METHOD_NAME, ( int32_t ) err );
+     } 
 
-        if( ulMissingParams != 0U )
-        {
-            /* The job document did not have all required document model parameters. */
-            for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ )
-            {
-                if( ( ulMissingParams & ( 1UL << scanIndex ) ) != 0UL )
-                {
-                    OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
-                                OTA_METHOD_NAME,
-                                pModelParam[ scanIndex ].pSrcKey );
-                }
-            }
-
-            err = DocParseErrMalformedDoc;
-        }
-    }
-    else
-    {
-        OTA_LOG_L1( "[%s] Error (%d) parsing JSON document.\r\n", OTA_METHOD_NAME, ( int32_t ) err );
-    }
-
-    //configASSERT( err != DocParseErrUnknown );
+    /*configASSERT( err != DocParseErrUnknown ); */
     return err;
 }
 
@@ -1745,7 +1776,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
         { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy },
         { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy },
-        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeArray },
+        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_STORE_NESTED_JSON }, ModelParamTypeArray },
         { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy },
         { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32 },
         { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32 },
