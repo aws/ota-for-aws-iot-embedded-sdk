@@ -190,47 +190,54 @@ int base64Decode( unsigned char* pDest, size_t destLen, size_t* pResultLen, cons
      * 
      * Remark: This implementation of base64 decoding assumes that non-zero padding bits are an error. This is
      * to prevent having multiple non-matching encoded data strings map to identical decoded strings. */
-    if ( numDataInBuffer == 3 )
+    if( return_val == SUCCESS)
     {
-        /* When there are only three sextets of data remaining at the end of the encoded data, it is assumed that
-         * these three sextets should be decoded into two octets of data. In this case, the two least significant
-         * bits are ignored and the following sixteen least significant bits are converted into two octets of data. */
-        if ( dataBuffer & 0x3 )
+        if ( numDataInBuffer == 3 )
         {
-            return_val = NON_ZERO_PADDING_ERROR;
+            /* When there are only three sextets of data remaining at the end of the encoded data, it is assumed that
+            * these three sextets should be decoded into two octets of data. In this case, the two least significant
+            * bits are ignored and the following sixteen least significant bits are converted into two octets of data. */
+            if ( dataBuffer & 0x3 )
+            {
+                return_val = NON_ZERO_PADDING_ERROR;
+            }
+            if ( return_val == SUCCESS )
+            {
+                dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
+                pDest[ outputLen++ ] = ( dataBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
+                pDest[ outputLen++ ] = dataBuffer & 0xFF;
+            }
         }
-        if ( return_val == SUCCESS )
+        else if ( numDataInBuffer == 2 )
         {
-            dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
-            pDest[ outputLen++ ] = ( dataBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
-            pDest[ outputLen++ ] = dataBuffer & 0xFF;
+            /* When there are only two sextets of data remaining at the end of the encoded data, it is assumed that
+            * these two sextets should be decoded into one octet of data. In this case, the four least significant
+            * bits are ignored and the following eight least significant bits are converted into one octet of data. */
+            if ( dataBuffer & 0xF )
+            {
+                return_val = NON_ZERO_PADDING_ERROR;
+            }
+            if ( return_val == SUCCESS )
+            {
+                dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
+                pDest[ outputLen++ ] = dataBuffer & 0xFF;
+            }
         }
-    }
-    else if ( numDataInBuffer == 2 )
-    {
-        /* When there are only two sextets of data remaining at the end of the encoded data, it is assumed that
-         * these two sextets should be decoded into one octet of data. In this case, the four least significant
-         * bits are ignored and the following eight least significant bits are converted into one octet of data. */
-        if ( dataBuffer & 0xF )
+        /* This scenario is only possible when the number of encoded symbols ( excluding newlines and padding ) being
+        * decoded mod four is equal to one. There is no valid scenario where unencoded data can be encoded to create
+        * a result of this size. Therefore if this size is encountered, it is assumed to have been a mistake and is
+        * considered an error. */
+        else if ( numDataInBuffer == 1 )
         {
-            return_val = NON_ZERO_PADDING_ERROR;
+            return_val = UNEXPECTED_NUMBER_OF_DATA;
         }
-        if ( return_val == SUCCESS )
-        {
-            dataBuffer = dataBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
-            pDest[ outputLen++ ] = dataBuffer & 0xFF;
-        }
-    }
-    /* This scenario is only possible when the number of encoded symbols ( excluding newlines and padding ) being
-     * decoded mod four is equal to one. There is no valid scenario where unencoded data can be encoded to create
-     * a result of this size. Therefore if this size is encountered, it is assumed to have been a mistake and is
-     * considered an error. */
-    else if ( numDataInBuffer == 1 )
-    {
-        return_val = UNEXPECTED_NUMBER_OF_DATA;
     }
 
-    *pResultLen = outputLen;
+    if ( return_val == SUCCESS )
+    {
+        *pResultLen = outputLen;
+    }
+
     return return_val;
 }
 
