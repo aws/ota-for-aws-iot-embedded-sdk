@@ -156,6 +156,11 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        char * pValueInJson,
                                        size_t valueLength );
 
+/* Check if all the required parameters for job document are extracted from the JSON */
+
+static DocParseErr_t verifyRequiredParamsExtracted( JsonDocModel_t * pDocModel,
+                                                    JsonDocParam_t * pModelParam);
+
 /* Parse a JSON document using the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -1546,6 +1551,36 @@ static DocParseErr_t checkDuplicates(uint32_t * paramsReceivedBitmap, uint16_t p
     return err;
 }
 
+/* Check if all the required parameters for job document are extracted from the JSON */
+
+static DocParseErr_t verifyRequiredParamsExtracted(JsonDocModel_t * pDocModel, JsonDocParam_t * pModelParam)
+{
+    DEFINE_OTA_METHOD_NAME( "verifyRequiredParamsExtracted" );
+
+    uint32_t scanIndex = 0;
+    DocParseErr_t err = DocParseErrNone;
+    uint32_t ulMissingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap ) 
+                            ^ pDocModel->paramsRequiredBitmap;
+    
+    if( ulMissingParams != 0U ) 
+    { 
+        /* The job document did not have all required document model parameters. */
+        for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ ) 
+        { 
+            if( ( ulMissingParams & ( 1UL << scanIndex ) ) != 0UL ) 
+            {
+                OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
+                            OTA_METHOD_NAME, 
+                            pModelParam[ scanIndex ].pSrcKey );
+            }
+        } 
+        err = DocParseErrMalformedDoc;
+    }
+
+    return err; 
+      
+}
+
 /* Extract the desired fields from the JSON document based on the specified document model. */
 
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -1556,7 +1591,6 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
     const JsonDocParam_t * pModelParam = NULL;
     uint16_t modelParamIndex = 0;
-    uint32_t scanIndex = 0;
     DocParseErr_t err;
     JSONStatus_t result;
     uint16_t paramIndex;
@@ -1565,80 +1599,56 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
     /* Check the validity of the JSON document */
     err = validateJSON( pJson, messageLength );
-
-    /* Check if any tokens specified in the docModel are present in the JSON */
-    if( err == DocParseErrNone )
+    if (err != DocParseErrNone)
     {
-        /* Fetch the model parameters from the DocModel*/
-        pModelParam = pDocModel->pBodyDef;
-        /* char pJsonCopy[messageLength]; */
-        /* strcpy(pJsonCopy, pJson); */
-        /* pJsonCopy[messageLength] = '\0'; */
-        OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
+        return err;
+    }
+    
+    /* Fetch the model parameters from the DocModel*/
+    pModelParam = pDocModel->pBodyDef;
+    OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
 
-        /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
-        for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
+    /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
+    for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
+    {
+        char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
+        size_t queryKeyLength = strlen( pQueryKey );
+        char * pValueInJson;
+        size_t valueLength;
+        result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength ); /*TODO check if we need to use a copy of pJson */
+        OTA_LOG_L1( "[%s]Searching for Token in pJson: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+
+        /* If not found in pJSon search for the key in FileParameters JSON*/
+        if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
         {
-            char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
-            size_t queryKeyLength = strlen( pQueryKey );
-            char * pValueInJson;
-            size_t valueLength;
-            result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength ); /*TODO check if we need to use a copy of pJson */
-            OTA_LOG_L1( "[%s]Searching for Token in pJson: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+            result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
+            OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+        }
 
-            /* If not found in pJSon search for the key in FileParameters JSON*/
-            if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
+        if( result == JSONSuccess )
+        {
+            err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
+            if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].destOffset )
             {
-                result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
-                OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+                pFileParams = pValueInJson+1;
+                fileParamsLength = valueLength-2U;
+                OTA_LOG_L1( "File JSON(%d) : %.*s \r \n", fileParamsLength, fileParamsLength, pFileParams);
             }
-
-            if( result == JSONSuccess )
+            else if (OTA_DONT_STORE_PARAM != pModelParam[ paramIndex ].destOffset )
             {
-                err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
-
-                if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].destOffset )
-                {
-                   /* Do nothing if we don't need to store the parameter */
-                   continue;
-                }
-                else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].destOffset )
-                {
-                    pFileParams = pValueInJson+1;
-                    fileParamsLength = valueLength-2U;
-                    OTA_LOG_L1( "File JSON(%d) : %.*s \r \n", fileParamsLength, fileParamsLength, pFileParams);
-                }
-                else
-                {
-                    err = extractParameter( pModelParam[ paramIndex ], pDocModel->contextBase, pDocModel->contextSize, pValueInJson, valueLength );
-                }
+                err = extractParameter( pModelParam[ paramIndex ], pDocModel->contextBase, pDocModel->contextSize, pValueInJson, valueLength );
             }
         }
     }
 
-     if( err == DocParseErrNone ) 
-     { 
-         uint32_t ulMissingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap ) 
-                                    ^ pDocModel->paramsRequiredBitmap;
-         if( ulMissingParams != 0U ) 
-         { 
-             /* The job document did not have all required document model parameters. */
-             for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ ) 
-             { 
-                 if( ( ulMissingParams & ( 1UL << scanIndex ) ) != 0UL ) 
-                 {
-                     OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
-                                 OTA_METHOD_NAME, 
-                                 pModelParam[ scanIndex ].pSrcKey );
-                 }
-             } 
-             err = DocParseErrMalformedDoc;
-         } 
-     } 
-     else 
-     { 
-         OTA_LOG_L1( "[%s] Error (%d) parsing JSON document.\r\n", OTA_METHOD_NAME, ( int32_t ) err );
-     } 
+    if (err == DocParseErrNone)
+    {
+        err = verifyRequiredParamsExtracted(pDocModel, pModelParam);
+    }
+    else 
+    { 
+        OTA_LOG_L1( "[%s] Error (%d) parsing JSON document.\r\n", OTA_METHOD_NAME, ( int32_t ) err );
+    } 
 
     /*configASSERT( err != DocParseErrUnknown ); */
     return err;
