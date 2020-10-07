@@ -1474,42 +1474,27 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     {
         /* Allocate space for and decode the base64 signature. */
         void * pvSignature = malloc( sizeof( Sig256_t ) );
-
+        
         if( pvSignature != NULL )
         {
             size_t xActualLen = 0;
             *paramAddr.pVoidPtr = pvSignature;
             Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-            /* Allocate space for and decode the base64 signature. */
-            void * pvSignature = malloc( sizeof( Sig256_t ) );
 
-            if( pvSignature != NULL )
-            {
-                size_t xActualLen = 0;
-                *paramAddr.pVoidPtr = pvSignature;
-                Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-
-                if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
-                                            ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
-                { /* Stop processing on error. */
-                    OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
-                    err = DocParseErrBase64Decode;
-                }
-                else
-                {
-                    pxSig256->size = ( uint16_t ) xActualLen;
-                    OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
-                                OTA_METHOD_NAME,
-                                docParam.pSrcKey,
-                                pValueInJson );
-                }
+            if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+                                        ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
+            { /* Stop processing on error. */
+                OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
+                err = DocParseErrBase64Decode;
             }
             else
             {
-                /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-                err = DocParseErrOutOfMemory;
+                pxSig256->size = ( uint16_t ) xActualLen;
+                OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
+                            OTA_METHOD_NAME,
+                            docParam.pSrcKey,
+                            pValueInJson );
             }
-
         }
         else
         {
@@ -2153,6 +2138,132 @@ static bool prvValidateDataBlock( const OtaFileContext_t * pFileContext,
     return ret;
 }
 
+/* Validate the incomming data block and store it in the file context */
+static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext, 
+                                        uint32_t uBlockIndex, 
+                                        uint32_t uBlockSize, 
+                                        OtaErr_t * pCloseResult, 
+                                        uint8_t * pPayload  )
+{
+    DEFINE_OTA_METHOD_NAME( "processDataBlock" );
+
+    IngestResult_t eIngestResult = IngestResultUninitialized;
+    uint32_t byte = 0;
+    uint8_t bitMask = 0;
+
+    /* Validate the received data block.*/
+    if( prvValidateDataBlock( pFileContext, uBlockIndex, uBlockSize ) )
+    {
+        OTA_LOG_L1( "[%s] Received file block %u, size %u\r\n", OTA_METHOD_NAME, uBlockIndex, uBlockSize );
+
+        /* Create bit mask for use in our bitmap. */
+        bitMask = 1U << ( uBlockIndex % BITS_PER_BYTE ); /*lint !e9031 The composite expression will never be greater than BITS_PER_BYTE(8). */
+
+        /* Calculate byte offset into bitmap. */
+        byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
+
+        /* Check if we've already received this block. */
+        if( ( ( pFileContext->pRxBlockBitmap[ byte ] ) & bitMask ) == 0U )
+        {
+            OTA_LOG_L1( "[%s] block %u is a DUPLICATE. %u blocks remaining.\r\n", OTA_METHOD_NAME,
+                        uBlockIndex,
+                        pFileContext->blocksRemaining );
+
+            eIngestResult = IngestResultDuplicate_Continue;
+            *pCloseResult = OTA_ERR_NONE; /* This is a success path. */
+        }
+    }
+    else
+    {
+        OTA_LOG_L1( "[%s] Error! Block %u out of expected range! Size %u\r\n", OTA_METHOD_NAME, uBlockIndex, uBlockSize );
+        eIngestResult = IngestResultBlockOutOfRange;
+    }
+
+    /* Process the received data block. */
+    if( eIngestResult == IngestResultUninitialized )
+    {
+        if( pFileContext->pFile != NULL )
+        {
+            int32_t iBytesWritten = otaAgent.palCallbacks.writeBlock( pFileContext, ( uBlockIndex * OTA_FILE_BLOCK_SIZE ), pPayload, uBlockSize );
+
+            if( iBytesWritten < 0 )
+            {
+                OTA_LOG_L1( "[%s] Error (%d) writing file block\r\n", OTA_METHOD_NAME, iBytesWritten );
+                eIngestResult = IngestResultWriteBlockFailed;
+            }
+            else
+            {
+                pFileContext->pRxBlockBitmap[ byte ] &= ~bitMask; /* Mark this block as received in our bitmap. */
+                pFileContext->blocksRemaining--;
+                eIngestResult = IngestResultAccepted_Continue;
+                *pCloseResult = OTA_ERR_NONE;
+            }
+        }
+        else
+        {
+            OTA_LOG_L1( "[%s] Error: Unable to write block, file handle is NULL.\r\n", OTA_METHOD_NAME );
+            eIngestResult = IngestResultBadFileHandle;
+        }
+    }
+}
+
+/* Free the resources allocated for data ingestion and close the file handle */
+static IngestResult_t ingestDataBlockCleanup(   OtaFileContext_t * pFileContext,
+                                                OtaErr_t * pCloseResult )
+{
+    DEFINE_OTA_METHOD_NAME( "ingestDataBlockCleanup" );
+
+    IngestResult_t eIngestResult = IngestResultAccepted_Continue;
+
+    if( pFileContext->blocksRemaining == 0U )
+    {
+        OTA_LOG_L1( "[%s] Received final expected block of file.\r\n", OTA_METHOD_NAME );
+
+        free( pFileContext->pRxBlockBitmap ); /* Free the bitmap now that we're done with the download. */
+        pFileContext->pRxBlockBitmap = NULL;
+
+        if( pFileContext->pFile != NULL )
+        {
+            *pCloseResult = otaAgent.palCallbacks.closeFile( pFileContext );
+
+            if( *pCloseResult == OTA_ERR_NONE )
+            {
+                OTA_LOG_L1( "[%s] File receive complete and signature is valid.\r\n", OTA_METHOD_NAME );
+                eIngestResult = IngestResultFileComplete;
+            }
+            else
+            {
+                uint32_t closeResult = ( uint32_t ) *pCloseResult;
+
+                OTA_LOG_L1( "[%s] Error (%u:0x%06x) closing OTA file.\r\n",
+                            OTA_METHOD_NAME,
+                            closeResult >> OTA_MAIN_ERR_SHIFT_DOWN_BITS,
+                            closeResult & ( uint32_t ) OTA_PAL_ERR_MASK );
+
+                if( ( ( closeResult ) & ( OTA_MAIN_ERR_MASK ) ) == OTA_ERR_SIGNATURE_CHECK_FAILED )
+                {
+                    eIngestResult = IngestResultSigCheckFail;
+                }
+                else
+                {
+                    eIngestResult = IngestResultFileCloseFail;
+                }
+            }
+
+            pFileContext->pFile = NULL; /* File is now closed so clear the file handle in the context. */
+        }
+        else
+        {
+            OTA_LOG_L1( "[%s] Error: File handle is NULL after last block received.\r\n", OTA_METHOD_NAME );
+            eIngestResult = IngestResultBadFileHandle;
+        }
+    }
+    else
+    {
+        OTA_LOG_L1( "[%s] Remaining: %u\r\n", OTA_METHOD_NAME, pFileContext->blocksRemaining );
+    }
+}
+
 /*
  * ingestDataBlock
  *
@@ -2180,6 +2291,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     size_t payloadSize = 0;
     uint32_t byte = 0;
     uint8_t bitMask = 0;
+    
 
     /* Check if the file context is NULL. */
     if( pFileContext == NULL )
@@ -2231,116 +2343,18 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
         }
     }
 
-    /* Validate the received data block.*/
+    /* Validate the data block and process it to store the information*/
     if( eIngestResult == IngestResultUninitialized )
     {
-        if( prvValidateDataBlock( pFileContext, uBlockIndex, uBlockSize ) )
-        {
-            OTA_LOG_L1( "[%s] Received file block %u, size %u\r\n", OTA_METHOD_NAME, uBlockIndex, uBlockSize );
-
-            /* Create bit mask for use in our bitmap. */
-            bitMask = 1U << ( uBlockIndex % BITS_PER_BYTE ); /*lint !e9031 The composite expression will never be greater than BITS_PER_BYTE(8). */
-
-            /* Calculate byte offset into bitmap. */
-            byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
-
-            /* Check if we've already received this block. */
-            if( ( ( pFileContext->pRxBlockBitmap[ byte ] ) & bitMask ) == 0U )
-            {
-                OTA_LOG_L1( "[%s] block %u is a DUPLICATE. %u blocks remaining.\r\n", OTA_METHOD_NAME,
-                            uBlockIndex,
-                            pFileContext->blocksRemaining );
-
-                eIngestResult = IngestResultDuplicate_Continue;
-                *pCloseResult = OTA_ERR_NONE; /* This is a success path. */
-            }
-        }
-        else
-        {
-            OTA_LOG_L1( "[%s] Error! Block %u out of expected range! Size %u\r\n", OTA_METHOD_NAME, uBlockIndex, uBlockSize );
-            eIngestResult = IngestResultBlockOutOfRange;
-        }
+        eIngestResult = processDataBlock(pFileContext, uBlockIndex, uBlockSize, pCloseResult, pPayload);
     }
 
-    /* Process the received data block. */
-    if( eIngestResult == IngestResultUninitialized )
-    {
-        if( pFileContext->pFile != NULL )
-        {
-            int32_t iBytesWritten = otaAgent.palCallbacks.writeBlock( pFileContext, ( uBlockIndex * OTA_FILE_BLOCK_SIZE ), pPayload, uBlockSize );
-
-            if( iBytesWritten < 0 )
-            {
-                OTA_LOG_L1( "[%s] Error (%d) writing file block\r\n", OTA_METHOD_NAME, iBytesWritten );
-                eIngestResult = IngestResultWriteBlockFailed;
-            }
-            else
-            {
-                pFileContext->pRxBlockBitmap[ byte ] &= ~bitMask; /* Mark this block as received in our bitmap. */
-                pFileContext->blocksRemaining--;
-                eIngestResult = IngestResultAccepted_Continue;
-                *pCloseResult = OTA_ERR_NONE;
-            }
-        }
-        else
-        {
-            OTA_LOG_L1( "[%s] Error: Unable to write block, file handle is NULL.\r\n", OTA_METHOD_NAME );
-            eIngestResult = IngestResultBadFileHandle;
-        }
-    }
-
-    /* Close the file and cleanup.*/
+    /* If the ingestion is complete close the file and cleanup.*/
     if( eIngestResult == IngestResultAccepted_Continue )
     {
-        if( pFileContext->blocksRemaining == 0U )
-        {
-            OTA_LOG_L1( "[%s] Received final expected block of file.\r\n", OTA_METHOD_NAME );
-
-            free( pFileContext->pRxBlockBitmap ); /* Free the bitmap now that we're done with the download. */
-            pFileContext->pRxBlockBitmap = NULL;
-
-            if( pFileContext->pFile != NULL )
-            {
-                *pCloseResult = otaAgent.palCallbacks.closeFile( pFileContext );
-
-                if( *pCloseResult == OTA_ERR_NONE )
-                {
-                    OTA_LOG_L1( "[%s] File receive complete and signature is valid.\r\n", OTA_METHOD_NAME );
-                    eIngestResult = IngestResultFileComplete;
-                }
-                else
-                {
-                    uint32_t closeResult = ( uint32_t ) *pCloseResult;
-
-                    OTA_LOG_L1( "[%s] Error (%u:0x%06x) closing OTA file.\r\n",
-                                OTA_METHOD_NAME,
-                                closeResult >> OTA_MAIN_ERR_SHIFT_DOWN_BITS,
-                                closeResult & ( uint32_t ) OTA_PAL_ERR_MASK );
-
-                    if( ( ( closeResult ) & ( OTA_MAIN_ERR_MASK ) ) == OTA_ERR_SIGNATURE_CHECK_FAILED )
-                    {
-                        eIngestResult = IngestResultSigCheckFail;
-                    }
-                    else
-                    {
-                        eIngestResult = IngestResultFileCloseFail;
-                    }
-                }
-
-                pFileContext->pFile = NULL; /* File is now closed so clear the file handle in the context. */
-            }
-            else
-            {
-                OTA_LOG_L1( "[%s] Error: File handle is NULL after last block received.\r\n", OTA_METHOD_NAME );
-                eIngestResult = IngestResultBadFileHandle;
-            }
-        }
-        else
-        {
-            OTA_LOG_L1( "[%s] Remaining: %u\r\n", OTA_METHOD_NAME, pFileContext->blocksRemaining );
-        }
+        eIngestResult = ingestDataBlockCleanup(pFileContext, pCloseResult);
     }
-
+ 
     return eIngestResult;
 }
 
