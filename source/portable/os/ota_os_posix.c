@@ -24,13 +24,11 @@
  */
 
 /* Standard Includes.*/
-#include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
 #include <mqueue.h>
 #include <sys/time.h>
-
-/* Include Demo Config as the first non-system header. */
-#include "demo_config.h"
+#include <sys/types.h>
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
@@ -70,10 +68,10 @@ OtaErr_t ota_InitEvent( OtaEventContext_t* pContext )
     else
     {
         LogInfo( (  "OTA Event Queue created." ) );
-        
+
         otaErrRet = OTA_ERR_NONE;
     }
-    
+
     return otaErrRet;
 }
 
