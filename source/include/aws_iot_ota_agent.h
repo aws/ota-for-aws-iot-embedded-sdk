@@ -528,7 +528,8 @@ typedef struct
 #define OTA_ERR_EVENT_Q_RECEIVE_FAILED     0x30000000UL  /*!< Failed to receive from the event queue. */
 #define OTA_ERR_EVENT_Q_DELETE_FAILED      0x31000000UL  /*!< Failed to delete the event queue. */
 #define OTA_ERR_EVENT_TIMER_CREATE_FAILED  0x32000000UL  /*!< Failed to create the timer. */
-#define OTA_ERR_EVENT_TIMER_CREATE_FAILED  0x32000000UL  /*!< Failed to create the timer. */
+#define OTA_ERR_EVENT_TIMER_STOP_FAILED    0x33000000UL  /*!< Failed to stop the timer. */
+#define OTA_ERR_EVENT_TIMER_DELETE_FAILED  0x34000000UL  /*!< Failed to delete the timer. */
 
 /* @[define_ota_err_codes] */
 

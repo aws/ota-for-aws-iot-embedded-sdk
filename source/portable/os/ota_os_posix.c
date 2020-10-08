@@ -225,9 +225,62 @@ OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
              LogError( (  "OTA Timer settig timeout failed." ) );
         }else
         {
-             otaErrRet = OTA_ERR_NONE;
+            LogInfo( (  "OTA Timer started." ) );
+
+            otaErrRet = OTA_ERR_NONE;
         }
     }
+
+    return otaErrRet;
+}
+
+OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext )
+{
+    (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    struct itimerspec trigger;
+
+    trigger.it_value.tv_sec = 0;
+
+    /* Stop the timer*/
+    if ( timer_settime(otaTimer, 0, &trigger, NULL) ==  -1 )
+    {
+        LogError( (  "OTA Timer settig timeout failed." ) );    
+        
+        otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Timer stopped." ) );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+      
+    return otaErrRet;
+}
+
+OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext )
+{
+    (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    /* Delete the timer*/
+    if ( timer_delete( otaTimer) == -1 ) 
+    {
+        LogError( (  "OTA Timer delete failed." ) );
+
+        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Timer deleted." ) );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+    
 
     return otaErrRet;
 }
