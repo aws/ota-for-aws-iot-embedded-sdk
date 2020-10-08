@@ -30,6 +30,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+/* OTA agent config includes. */
+#include "aws_ota_agent_config.h"
+
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
 
