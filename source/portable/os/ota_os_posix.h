@@ -30,7 +30,7 @@
 #include <stddef.h>
 
 /* Demo config include. */
-#include "demo_config.h"
+// #include "demo_config.h"
 
  /* OTA library interface include. */
 #include "ota_os_interface.h"
