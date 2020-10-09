@@ -48,7 +48,7 @@
 #define INVALID_NUMBER_OF_PADDING_SYMBOL -8
 
 
-/* Testing Constants */
+/* Testing Constants. */
 
 /* Buffer size that is large enough to hold the result of decoding any test string. */
 #define BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE 20
@@ -112,7 +112,7 @@
 #define BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED                  "Rk9PQkE==="
 #define BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED_LEN              ( sizeof( BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED ) - 1U )
 
-/* Created by adding three padding characters to the valid encoded data string "Rk9PQkFS" */
+/* Created by adding three padding characters to the valid encoded data string "Rk9PQkFS". */
 #define BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED                "Rk9PQkFS==="
 #define BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED_LEN            ( sizeof( BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED ) - 1U )
 
@@ -146,7 +146,7 @@
 
 /* This string represents the scenario where encoded data, excluding the padding, mod four is equal
  * to one. This is significant because there is no input data that can be encoded to create an
- * encoded data string of this length */
+ * encoded data string of this length. */
 #define BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED                   "Rk9PC=="
 #define BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED_LEN               ( sizeof( BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED ) - 1U )
 
@@ -243,7 +243,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding ( void )
     size_t resultLen = 0;
     int result = 0;
 
-    /* Test having no padding symbols when there could be two valid padding symbols */
+    /* Test having no padding symbols when there could be two valid padding symbols. */
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
@@ -254,7 +254,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding ( void )
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED, pDecodedResultBuffer );
 
-    /* Test having no padding symbols when there could be one valid padding symbol */
+    /* Test having no padding symbols when there could be one valid padding symbol. */
     resultLen = 0;
     memset(pDecodedResultBuffer,'\0',sizeof(pDecodedResultBuffer));
     result = base64Decode( pDecodedResultBuffer,
@@ -342,7 +342,8 @@ void test_OTA_base64Decode_ValidWhitespace( void )
     size_t resultLen = 0;
     int result = 0;
 
-    /* Test for having a whitespace character at the start of a valid Base64 encoded data string without padding. */
+    /* Test for having a whitespace character at the start of a valid Base64
+     * encoded data string without padding. */
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
@@ -353,7 +354,8 @@ void test_OTA_base64Decode_ValidWhitespace( void )
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_WHITESPACE_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_WHITESPACE_DECODED, pDecodedResultBuffer);
 
-    /* Test for having a whitespace character at the end of a valid Base64 encoded data string with padding. */
+    /* Test for having a whitespace character at the end of a valid Base64
+     * encoded data string with padding. */
     resultLen = 0;
     memset(pDecodedResultBuffer,'\0',sizeof(pDecodedResultBuffer));
     result = base64Decode( pDecodedResultBuffer,
@@ -377,7 +379,8 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
     int result = 0;
     size_t resultLen = 0;
 
-    /* Test for having a null pointer passed in for pDest while other parameters are valid. */
+    /* Test for having a null pointer passed in for pDest while other
+     * parameters are valid. */
     result = base64Decode( NULL,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
@@ -385,7 +388,8 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
                            BASE64_VALID_DATA_ENCODED_LEN);
     TEST_ASSERT_EQUAL_INT( NULL_PTR_ERROR, result );
 
-    /* Test for having a null pointer passed in for pResultLen while other parameters are valid. */
+    /* Test for having a null pointer passed in for pResultLen while other
+     * parameters are valid. */
     resultLen = 0;
     memset(pDecodedResultBuffer,'\0',sizeof(pDecodedResultBuffer));
     result = base64Decode( pDecodedResultBuffer,
@@ -395,7 +399,8 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
                            BASE64_VALID_DATA_ENCODED_LEN);
     TEST_ASSERT_EQUAL_INT( NULL_PTR_ERROR, result );
 
-    /* Test for having a null pointer passed in for pEncodedData while other parameters are valid. */
+    /* Test for having a null pointer passed in for pEncodedData while other
+     * parameters are valid. */
     resultLen = 0;
     memset(pDecodedResultBuffer,'\0',sizeof(pDecodedResultBuffer));
     result = base64Decode( pDecodedResultBuffer,
@@ -459,7 +464,8 @@ void test_OTA_base64Decode_InvalidNonBase64Symbols ( void )
     size_t resultLen = 0;
     /* Table of numbers representing all Ascii symbols other than the valid
      * Base64 symbols. Valid symbols are: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-     * "abcdefghijklmnopqrstuvwxyz", "0123456789", "+", "/", space, LF, CR, and '=' */
+     * "abcdefghijklmnopqrstuvwxyz", "0123456789", "+", "/", space, LF, CR, and
+     * '='. */
     char invalidAsciiSymbols[] = {
           0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
          11, 12, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -507,7 +513,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits ( void )
     int result = 0;
     size_t resultLen = 0;
 
-    /* Test the case where there are two padding bits and they have non-zero values */
+    /* Test the case where there are two padding bits and they have non-zero values. */
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
@@ -515,7 +521,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits ( void )
                            BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( NON_ZERO_PADDING_ERROR, result );
 
-    /* Test the case where there are four padding bits and they have non-zero values */
+    /* Test the case where there are four padding bits and they have non-zero values. */
     resultLen = 0;
     memset(pDecodedResultBuffer,'\0',sizeof(pDecodedResultBuffer));
     result = base64Decode( pDecodedResultBuffer,
@@ -597,7 +603,7 @@ void test_OTA_base64Decode_InvalidInputSize (void)
  */
 void test_OTA_base64Decode_InvalidDecodeBufferSize( void )
 {
-    /* This buffer size is one less than what's required to store the result */
+    /* This buffer size is one less than what's required to store the result. */
     char pDecodedResultBuffer[BASE64_VALID_DATA_DECODED_LEN - 1U] = { 0 }; 
     int result = 0;
     size_t resultLen = 0;
