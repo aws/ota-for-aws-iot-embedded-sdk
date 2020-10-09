@@ -226,7 +226,7 @@ enum
 
 /* This is the OTA statistics structure to hold useful info. */
 
-typedef struct ota_agent_statistics
+typedef struct OtaAgentStatistics
 {
     uint32_t otaPacketsReceived;  /* Number of OTA packets received by the MQTT callback. */
     uint32_t otaPacketsQueued;    /* Number of OTA packets queued by the MQTT callback. */
@@ -236,7 +236,7 @@ typedef struct ota_agent_statistics
 
 /* The OTA agent is a singleton today. The structure keeps it nice and organized. */
 
-typedef struct ota_agent_context
+typedef struct OtaAgentContext
 {
     OtaState_t state;                                      /* State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /* Thing name + zero terminator. */
@@ -258,14 +258,14 @@ typedef struct ota_agent_context
 
 /* The OTA Agent event and data structures. */
 
-typedef struct
+typedef struct OtaEventData
 {
     uint8_t data[ OTA_DATA_BLOCK_SIZE ];
     uint32_t dataLength;
     bool bufferUsed;
 } OtaEventData_t;
 
-typedef struct
+typedef struct OtaEventMsg
 {
     OtaEventData_t * pEventData;
     OtaEvent_t eventId;

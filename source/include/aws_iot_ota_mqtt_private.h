@@ -36,12 +36,12 @@
  * This function Request for the next available OTA job from the job service
  * by publishing a "get next job" message to the job service.
  *
- * @param[in] pxAgentCtx The OTA agent context.
+ * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx );
+OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Initialize file transfer over MQTT.
@@ -49,12 +49,12 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx );
  * This function initializes the file transfer after the OTA job is parsed and accepted
  * by subscribing to the data streaming topics.
  *
- * @param[in] pxAgentCtx The OTA agent context.
+ * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx );
+OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Request File block over MQTT.
@@ -62,38 +62,38 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx );
  * This function is used for requesting a file block over MQTT using the
  * file context.
  *
- * @param[in] pxAgentCtx The OTA agent context.
+ * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx );
+OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Decode a cbor encoded fileblock.
  *
  * This function is used for decoding a file block received over MQTT & encoded in cbor.
  *
- * @param[in] pucMessageBuffer The message to be decoded.
- * @param[in] xMessageSize     The size of the message in bytes.
- * @param[out] plFileId        The server file ID.
- * @param[out] plBlockId       The file block ID.
- * @param[out] plBlockSize     The file block size.
- * @param[out] ppucPayload     The payload.
- * @param[out] pxPayloadSize   The payload size.
+ * @param[in] pMessageBuffer The message to be decoded.
+ * @param[in] messageSize     The size of the message in bytes.
+ * @param[out] pFileId        The server file ID.
+ * @param[out] pBlockId       The file block ID.
+ * @param[out] pBlockSize     The file block size.
+ * @param[out] pPayload     The payload.
+ * @param[out] pPayloadSize   The payload size.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
-                               size_t xMessageSize,
-                               int32_t * plFileId,
-                               int32_t * plBlockId,
-                               int32_t * plBlockSize,
-                               uint8_t ** ppucPayload,
-                               size_t * pxPayloadSize );
+OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
+                               size_t messageSize,
+                               int32_t * pFileId,
+                               int32_t * pBlockId,
+                               int32_t * pBlockSize,
+                               uint8_t ** pPayload,
+                               size_t * pPayloadSize );
 
 /**
  * @brief Cleanup related to OTA over MQTT.
@@ -101,12 +101,12 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
  * This function perfroms cleanup by unsubscribing from any topics that were
  * subscribed for performing OTA over MQTT.
  *
- * @param[in] pxAgentCtx The OTA agent context.
+ * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx );
+OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Update job status over MQTT.
@@ -114,21 +114,21 @@ OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx );
  * This function updates the OTA job status over MQTT with information like in progress, completion
  * or failure.
  *
- * @param[in] pxAgentCtx The OTA agent context.
+ * @param[in] pAgentCtx The OTA agent context.
  *
- * @param[in] eStatus The OTA job status which should be updated. @see OtaJobStatus_t.
+ * @param[in] status The OTA job status which should be updated. @see OtaJobStatus_t.
  *
- * @param[in] lReason The major reason for the status update.
+ * @param[in] reason The major reason for the status update.
  *
- * @param[in] lSubReason The platform specific reason.
+ * @param[in] subReason The platform specific reason.
  *
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
-                                OtaJobStatus_t eStatus,
-                                int32_t lReason,
-                                int32_t lSubReason );
+OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
+                                OtaJobStatus_t status,
+                                int32_t reason,
+                                int32_t subReason );
 
 
 #endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */

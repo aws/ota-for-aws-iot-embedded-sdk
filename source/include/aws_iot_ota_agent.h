@@ -99,7 +99,7 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
  *
  * @note There is currently support only for a single OTA context.
  */
-typedef enum
+typedef enum OtaState
 {
     OtaAgentStateNoTransition = -1,
     OtaAgentStateInit = 0,
@@ -122,7 +122,7 @@ typedef enum
  *
  * The events sent to OTA agent.
  */
-typedef enum
+typedef enum OtaEvent
 {
     OtaAgentEventStart = 0,
     OtaAgentEventStartSelfTest,
@@ -146,7 +146,7 @@ typedef enum
  *
  * The image state set by platform implementation.
  */
-typedef enum
+typedef enum OtaPalImageState
 {
     OtaPalImageStateUnknown = 0,
     OtaPalImageStatePendingCommit,
@@ -158,7 +158,7 @@ typedef enum
  * @ingroup ota_datatypes_enums
  * @brief OTA job document parser error codes.
  */
-typedef enum
+typedef enum OtaJobParseErr
 {
     OtaJobParseErrUnknown = -1,        /* The error code has not yet been set by a logic path. */
     OtaJobParseErrNone = 0,            /* Signifies no error has occurred. */
@@ -190,7 +190,7 @@ typedef enum
  *
  * See the OtaImageState_t type for more information.
  */
-typedef enum
+typedef enum OtaJobEvent
 {
     OtaJobEventActivate = 0,  /*!< OTA receive is authenticated and ready to activate. */
     OtaJobEventFail = 1,      /*!< OTA receive failed. Unable to use this update. */
@@ -214,7 +214,7 @@ typedef enum
  * If you want to abort an active OTA transfer, you may do so by calling the API
  * @ref ota_function_setimagestate( OtaImageStateAborted ).
  */
-typedef enum
+typedef enum OtaImageState
 {
     OtaImageStateUnknown = 0,  /*!< The initial state of the OTA MCU Image. */
     OtaImageStateTesting = 1,  /*!< The state of the OTA MCU Image post successful download and reboot. */

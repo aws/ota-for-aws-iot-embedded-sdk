@@ -567,7 +567,7 @@ static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
     return OtaJobParseErrNonConformingJobDoc;
 }
 
-static void prvSetPALCallbacks( const OtaPalCallbacks_t * pCallbacks )
+static void setPALCallbacks( const OtaPalCallbacks_t * pCallbacks )
 {
     //configASSERT( pCallbacks != NULL );
 
@@ -955,17 +955,17 @@ static OtaErr_t requestDataHandler( OtaEventData_t * pEventData )
 
 static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
 {
-    DEFINE_OTA_METHOD_NAME( "prvProcessDataMessage" );
+    DEFINE_OTA_METHOD_NAME( "processDataHandler" );
 
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaErr_t closeResult = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Get the file context. */
-    OtaFileContext_t * pxFileContext = &otaAgent.pOtaFiles[ otaAgent.fileIndex ];
+    OtaFileContext_t * pFileContext = &otaAgent.pOtaFiles[ otaAgent.fileIndex ];
 
     /* Ingest data blocks received. */
-    IngestResult_t result = ingestDataBlock( pxFileContext,
+    IngestResult_t result = ingestDataBlock( pFileContext,
                                              pEventData->data,
                                              pEventData->dataLength,
                                              &closeResult );
@@ -1204,7 +1204,7 @@ OtaEventData_t * otaEventBufferGet( void )
     return pOtaFreeMsg;
 }
 
-static void prvOTA_FreeContext( OtaFileContext_t * const pFileContext )
+static void otaFreeContext( OtaFileContext_t * const pFileContext )
 {
     if( pFileContext != NULL )
     {
@@ -1288,7 +1288,7 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
         ( void ) otaAgent.palCallbacks.abortUpdate( pFileContext );
 
         /* Free the resources. */
-        prvOTA_FreeContext( pFileContext );
+        otaFreeContext( pFileContext );
 
         /* Clear the entire structure now that it is free. */
         ( void ) memset( pFileContext, 0, sizeof( OtaFileContext_t ) );
@@ -1408,12 +1408,12 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     else if( ModelParamTypeStringInDoc == docParam.modelParamType )
     {
         /* Copy pointer to source string instead of duplicating the string. */
-        const char * pcStringInDoc = pValueInJson;
-        *paramAddr.pConstCharPtr = pcStringInDoc;
+        const char * pStringInDoc = pValueInJson;
+        *paramAddr.pConstCharPtr = pStringInDoc;
         OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.*s ]\r\n",
                     OTA_METHOD_NAME,
                     docParam.pSrcKey,
-                    valueLength, pcStringInDoc );
+                    valueLength, pStringInDoc );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
@@ -1437,15 +1437,15 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     else if( ModelParamTypeSigBase64 == docParam.modelParamType )
     {
         /* Allocate space for and decode the base64 signature. */
-        void * pvSignature = malloc( sizeof( Sig256_t ) );
+        void * pSignature = malloc( sizeof( Sig256_t ) );
 
-        if( pvSignature != NULL )
+        if( pSignature != NULL )
         {
-            size_t xActualLen = 0;
-            *paramAddr.pVoidPtr = pvSignature;
-            Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
+            size_t actualLen = 0;
+            *paramAddr.pVoidPtr = pSignature;
+            Sig256_t * pSig256 = *paramAddr.pSig256Ptr;
 
-            if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+            if( base64Decode( pSig256->data, sizeof( pSig256->data ), &actualLen,
                                         ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
             { /* Stop processing on error. */
                 OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
@@ -1453,7 +1453,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
             }
             else
             {
-                pxSig256->size = ( uint16_t ) xActualLen;
+                pSig256->size = ( uint16_t ) actualLen;
                 OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
                             OTA_METHOD_NAME,
                             docParam.pSrcKey,
@@ -1572,14 +1572,14 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
      if( err == DocParseErrNone ) 
      { 
-         uint32_t ulMissingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap ) 
+         uint32_t missingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap ) 
                                     ^ pDocModel->paramsRequiredBitmap;
-         if( ulMissingParams != 0U ) 
+         if( missingParams != 0U ) 
          { 
              /* The job document did not have all required document model parameters. */
              for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ ) 
              { 
-                 if( ( ulMissingParams & ( 1UL << scanIndex ) ) != 0UL ) 
+                 if( ( missingParams & ( 1UL << scanIndex ) ) != 0UL ) 
                  {
                      OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
                                  OTA_METHOD_NAME, 
@@ -1658,9 +1658,9 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
 /*
  * Validate the version of the update received.
  */
-static OtaErr_t prvValidateUpdateVersion( OtaFileContext_t * pFileContext )
+static OtaErr_t validateUpdateVersion( OtaFileContext_t * pFileContext )
 {
-    DEFINE_OTA_METHOD_NAME( "prvValidateUpdateVersion" );
+    DEFINE_OTA_METHOD_NAME( "validateUpdateVersion" );
 
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
 
@@ -1801,7 +1801,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                         pFileContext->pUpdateUrlPath = NULL;
                     }
 
-                    prvOTA_FreeContext( pFileContext );
+                    otaFreeContext( pFileContext );
 
                     pFinalFile = &otaAgent.pOtaFiles[ otaAgent.fileIndex ];
                     *pUpdateJob = true;
@@ -1843,7 +1843,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                 OTA_LOG_L1( "[%s] In self test mode.\r\n", OTA_METHOD_NAME );
 
                 /* Validate version of the update received.*/
-                errVersionCheck = prvValidateUpdateVersion( pFileContext );
+                errVersionCheck = validateUpdateVersion( pFileContext );
 
                 if( otaconfigAllowDowngrade || ( errVersionCheck == OTA_ERR_NONE ) )
                 {
@@ -1975,7 +1975,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     if( pFinalFile == NULL )
     {
         /* Free the current reserved file context. */
-        prvOTA_FreeContext( pFileContext );
+        otaFreeContext( pFileContext );
 
         /* Close any open files. */
         ( void ) otaClose( &otaAgent.pOtaFiles[ otaAgent.fileIndex ] );
@@ -2074,13 +2074,13 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 }
 
 /*
- * prvValidateDataBlock
+ * validateDataBlock
  *
  * Validate the block index and size. If it is NOT the last block, it MUST be equal to a full block size.
  * If it IS the last block, it MUST be equal to the expected remainder. If the block ID is out of range,
  * that's an error.
  */
-static bool prvValidateDataBlock( const OtaFileContext_t * pFileContext,
+static bool validateDataBlock( const OtaFileContext_t * pFileContext,
                                   uint32_t blockIndex,
                                   uint32_t blockSize )
 {
@@ -2179,7 +2179,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     /* Validate the received data block.*/
     if( eIngestResult == IngestResultUninitialized )
     {
-        if( prvValidateDataBlock( pFileContext, uBlockIndex, uBlockSize ) )
+        if( validateDataBlock( pFileContext, uBlockIndex, uBlockSize ) )
         {
             OTA_LOG_L1( "[%s] Received file block %u, size %u\r\n", OTA_METHOD_NAME, uBlockIndex, uBlockSize );
 
@@ -2638,7 +2638,7 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
      * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
      * do anything and just use the defaults in the OTA structure.
      */
-    prvSetPALCallbacks( pCallbacks );
+    setPALCallbacks( pCallbacks );
 
     /*
      * Initialize the OTA control interface based on the application protocol
