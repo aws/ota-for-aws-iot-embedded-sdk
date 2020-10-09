@@ -82,10 +82,10 @@ static const char pcOTA_String_Receive[] = "receive";
  * shall not change them to arbitrary strings or the job will not change
  * states.
  * */
-const char pcOTA_String_InProgress[] = "IN_PROGRESS";
-const char pcOTA_String_Failed[] = "FAILED";
-const char pcOTA_String_Succeeded[] = "SUCCEEDED";
-const char pcOTA_String_Rejected[] = "REJECTED";
+static const char pcOTA_String_InProgress[] = "IN_PROGRESS";
+static const char pcOTA_String_Failed[] = "FAILED";
+static const char pcOTA_String_Succeeded[] = "SUCCEEDED";
+static const char pcOTA_String_Rejected[] = "REJECTED";
 
 const char * pcOTA_JobStatus_Strings[ NumJobStatusMappings ] =
 {
