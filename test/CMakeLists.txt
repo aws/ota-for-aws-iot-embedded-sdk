@@ -37,7 +37,8 @@ include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
 # Target for Coverity analysis that builds the library.
 add_library( coverity_analysis
     ${OTA_SOURCES}
-    ${OTA_OS_POSIX_SOURCES} )
+    ${OTA_OS_POSIX_SOURCES}
+    ${OTA_MQTT_SOURCES} )
 
 # OTA include path.
 target_include_directories( coverity_analysis PUBLIC

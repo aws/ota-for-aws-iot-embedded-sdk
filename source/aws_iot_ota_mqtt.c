@@ -39,7 +39,6 @@
 
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
-extern const AppVersion32_t appFirmwareVersion;
 
 /* General constants. */
 #define OTA_SUBSCRIBE_WAIT_MS          30000UL

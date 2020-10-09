@@ -40,7 +40,6 @@
 
 /* OTA Event queue attributes.*/
 #define OTA_QUEUE_NAME   "/otaqueue"
-#define QUEUE_PERMISSIONS 0777
 #define MAX_MESSAGES 10
 #define MAX_MSG_SIZE 12
 
@@ -67,7 +66,8 @@ OtaErr_t ota_InitEvent( OtaEventContext_t* pContext )
     attr.mq_curmsgs = 0;
 
     /* Open the event queue .*/
-    if ( ( otaEventQueue = mq_open ( OTA_QUEUE_NAME, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr ) ) == -1 )
+    otaEventQueue = mq_open ( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
+    if ( otaEventQueue == -1 )
     {
         LogError( (  "OTA Event Queue create failed." ) );
 
@@ -122,6 +122,7 @@ OtaErr_t ota_ReceiveEvent( OtaEventContext_t* pContext,
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
+    char * pDst = pEventMsg;
     char buff[MAX_MSG_SIZE];
 
     /* Delay a bit.*/
@@ -138,7 +139,7 @@ OtaErr_t ota_ReceiveEvent( OtaEventContext_t* pContext,
         LogInfo( (  "OTA Event received" ) );
 
         /* copy the data from local buffer.*/
-        memcpy( pEventMsg, buff, MAX_MSG_SIZE );
+        memcpy( pDst, buff, MAX_MSG_SIZE );
 
         otaErrRet = OTA_ERR_NONE;
     }

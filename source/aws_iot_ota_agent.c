@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 /* OTA agent includes. */
 #include "aws_iot_ota_agent.h"
@@ -49,7 +50,6 @@
 
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
-extern const AppVersion32_t appFirmwareVersion;
 
 /* ToDo: Cleanup BaseType_t. */
 #define BaseType_t    uint32_t
@@ -219,10 +219,6 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
-/* Attempt to force reset the device. Normally called by the agent when a self test rejects the update. */
-
-static OtaErr_t resetDevice( void );
-
 /* Check if the platform is in self-test. */
 
 static bool inSelftest( void );
@@ -251,7 +247,7 @@ static OtaErr_t jobNotificationHandler( OtaEventData_t * pEventData );
 
 #define OTA_JOB_CALLBACK_DEFAULT_INITIALIZER                      \
     {                                                             \
-        .abort = prvPAL_Abort,                                    \
+        .abortUpdate = prvPAL_Abort,                                    \
         .activateNewImage = palDefaultActivateNewImage,           \
         .closeFile = prvPAL_CloseFile,                            \
         .createFileForRx = prvPAL_CreateFileForRx,                \
@@ -575,13 +571,13 @@ static void prvSetPALCallbacks( const OtaPalCallbacks_t * pCallbacks )
 {
     //configASSERT( pCallbacks != NULL );
 
-    if( pCallbacks->abort != NULL )
+    if( pCallbacks->abortUpdate != NULL )
     {
-        otaAgent.palCallbacks.abort = pCallbacks->abort;
+        otaAgent.palCallbacks.abortUpdate = pCallbacks->abortUpdate;
     }
     else
     {
-        otaAgent.palCallbacks.abort = prvPAL_Abort;
+        otaAgent.palCallbacks.abortUpdate = prvPAL_Abort;
     }
 
     if( pCallbacks->activateNewImage != NULL )
@@ -707,9 +703,9 @@ static OtaErr_t inSelfTestHandler( OtaEventData_t * pEventData )
         /* The job is in self test but the platform image state is not so it could be
          * an attack on the platform image state. Reject the update (this should also
          * cause the image to be erased), aborting the job and reset the device. */
-        OTA_LOG_L1( "[%s] Job in self test but platform state is not!\r\n", OTA_METHOD_NAME );
+        OTA_LOG_L1( "[%s] Job in self test but platform state is not, rejecting the update & rebooting.\r\n", OTA_METHOD_NAME );
         ( void ) setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
-        ( void ) resetDevice(); /* Ignore return code since there's nothing we can do if we can't force reset. */
+        otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
     }
 
     return OTA_ERR_NONE;
@@ -1180,33 +1176,6 @@ static OtaErr_t jobNotificationHandler( OtaEventData_t * pEventData )
     return OTA_SignalEvent( &eventMsg ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
 }
 
-/*
- * This is a private function only meant to be called by the OTA agent after the
- * currently running image that is in the self test phase rejects the update.
- * It simply calls the platform specific code required to reset the device.
- */
-static OtaErr_t resetDevice( void )
-{
-    DEFINE_OTA_METHOD_NAME( "resetDevice" );
-
-    OtaErr_t err = OTA_ERR_UNINITIALIZED;
-
-    /*
-     * Call platform specific code to reset the device. This should not return unless
-     * there is a problem within the PAL layer. If it does return, output an error
-     * message. The device may need to be reset manually.
-     */
-    OTA_LOG_L1( "[%s] Attempting forced reset of device...\r\n", OTA_METHOD_NAME );
-    err = otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
-
-    /*
-     * We should not get here, OTA pal call for resetting device failed.
-     */
-    OTA_LOG_L1( "[%s] Failed to reset the device (0x%08x). Please reset manually.\r\n", OTA_METHOD_NAME, err );
-
-    return err;
-}
-
 void otaEventBufferFree( OtaEventData_t * const pBuffer )
 {
     DEFINE_OTA_METHOD_NAME( "otaEventBufferFree" );
@@ -1316,7 +1285,7 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
         /*
          * Abort any active file access and release the file resource, if needed.
          */
-        ( void ) otaAgent.palCallbacks.abort( pFileContext );
+        ( void ) otaAgent.palCallbacks.abortUpdate( pFileContext );
 
         /* Free the resources. */
         prvOTA_FreeContext( pFileContext );
@@ -1417,20 +1386,19 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
         /* Malloc memory for a copy of the value string plus a zero terminator. */
-        void * pvStringCopy = malloc( valueLength + 1U );
+        char * pStringCopy = malloc( valueLength + 1U );
 
-        if( pvStringCopy != NULL )
+        if( pStringCopy != NULL )
         {
-            *paramAddr.pVoidPtr = pvStringCopy;
-            char * pcStringCopy = ( char * ) pvStringCopy;
+            *paramAddr.pVoidPtr = pStringCopy;
             /* Copy parameter string into newly allocated memory. */
-            ( void ) memcpy( pvStringCopy, pValueInJson, valueLength );
+            ( void ) memcpy( pStringCopy, pValueInJson, valueLength );
             /* Zero terminate the new string. */
-            pcStringCopy[ valueLength ] = '\0';
+            pStringCopy[ valueLength ] = '\0';
             OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %s]\r\n",
                         OTA_METHOD_NAME,
                         docParam.pSrcKey,
-                        pcStringCopy );
+                        pStringCopy );
         }
         else
         { /* Stop processing on error. */
@@ -1451,9 +1419,10 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     {
         char * pEnd;
         const char * pStart = pValueInJson;
+        errno = 0;
         *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
 
-        if( pEnd == &pValueInJson[ valueLength ] )
+        if( ( errno == 0 ) && ( pEnd == &pValueInJson[ valueLength ] ) )
         {
             OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %lu ]\r\n",
                         OTA_METHOD_NAME,
@@ -1475,36 +1444,21 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
             size_t xActualLen = 0;
             *paramAddr.pVoidPtr = pvSignature;
             Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-            /* Allocate space for and decode the base64 signature. */
-            void * pvSignature = malloc( sizeof( Sig256_t ) );
 
-            if( pvSignature != NULL )
-            {
-                size_t xActualLen = 0;
-                *paramAddr.pVoidPtr = pvSignature;
-                Sig256_t * pxSig256 = *paramAddr.pSig256Ptr;
-
-                if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
-                                            ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
-                { /* Stop processing on error. */
-                    OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
-                    err = DocParseErrBase64Decode;
-                }
-                else
-                {
-                    pxSig256->size = ( uint16_t ) xActualLen;
-                    OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
-                                OTA_METHOD_NAME,
-                                docParam.pSrcKey,
-                                pValueInJson );
-                }
+            if( base64Decode( pxSig256->data, sizeof( pxSig256->data ), &xActualLen,
+                                        ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
+            { /* Stop processing on error. */
+                OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
+                err = DocParseErrBase64Decode;
             }
             else
             {
-                /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-                err = DocParseErrOutOfMemory;
+                pxSig256->size = ( uint16_t ) xActualLen;
+                OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
+                            OTA_METHOD_NAME,
+                            docParam.pSrcKey,
+                            pValueInJson );
             }
-
         }
         else
         {
@@ -1579,7 +1533,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
         for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
         {
-            char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
+            const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
             size_t queryKeyLength = strlen( pQueryKey );
             char * pValueInJson;
             size_t valueLength;
@@ -1713,22 +1667,8 @@ static OtaErr_t prvValidateUpdateVersion( OtaFileContext_t * pFileContext )
     /* Only check for versions if the target is self */
     if( otaAgent.serverFileID == 0 )
     {
-        /* Check if update version received is newer than current version.*/
-        if( pFileContext->updaterVersion < appFirmwareVersion.u.unsignedVersion32 )
-        {
-            OTA_LOG_L1( "[%s] The update version is newer than the version on device.\r\n", OTA_METHOD_NAME );
-
-            err = OTA_ERR_NONE;
-        }
-        /* Check if update version received is older than current version.*/
-        else if( pFileContext->updaterVersion > appFirmwareVersion.u.unsignedVersion32 )
-        {
-            OTA_LOG_L1( "[%s] The update version is older than the version on device.\r\n", OTA_METHOD_NAME );
-
-            err = OTA_ERR_DOWNGRADE_NOT_ALLOWED;
-        }
         /* Check if version reported is the same as the running version. */
-        else if( pFileContext->updaterVersion == appFirmwareVersion.u.unsignedVersion32 )
+        if( pFileContext->updaterVersion == appFirmwareVersion.u.unsignedVersion32 )
         {
             /* The version is the same so either we're not actually the new firmware or
              * someone messed up and sent firmware with the same version. In either case,
@@ -1737,6 +1677,21 @@ static OtaErr_t prvValidateUpdateVersion( OtaFileContext_t * pFileContext )
             OTA_LOG_L1( "[%s] We rebooted and the version is still the same.\r\n", OTA_METHOD_NAME );
 
             err = OTA_ERR_SAME_FIRMWARE_VERSION;
+        }
+        /* Check if update version received is older than current version.*/
+        else if( pFileContext->updaterVersion > appFirmwareVersion.u.unsignedVersion32 )
+        {
+            OTA_LOG_L1( "[%s] The update version is older than the version on device.\r\n", OTA_METHOD_NAME );
+
+            err = OTA_ERR_DOWNGRADE_NOT_ALLOWED;
+        }
+        /* pFileContext->updaterVersion < appFirmwareVersion.u.unsignedVersion32 is true.
+           Update version received is newer than current version. */
+        else
+        {
+            OTA_LOG_L1( "[%s] The update version is newer than the version on device.\r\n", OTA_METHOD_NAME );
+
+            err = OTA_ERR_NONE;
         }
     }
     else
@@ -1908,7 +1863,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                     ( void ) setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
                     /* All reject cases must reset the device. */
-                    ( void ) resetDevice(); /* Ignore return code since there's nothing we can do if we can't force reset. */
+                    otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
                 }
             }
             else
@@ -2893,14 +2848,14 @@ OtaErr_t OTA_ActivateNewImage( void )
  * NOTE: This call may block due to the status update message.
  */
 
-OtaErr_t OTA_SetImageState( OtaImageState_t eState )
+OtaErr_t OTA_SetImageState( OtaImageState_t state )
 {
     DEFINE_OTA_METHOD_NAME( "OTA_SetImageState" );
 
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
 
-    switch( eState )
+    switch( state )
     {
         case OtaImageStateAborted:
 
@@ -2927,7 +2882,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t eState )
             /*
              * Set the image state as rejected.
              */
-            err = setImageStateWithReason( eState, 0 );
+            err = setImageStateWithReason( state, 0 );
 
             break;
 
@@ -2936,7 +2891,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t eState )
             /*
              * Set the image state as accepted.
              */
-            err = setImageStateWithReason( eState, 0 );
+            err = setImageStateWithReason( state, 0 );
 
             break;
 

@@ -55,4 +55,6 @@ typedef struct
     } u;
 } AppVersion32_t;
 
+extern const AppVersion32_t appFirmwareVersion;
+
 #endif /* ifndef _IOT_APPVERSION32_H_ */
