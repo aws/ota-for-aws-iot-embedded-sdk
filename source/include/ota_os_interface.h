@@ -35,6 +35,13 @@ typedef struct OtaEventContext   OtaEventContext_t;
 struct OtaTimerContext;
 typedef struct OtaTimerContext   OtaTimerContext_t;
 
+typedef enum
+{
+    OTASelfTestTimer = 0,
+    OTARequestTimer,
+    OTANumOfTimers
+} OTATimers_t;
+
 /**
  * @brief Initialize the OTA events.
  *
@@ -186,7 +193,7 @@ typedef struct OtaTimerInterface
     ota_StopTimer_t stop;
     ota_DeleteTimer_t delete;
     ota_TimerCallback_t callback;
-    OtaTimerContext_t * PTimerCtx[ 2 ]; /**< Implementation-defined ota timer context. */
+    OtaTimerContext_t * PTimerCtx[ OTANumOfTimers ]; /**< Implementation-defined ota timer context. */
 } OtaTimerInterface_t;
 
 /**

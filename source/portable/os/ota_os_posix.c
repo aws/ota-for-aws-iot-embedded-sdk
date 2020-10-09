@@ -27,14 +27,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mqueue.h>
-#include <sys/time.h>
+#include <time.h>
 #include <sys/types.h>
-
-/* OTA agent config includes. */
-#include "aws_ota_agent_config.h"
+#include "signal.h"
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
+
+/* OTA Library include. */
+#include "aws_iot_ota_agent.h"
+#include "aws_iot_ota_agent_private.h"
 
 /* OTA Event queue attributes.*/
 #define OTA_QUEUE_NAME   "/otaqueue"
@@ -44,6 +46,9 @@
 
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
+
+/* OTA Timer.*/
+timer_t otaTimer;
 
 OtaErr_t ota_InitEvent( OtaEventContext_t* pContext )
 {
@@ -163,4 +168,119 @@ OtaErr_t ota_DeinitEvent( OtaEventContext_t* pContext )
 
     return otaErrRet;
 
+}
+
+static void timerCallback( union sigval arg ) 
+{
+    OtaEventMsg_t xEventMsg = { 0 };
+
+    xEventMsg.eventId = OtaAgentEventRequestTimer;
+
+    /* Send job document received event. */
+    OTA_SignalEvent( &xEventMsg );
+
+}
+
+OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
+                         const char * const pTimerName,
+                         const uint32_t timeout,
+                         void ( * callback )( void * ) )
+{
+    (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    /* Create the timer stuctures. */
+    struct sigevent sgEvent;
+    struct itimerspec timerAttr;
+
+    /* clear everythig in the strucutures. */
+    memset( &sgEvent, 0, sizeof(struct sigevent));
+    memset( &timerAttr, 0, sizeof( struct itimerspec) );
+
+    /* Set attributes. */
+    sgEvent.sigev_notify = SIGEV_THREAD;
+    sgEvent.sigev_value.sival_ptr = &otaTimer;
+    sgEvent.sigev_notify_function = timerCallback;
+
+    /* Set timeout attributes.*/
+    timerAttr.it_value.tv_sec = timeout;
+    timerAttr.it_interval.tv_sec = timerAttr.it_value.tv_sec;
+    
+    /* Create timer.*/
+    if ( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimer) == -1 )
+    {
+        otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+
+        LogError( (  "OTA Timer create failed." ) );
+
+    }
+    else
+    {
+        /* Set timeout.*/
+        if ( timer_settime(otaTimer, 0, &timerAttr, NULL) == -1 )
+        {
+             otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+
+             LogError( (  "OTA Timer settig timeout failed." ) );
+        }else
+        {
+            LogInfo( (  "OTA Timer started." ) );
+
+            otaErrRet = OTA_ERR_NONE;
+        }
+    }
+
+    return otaErrRet;
+}
+
+OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext )
+{
+    (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    struct itimerspec trigger;
+
+    trigger.it_value.tv_sec = 0;
+
+    /* Stop the timer*/
+    if ( timer_settime(otaTimer, 0, &trigger, NULL) ==  -1 )
+    {
+        LogError( (  "OTA Timer settig timeout failed." ) );    
+        
+        otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Timer stopped." ) );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+      
+    return otaErrRet;
+}
+
+OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext )
+{
+    (void) pContext;
+
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    /* Delete the timer*/
+    if ( timer_delete( otaTimer) == -1 ) 
+    {
+        LogError( (  "OTA Timer delete failed." ) );
+
+        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+    }
+    else
+    {
+        LogInfo( (  "OTA Timer deleted." ) );
+
+        otaErrRet = OTA_ERR_NONE;
+    }
+    
+
+    return otaErrRet;
 }

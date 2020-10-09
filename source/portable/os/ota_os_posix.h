@@ -29,12 +29,21 @@
  /* Standard library include. */
 #include <stddef.h>
 
+/* Demo config include. */
+#include "demo_config.h"
+
  /* OTA library interface include. */
 #include "ota_os_interface.h"
 
 struct OtaEventContext
 {
-	/* ToDo: use this*/
+	/* Unused.*/
+	uint32_t dummy;
+};
+
+struct OtaTimerContext
+{
+	/* Unused.*/
 	uint32_t dummy;
 };
 
@@ -49,5 +58,15 @@ OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
                            uint32_t timeout );
 
 OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext );
+
+
+OtaErr_t ota_StartTimer ( OtaTimerContext_t * pContext,
+                          const char * const pTimerName,
+                          const uint32_t timeout,
+                          void ( * callback )( void * ) );
+
+OtaErr_t ota_StopTimer ( OtaTimerContext_t * pContext );
+
+OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext );
 
 #endif
