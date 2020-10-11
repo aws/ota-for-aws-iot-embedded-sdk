@@ -537,24 +537,27 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     DEFINE_OTA_METHOD_NAME( "prvInitFileTransfer_Mqtt" );
 
-    OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
+    OtaErr_t xResult = OTA_ERR_PUBLISH_FAILED;
 
-    char pOtaRxStreamTopic[ OTA_MAX_TOPIC_LEN ];
-    uint16_t topicLen = 0;
+    static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+    uint16_t usTopicLen = 0;
     const OtaFileContext_t * pFileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
 
-    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic,
-                                        sizeof( pOtaRxStreamTopic ),
+    usTopicLen = ( uint16_t ) snprintf( pcOTA_RxStreamTopic,
+                                        sizeof( pcOTA_RxStreamTopic ),
                                         pOtaStreamDataTopicTemplate,
                                         pAgentCtx->pThingName,
                                         ( const char * ) pFileContext->pStreamName );
 
-    if( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) )
+    if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
     {
-
+        pAgentCtx->pOTAMqttInterface->subscribe( pcOTA_RxStreamTopic ,
+                                                  usTopicLen, 
+                                                  0,
+                                                  pAgentCtx->pOTAMqttInterface->dataCallback );
     }
 
-    return result;
+    return OTA_ERR_NONE;
 }
 
 /*
