@@ -215,7 +215,7 @@ static void agentShutdownCleanup( void );
 
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    const JsonDocParam_t * pBodyDef,
-                                   uint64_t contextBaseAddr,
+                                   void* contextBaseAddr,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
@@ -1368,20 +1368,11 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     DEFINE_OTA_METHOD_NAME( "extractParameter" );
 
     MultiParmPtr_t paramAddr; /*lint !e9018 We intentionally use this union to cast the parameter address to the proper type. */
+    void ** ppvParamAdd;
     DocParseErr_t err = DocParseErrNone;
 
     /* Get destination offset to parameter storage location. */
-
-    /* If it's within the models context structure, add in the context instance base address. */
-    if( docParam.destOffset < modelContextSize )
-    {
-        paramAddr.intVal = modelContextBase + docParam.destOffset;
-    }
-    else
-    {
-        /* It's a raw pointer so keep it as is. */
-        paramAddr.intVal = docParam.destOffset;
-    }
+    ppvParamAdd = modelContextBase + docParam.pDestOffset;
 
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
@@ -1390,11 +1381,14 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 
         if( pStringCopy != NULL )
         {
-            *paramAddr.pVoidPtr = pStringCopy;
+            *ppvParamAdd = pStringCopy;
+
             /* Copy parameter string into newly allocated memory. */
             ( void ) memcpy( pStringCopy, pValueInJson, valueLength );
+
             /* Zero terminate the new string. */
             pStringCopy[ valueLength ] = '\0';
+
             OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %s]\r\n",
                         OTA_METHOD_NAME,
                         docParam.pSrcKey,
@@ -1409,25 +1403,28 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     {
         /* Copy pointer to source string instead of duplicating the string. */
         const char * pStringInDoc = pValueInJson;
-        *paramAddr.pConstCharPtr = pStringInDoc;
+        *ppvParamAdd = pStringInDoc;
+
         OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.*s ]\r\n",
                     OTA_METHOD_NAME,
                     docParam.pSrcKey,
                     valueLength, pStringInDoc );
+
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
         char * pEnd;
         const char * pStart = pValueInJson;
         errno = 0;
-        *paramAddr.pIntPtr = strtoul( pStart, &pEnd, 0 );
+        uint32_t *puint32 = (uint32_t *)ppvParamAdd;
 
+        *puint32 = (uint32_t)strtoul( pStart, &pEnd, 0 );
         if( ( errno == 0 ) && ( pEnd == &pValueInJson[ valueLength ] ) )
         {
             OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %lu ]\r\n",
                         OTA_METHOD_NAME,
                         docParam.pSrcKey,
-                        *paramAddr.pIntPtr );
+                        *puint32);
         }
         else
         {
@@ -1442,8 +1439,9 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
         if( pSignature != NULL )
         {
             size_t actualLen = 0;
-            *paramAddr.pVoidPtr = pSignature;
-            Sig256_t * pSig256 = *paramAddr.pSig256Ptr;
+
+            *ppvParamAdd = pSignature;
+            Sig256_t * pSig256 = *ppvParamAdd;
 
             if( base64Decode( pSig256->data, sizeof( pSig256->data ), &actualLen,
                                         ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
@@ -1471,7 +1469,8 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
         OTA_LOG_L1( "[%s] New Identified parameter [ %s ]\r\n",
                     OTA_METHOD_NAME,
                     docParam.pSrcKey );
-        *paramAddr.pBoolPtr = true;
+                    
+        *ppvParamAdd = true;
     }
     else
     {
@@ -1525,9 +1524,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     {
         /* Fetch the model parameters from the DocModel*/
         pModelParam = pDocModel->pBodyDef;
-        /* char pJsonCopy[messageLength]; */
-        /* strcpy(pJsonCopy, pJson); */
-        /* pJsonCopy[messageLength] = '\0'; */
+
         OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
 
         /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
@@ -1551,12 +1548,12 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
             {
                 err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
 
-                if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].destOffset )
+                if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
                 {
                    /* Do nothing if we don't need to store the parameter */
                    continue;
                 }
-                else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].destOffset )
+                else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
                 {
                     pFileParams = pValueInJson+1;
                     fileParamsLength = valueLength-2U;
@@ -1603,7 +1600,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    const JsonDocParam_t * pBodyDef,
-                                   uint64_t contextBaseAddr,
+                                   void* contextBaseAddr,
                                    uint32_t contextSize,
                                    uint16_t numJobParams )
 {
@@ -1708,7 +1705,7 @@ static OtaErr_t validateUpdateVersion( OtaFileContext_t * pFileContext )
 /* Parse the OTA job document and validate. Return the populated
  * OTA context if valid otherwise return NULL.
  */
-
+  static OtaFileContext_t fileContext = { 0 };
 static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob )
@@ -1745,7 +1742,6 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     OtaErr_t otaErr = OTA_ERR_NONE;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     OtaFileContext_t * pFinalFile = NULL;
-    OtaFileContext_t fileContext = { 0 };
     OtaFileContext_t * pFileContext = &fileContext;
     OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
 
@@ -1753,7 +1749,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
     if( initDocModel( &otaJobDocModel,
                       otaJobDocModelParamStructure,
-                      ( uint64_t ) pFileContext,    /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                      (void *) pFileContext,    /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
                       sizeof( OtaFileContext_t ),
                       OTA_NUM_JOB_PARAMS ) != DocParseErrNone )
     {

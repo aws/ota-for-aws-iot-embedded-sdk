@@ -146,11 +146,7 @@ typedef struct
 {
     const char * pSrcKey; /* Expected key name. */
     const bool required;  /* If true, this parameter must exist in the document. */
-    union
-    {
-        const uint32_t destOffset;         /* Pointer or offset to where we'll store the value, if not ~0. */
-        void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
-    };
+    void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -166,7 +162,7 @@ typedef struct
  */
 typedef struct
 {
-    uint64_t contextBase;            /* The base address of the destination OTA context structure. */
+    void* contextBase;            /* The base address of the destination OTA context structure. */
     uint64_t contextSize;            /* The size, in bytes, of the destination context structure. */
     const JsonDocParam_t * pBodyDef; /* Pointer to the document model body definition. */
     uint16_t numModelParams;         /* The number of entries in the document model (limited to 32). */
