@@ -2669,32 +2669,10 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
         retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
     }
 
-    if( otaAgent.state == OtaAgentStateReady )
-    {
-        OTA_LOG_L1( "[%s] OTA Task is Ready.\r\n", OTA_METHOD_NAME );
-
-        /*
-         * OTA agent is ready so send event to start update process.
-         */
-        eventMsg.eventId = OtaAgentEventStart;
-
-        /* Send signal to OTA task. */
-        if( !OTA_SignalEvent( &eventMsg ) )
-        {
-            OTA_LOG_L1( "[%s] Failed to signal the OTA agent to start.", OTA_METHOD_NAME );
-        }
-    }
-    else
-    {
-        OTA_LOG_L1( "[%s] Failed to start the OTA Task, Error Code :%08x\r\n", OTA_METHOD_NAME, retVal );
-
-        otaAgent.state = OtaAgentStateStopped;
-    }
-
     /* Return status of agent. */
     return otaAgent.state;
 }
-
+ 
 /*
  * Public API to shutdown the OTA Agent.
  */

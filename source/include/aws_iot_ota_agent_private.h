@@ -214,7 +214,7 @@ enum
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"
-#define OTA_JSON_FILE_PATH_KEY          "filepath"
+#define OTA_JSON_FILE_PATH_KEY          "filepath" 
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"
 #define OTA_JSON_FILE_ID_KEY            "fileid"
 #define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"
