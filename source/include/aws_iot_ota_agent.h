@@ -407,23 +407,17 @@ typedef struct
 struct OtaFileContext
 {
     uint8_t * pFilePath; /*!< Local file pathname. */
-    union
-    {
-        int32_t fileHandle;  /*!< Device internal file pointer or handle.
-                              * File type is handle after file is open for write. */
-        #if defined( WIN32 ) || defined( __linux__ )
+    #if defined( WIN32 ) || defined( __linux__ )
             FILE * pFile;    /*!< File type is stdio FILE structure after file is open for write. */
-        #else
+    #else
             uint8_t * pFile; /*!< File type is RAM/Flash image pointer after file is open for write. */
-        #endif
-    };
+    #endif
     uint32_t fileSize;        /*!< The size of the file in bytes. */
     uint32_t blocksRemaining; /*!< How many blocks remain to be received (a code optimization). */
     uint32_t fileAttributes;  /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
     uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
     uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
     uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
     uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for de-duping and missing block request). */
     uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
     uint8_t * pUpdateUrlPath; /*!< Url for the file. */
@@ -431,6 +425,7 @@ struct OtaFileContext
     uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of FW that did the update. */
     bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
+    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
 };
 
 /**
