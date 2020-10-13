@@ -2343,25 +2343,6 @@ static void agentShutdownCleanup( void )
 
     otaAgent.state = OtaAgentStateShuttingDown;
 
-    /*
-     * Stop and delete any existing self test timer.
-     */
-    /*if( otaAgent.pvSelfTestTimer != NULL )
-    {
-        ( void ) xTimerStop( otaAgent.pvSelfTestTimer, 0 );
-        ( void ) xTimerDelete( otaAgent.pvSelfTestTimer, 0 );
-        otaAgent.pvSelfTestTimer = NULL;
-    }*/
-
-    /*
-     * Stop and delete any existing transfer request timer.
-     */
-    /*if( otaAgent.xRequestTimer != NULL )
-    {
-        ( void ) xTimerStop( otaAgent.xRequestTimer, 0 );
-        ( void ) xTimerDelete( otaAgent.xRequestTimer, 0 );
-        otaAgent.xRequestTimer = NULL;
-    }*/
 
     /* Cleanup related to selected protocol. */
     if( otaDataInterface.cleanup != NULL )
@@ -2386,12 +2367,6 @@ static void agentShutdownCleanup( void )
         otaAgent.pOtaSingletonActiveJobName = NULL;
     }
 
-    /* Delete the OTA Agent Queue.*/
-   /* if( otaAgent.xOTA_EventQueue != NULL )
-    {
-        vQueueDelete( otaAgent.xOTA_EventQueue );
-    }*/
-
     /*
      * Free OTA event buffers.
      */
@@ -2400,11 +2375,6 @@ static void agentShutdownCleanup( void )
         pEventBuffer[ index ].bufferUsed = false;
     }
 
-    /* Delete the semaphore.*/
-    /*if( otaAgent.xOTA_ThreadSafetyMutex != NULL )
-    {
-        sem_destroy(&otaAgent.otaBufferSem);
-    }*/
 }
 
 /*
@@ -2483,6 +2453,24 @@ static void executeHandler( uint32_t index,
     }
 }
 
+static uint32_t searchTransition( OtaEventMsg_t *pEventMsg )
+{
+    uint32_t transitionTableLen = sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] );
+    uint32_t i = 0;
+
+    for( i = 0; i < transitionTableLen; i++ )
+       {
+           if( ( ( otaTransitionTable[ i ].currentState == otaAgent.state ) ||
+               ( otaTransitionTable[ i ].currentState == OtaAgentStateAll ) ) &&
+               ( otaTransitionTable[ i ].eventId == pEventMsg->eventId ) )
+                {
+                    break;
+                }
+       }
+
+       return i;
+}
+
 void otaAgentTask( void * pUnused )
 {
     DEFINE_OTA_METHOD_NAME( "otaAgentTask" );
@@ -2490,9 +2478,8 @@ void otaAgentTask( void * pUnused )
     ( void ) pUnused;
 
     OtaEventMsg_t eventMsg = { 0 };
-    uint32_t transitionTableLen = sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] );
     uint32_t i = 0;
-
+    uint32_t transitionTableLen = sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] );
     /*
      * OTA Agent is ready to receive and process events so update the state to ready.
      */
@@ -2506,14 +2493,12 @@ void otaAgentTask( void * pUnused )
         if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pContext, &eventMsg, 0 )  == OTA_ERR_NONE )
         {
             /*
-             * Search for the state and event from the table.
+             * Search transition index if available in the table.
              */
-            for( i = 0; i < transitionTableLen; i++ )
+            i = searchTransition(&eventMsg);
+
+            if ( i < transitionTableLen )
             {
-                if( ( ( otaTransitionTable[ i ].currentState == otaAgent.state ) ||
-                      ( otaTransitionTable[ i ].currentState == OtaAgentStateAll ) ) &&
-                    ( otaTransitionTable[ i ].eventId == eventMsg.eventId ) )
-                {
                     OTA_LOG_L3( "[%s] , State matched [%s],  Event matched  [%s]\n",
                                 OTA_METHOD_NAME,
                                 pOtaAgentStateStrings[ i ]
@@ -2523,8 +2508,6 @@ void otaAgentTask( void * pUnused )
                      * Execute the handler function.
                      */
                     executeHandler( i, &eventMsg );
-                    break;
-                }
             }
 
             if( i == transitionTableLen )
