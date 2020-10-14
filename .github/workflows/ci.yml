@@ -69,8 +69,8 @@ jobs:
       - name: Checkout Parent Repo
         uses: actions/checkout@v2
         with:
-          ref: ota
-          repository: aws/aws-iot-device-sdk-embedded-C-staging
+          ref: master
+          repository: aws/aws-iot-device-sdk-embedded-C
       - run: rm -r libraries/aws/ota
       - name: Clone This Repo
         uses: actions/checkout@v2
