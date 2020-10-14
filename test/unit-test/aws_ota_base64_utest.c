@@ -85,7 +85,8 @@
 #define BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED                    "FOOBA"
 #define BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED_LEN                ( sizeof( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED ) - 1U )
 
-/* This is arbitrary valid encoded/decoded data. This is intended to be used in a test where any valid Base64 encoded string would suffice. */
+/* This is arbitrary valid encoded/decoded data. This is intended to be used in a test where any
+ * valid Base64 encoded string would suffice. */
 #define BASE64_VALID_DATA_ENCODED                                       "Rk9PQkFSQkFa"
 #define BASE64_VALID_DATA_ENCODED_LEN                                   ( sizeof( BASE64_VALID_DATA_ENCODED ) - 1U )
 #define BASE64_VALID_DATA_DECODED                                       "FOOBARBAZ"
@@ -107,7 +108,7 @@
  * The Base64 symbol 'E' has the Base64 index of four, which is represented by the sextet 0b000100.
  * In this context, the two least significant bits of the sextet are considered to be padding bits.
  * This sextet was modified by setting these padding bits to one, which results in the sextet
- * 0b000111. 0b000111 is seven, which is the base64 index of the Base64 symbol 'G'.*/
+ * 0b000111. 0b000111 is seven, which is the Base64 index of the Base64 symbol 'G'.*/
 #define BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED           "TWG="
 #define BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED_LEN       ( sizeof( BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED ) - 1U )
 
@@ -115,7 +116,7 @@
  * The Base64 symbol 'Q' has the Base64 index of sixteen, which is represented by the sextet 0b010000.
  * In this context, the four least significant bits of the sextet are considered to be padding bits.
  * This sextet was modified by setting these padding bits to one, which results in the sextet
- * 0b011111. 0b011111 is thirty-one, which is the base64 index of the Base64 symbol 'f'.*/
+ * 0b011111. 0b011111 is thirty-one, which is the Base64 index of the Base64 symbol 'f'.*/
 #define BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED          "Tf=="
 #define BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED_LEN      ( sizeof( BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED ) - 1U )
 

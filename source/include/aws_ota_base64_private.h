@@ -87,6 +87,6 @@
  *             - An error code defined in aws_ota_base64_private.h if the encoded data is invalid
  *               or the input parameters are invalid.
  */
-int base64Decode( unsigned char* pDest , size_t destLen, size_t* pResultLen, const unsigned char* pEncodedData, size_t encodedLen );
+int base64Decode( unsigned char* pDest, const size_t destLen, size_t* pResultLen, const unsigned char* pEncodedData, const size_t encodedLen );
 
 #endif /* ifndef __AWS_OTA_BASE64_PRIVATE__H__ */
