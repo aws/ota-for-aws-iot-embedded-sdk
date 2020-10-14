@@ -129,6 +129,19 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
                                        uint32_t messageSize,
                                        OtaErr_t * pCloseResult );
 
+/* Validate the incomming data block and store it in the file context. */
+
+static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext, 
+                                        uint32_t uBlockIndex, 
+                                        uint32_t uBlockSize, 
+                                        OtaErr_t * pCloseResult, 
+                                        uint8_t * pPayload  );
+
+/* Free the resources allocated for data ingestion and close the file handle. */
+
+static IngestResult_t ingestDataBlockCleanup(   OtaFileContext_t * pFileContext,
+                                                OtaErr_t * pCloseResult );
+
 /* Called to update the filecontext structure from the job. */
 
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
@@ -143,12 +156,12 @@ static OtaFileContext_t * getFreeContext( void );
 static DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 
-/* Checks for duplicate entries in the JSON document */
+/* Checks for duplicate entries in the JSON document. */
 
 static DocParseErr_t checkDuplicates(   uint32_t * paramsReceivedBitmap, 
                                         uint16_t paramIndex);
 
-/* Store the parameter from the json to the offset specified by the document model*/
+/* Store the parameter from the json to the offset specified by the document model. */
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        uint64_t modelContextBase,
@@ -161,6 +174,35 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 static DocParseErr_t parseJSONbyModel( const char * pJson,
                                        uint32_t messageLength,
                                        JsonDocModel_t * pDocModel );
+
+/* Decode the signature key from the job document and store it.*/
+
+static DocParseErr_t decodeAndStoreKey(char * pValueInJson,
+                                       size_t valueLength,
+                                       void ** ppvParamAdd );
+
+/* Check if all the required parameters for the job are present in the JSON. */
+
+static DocParseErr_t verifyRequiredParamsExtracted( JsonDocModel_t * pDocModel, 
+                                                    JsonDocParam_t * pModelParam );
+
+/* Check if the JSON can be parsed through a custom callback if initial parsing fails. */
+
+static OtaJobParseErr_t parseJobDocFromCustomCallback(  const char * pJson,
+                                                        uint32_t messageLength,
+                                                        OtaFileContext_t * pFileContext );
+
+/* Check if the incomming job document is not conflicting with current job status. */
+
+static OtaJobParseErr_t verifyActiveJobStatus(  OtaFileContext_t * pFileContext, 
+                                                OtaFileContext_t ** pFinalFile,
+                                                bool * pUpdateJob );
+
+/* Check if all the file context params are valid and initialize resources for the job transfer */
+
+static OtaJobParseErr_t validateAndStartJob(OtaFileContext_t * pFileContext, 
+                                            OtaFileContext_t ** pFinalFile,
+                                            bool * pUpdateJob );
 
 /* Parse the OTA job document, validate and return the populated OTA context if valid. */
 
@@ -1335,6 +1377,8 @@ static DocParseErr_t validateJSON( const char * pJson,
     DocParseErr_t err = DocParseErrNone;
     JSONStatus_t result;
 
+    OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
+
     /* Check JSON document pointer is valid.*/
     if( pJson == NULL )
     {
@@ -1352,6 +1396,51 @@ static DocParseErr_t validateJSON( const char * pJson,
             OTA_LOG_L1( "[%s] Invalid JSON document \r\n", OTA_METHOD_NAME );
             err = DocParseErr_InvalidJSONBuffer;
         }
+    }
+
+    return err;
+}
+
+/* Decode the base64 encoded file signature key from the job document and store it in file context*/
+
+static DocParseErr_t decodeAndStoreKey(char * pValueInJson,
+                                       size_t valueLength,
+                                       void ** ppvParamAdd )
+{
+    DEFINE_OTA_METHOD_NAME( "decodeAndStoreKey" );
+
+    DocParseErr_t err = DocParseErrNone;
+
+    /* Allocate space for and decode the base64 signature. */
+    void * pSignature = malloc( sizeof( Sig256_t ) );
+
+    if( pSignature != NULL )
+    {
+        size_t actualLen = 0;
+
+        *ppvParamAdd = pSignature;
+        Sig256_t * pSig256 = *ppvParamAdd;
+
+        if( base64Decode( pSig256->data, sizeof( pSig256->data ), &actualLen,
+                                    ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
+        { /* Stop processing on error. */
+            OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
+            err = DocParseErrBase64Decode;
+        }
+        else
+        {
+            pSig256->size = ( uint16_t ) actualLen;
+            OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
+                        OTA_METHOD_NAME,
+                        OTA_JsonFileSignatureKey,
+                        pValueInJson );
+            OTA_LOG_L1( "[%s] Size of extracted param: %ld\r\n", OTA_METHOD_NAME,  sizeof(Sig256_t));
+        }
+    }
+    else
+    {
+        /* We failed to allocate needed memory. Everything will be freed below upon failure. */
+        err = DocParseErrOutOfMemory;
     }
 
     return err;
@@ -1393,6 +1482,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                         OTA_METHOD_NAME,
                         docParam.pSrcKey,
                         pStringCopy );
+            OTA_LOG_L1( "[%s] Size of extracted param: %ld\r\n", OTA_METHOD_NAME,  strlen(pStringCopy));
         }
         else
         { /* Stop processing on error. */
@@ -1433,43 +1523,15 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     }
     else if( ModelParamTypeSigBase64 == docParam.modelParamType )
     {
-        /* Allocate space for and decode the base64 signature. */
-        void * pSignature = malloc( sizeof( Sig256_t ) );
-
-        if( pSignature != NULL )
-        {
-            size_t actualLen = 0;
-
-            *ppvParamAdd = pSignature;
-            Sig256_t * pSig256 = *ppvParamAdd;
-
-            if( base64Decode( pSig256->data, sizeof( pSig256->data ), &actualLen,
-                                        ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
-            { /* Stop processing on error. */
-                OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
-                err = DocParseErrBase64Decode;
-            }
-            else
-            {
-                pSig256->size = ( uint16_t ) actualLen;
-                OTA_LOG_L1( "[%s] New Extracted parameter [ %s: %.32s... ]\r\n",
-                            OTA_METHOD_NAME,
-                            docParam.pSrcKey,
-                            pValueInJson );
-            }
-        }
-        else
-        {
-            /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-            err = DocParseErrOutOfMemory;
-        }
+        err = decodeAndStoreKey(pValueInJson, valueLength, ppvParamAdd);
     }
     else if( ModelParamTypeIdent == docParam.modelParamType )
     {
         OTA_LOG_L1( "[%s] New Identified parameter [ %s ]\r\n",
                     OTA_METHOD_NAME,
                     docParam.pSrcKey );
-                    
+        
+        OTA_LOG_L1( "[%s] Size of extracted param: %ld\r\n", OTA_METHOD_NAME,  sizeof(1));           
         *ppvParamAdd = true;
     }
     else
@@ -1480,7 +1542,8 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     return err;
 }
 
-/* Checks for duplicate entries in the JSON document*/
+/* Checks for duplicate entries in the JSON document. */
+
 static DocParseErr_t checkDuplicates(uint32_t * paramsReceivedBitmap, uint16_t paramIndex)
 {
     DocParseErr_t err = DocParseErrNone;
@@ -1545,53 +1608,47 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     char * pFileParams = NULL;
     uint32_t fileParamsLength;
 
+    /* Fetch the model parameters from the DocModel*/
+    pModelParam = pDocModel->pBodyDef;
+
     /* Check the validity of the JSON document */
     err = validateJSON( pJson, messageLength );
 
-    /* Check if any tokens specified in the docModel are present in the JSON */
-    if( err == DocParseErrNone )
+    /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
+    for( paramIndex = 0; paramIndex < pDocModel->numModelParams && err == DocParseErrNone; paramIndex++ )
     {
-        /* Fetch the model parameters from the DocModel*/
-        pModelParam = pDocModel->pBodyDef;
+        const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
+        size_t queryKeyLength = strlen( pQueryKey );
+        char * pValueInJson;
+        size_t valueLength;
+        result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength ); /*TODO check if we need to use a copy of pJson */
+        OTA_LOG_L1( "[%s]Searching for Token in pJson: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
 
-        OTA_LOG_L1( "[%s] JSON(%d) : %s \r \n", OTA_METHOD_NAME, messageLength, pJson );
-
-        /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
-        for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
+        /* If not found in pJSon search for the key in FileParameters JSON*/
+        if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
         {
-            const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
-            size_t queryKeyLength = strlen( pQueryKey );
-            char * pValueInJson;
-            size_t valueLength;
-            result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength ); /*TODO check if we need to use a copy of pJson */
-            OTA_LOG_L1( "[%s]Searching for Token in pJson: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+            result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
+            OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+        }
 
-            /* If not found in pJSon search for the key in FileParameters JSON*/
-            if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
+        if( result == JSONSuccess )
+        {
+            err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
+
+            if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
             {
-                result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
-                OTA_LOG_L1( "[%s]Searching for Token in file json: %s. Status: %d\r\n", OTA_METHOD_NAME, pQueryKey, result );
+                /* Do nothing if we don't need to store the parameter */
+                continue;
             }
-
-            if( result == JSONSuccess )
+            else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
             {
-                err = checkDuplicates(&(pDocModel->paramsReceivedBitmap), paramIndex);
-
-                if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
-                {
-                   /* Do nothing if we don't need to store the parameter */
-                   continue;
-                }
-                else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
-                {
-                    pFileParams = pValueInJson+1;
-                    fileParamsLength = valueLength-2U;
-                    OTA_LOG_L1( "File JSON(%d) : %.*s \r \n", fileParamsLength, fileParamsLength, pFileParams);
-                }
-                else
-                {
-                    err = extractParameter( pModelParam[ paramIndex ], pDocModel->contextBase, pDocModel->contextSize, pValueInJson, valueLength );
-                }
+                pFileParams = pValueInJson+1;
+                fileParamsLength = valueLength-2U;
+                OTA_LOG_L1( "File JSON(%d) : %.*s \r \n", fileParamsLength, fileParamsLength, pFileParams);
+            }
+            else
+            {
+                err = extractParameter( pModelParam[ paramIndex ], pDocModel->contextBase, pDocModel->contextSize, pValueInJson, valueLength );
             }
         }
     }
@@ -1714,51 +1771,265 @@ static OtaErr_t validateUpdateVersion( OtaFileContext_t * pFileContext )
     return err;
 }
 
+/* If there is an error is parsing the json check if it can be handled by external callback. */
+
+static OtaJobParseErr_t parseJobDocFromCustomCallback(  const char * pJson,
+                                                        uint32_t messageLength,
+                                                        OtaFileContext_t * pFileContext )
+{
+    DEFINE_OTA_METHOD_NAME( "parseJobDoc" );
+
+    OtaErr_t otaErr = OTA_ERR_NONE;
+
+    /* We have an unknown job parser error. Check to see if we can pass control to a callback for parsing */
+    OtaJobParseErr_t err = otaAgent.palCallbacks.customJobCallback( pJson, messageLength );
+
+    if( err == OtaJobParseErrNone )
+    {
+        /* Custom job was parsed by external callback successfully. Grab the job name from the file
+            *  context and save that in the ota agent */
+        if( pFileContext->pJobName != NULL )
+        {
+            otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
+            pFileContext->pJobName = NULL;
+            otaErr = otaControlInterface.updateJobStatus( &otaAgent,
+                                                            JobStatusSucceeded,
+                                                            JobReasonAccepted,
+                                                            0 );
+
+            if( otaErr != OTA_ERR_NONE )
+            {
+                OTA_LOG_L2( "[%s] Failed to update job status %d\r\n", OTA_METHOD_NAME, otaErr );
+            }
+
+            /* We don't need the job name memory anymore since we're done with this job. */
+            free( otaAgent.pOtaSingletonActiveJobName );
+            otaAgent.pOtaSingletonActiveJobName = NULL;
+        }
+        else
+        {
+            /* Job is malformed - return an error */
+            OTA_LOG_L1( "[%s] Job does not have context or has no ID but has been processed\r\n", OTA_METHOD_NAME );
+            err = OtaJobParseErrNonConformingJobDoc;
+        }
+    }
+    else
+    {
+        /*Check if we received a timestamp and client token but no job ID.*/
+        if( ( otaAgent.pClientTokenFromJob != NULL ) && ( otaAgent.timestampFromJob != 0 ) && ( pFileContext->pJobName == NULL ) )
+        {
+            /* Received job docuement with no execution so no active job is available.*/
+            OTA_LOG_L1( "[%s] No active jobs available in the service for execution.\r\n", OTA_METHOD_NAME );
+            err = OtaJobParseErrNoActiveJobs;
+        }
+        else
+        {
+            /* Job is malformed - return an error */
+            err = OtaJobParseErrNonConformingJobDoc;
+        }
+    }
+
+    return err;
+}
+
+/* Check if the incomming job document is not conflicting with current job status. */
+
+static OtaJobParseErr_t verifyActiveJobStatus(OtaFileContext_t * pFileContext, 
+                                        OtaFileContext_t ** pFinalFile,
+                                        bool * pUpdateJob)
+{
+    DEFINE_OTA_METHOD_NAME( "validateAndStartJob" );
+
+    OtaJobParseErr_t err = OtaJobParseErrNone;
+
+    if( pFileContext->pJobName != NULL )
+    {
+        /* pFileContext->pJobName is guaranteed to be zero terminated. */
+        if( strcmp( ( char * ) otaAgent.pOtaSingletonActiveJobName, ( char * ) pFileContext->pJobName ) != 0 )
+        {
+            OTA_LOG_L1( "[%s] New job document received,aborting current job.\r\n", OTA_METHOD_NAME );
+
+            /* Abort the current job. */
+            ( void ) otaAgent.palCallbacks.setPlatformImageState( otaAgent.serverFileID, OtaImageStateAborted );
+            ( void ) otaClose( &otaAgent.pOtaFiles[ otaAgent.fileIndex ] );
+
+            /* Set new active job name. */
+            free( otaAgent.pOtaSingletonActiveJobName );
+            otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
+            pFileContext->pJobName = NULL;
+
+            err = OtaJobParseErrNone;
+        }
+        else
+        { /* The same job is being reported so update the url. */
+            OTA_LOG_L1( "[%s] Job received is current active job.\r\n", OTA_METHOD_NAME );
+
+            if( otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath != NULL )
+            {
+                free( otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath );
+                otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath = pFileContext->pUpdateUrlPath;
+                pFileContext->pUpdateUrlPath = NULL;
+            }
+
+            otaFreeContext( pFileContext );
+
+            * pFinalFile = &otaAgent.pOtaFiles[ otaAgent.fileIndex ];
+            *pUpdateJob = true;
+
+            err = OtaJobParseErrUpdateCurrentJob;
+        }
+    }
+    else
+    {
+        OTA_LOG_L1( "[%s] Null job reported while busy. Ignoring.\r\n", OTA_METHOD_NAME );
+        err = OtaJobParseErrNullJob;
+    }
+}
+
+/* Check if all the file context params are valid and initialize resources for the job transfer */
+
+static OtaJobParseErr_t validateAndStartJob(OtaFileContext_t * pFileContext, 
+                                            OtaFileContext_t ** pFinalFile,
+                                            bool * pUpdateJob )
+{
+    DEFINE_OTA_METHOD_NAME( "validateAndStartJob" );
+
+    OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
+    OtaJobParseErr_t err = OtaJobParseErrNone;
+
+
+    /* Validate the job document parameters. */
+    if( pFileContext->fileSize == 0U )
+    {
+        OTA_LOG_L1( "[%s] Zero file size is not allowed!\r\n", OTA_METHOD_NAME );
+        err = OtaJobParseErrZeroFileSize;
+    }
+    /* If there's an active job, verify that it's the same as what's being reported now. */
+    /* We already checked for missing parameters so we SHOULD have a job name in the context. */
+    else if( otaAgent.pOtaSingletonActiveJobName != NULL )
+    {
+       err = verifyActiveJobStatus(pFileContext, pFinalFile, pUpdateJob);
+    }
+    else
+    { /* Assume control of the job name from the context. */
+        otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
+        pFileContext->pJobName = NULL;
+    }
+
+    /* Store the File ID received in the job */
+    otaAgent.serverFileID = pFileContext->serverFileID;
+
+    if( err == OtaJobParseErrNone )
+    {
+        /* If the job is in self test mode, don't start an
+            * OTA update but instead do the following:
+            *
+            * If the firmware that performed the update was older
+            * than the currently running firmware, set the image
+            * state to "Testing." This is the success path.
+            *
+            * If it's the same or newer, reject the job since
+            * either the firmware wasn't accepted during self
+            * test or an incorrect image was sent by the OTA
+            * operator.
+            */
+        if( pFileContext->isInSelfTest )
+        {
+            OTA_LOG_L1( "[%s] In self test mode.\r\n", OTA_METHOD_NAME );
+
+            /* Validate version of the update received.*/
+            errVersionCheck = validateUpdateVersion( pFileContext );
+
+            if( otaconfigAllowDowngrade || ( errVersionCheck == OTA_ERR_NONE ) )
+            {
+                /* The running firmware version is newer than the firmware that performed
+                    * the update or downgrade is allowed so this means we're ready to start
+                    * the self test phase.
+                    *
+                    * Set image state accordingly and update job status with self test identifier.
+                    */
+                OTA_LOG_L1( "[%s] Setting image state to Testing for file ID %d\r\n", OTA_METHOD_NAME, otaAgent.serverFileID );
+
+                ( void ) setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
+            }
+            else
+            {
+                OTA_LOG_L1( "[%s] Downgrade or same version not allowed, rejecting the update & rebooting.\r\n", OTA_METHOD_NAME );
+                ( void ) setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
+
+                /* All reject cases must reset the device. */
+                otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
+            }
+        }
+        else
+        {
+            * pFinalFile = getFreeContext();
+
+            if( * pFinalFile == NULL )
+            {
+                OTA_LOG_L1( "[%s] Job parsing successful but no file context available, aborting.\r\n", OTA_METHOD_NAME );
+            }
+            else
+            {
+                **pFinalFile = *pFileContext;
+
+                /* Everything looks OK. Set final context structure to start OTA. */
+                OTA_LOG_L1( "[%s] Job was accepted. Attempting to start transfer.\r\n", OTA_METHOD_NAME );
+            }
+        }
+    }
+    else
+    {
+        OTA_LOG_L1( "[%s] Error %d parsing job document.\r\n", OTA_METHOD_NAME, err );
+    }
+
+    return err;
+}
+
 #define OFFSET_OF( t, e )    ( ( uint32_t ) ( &( ( t * ) 0x10000UL )->e ) & 0xffffUL )
+
+/* This is the OTA job document model describing the parameters, their types, destination and how to extract. */
+/*lint -e{708} We intentionally do some things lint warns about but produce the proper model. */
+/* Namely union initialization and pointers converted to values. */
+
+static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
+{
+    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeStringInDoc },                          /*lint !e9078 !e923 Get address of token as value. */
+    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeUInt32 },
+    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy },
+    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject},
+    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent },
+    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32 },
+    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
+    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy },
+    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy },
+    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_STORE_NESTED_JSON }, ModelParamTypeArray },
+    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy },
+    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32 },
+    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32 },
+    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy },
+    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy },
+    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy },
+    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64 },
+    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32 },
+};
 
 /* Parse the OTA job document and validate. Return the populated
  * OTA context if valid otherwise return NULL.
  */
-  static OtaFileContext_t fileContext = { 0 };
+static OtaFileContext_t fileContext = { 0 };
 static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob )
 {
     DEFINE_OTA_METHOD_NAME( "parseJobDoc" );
 
-    /* This is the OTA job document model describing the parameters, their types, destination and how to extract. */
-    /*lint -e{708} We intentionally do some things lint warns about but produce the proper model. */
-    /* Namely union initialization and pointers converted to values. */
-    static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
-    {
-        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeStringInDoc },                          /*lint !e9078 !e923 Get address of token as value. */
-        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeUInt32 },
-        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
-        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy },
-        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject},
-        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent },
-        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32 },
-        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
-        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM }, ModelParamTypeObject },
-        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy },
-        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy },
-        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_STORE_NESTED_JSON }, ModelParamTypeArray },
-        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy },
-        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32 },
-        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32 },
-        { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy },
-        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy },
-        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy },
-        { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64 },
-        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32 },
-    };
-
     OtaErr_t otaErr = OTA_ERR_NONE;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     OtaFileContext_t * pFinalFile = NULL;
     OtaFileContext_t * pFileContext = &fileContext;
-    OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
-
     JsonDocModel_t otaJobDocModel;
 
     if( initDocModel( &otaJobDocModel,
@@ -1770,182 +2041,12 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         err = OtaJobParseErrBadModelInitParams;
     }
     else if( parseJSONbyModel( pJson, messageLength, &otaJobDocModel ) == DocParseErrNone )
-    { /* Validate the job document parameters. */
-        err = OtaJobParseErrNone;
-
-        if( pFileContext->fileSize == 0U )
-        {
-            OTA_LOG_L1( "[%s] Zero file size is not allowed!\r\n", OTA_METHOD_NAME );
-            err = OtaJobParseErrZeroFileSize;
-        }
-        /* If there's an active job, verify that it's the same as what's being reported now. */
-        /* We already checked for missing parameters so we SHOULD have a job name in the context. */
-        else if( otaAgent.pOtaSingletonActiveJobName != NULL )
-        {
-            if( pFileContext->pJobName != NULL )
-            {
-                /* pFileContext->pJobName is guaranteed to be zero terminated. */
-                if( strcmp( ( char * ) otaAgent.pOtaSingletonActiveJobName, ( char * ) pFileContext->pJobName ) != 0 )
-                {
-                    OTA_LOG_L1( "[%s] New job document received,aborting current job.\r\n", OTA_METHOD_NAME );
-
-                    /* Abort the current job. */
-                    ( void ) otaAgent.palCallbacks.setPlatformImageState( otaAgent.serverFileID, OtaImageStateAborted );
-                    ( void ) otaClose( &otaAgent.pOtaFiles[ otaAgent.fileIndex ] );
-
-                    /* Set new active job name. */
-                    free( otaAgent.pOtaSingletonActiveJobName );
-                    otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
-                    pFileContext->pJobName = NULL;
-
-                    err = OtaJobParseErrNone;
-                }
-                else
-                { /* The same job is being reported so update the url. */
-                    OTA_LOG_L1( "[%s] Job received is current active job.\r\n", OTA_METHOD_NAME );
-
-                    if( otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath != NULL )
-                    {
-                        free( otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath );
-                        otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath = pFileContext->pUpdateUrlPath;
-                        pFileContext->pUpdateUrlPath = NULL;
-                    }
-
-                    otaFreeContext( pFileContext );
-
-                    pFinalFile = &otaAgent.pOtaFiles[ otaAgent.fileIndex ];
-                    *pUpdateJob = true;
-
-                    err = OtaJobParseErrUpdateCurrentJob;
-                }
-            }
-            else
-            {
-                OTA_LOG_L1( "[%s] Null job reported while busy. Ignoring.\r\n", OTA_METHOD_NAME );
-                err = OtaJobParseErrNullJob;
-            }
-        }
-        else
-        { /* Assume control of the job name from the context. */
-            otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
-            pFileContext->pJobName = NULL;
-        }
-
-        /* Store the File ID received in the job */
-        otaAgent.serverFileID = pFileContext->serverFileID;
-
-        if( err == OtaJobParseErrNone )
-        {
-            /* If the job is in self test mode, don't start an
-             * OTA update but instead do the following:
-             *
-             * If the firmware that performed the update was older
-             * than the currently running firmware, set the image
-             * state to "Testing." This is the success path.
-             *
-             * If it's the same or newer, reject the job since
-             * either the firmware wasn't accepted during self
-             * test or an incorrect image was sent by the OTA
-             * operator.
-             */
-            if( pFileContext->isInSelfTest )
-            {
-                OTA_LOG_L1( "[%s] In self test mode.\r\n", OTA_METHOD_NAME );
-
-                /* Validate version of the update received.*/
-                errVersionCheck = validateUpdateVersion( pFileContext );
-
-                if( otaconfigAllowDowngrade || ( errVersionCheck == OTA_ERR_NONE ) )
-                {
-                    /* The running firmware version is newer than the firmware that performed
-                     * the update or downgrade is allowed so this means we're ready to start
-                     * the self test phase.
-                     *
-                     * Set image state accordingly and update job status with self test identifier.
-                     */
-                    OTA_LOG_L1( "[%s] Setting image state to Testing for file ID %d\r\n", OTA_METHOD_NAME, otaAgent.serverFileID );
-
-                    ( void ) setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
-                }
-                else
-                {
-                    OTA_LOG_L1( "[%s] Downgrade or same version not allowed, rejecting the update & rebooting.\r\n", OTA_METHOD_NAME );
-                    ( void ) setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
-
-                    /* All reject cases must reset the device. */
-                    otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
-                }
-            }
-            else
-            {
-                pFinalFile = getFreeContext();
-
-                if( pFinalFile == NULL )
-                {
-                    OTA_LOG_L1( "[%s] Job parsing successful but no file context available, aborting.\r\n", OTA_METHOD_NAME );
-                }
-                else
-                {
-                    *pFinalFile = *pFileContext;
-
-                    /* Everything looks OK. Set final context structure to start OTA. */
-                    OTA_LOG_L1( "[%s] Job was accepted. Attempting to start transfer.\r\n", OTA_METHOD_NAME );
-                }
-            }
-        }
-        else
-        {
-            OTA_LOG_L1( "[%s] Error %d parsing job document.\r\n", OTA_METHOD_NAME, err );
-        }
+    { 
+        err = validateAndStartJob(pFileContext, &pFinalFile, pUpdateJob);
     }
     else
-    { /* We have an unknown job parser error. Check to see if we can pass control to a callback for parsing */
-        err = otaAgent.palCallbacks.customJobCallback( pJson, messageLength );
-
-        if( err == OtaJobParseErrNone )
-        {
-            /* Custom job was parsed by external callback successfully. Grab the job name from the file
-             *  context and save that in the ota agent */
-            if( pFileContext->pJobName != NULL )
-            {
-                otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
-                pFileContext->pJobName = NULL;
-                otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                              JobStatusSucceeded,
-                                                              JobReasonAccepted,
-                                                              0 );
-
-                if( otaErr != OTA_ERR_NONE )
-                {
-                    OTA_LOG_L2( "[%s] Failed to update job status %d\r\n", OTA_METHOD_NAME, otaErr );
-                }
-
-                /* We don't need the job name memory anymore since we're done with this job. */
-                free( otaAgent.pOtaSingletonActiveJobName );
-                otaAgent.pOtaSingletonActiveJobName = NULL;
-            }
-            else
-            {
-                /* Job is malformed - return an error */
-                OTA_LOG_L1( "[%s] Job does not have context or has no ID but has been processed\r\n", OTA_METHOD_NAME );
-                err = OtaJobParseErrNonConformingJobDoc;
-            }
-        }
-        else
-        {
-            /*Check if we received a timestamp and client token but no job ID.*/
-            if( ( otaAgent.pClientTokenFromJob != NULL ) && ( otaAgent.timestampFromJob != 0 ) && ( pFileContext->pJobName == NULL ) )
-            {
-                /* Received job docuement with no execution so no active job is available.*/
-                OTA_LOG_L1( "[%s] No active jobs available in the service for execution.\r\n", OTA_METHOD_NAME );
-                err = OtaJobParseErrNoActiveJobs;
-            }
-            else
-            {
-                /* Job is malformed - return an error */
-                err = OtaJobParseErrNonConformingJobDoc;
-            }
-        }
+    {  
+        err = parseJobDocFromCustomCallback(pJson, messageLength, pFileContext);
     }
 
     //assert( err != OtaJobParseErrUnknown );
@@ -2108,7 +2209,8 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
     return ret;
 }
 
-/* Validate the incomming data block and store it in the file context */
+/* Validate the incomming data block and store it in the file context. */
+
 static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext, 
                                         uint32_t uBlockIndex, 
                                         uint32_t uBlockSize, 
@@ -2179,7 +2281,8 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 
 }
 
-/* Free the resources allocated for data ingestion and close the file handle */
+/* Free the resources allocated for data ingestion and close the file handle. */
+
 static IngestResult_t ingestDataBlockCleanup(   OtaFileContext_t * pFileContext,
                                                 OtaErr_t * pCloseResult )
 {
