@@ -71,7 +71,7 @@ jobs:
         with:
           ref: master
           repository: aws/aws-iot-device-sdk-embedded-C
-      - run: rm -r libraries/aws/ota
+      - run: rm -rf libraries/aws/ota
       - name: Clone This Repo
         uses: actions/checkout@v2
         with:
