@@ -170,26 +170,28 @@ static const unsigned char pBase64SymbolToIndexMap[] = {
 };
 
 /**
- * @brief      Validates the input Base64 index based on the context of what
- *             has been decoded so far and the value of the index.
+ * @brief         Validates the input Base64 index based on the context of what
+ *                has been decoded so far and the value of the index.
  *
- * @param[in]  base64Index Base64 index that can have on of the values listed
- *             in pBase64SymbolToIndexMap. This index represents the value of
- *             a valid Base64 symbol, a number to identify it as a formatting
- *             symbol, or a number to identify it as an invalid symbol.
- * @param[out] pNumPadding Pointer to the number of padding symbols that are
- *             present before the input Base64 index in the encoded data. This
- *             number is incremented if the input symbol is a padding symbol.
- * @param[out] pNumWhitespace Pointer to the number of whitespace symbols that
- *             are present before the input Base64 index in the encoded data.
- *             This number is incremented if the input symbol is a whitespace
- *             symbol.
+ * @param[in]     base64Index Base64 index that can have on of the values
+ *                listed in pBase64SymbolToIndexMap. This index represents the
+ *                value of a valid Base64 symbol, a number to identify it as a
+ *                formatting symbol, or a number to identify it as an invalid
+ *                symbol.
+ * @param[in,out] pNumPadding Pointer to the number of padding symbols that are
+ *                present before the input Base64 index in the encoded data.
+ *                This number is incremented if the input symbol is a padding
+ *                symbol.
+ * @param[in,out] pNumWhitespace Pointer to the number of whitespace symbols
+ *                that are present before the input Base64 index in the encoded
+ *                data. This number is incremented if the input symbol is a
+ *                whitespace symbol.
  *
- * @return     One of the following:
- *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid and
- *               succesfully decoded.
- *             - An error code defined in aws_ota_base64_private.h if the
- *               encoded data is invalid or the input parameters are invalid.
+ * @return        One of the following:
+ *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *                  and succesfully decoded.
+ *                - An error code defined in aws_ota_base64_private.h if the
+ *                  encoded data or input parameters are invalid.
  */
 static int preprocessBase64Index(unsigned char base64Index, size_t* pNumPadding, size_t* pNumWhitespace)
 {
@@ -237,24 +239,16 @@ static int preprocessBase64Index(unsigned char base64Index, size_t* pNumPadding,
 }
 
 /**
- * @brief      Add a Base64 index to a Base64 index buffer. The buffer will
- *             only be updated if the index represents a Base64 digit.
+ * @brief         Add a Base64 index to a Base64 index buffer. The buffer will
+ *                only be updated if the index represents a Base64 digit.
  *
- * @param[in]  base64Index Base64 index that can have one of the values listed
- *             in pBase64SymbolToIndexMap.
- * @param[out] pNumPadding Pointer to the number of padding symbols that are
- *             present before the input Base64 index in the encoded data. This
- *             number is incremented if the input symbol is a padding symbol.
- * @param[out] pNumWhitespace Pointer to the number of whitespace symbols that
- *             are present before the input Base64 index in the encoded data.
- *             This number is incremented if the input symbol is a whitespace
- *             symbol.
- *
- * @return     One of the following:
- *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid and
- *               succesfully decoded.
- *             - An error code defined in aws_ota_base64_private.h if the
- *               encoded data is invalid or the input parameters are invalid.
+ * @param[in]     base64Index Base64 index that can have one of the values
+ *                listed in pBase64SymbolToIndexMap.
+ * @param[in,out] pBase64IndexBuffer Pointer to a 32 bit variable that contains
+ *                Base64 indexes that will be decoded.
+ * @param[in,out] pNumDataInBuffer Pointer to the number of sextets that are
+ *                stored in pBase64IndexBuffer. This will be incremented if
+ *                base64Index is stored in pBase64IndexBuffer.
  */
 static void updateBase64DecodingBuffer(const unsigned char base64Index, uint32_t* pBase64IndexBuffer, size_t* pNumDataInBuffer)
 {
@@ -279,23 +273,25 @@ static void updateBase64DecodingBuffer(const unsigned char base64Index, uint32_t
 }
 
 /**
- * @brief      Decode a buffer containing two, three, or four Base64 indexes.
+ * @brief         Decode a buffer containing two, three, or four Base64
+ *                indices.
  *
- * @param[out] pBase64IndexBuffer Pointer to a 32 bit variable that contains
- *             Base64 indexes that will be decoded.
- * @param[out] pNumDataInBuffer Pointer to the number of sextets that are
- *             stored in pBase64IndexBuffer. This will be set to zero before
- *             this function returns.
- * @param[out] pDest Pointer to a buffer used for storing the decoded data.
- * @param[in]  destLen Length of the pDest buffer.
- * @param[out] pOutputLen Pointer to the index of pDest where the output should
- *             be written.
+ * @param[in,out] pBase64IndexBuffer Pointer to a 32 bit variable that contains
+ *                Base64 indexes that will be decoded. Each index is
+ *                represented by a sextet in the buffer.
+ * @param[in,out] pNumDataInBuffer Pointer to the number of sextets (indexes)
+ *                that are concatenated and stored in pBase64IndexBuffer. This
+ *                will be set to zero before this function returns.
+ * @param[out]    pDest Pointer to a buffer used for storing the decoded data.
+ * @param[in]     destLen Length of the pDest buffer.
+ * @param[in,out] pOutputLen Pointer to the index of pDest where the output
+ *                should be written.
  *
- * @return     One of the following:
- *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid and
- *               succesfully decoded.
- *             - An error code defined in aws_ota_base64_private.h if the
- *               encoded data is invalid or the input parameters are invalid.
+ * @return        One of the following:
+ *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *                  and succesfully decoded.
+ *                - An error code defined in aws_ota_base64_private.h if the
+ *                  encoded data or input parameters are invalid.
  */
 static int decodeBase64IndexBuffer( uint32_t* pBase64IndexBuffer, size_t* pNumDataInBuffer, unsigned char* pDest, const size_t destLen, size_t* pOutputLen)
 {
@@ -375,14 +371,15 @@ static int decodeBase64IndexBuffer( uint32_t* pBase64IndexBuffer, size_t* pNumDa
  * @param[out] pDest Pointer to a buffer for storing the decoded result.
  * @param[in]  destLen Length of the pDest buffer.
  * @param[out] pResultLen Pointer to the length of the decoded result.
- * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded data that is intended
- *             to be decoded.
- * @param[in]  encodedLen The number of elements in the Base64 encoded data buffer.
+ * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded
+ *             data that is intended to be decoded.
+ * @param[in]  encodedLen Length of the pEncodedData buffer.
  * 
  * @return     One of the following:
- *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid and succesfully decoded.
- *             - An error code defined in aws_ota_base64_private.h if the encoded data is invalid
- *               or the input parameters are invalid.
+ *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *               and succesfully decoded.
+ *             - An error code defined in aws_ota_base64_private.h if the
+ *               encoded data or input parameters are invalid.
  */
 int base64Decode( unsigned char* pDest, const size_t destLen, size_t* pResultLen, const unsigned char* pEncodedData, const size_t encodedLen )
 {
