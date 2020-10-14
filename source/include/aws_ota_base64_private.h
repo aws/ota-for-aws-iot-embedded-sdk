@@ -43,7 +43,7 @@
 /**
  * @brief Invalid symbol in the encoded data.
  */
-#define OTA_ERR_BASE64_INVALID_SYMBOL_ERROR 1
+#define OTA_ERR_BASE64_INVALID_SYMBOL 1
 /**
  * @brief A potentially valid symbol is in an invalid location in the encoded data.
  */

@@ -439,10 +439,10 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols ( void )
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_SYMBOL_ERROR
- *        when there is a symbol that is not a valid Base64 symbol. The valid
- *        Base64 symbols are assumed to be the Base64 digits, line feeds,
- *        carriage returns, spaces, and the padding symbol '='.
+ * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_SYMBOL when
+ *        there is a symbol that is not a valid Base64 symbol. The valid Base64
+ *        symbols are assumed to be the Base64 digits, line feeds, carriage
+ *        returns, spaces, and the padding symbol '='.
  */
 void test_OTA_base64Decode_InvalidNonBase64Symbols ( void )
 {
@@ -487,7 +487,7 @@ void test_OTA_base64Decode_InvalidNonBase64Symbols ( void )
                                &resultLen,
                                pModifiedEncodedData,
                                BASE64_VALID_DATA_ENCODED_LEN );
-        TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ERROR, result );
+        TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL, result );
     }
 }
 

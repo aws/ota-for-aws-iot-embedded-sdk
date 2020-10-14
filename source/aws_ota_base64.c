@@ -200,7 +200,7 @@ static int preprocessBase64Index(unsigned char base64Index, size_t* pNumPadding,
     /* Validate that the Base64 index is valid and in an appropriate place. */
     if( base64Index == NON_BASE64_INDEX)
     {
-        return_val = OTA_ERR_BASE64_INVALID_SYMBOL_ERROR;
+        return_val = OTA_ERR_BASE64_INVALID_SYMBOL;
     }
     else if( base64Index == PADDING_SYMBOL )
     {
