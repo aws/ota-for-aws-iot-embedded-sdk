@@ -36,9 +36,9 @@
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
-    .u.x.ucMajor = 1,
-    .u.x.ucMinor = 0,
-    .u.x.usBuild = 0,
+    .u.x.major = 1,
+    .u.x.minor = 0,
+    .u.x.build = 0,
 };
 
 /* OTA code signing signature algorithm. */

@@ -146,11 +146,7 @@ typedef struct
 {
     const char * pSrcKey; /* Expected key name. */
     const bool required;  /* If true, this parameter must exist in the document. */
-    union
-    {
-        const uint32_t destOffset;         /* Pointer or offset to where we'll store the value, if not ~0. */
-        void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
-    };
+    void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -166,7 +162,7 @@ typedef struct
  */
 typedef struct
 {
-    uint64_t contextBase;            /* The base address of the destination OTA context structure. */
+    void* contextBase;            /* The base address of the destination OTA context structure. */
     uint64_t contextSize;            /* The size, in bytes, of the destination context structure. */
     const JsonDocParam_t * pBodyDef; /* Pointer to the document model body definition. */
     uint16_t numModelParams;         /* The number of entries in the document model (limited to 32). */
@@ -208,15 +204,17 @@ enum
 #define OTA_JSON_TIMESTAMP_KEY          "timestamp"
 #define OTA_JSON_EXECUTION_KEY          "execution" 
 #define OTA_JSON_JOB_ID_KEY             OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobId"
-#define OTA_JSON_STATUS_DETAILS_KEY     "statusDetails"
-#define OTA_JSON_SELF_TEST_KEY          "self_test"
-#define OTA_JSON_UPDATED_BY_KEY         "updatedBy"
+#define OTA_JSON_STATUS_DETAILS_KEY     OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "statusDetails"
+#define OTA_JSON_SELF_TEST_KEY          OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "self_test"
+#define OTA_JSON_UPDATED_BY_KEY         OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "updatedBy"
+#define OTA_JSON_UPDATED_BY_KEY_ONLY    "updatedBy"
+#define OTA_JSON_SELF_TEST_KEY_ONLY     "self_test"
 #define OTA_JSON_JOB_DOC_KEY            OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobDocument"
 #define OTA_JSON_OTA_UNIT_KEY           OTA_JSON_JOB_DOC_KEY OTA_JSON_SEPARATOR "afr_ota"
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"
-#define OTA_JSON_FILE_PATH_KEY          "filepath"
+#define OTA_JSON_FILE_PATH_KEY          "filepath" 
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"
 #define OTA_JSON_FILE_ID_KEY            "fileid"
 #define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"
@@ -226,7 +224,7 @@ enum
 
 /* This is the OTA statistics structure to hold useful info. */
 
-typedef struct ota_agent_statistics
+typedef struct OtaAgentStatistics
 {
     uint32_t otaPacketsReceived;  /* Number of OTA packets received by the MQTT callback. */
     uint32_t otaPacketsQueued;    /* Number of OTA packets queued by the MQTT callback. */
@@ -236,7 +234,7 @@ typedef struct ota_agent_statistics
 
 /* The OTA agent is a singleton today. The structure keeps it nice and organized. */
 
-typedef struct ota_agent_context
+typedef struct OtaAgentContext
 {
     OtaState_t state;                                      /* State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /* Thing name + zero terminator. */
@@ -258,14 +256,14 @@ typedef struct ota_agent_context
 
 /* The OTA Agent event and data structures. */
 
-typedef struct
+typedef struct OtaEventData
 {
     uint8_t data[ OTA_DATA_BLOCK_SIZE ];
     uint32_t dataLength;
     bool bufferUsed;
 } OtaEventData_t;
 
-typedef struct
+typedef struct OtaEventMsg
 {
     OtaEventData_t * pEventData;
     OtaEvent_t eventId;

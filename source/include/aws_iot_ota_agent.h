@@ -99,7 +99,7 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
  *
  * @note There is currently support only for a single OTA context.
  */
-typedef enum
+typedef enum OtaState
 {
     OtaAgentStateNoTransition = -1,
     OtaAgentStateInit = 0,
@@ -122,7 +122,7 @@ typedef enum
  *
  * The events sent to OTA agent.
  */
-typedef enum
+typedef enum OtaEvent
 {
     OtaAgentEventStart = 0,
     OtaAgentEventStartSelfTest,
@@ -146,7 +146,7 @@ typedef enum
  *
  * The image state set by platform implementation.
  */
-typedef enum
+typedef enum OtaPalImageState
 {
     OtaPalImageStateUnknown = 0,
     OtaPalImageStatePendingCommit,
@@ -158,7 +158,7 @@ typedef enum
  * @ingroup ota_datatypes_enums
  * @brief OTA job document parser error codes.
  */
-typedef enum
+typedef enum OtaJobParseErr
 {
     OtaJobParseErrUnknown = -1,        /* The error code has not yet been set by a logic path. */
     OtaJobParseErrNone = 0,            /* Signifies no error has occurred. */
@@ -190,7 +190,7 @@ typedef enum
  *
  * See the OtaImageState_t type for more information.
  */
-typedef enum
+typedef enum OtaJobEvent
 {
     OtaJobEventActivate = 0,  /*!< OTA receive is authenticated and ready to activate. */
     OtaJobEventFail = 1,      /*!< OTA receive failed. Unable to use this update. */
@@ -214,7 +214,7 @@ typedef enum
  * If you want to abort an active OTA transfer, you may do so by calling the API
  * @ref ota_function_setimagestate( OtaImageStateAborted ).
  */
-typedef enum
+typedef enum OtaImageState
 {
     OtaImageStateUnknown = 0,  /*!< The initial state of the OTA MCU Image. */
     OtaImageStateTesting = 1,  /*!< The state of the OTA MCU Image post successful download and reboot. */
@@ -407,23 +407,17 @@ typedef struct
 struct OtaFileContext
 {
     uint8_t * pFilePath; /*!< Local file pathname. */
-    union
-    {
-        int32_t fileHandle;  /*!< Device internal file pointer or handle.
-                              * File type is handle after file is open for write. */
-        #if defined( WIN32 ) || defined( __linux__ )
+    #if defined( WIN32 ) || defined( __linux__ )
             FILE * pFile;    /*!< File type is stdio FILE structure after file is open for write. */
-        #else
+    #else
             uint8_t * pFile; /*!< File type is RAM/Flash image pointer after file is open for write. */
-        #endif
-    };
+    #endif
     uint32_t fileSize;        /*!< The size of the file in bytes. */
     uint32_t blocksRemaining; /*!< How many blocks remain to be received (a code optimization). */
     uint32_t fileAttributes;  /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
     uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
     uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
     uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
     uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for de-duping and missing block request). */
     uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
     uint8_t * pUpdateUrlPath; /*!< Url for the file. */
@@ -431,6 +425,7 @@ struct OtaFileContext
     uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of FW that did the update. */
     bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
+    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
 };
 
 /**
@@ -452,7 +447,7 @@ typedef struct
  */
 typedef struct
 {
-    OtaPALAbortCallback_t abort;                                 /* OTA Abort callback pointer */
+    OtaPALAbortCallback_t abortUpdate;                           /* OTA Abort callback pointer */
     OtaPALActivateNewImageCallback_t activateNewImage;           /* OTA Activate New Image callback pointer */
     OtaPALCloseFileCallback_t closeFile;                         /* OTA Close File callback pointer */
     OtaPALCreateFileForRxCallback_t createFileForRx;             /* OTA Create File for Receive callback pointer */
@@ -594,12 +589,12 @@ typedef struct
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
-OtaState_t OTA_AgentInit( void * pvConnectionContext,
-                           void * pOtaOSCtx,
-                           void * pOtaMqttInterface,
-                           const uint8_t * pucThingName,
-                           OtaCompleteCallback_t xFunc,
-                           uint32_t xTicksToWait );
+OtaState_t OTA_AgentInit( void * pConnectionContext,
+                          void * pOtaOSCtx,
+                          void * pOtaMqttInterface,
+                          const uint8_t * pThingName,
+                          OtaCompleteCallback_t completeCallback,
+                          uint32_t ticksToWait );
 
 /**
  * @brief Internal OTA Agent initialization function.

@@ -137,7 +137,7 @@ typedef OtaErr_t ( * ota_CreateTimer_t ) ( OtaTimerContext_t * pContext,
 typedef OtaErr_t ( * ota_StartTimer_t ) ( OtaTimerContext_t * pContext,
                                          const char * const pTimerName,
                                          const uint32_t timeout,
-                                         void ( * callback )( void * ) );
+                                         void ( * callback )( void * pParam ) );
 
 /**
  * @brief stop timer.

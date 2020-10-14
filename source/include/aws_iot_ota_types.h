@@ -23,7 +23,9 @@
  * http://www.FreeRTOS.org
  */
 
-#pragma once
+#ifndef _AWS_IOT_OTA_TYPES_H_
+#define _AWS_IOT_OTA_TYPES_H_
+
 #include <stdint.h>
 
 #ifndef u32
@@ -53,3 +55,5 @@
 #ifndef i8
     #define i8     int8_t
 #endif
+
+#endif /* ifndef _AWS_IOT_OTA_TYPES_H_ */

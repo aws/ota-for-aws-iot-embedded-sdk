@@ -43,149 +43,149 @@
  */
 typedef struct OtaMessageDecodeContext
 {
-    CborParser xCborParser;
+    CborParser cborParser;
     CborValue xCborRecursedItem;
 } OtaMessageDecodeContext_t, *OtaMessageDecodeContextPtr_t;
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
  */
-bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pucMessageBuffer,
-                                               size_t xMessageSize,
-                                               int32_t * plFileId,
-                                               int32_t * plBlockId,
-                                               int32_t * plBlockSize,
-                                               uint8_t ** ppucPayload,
-                                               size_t * pxPayloadSize )
+bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
+                                               size_t messageSize,
+                                               int32_t * pFileId,
+                                               int32_t * pBlockId,
+                                               int32_t * pBlockSize,
+                                               uint8_t ** pPayload,
+                                               size_t * pPayloadSize )
 {
-    CborError xCborResult = CborNoError;
-    CborParser xCborParser;
-    CborValue xCborValue, xCborMap;
+    CborError cborResult = CborNoError;
+    CborParser cborParser;
+    CborValue cborValue, cborMap;
 
     /* Initialize the parser. */
-    xCborResult = cbor_parser_init( pucMessageBuffer,
-                                    xMessageSize,
+    cborResult = cbor_parser_init( pMessageBuffer,
+                                    messageSize,
                                     0,
-                                    &xCborParser,
-                                    &xCborMap );
+                                    &cborParser,
+                                    &cborMap );
 
     /* Get the outer element and confirm that it's a "map," i.e., a set of
      * CBOR key/value pairs. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        if( false == cbor_value_is_map( &xCborMap ) )
+        if( false == cbor_value_is_map( &cborMap ) )
         {
-            xCborResult = CborErrorIllegalType;
+            cborResult = CborErrorIllegalType;
         }
     }
 
     /* Find the file ID. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_map_find_value( &xCborMap,
+        cborResult = cbor_value_map_find_value( &cborMap,
                                                  OTA_CBOR_FILEID_KEY,
-                                                 &xCborValue );
+                                                 &cborValue );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &xCborValue ) )
+        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
         {
-            xCborResult = CborErrorIllegalType;
+            cborResult = CborErrorIllegalType;
         }
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_get_int( &xCborValue,
-                                          ( int * ) plFileId );
+        cborResult = cbor_value_get_int( &cborValue,
+                                          ( int * ) pFileId );
     }
 
     /* Find the block ID. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_map_find_value( &xCborMap,
+        cborResult = cbor_value_map_find_value( &cborMap,
                                                  OTA_CBOR_BLOCKID_KEY,
-                                                 &xCborValue );
+                                                 &cborValue );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &xCborValue ) )
+        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
         {
-            xCborResult = CborErrorIllegalType;
+            cborResult = CborErrorIllegalType;
         }
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_get_int( &xCborValue,
-                                          ( int * ) plBlockId );
+        cborResult = cbor_value_get_int( &cborValue,
+                                          ( int * ) pBlockId );
     }
 
     /* Find the block size. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_map_find_value( &xCborMap,
+        cborResult = cbor_value_map_find_value( &cborMap,
                                                  OTA_CBOR_BLOCKSIZE_KEY,
-                                                 &xCborValue );
+                                                 &cborValue );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &xCborValue ) )
+        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
         {
-            xCborResult = CborErrorIllegalType;
+            cborResult = CborErrorIllegalType;
         }
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_get_int( &xCborValue,
-                                          ( int * ) plBlockSize );
+        cborResult = cbor_value_get_int( &cborValue,
+                                          ( int * ) pBlockSize );
     }
 
     /* Find the payload bytes. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_map_find_value( &xCborMap,
+        cborResult = cbor_value_map_find_value( &cborMap,
                                                  OTA_CBOR_BLOCKPAYLOAD_KEY,
-                                                 &xCborValue );
+                                                 &cborValue );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        if( CborByteStringType != cbor_value_get_type( &xCborValue ) )
+        if( CborByteStringType != cbor_value_get_type( &cborValue ) )
         {
-            xCborResult = CborErrorIllegalType;
+            cborResult = CborErrorIllegalType;
         }
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_calculate_string_length( &xCborValue,
-                                                          pxPayloadSize );
+        cborResult = cbor_value_calculate_string_length( &cborValue,
+                                                          pPayloadSize );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        *ppucPayload = malloc( *pxPayloadSize );
+        *pPayload = malloc( *pPayloadSize );
 
-        if( NULL == *ppucPayload )
+        if( NULL == *pPayload )
         {
-            xCborResult = CborErrorOutOfMemory;
+            cborResult = CborErrorOutOfMemory;
         }
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_value_copy_byte_string( &xCborValue,
-                                                   *ppucPayload,
-                                                   pxPayloadSize,
+        cborResult = cbor_value_copy_byte_string( &cborValue,
+                                                   *pPayload,
+                                                   pPayloadSize,
                                                    NULL );
     }
 
-    return CborNoError == xCborResult;
+    return CborNoError == cborResult;
 }
 
 
@@ -195,121 +195,121 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pucMessageBuffer,
  * service. The service allows block count or block bitmap to be requested,
  * but not both.
  */
-bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pucMessageBuffer,
-                                              size_t xMessageBufferSize,
-                                              size_t * pxEncodedMessageSize,
-                                              const char * pcClientToken,
-                                              int32_t lFileId,
-                                              int32_t lBlockSize,
-                                              int32_t lBlockOffset,
-                                              uint8_t * pucBlockBitmap,
-                                              size_t xBlockBitmapSize,
-                                              int32_t lNumOfBlocksRequested )
+bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
+                                              size_t messageBufferSize,
+                                              size_t * pEncodedMessageSize,
+                                              const char * pClientToken,
+                                              int32_t fileId,
+                                              int32_t blockSize,
+                                              int32_t blockOffset,
+                                              uint8_t * pBlockBitmap,
+                                              size_t blockBitmapSize,
+                                              int32_t numOfBlocksRequested )
 {
-    CborError xCborResult = CborNoError;
-    CborEncoder xCborEncoder, xCborMapEncoder;
+    CborError cborResult = CborNoError;
+    CborEncoder cborEncoder, cborMapEncoder;
 
     /* Initialize the CBOR encoder. */
-    cbor_encoder_init( &xCborEncoder,
-                       pucMessageBuffer,
-                       xMessageBufferSize,
+    cbor_encoder_init( &cborEncoder,
+                       pMessageBuffer,
+                       messageBufferSize,
                        0 );
-    xCborResult = cbor_encoder_create_map( &xCborEncoder,
-                                           &xCborMapEncoder,
+    cborResult = cbor_encoder_create_map( &cborEncoder,
+                                           &cborMapEncoder,
                                            OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
 
     /* Encode the client token key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_CLIENTTOKEN_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
-                                                pcClientToken );
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
+                                                pClientToken );
     }
 
     /* Encode the file ID key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_FILEID_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_int( &xCborMapEncoder,
-                                       lFileId );
+        cborResult = cbor_encode_int( &cborMapEncoder,
+                                       fileId );
     }
 
     /* Encode the block size key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_BLOCKSIZE_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_int( &xCborMapEncoder,
-                                       lBlockSize );
+        cborResult = cbor_encode_int( &cborMapEncoder,
+                                       blockSize );
     }
 
     /* Encode the block offset key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_BLOCKOFFSET_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_int( &xCborMapEncoder,
-                                       lBlockOffset );
+        cborResult = cbor_encode_int( &cborMapEncoder,
+                                       blockOffset );
     }
 
     /* Encode the block bitmap key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_BLOCKBITMAP_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_byte_string( &xCborMapEncoder,
-                                               pucBlockBitmap,
-                                               xBlockBitmapSize );
+        cborResult = cbor_encode_byte_string( &cborMapEncoder,
+                                               pBlockBitmap,
+                                               blockBitmapSize );
     }
 
     /* Encode the number of blocks requested key and value. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_text_stringz( &xCborMapEncoder,
+        cborResult = cbor_encode_text_stringz( &cborMapEncoder,
                                                 OTA_CBOR_NUMBEROFBLOCKS_KEY );
     }
 
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encode_int( &xCborMapEncoder,
-                                       lNumOfBlocksRequested );
+        cborResult = cbor_encode_int( &cborMapEncoder,
+                                       numOfBlocksRequested );
     }
 
     /* Done with the encoder. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        xCborResult = cbor_encoder_close_container_checked( &xCborEncoder,
-                                                            &xCborMapEncoder );
+        cborResult = cbor_encoder_close_container_checked( &cborEncoder,
+                                                            &cborMapEncoder );
     }
 
     /* Get the encoded size. */
-    if( CborNoError == xCborResult )
+    if( CborNoError == cborResult )
     {
-        *pxEncodedMessageSize = cbor_encoder_get_buffer_size( &xCborEncoder,
-                                                              pucMessageBuffer );
+        *pEncodedMessageSize = cbor_encoder_get_buffer_size( &cborEncoder,
+                                                              pMessageBuffer );
     }
 
-    return CborNoError == xCborResult;
+    return CborNoError == cborResult;
 }

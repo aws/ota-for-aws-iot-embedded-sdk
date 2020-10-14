@@ -72,7 +72,7 @@ static const char pcOTA_GetStream_TopicTemplate[] = "$aws/things/%s/streams/%s/g
 static const char pcOTA_GetNextJob_MsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";
 static const char pcOTA_JobStatus_StatusTemplate[] = "{\"status\":\"%s\",\"statusDetails\":{";
 static const char pcOTA_JobStatus_ReceiveDetailsTemplate[] = "\"%s\":\"%u/%u\"}}";
-static const char pcOTA_JobStatus_SelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY "\":\"0x%x\"}}";
+static const char pcOTA_JobStatus_SelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}";
 static const char pcOTA_JobStatus_ReasonStrTemplate[] = "\"reason\":\"%s: 0x%08x\"}}";
 static const char pcOTA_JobStatus_SucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.%u\"}}";
 static const char pcOTA_JobStatus_ReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";
@@ -344,7 +344,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pcMsgBuffer,
     ulMsgSize += ( uint32_t ) snprintf( &pcMsgBuffer[ ulMsgSize ], /*lint -e586 Intentionally using snprintf. */
                                         xMsgBufferSize - ulMsgSize,
                                         pcOTA_JobStatus_SelfTestDetailsTemplate,
-                                        OTA_JSON_SELF_TEST_KEY,
+                                        OTA_JSON_SELF_TEST_KEY_ONLY,
                                         pcOTA_JobReason_Strings[ lReason ],
                                         appFirmwareVersion.u.unsignedVersion32 );
 
@@ -391,9 +391,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pcMsgBuffer,
                                             xMsgBufferSize - ulMsgSize,
                                             pcOTA_JobStatus_SucceededStrTemplate,
                                             pcOTA_JobReason_Strings[ lReason ],
-                                            xNewVersion.u.x.ucMajor,
-                                            xNewVersion.u.x.ucMinor,
-                                            xNewVersion.u.x.usBuild );
+                                            xNewVersion.u.x.major,
+                                            xNewVersion.u.x.minor,
+                                            xNewVersion.u.x.build );
     }
 
     /* Status updates that are NOT "InProgress" or "Succeeded" or "FailedWithVal" map status and
@@ -511,7 +511,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
             ulMsgSize = prvBuildStatusMessageSelfTest( pcMsg, sizeof( pcMsg ), eStatus, lReason );
         }
     }
-    else
+    else 
     {
         if( eStatus < NumJobStatusMappings )
         {
@@ -540,7 +540,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
     OtaErr_t xResult = OTA_ERR_PUBLISH_FAILED;
 
-    char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+    static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t usTopicLen = 0;
     const OtaFileContext_t * pFileContext = &( pxAgentCtx->pOtaFiles[ pxAgentCtx->fileIndex ] );
 
@@ -552,10 +552,13 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
     {
-
+        pxAgentCtx->pOTAMqttInterface->subscribe( pcOTA_RxStreamTopic ,
+                                                  usTopicLen, 
+                                                  0,
+                                                  pxAgentCtx->pOTAMqttInterface->dataCallback );
     }
 
-    return xResult;
+    return OTA_ERR_NONE;
 }
 
 /*

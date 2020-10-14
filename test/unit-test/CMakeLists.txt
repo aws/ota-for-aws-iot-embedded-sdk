@@ -84,3 +84,10 @@ create_test(${utest_name}
     "${utest_dep_list}"
     "${test_include_directories}"
 )
+
+create_test("aws_ota_base64_utest"
+    "aws_ota_base64_utest.c"
+    "${utest_link_list}"
+    "${utest_dep_list}"
+    "${test_include_directories}"
+)

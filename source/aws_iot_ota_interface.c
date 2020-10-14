@@ -84,7 +84,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
 {
     DEFINE_OTA_METHOD_NAME( "setDataInterface" );
 
-    OtaErr_t xErr = OTA_ERR_INVALID_DATA_PROTOCOL;
+    OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
     for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
@@ -101,7 +101,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
 
                     OTA_LOG_L1( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
 
-                    xErr = OTA_ERR_NONE;
+                    err = OTA_ERR_NONE;
                     break;
                 }
             #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) */
@@ -116,12 +116,12 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
 
                     OTA_LOG_L1( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME );
 
-                    xErr = OTA_ERR_NONE;
+                    err = OTA_ERR_NONE;
                     break;
                 }
             #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) */
         }
     }
 
-    return xErr;
+    return err;
 }
