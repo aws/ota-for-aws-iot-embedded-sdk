@@ -104,7 +104,7 @@ typedef enum
     DocParseErrInvalidNumChar,        /* There was an invalid character in a numeric value field. */
     DocParseErrDuplicatesNotAllowed,  /* A duplicate parameter was found in the job document. */
     DocParseErrMalformedDoc,          /* The document didn't fulfill the model requirements. */
-    DocParseErr_InvalidJSONBuffer,     /* When the JSON is malformed and not parsed correctly. */
+    DocParseErr_InvalidJSONBuffer,    /* When the JSON is malformed and not parsed correctly. */
     DocParseErrNullModelPointer,      /* The pointer to the document model was NULL. */
     DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
     DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
@@ -144,9 +144,9 @@ typedef enum
  */
 typedef struct
 {
-    const char * pSrcKey; /* Expected key name. */
-    const bool required;  /* If true, this parameter must exist in the document. */
-    void * const pDestOffset;          /* Pointer or offset to where we'll store the value, if not ~0. */
+    const char * pSrcKey;                  /* Expected key name. */
+    const bool required;                   /* If true, this parameter must exist in the document. */
+    void * const pDestOffset;              /* Pointer or offset to where we'll store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -162,7 +162,7 @@ typedef struct
  */
 typedef struct
 {
-    void* contextBase;            /* The base address of the destination OTA context structure. */
+    void * contextBase;              /* The base address of the destination OTA context structure. */
     uint64_t contextSize;            /* The size, in bytes, of the destination context structure. */
     const JsonDocParam_t * pBodyDef; /* Pointer to the document model body definition. */
     uint16_t numModelParams;         /* The number of entries in the document model (limited to 32). */
@@ -202,7 +202,7 @@ enum
 #define OTA_JSON_SEPARATOR              "."
 #define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"
 #define OTA_JSON_TIMESTAMP_KEY          "timestamp"
-#define OTA_JSON_EXECUTION_KEY          "execution" 
+#define OTA_JSON_EXECUTION_KEY          "execution"
 #define OTA_JSON_JOB_ID_KEY             OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobId"
 #define OTA_JSON_STATUS_DETAILS_KEY     OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "statusDetails"
 #define OTA_JSON_SELF_TEST_KEY          OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "self_test"
@@ -214,7 +214,7 @@ enum
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"
-#define OTA_JSON_FILE_PATH_KEY          "filepath" 
+#define OTA_JSON_FILE_PATH_KEY          "filepath"
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"
 #define OTA_JSON_FILE_ID_KEY            "fileid"
 #define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"
