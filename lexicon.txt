@@ -1,10 +1,6 @@
 0123456789
 abcdefghijklmnopqrstuvwxyz
-<<<<<<< HEAD
 abortupdate
-=======
-abortUpdate
->>>>>>> Added variables to the lexicon.txt
 activatenewimage
 addrinfo
 afr
