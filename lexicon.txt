@@ -1,6 +1,6 @@
 0123456789
 abcdefghijklmnopqrstuvwxyz
-abortUpdate
+abortupdate
 activatenewimage
 addrinfo
 afr
@@ -393,7 +393,7 @@ ulreceived
 ultopiclen
 unistd
 updatejobstatus
-updateversion
+updaterversion
 url
 ustopiclen
 utils
