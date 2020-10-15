@@ -308,68 +308,69 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     int return_val = OTA_BASE64_SUCCESS;
     size_t outputLen = *pOutputLen;
     uint32_t base64IndexBuffer = *pBase64IndexBuffer;
-    uint32_t numDataInBuffer = *pNumDataInBuffer;
+    size_t numDataInBuffer = *pNumDataInBuffer;
+    size_t numDataToWrite = ( numDataInBuffer * 3 ) / 4;
 
-    /* The data buffer is considered full when it contains 4 sextets of data (aka 4 pieces of
-     * encoded data). If the buffer is full, convert the 4 sextets of encoded data into 3
-     * sequential octects of decoded data starting from the most significant bits and ending
-     * at the least significant bits. */
-    if( numDataInBuffer == MAX_NUM_BASE64_DATA )
+    if( destLen < outputLen + numDataToWrite )
     {
-        if( outputLen + MAX_LENGTH_OF_BUFFER_WRITE <= destLen )
+        return_val = OTA_ERR_BASE64_INVALID_BUFFER_SIZE;
+    }
+    else
+    {
+        /* The data buffer is considered full when it contains 4 sextets of data (aka 4 pieces of
+         * encoded data). If the buffer is full, convert the 4 sextets of encoded data into 3
+         * sequential octects of decoded data starting from the most significant bits and ending
+         * at the least significant bits. */
+        if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
             pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFF;
             pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
             pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
         }
-        else
+        else if( numDataInBuffer == 3 )
         {
-            return_val = OTA_ERR_BASE64_INVALID_BUFFER_SIZE;
+            /* When there are only three sextets of data remaining at the end of the encoded data,
+             * it is assumed that these three sextets should be decoded into two octets of data. In
+             * this case, the two least significant bits are ignored and the following sixteen
+             * least significant bits are converted into two octets of data. */
+            if( base64IndexBuffer & 0x3 )
+            {
+                return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
+            }
+
+            if( return_val == OTA_BASE64_SUCCESS )
+            {
+                base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
+                pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
+                pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+            }
         }
-    }
-    else if( numDataInBuffer == 3 )
-    {
-        /* When there are only three sextets of data remaining at the end of the encoded data,
-         * it is assumed that these three sextets should be decoded into two octets of data. In
-         * this case, the two least significant bits are ignored and the following sixteen
-         * least significant bits are converted into two octets of data. */
-        if( base64IndexBuffer & 0x3 )
+        else if( numDataInBuffer == 2 )
         {
-            return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
+            /* When there are only two sextets of data remaining at the end of the encoded data, it
+             * is assumed that these two sextets should be decoded into one octet of data. In this
+             * case, the four least significant bits are ignored and the following eight least
+             * significant bits are converted into one octet of data. */
+            if( base64IndexBuffer & 0xF )
+            {
+                return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
+            }
+
+            if( return_val == OTA_BASE64_SUCCESS )
+            {
+                base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
+                pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+            }
         }
 
-        if( return_val == OTA_BASE64_SUCCESS )
+        /* This scenario is only possible when the number of encoded symbols ( excluding newlines
+         * and padding ) being decoded mod four is equal to one. There is no valid scenario where
+         * unencoded data can be encoded to create a result of this size. Therefore if this size
+         * is encountered, it is assumed to have been a mistake and is considered an error. */
+        else if( numDataInBuffer == 1 )
         {
-            base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
-            pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
-            pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+            return_val = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
         }
-    }
-    else if( numDataInBuffer == 2 )
-    {
-        /* When there are only two sextets of data remaining at the end of the encoded data, it
-         * is assumed that these two sextets should be decoded into one octet of data. In this
-         * case, the four least significant bits are ignored and the following eight least
-         * significant bits are converted into one octet of data. */
-        if( base64IndexBuffer & 0xF )
-        {
-            return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
-        }
-
-        if( return_val == OTA_BASE64_SUCCESS )
-        {
-            base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
-            pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
-        }
-    }
-
-    /* This scenario is only possible when the number of encoded symbols ( excluding newlines
-     * and padding ) being decoded mod four is equal to one. There is no valid scenario where
-     * unencoded data can be encoded to create a result of this size. Therefore if this size
-     * is encountered, it is assumed to have been a mistake and is considered an error. */
-    else if( numDataInBuffer == 1 )
-    {
-        return_val = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
     }
 
     *pNumDataInBuffer = 0;
