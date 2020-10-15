@@ -406,11 +406,11 @@ typedef struct
  */
 struct OtaFileContext
 {
-    uint8_t * pFilePath; /*!< Local file pathname. */
+    uint8_t * pFilePath;      /*!< Local file pathname. */
     #if defined( WIN32 ) || defined( __linux__ )
-            FILE * pFile;    /*!< File type is stdio FILE structure after file is open for write. */
+        FILE * pFile;         /*!< File type is stdio FILE structure after file is open for write. */
     #else
-            uint8_t * pFile; /*!< File type is RAM/Flash image pointer after file is open for write. */
+        uint8_t * pFile;      /*!< File type is RAM/Flash image pointer after file is open for write. */
     #endif
     uint32_t fileSize;        /*!< The size of the file in bytes. */
     uint32_t blocksRemaining; /*!< How many blocks remain to be received (a code optimization). */
@@ -483,48 +483,48 @@ typedef struct
  */
 
 /* @[define_ota_err_codes] */
-#define OTA_ERR_PANIC                      0xfe000000UL  /*!< Unrecoverable FW error. Probably should log error and reboot. */
-#define OTA_ERR_UNINITIALIZED              0xff000000UL  /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                       0x00000000UL
-#define OTA_ERR_SIGNATURE_CHECK_FAILED     0x01000000UL  /*!< The signature check failed for the specified file. */
-#define OTA_ERR_BAD_SIGNER_CERT            0x02000000UL  /*!< The signer certificate was not readable or zero length. */
-#define OTA_ERR_OUT_OF_MEMORY              0x03000000UL  /*!< General out of memory error. */
-#define OTA_ERR_ACTIVATE_FAILED            0x04000000UL  /*!< The activation of the new OTA image failed. */
-#define OTA_ERR_COMMIT_FAILED              0x05000000UL  /*!< The acceptance commit of the new OTA image failed. */
-#define OTA_ERR_REJECT_FAILED              0x06000000UL  /*!< Error trying to reject the OTA image. */
-#define OTA_ERR_ABORT_FAILED               0x07000000UL  /*!< Error trying to abort the OTA. */
-#define OTA_ERR_PUBLISH_FAILED             0x08000000UL  /*!< Attempt to publish a MQTT message failed. */
-#define OTA_ERR_BAD_IMAGE_STATE            0x09000000UL  /*!< The specified OTA image state was out of range. */
-#define OTA_ERR_NO_ACTIVE_JOB              0x0a000000UL  /*!< Attempt to set final image state without an active job. */
-#define OTA_ERR_NO_FREE_CONTEXT            0x0b000000UL  /*!< There wasn't an OTA file context available for processing. */
-#define OTA_ERR_HTTP_INIT_FAILED           0x0c000000UL  /*!< Error initializing the HTTP connection. */
-#define OTA_ERR_HTTP_REQUEST_FAILED        0x0d000000UL  /*!< Error sending the HTTP request. */
-#define OTA_ERR_FILE_ABORT                 0x10000000UL  /*!< Error in low level file abort. */
-#define OTA_ERR_FILE_CLOSE                 0x11000000UL  /*!< Error in low level file close. */
-#define OTA_ERR_RX_FILE_CREATE_FAILED      0x12000000UL  /*!< The PAL failed to create the OTA receive file. */
-#define OTA_ERR_BOOT_INFO_CREATE_FAILED    0x13000000UL  /*!< The PAL failed to create the OTA boot info file. */
-#define OTA_ERR_RX_FILE_TOO_LARGE          0x14000000UL  /*!< The OTA receive file is too big for the platform to support. */
-#define OTA_ERR_NULL_FILE_PTR              0x20000000UL  /*!< Attempt to use a null file pointer. */
-#define OTA_ERR_MOMENTUM_ABORT             0x21000000UL  /*!< Too many OTA stream requests without any response. */
-#define OTA_ERR_DOWNGRADE_NOT_ALLOWED      0x22000000UL  /*!< Firmware version is older than the previous version. */
-#define OTA_ERR_SAME_FIRMWARE_VERSION      0x23000000UL  /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-#define OTA_ERR_JOB_PARSER_ERROR           0x24000000UL  /*!< An error occurred during job document parsing. See reason sub-code. */
-#define OTA_ERR_FAILED_TO_ENCODE_CBOR      0x25000000UL  /*!< Failed to encode CBOR object. */
-#define OTA_ERR_IMAGE_STATE_MISMATCH       0x26000000UL  /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-#define OTA_ERR_GENERIC_INGEST_ERROR       0x27000000UL  /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
-#define OTA_ERR_USER_ABORT                 0x28000000UL  /*!< User aborted the active OTA. */
-#define OTA_ERR_RESET_NOT_SUPPORTED        0x29000000UL  /*!< We tried to reset the device but the device doesn't support it. */
-#define OTA_ERR_TOPIC_TOO_LARGE            0x2a000000UL  /*!< Attempt to build a topic string larger than the supplied buffer. */
-#define OTA_ERR_SELF_TEST_TIMER_FAILED     0x2b000000UL  /*!< Attempt to start self-test timer faield. */
-#define OTA_ERR_EVENT_Q_SEND_FAILED        0x2c000000UL  /*!< Posting event message to the event queue failed. */
-#define OTA_ERR_INVALID_DATA_PROTOCOL      0x2d000000UL  /*!< Job does not have a valid protocol for data transfer. */
-#define OTA_ERR_OTA_AGENT_STOPPED          0x2e000000UL  /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
-#define OTA_ERR_EVENT_Q_CREATE_FAILED      0x2f000000UL  /*!< Failed to create the event queue. */
-#define OTA_ERR_EVENT_Q_RECEIVE_FAILED     0x30000000UL  /*!< Failed to receive from the event queue. */
-#define OTA_ERR_EVENT_Q_DELETE_FAILED      0x31000000UL  /*!< Failed to delete the event queue. */
-#define OTA_ERR_EVENT_TIMER_CREATE_FAILED  0x32000000UL  /*!< Failed to create the timer. */
-#define OTA_ERR_EVENT_TIMER_STOP_FAILED    0x33000000UL  /*!< Failed to stop the timer. */
-#define OTA_ERR_EVENT_TIMER_DELETE_FAILED  0x34000000UL  /*!< Failed to delete the timer. */
+#define OTA_ERR_PANIC                        0xfe000000UL /*!< Unrecoverable FW error. Probably should log error and reboot. */
+#define OTA_ERR_UNINITIALIZED                0xff000000UL /*!< The error code has not yet been set by a logic path. */
+#define OTA_ERR_NONE                         0x00000000UL
+#define OTA_ERR_SIGNATURE_CHECK_FAILED       0x01000000UL /*!< The signature check failed for the specified file. */
+#define OTA_ERR_BAD_SIGNER_CERT              0x02000000UL /*!< The signer certificate was not readable or zero length. */
+#define OTA_ERR_OUT_OF_MEMORY                0x03000000UL /*!< General out of memory error. */
+#define OTA_ERR_ACTIVATE_FAILED              0x04000000UL /*!< The activation of the new OTA image failed. */
+#define OTA_ERR_COMMIT_FAILED                0x05000000UL /*!< The acceptance commit of the new OTA image failed. */
+#define OTA_ERR_REJECT_FAILED                0x06000000UL /*!< Error trying to reject the OTA image. */
+#define OTA_ERR_ABORT_FAILED                 0x07000000UL /*!< Error trying to abort the OTA. */
+#define OTA_ERR_PUBLISH_FAILED               0x08000000UL /*!< Attempt to publish a MQTT message failed. */
+#define OTA_ERR_BAD_IMAGE_STATE              0x09000000UL /*!< The specified OTA image state was out of range. */
+#define OTA_ERR_NO_ACTIVE_JOB                0x0a000000UL /*!< Attempt to set final image state without an active job. */
+#define OTA_ERR_NO_FREE_CONTEXT              0x0b000000UL /*!< There wasn't an OTA file context available for processing. */
+#define OTA_ERR_HTTP_INIT_FAILED             0x0c000000UL /*!< Error initializing the HTTP connection. */
+#define OTA_ERR_HTTP_REQUEST_FAILED          0x0d000000UL /*!< Error sending the HTTP request. */
+#define OTA_ERR_FILE_ABORT                   0x10000000UL /*!< Error in low level file abort. */
+#define OTA_ERR_FILE_CLOSE                   0x11000000UL /*!< Error in low level file close. */
+#define OTA_ERR_RX_FILE_CREATE_FAILED        0x12000000UL /*!< The PAL failed to create the OTA receive file. */
+#define OTA_ERR_BOOT_INFO_CREATE_FAILED      0x13000000UL /*!< The PAL failed to create the OTA boot info file. */
+#define OTA_ERR_RX_FILE_TOO_LARGE            0x14000000UL /*!< The OTA receive file is too big for the platform to support. */
+#define OTA_ERR_NULL_FILE_PTR                0x20000000UL /*!< Attempt to use a null file pointer. */
+#define OTA_ERR_MOMENTUM_ABORT               0x21000000UL /*!< Too many OTA stream requests without any response. */
+#define OTA_ERR_DOWNGRADE_NOT_ALLOWED        0x22000000UL /*!< Firmware version is older than the previous version. */
+#define OTA_ERR_SAME_FIRMWARE_VERSION        0x23000000UL /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
+#define OTA_ERR_JOB_PARSER_ERROR             0x24000000UL /*!< An error occurred during job document parsing. See reason sub-code. */
+#define OTA_ERR_FAILED_TO_ENCODE_CBOR        0x25000000UL /*!< Failed to encode CBOR object. */
+#define OTA_ERR_IMAGE_STATE_MISMATCH         0x26000000UL /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+#define OTA_ERR_GENERIC_INGEST_ERROR         0x27000000UL /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
+#define OTA_ERR_USER_ABORT                   0x28000000UL /*!< User aborted the active OTA. */
+#define OTA_ERR_RESET_NOT_SUPPORTED          0x29000000UL /*!< We tried to reset the device but the device doesn't support it. */
+#define OTA_ERR_TOPIC_TOO_LARGE              0x2a000000UL /*!< Attempt to build a topic string larger than the supplied buffer. */
+#define OTA_ERR_SELF_TEST_TIMER_FAILED       0x2b000000UL /*!< Attempt to start self-test timer faield. */
+#define OTA_ERR_EVENT_Q_SEND_FAILED          0x2c000000UL /*!< Posting event message to the event queue failed. */
+#define OTA_ERR_INVALID_DATA_PROTOCOL        0x2d000000UL /*!< Job does not have a valid protocol for data transfer. */
+#define OTA_ERR_OTA_AGENT_STOPPED            0x2e000000UL /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+#define OTA_ERR_EVENT_Q_CREATE_FAILED        0x2f000000UL /*!< Failed to create the event queue. */
+#define OTA_ERR_EVENT_Q_RECEIVE_FAILED       0x30000000UL /*!< Failed to receive from the event queue. */
+#define OTA_ERR_EVENT_Q_DELETE_FAILED        0x31000000UL /*!< Failed to delete the event queue. */
+#define OTA_ERR_EVENT_TIMER_CREATE_FAILED    0x32000000UL /*!< Failed to create the timer. */
+#define OTA_ERR_EVENT_TIMER_STOP_FAILED      0x33000000UL /*!< Failed to stop the timer. */
+#define OTA_ERR_EVENT_TIMER_DELETE_FAILED    0x34000000UL /*!< Failed to delete the timer. */
 
 /* @[define_ota_err_codes] */
 

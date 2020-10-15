@@ -126,9 +126,9 @@ OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pAgentCtx );
  */
 
 OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
-                                OtaJobStatus_t status,
-                                int32_t reason,
-                                int32_t subReason );
+                               OtaJobStatus_t status,
+                               int32_t reason,
+                               int32_t subReason );
 
 
 #endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */

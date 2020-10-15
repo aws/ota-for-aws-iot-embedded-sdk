@@ -55,7 +55,7 @@ typedef enum
  * @return               OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_InitEvent_t ) ( OtaEventContext_t* pContext );
+typedef OtaErr_t ( * ota_InitEvent_t ) ( OtaEventContext_t * pContext );
 
 /**
  * @brief Sends an OTA event.
@@ -70,7 +70,7 @@ typedef OtaErr_t ( * ota_InitEvent_t ) ( OtaEventContext_t* pContext );
  *
  * @return               OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_SendEvent_t )( OtaEventContext_t* pContext,
+typedef OtaErr_t ( * ota_SendEvent_t )( OtaEventContext_t * pContext,
                                         const void * pEventMsg,
                                         unsigned int timeout );
 
@@ -87,7 +87,7 @@ typedef OtaErr_t ( * ota_SendEvent_t )( OtaEventContext_t* pContext,
  *
  * @return               OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t* pContext,
+typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
                                            void * pEventMsg,
                                            uint32_t timeout );
 
@@ -102,7 +102,7 @@ typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t* pContext,
  * @return               OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_DeinitEvent_t )( OtaEventContext_t* pContext );
+typedef OtaErr_t ( * ota_DeinitEvent_t )( OtaEventContext_t * pContext );
 
 /**
  * @brief Create timer.
@@ -120,8 +120,8 @@ typedef OtaErr_t ( * ota_DeinitEvent_t )( OtaEventContext_t* pContext );
  */
 
 typedef OtaErr_t ( * ota_CreateTimer_t ) ( OtaTimerContext_t * pContext,
-                                          const char * const pTimerName,
-                                          const uint32_t timeout );
+                                           const char * const pTimerName,
+                                           const uint32_t timeout );
 
 /**
  * @brief start timer.
@@ -135,9 +135,9 @@ typedef OtaErr_t ( * ota_CreateTimer_t ) ( OtaTimerContext_t * pContext,
  * @return                  0 if success , otaOSErr_t on failure.
  */
 typedef OtaErr_t ( * ota_StartTimer_t ) ( OtaTimerContext_t * pContext,
-                                         const char * const pTimerName,
-                                         const uint32_t timeout,
-                                         void ( * callback )( void * pParam ) );
+                                          const char * const pTimerName,
+                                          const uint32_t timeout,
+                                          void ( * callback )( void * pParam ) );
 
 /**
  * @brief stop timer.
@@ -181,7 +181,7 @@ typedef struct OtaEventInterface
     ota_SendEvent_t send;
     ota_ReceiveEvent_t recv;
     ota_DeinitEvent_t deinit;
-    OtaEventContext_t* pContext;
+    OtaEventContext_t * pContext;
 } OtaEventInterface_t;
 
 /**

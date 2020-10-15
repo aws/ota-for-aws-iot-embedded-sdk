@@ -45,7 +45,7 @@ typedef struct OtaMessageDecodeContext
 {
     CborParser cborParser;
     CborValue xCborRecursedItem;
-} OtaMessageDecodeContext_t, *OtaMessageDecodeContextPtr_t;
+} OtaMessageDecodeContext_t, * OtaMessageDecodeContextPtr_t;
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
@@ -64,10 +64,10 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     /* Initialize the parser. */
     cborResult = cbor_parser_init( pMessageBuffer,
-                                    messageSize,
-                                    0,
-                                    &cborParser,
-                                    &cborMap );
+                                   messageSize,
+                                   0,
+                                   &cborParser,
+                                   &cborMap );
 
     /* Get the outer element and confirm that it's a "map," i.e., a set of
      * CBOR key/value pairs. */
@@ -83,8 +83,8 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_map_find_value( &cborMap,
-                                                 OTA_CBOR_FILEID_KEY,
-                                                 &cborValue );
+                                                OTA_CBOR_FILEID_KEY,
+                                                &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -98,15 +98,15 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                          ( int * ) pFileId );
+                                         ( int * ) pFileId );
     }
 
     /* Find the block ID. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_map_find_value( &cborMap,
-                                                 OTA_CBOR_BLOCKID_KEY,
-                                                 &cborValue );
+                                                OTA_CBOR_BLOCKID_KEY,
+                                                &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -120,15 +120,15 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                          ( int * ) pBlockId );
+                                         ( int * ) pBlockId );
     }
 
     /* Find the block size. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_map_find_value( &cborMap,
-                                                 OTA_CBOR_BLOCKSIZE_KEY,
-                                                 &cborValue );
+                                                OTA_CBOR_BLOCKSIZE_KEY,
+                                                &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -142,15 +142,15 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                          ( int * ) pBlockSize );
+                                         ( int * ) pBlockSize );
     }
 
     /* Find the payload bytes. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_map_find_value( &cborMap,
-                                                 OTA_CBOR_BLOCKPAYLOAD_KEY,
-                                                 &cborValue );
+                                                OTA_CBOR_BLOCKPAYLOAD_KEY,
+                                                &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -164,7 +164,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_calculate_string_length( &cborValue,
-                                                          pPayloadSize );
+                                                         pPayloadSize );
     }
 
     if( CborNoError == cborResult )
@@ -180,9 +180,9 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_copy_byte_string( &cborValue,
-                                                   *pPayload,
-                                                   pPayloadSize,
-                                                   NULL );
+                                                  *pPayload,
+                                                  pPayloadSize,
+                                                  NULL );
     }
 
     return CborNoError == cborResult;
@@ -215,100 +215,100 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                        messageBufferSize,
                        0 );
     cborResult = cbor_encoder_create_map( &cborEncoder,
-                                           &cborMapEncoder,
-                                           OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
+                                          &cborMapEncoder,
+                                          OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
 
     /* Encode the client token key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_CLIENTTOKEN_KEY );
+                                               OTA_CBOR_CLIENTTOKEN_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                pClientToken );
+                                               pClientToken );
     }
 
     /* Encode the file ID key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_FILEID_KEY );
+                                               OTA_CBOR_FILEID_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_int( &cborMapEncoder,
-                                       fileId );
+                                      fileId );
     }
 
     /* Encode the block size key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_BLOCKSIZE_KEY );
+                                               OTA_CBOR_BLOCKSIZE_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_int( &cborMapEncoder,
-                                       blockSize );
+                                      blockSize );
     }
 
     /* Encode the block offset key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_BLOCKOFFSET_KEY );
+                                               OTA_CBOR_BLOCKOFFSET_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_int( &cborMapEncoder,
-                                       blockOffset );
+                                      blockOffset );
     }
 
     /* Encode the block bitmap key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_BLOCKBITMAP_KEY );
+                                               OTA_CBOR_BLOCKBITMAP_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_byte_string( &cborMapEncoder,
-                                               pBlockBitmap,
-                                               blockBitmapSize );
+                                              pBlockBitmap,
+                                              blockBitmapSize );
     }
 
     /* Encode the number of blocks requested key and value. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_text_stringz( &cborMapEncoder,
-                                                OTA_CBOR_NUMBEROFBLOCKS_KEY );
+                                               OTA_CBOR_NUMBEROFBLOCKS_KEY );
     }
 
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encode_int( &cborMapEncoder,
-                                       numOfBlocksRequested );
+                                      numOfBlocksRequested );
     }
 
     /* Done with the encoder. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encoder_close_container_checked( &cborEncoder,
-                                                            &cborMapEncoder );
+                                                           &cborMapEncoder );
     }
 
     /* Get the encoded size. */
     if( CborNoError == cborResult )
     {
         *pEncodedMessageSize = cbor_encoder_get_buffer_size( &cborEncoder,
-                                                              pMessageBuffer );
+                                                             pMessageBuffer );
     }
 
     return CborNoError == cborResult;

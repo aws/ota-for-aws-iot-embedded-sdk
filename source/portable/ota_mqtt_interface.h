@@ -36,16 +36,16 @@
 /**
  * @brief Subscribe to the Mqtt topics.
  *
- * This function subscribes to the Mqtt topics with the Quality of service 
+ * This function subscribes to the Mqtt topics with the Quality of service
  * received as paramter. This function also registers a callback for the
  * topicfilter.
  *
  * @param[pTopicFilter]         Mqtt topic filter.
  *
  * @param[topicFilterLength]    Length of the topic filter.
- * 
+ *
  * @param[ucQoS]                Quality of Service
- * 
+ *
  * @param[pvCallback]           Callback to be registered.
  *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
@@ -54,20 +54,20 @@
 typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
                                              uint16_t topicFilterLength,
                                              uint8_t ucQoS,
-					                         void * pvCallback );
+                                             void * pvCallback );
 
 /**
  * @brief Unsubscribe to the Mqtt topics.
  *
- * This function unsubscribes to the Mqtt topics with the Quality of service 
+ * This function unsubscribes to the Mqtt topics with the Quality of service
  * received as paramter.
  *
  * @param[pTopicFilter]         Mqtt topic filter.
  *
  * @param[topicFilterLength]    Length of the topic filter.
- * 
+ *
  * @param[ucQoS]                Quality of Service
- * 
+ *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
@@ -83,13 +83,13 @@ typedef OtaErr_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
  * @param[pacTopic]             Mqtt topic filter.
  *
  * @param[usTopicLen]           Length of the topic filter.
- * 
+ *
  * @param[pcMsg]                Message to publish.
- * 
+ *
  * @param[ulMsgSize]            Message size.
- * 
+ *
  * @param[ucQoS]                Quality of Service
- * 
+ *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 typedef OtaErr_t ( * ota_MqttPublish_t )( const char * const pacTopic,
@@ -108,11 +108,11 @@ typedef void ( * ota_MqttCallback_t )( void * pvParam );
  */
 typedef struct OtaMqttInterface
 {
-	ota_MqttSubscribe_t subscribe;
-	ota_MqttUnsubscribe_t unsubscribe;
-	ota_MqttPublish_t publish;
-	ota_MqttCallback_t jobCallback;
-	ota_MqttCallback_t dataCallback;
-}OtaMqttInterface_t;
+    ota_MqttSubscribe_t subscribe;
+    ota_MqttUnsubscribe_t unsubscribe;
+    ota_MqttPublish_t publish;
+    ota_MqttCallback_t jobCallback;
+    ota_MqttCallback_t dataCallback;
+} OtaMqttInterface_t;
 
-#endif
+#endif /* ifndef _AWS_OTA_MQTT_INTERFACE_H_ */

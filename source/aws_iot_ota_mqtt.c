@@ -133,32 +133,30 @@ static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * p
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
     {
-        pxAgentCtx->pOTAMqttInterface->subscribe( pcJobTopic ,
-                                                  usTopicLen, 
+        pxAgentCtx->pOTAMqttInterface->subscribe( pcJobTopic,
+                                                  usTopicLen,
                                                   1,
                                                   pxAgentCtx->pOTAMqttInterface->jobCallback );
 
-            OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pcJobTopic );
+        OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pcJobTopic );
 
-            /* Build the second topic. */
-            usTopicLen = ( uint16_t ) snprintf( pcJobTopic,
-                                                sizeof( pcJobTopic ),
-                                                pcOTA_JobsNotifyNext_TopicTemplate,
-                                                pxAgentCtx->pThingName );
+        /* Build the second topic. */
+        usTopicLen = ( uint16_t ) snprintf( pcJobTopic,
+                                            sizeof( pcJobTopic ),
+                                            pcOTA_JobsNotifyNext_TopicTemplate,
+                                            pxAgentCtx->pThingName );
     }
     else
     {
-         OTA_LOG_L1( "[%s] Invalid Topic length: %d\n\r", OTA_METHOD_NAME, usTopicLen );
+        OTA_LOG_L1( "[%s] Invalid Topic length: %d\n\r", OTA_METHOD_NAME, usTopicLen );
     }
-    
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
     {
-        pxAgentCtx->pOTAMqttInterface->subscribe( pcJobTopic ,
-                                                  usTopicLen, 
+        pxAgentCtx->pOTAMqttInterface->subscribe( pcJobTopic,
+                                                  usTopicLen,
                                                   1,
                                                   pxAgentCtx->pOTAMqttInterface->jobCallback );
-
     }
 
     return true;
@@ -189,11 +187,9 @@ static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentC
 
         if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
         {
-
-            pxAgentCtx->pOTAMqttInterface->unsubscribe( pcOTA_RxStreamTopic ,
-                                                        usTopicLen, 
+            pxAgentCtx->pOTAMqttInterface->unsubscribe( pcOTA_RxStreamTopic,
+                                                        usTopicLen,
                                                         1 );
-
         }
         else
         {
@@ -223,25 +219,23 @@ static OtaErr_t prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t 
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
     {
-        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic ,
-                                                    usTopicLen, 
+        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic,
+                                                    usTopicLen,
                                                     0 );
-
     }
 
     /* Try to unsubscribe from the second of two job topics. */
-    usTopicLen= ( uint16_t ) snprintf( pcJobTopic, /*lint -e586 Intentionally using snprintf. */
-                                                      sizeof( pcJobTopic ),
-                                                      pcOTA_JobsGetNextAccepted_TopicTemplate,
-                                                      pxAgentCtx->pThingName );
+    usTopicLen = ( uint16_t ) snprintf( pcJobTopic, /*lint -e586 Intentionally using snprintf. */
+                                        sizeof( pcJobTopic ),
+                                        pcOTA_JobsGetNextAccepted_TopicTemplate,
+                                        pxAgentCtx->pThingName );
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
     {
-        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic ,
-                                                    usTopicLen, 
+        pxAgentCtx->pOTAMqttInterface->unsubscribe( pcJobTopic,
+                                                    usTopicLen,
                                                     0 );
     }
-
 }
 
 /*
@@ -271,11 +265,11 @@ static OtaErr_t prvPublishStatusMessage( OtaAgentContext_t * pxAgentCtx,
     {
         OTA_LOG_L1( "[%s] Msg: %s\r\n", OTA_METHOD_NAME, pcMsg );
         ret = pxAgentCtx->pOTAMqttInterface->publish(
-                                                    pcTopicBuffer,
-                                                    ( uint16_t ) ulTopicLen,
-                                                    &pcMsg[ 0 ],
-                                                    ulMsgSize,
-                                                    1 );
+            pcTopicBuffer,
+            ( uint16_t ) ulTopicLen,
+            &pcMsg[ 0 ],
+            ulMsgSize,
+            1 );
 
         if( ret != 0 )
         {
@@ -477,9 +471,9 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
  * Update the job status on the service side with progress or completion info.
  */
 OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
-                                  OtaJobStatus_t eStatus,
-                                  int32_t lReason,
-                                  int32_t lSubReason )
+                               OtaJobStatus_t eStatus,
+                               int32_t lReason,
+                               int32_t lSubReason )
 {
     DEFINE_OTA_METHOD_NAME( "updateJobStatus_Mqtt" );
 
@@ -511,7 +505,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
             ulMsgSize = prvBuildStatusMessageSelfTest( pcMsg, sizeof( pcMsg ), eStatus, lReason );
         }
     }
-    else 
+    else
     {
         if( eStatus < NumJobStatusMappings )
         {
@@ -552,8 +546,8 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
     {
-        pxAgentCtx->pOTAMqttInterface->subscribe( pcOTA_RxStreamTopic ,
-                                                  usTopicLen, 
+        pxAgentCtx->pOTAMqttInterface->subscribe( pcOTA_RxStreamTopic,
+                                                  usTopicLen,
                                                   0,
                                                   pxAgentCtx->pOTAMqttInterface->dataCallback );
     }
@@ -636,12 +630,12 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
     if( xErr == OTA_ERR_NONE )
     {
-        ret = pxAgentCtx->pOTAMqttInterface->publish( 
-                                        pcTopicBuffer,
-                                        ( uint16_t ) ulTopicLen,
-                                        &pcMsg[ 0 ],
-                                        ulMsgSizeToPublish,
-                                        0 );
+        ret = pxAgentCtx->pOTAMqttInterface->publish(
+            pcTopicBuffer,
+            ( uint16_t ) ulTopicLen,
+            &pcMsg[ 0 ],
+            ulMsgSizeToPublish,
+            0 );
 
         if( ret != 0 )
         {
@@ -662,12 +656,12 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx )
  * Decode a cbor encoded fileblock received from streaming service.
  */
 OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
-                                   size_t xMessageSize,
-                                   int32_t * plFileId,
-                                   int32_t * plBlockId,
-                                   int32_t * plBlockSize,
-                                   uint8_t ** ppucPayload,
-                                   size_t * pxPayloadSize )
+                               size_t xMessageSize,
+                               int32_t * plFileId,
+                               int32_t * plBlockId,
+                               int32_t * plBlockSize,
+                               uint8_t ** ppucPayload,
+                               size_t * pxPayloadSize )
 {
     DEFINE_OTA_METHOD_NAME( "prvDecodeFileBlock_Mqtt" );
     OtaErr_t xErr = OTA_ERR_UNINITIALIZED;
@@ -690,7 +684,7 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
         memcpy( pucMessageBuffer, *ppucPayload, *pxPayloadSize );
 
         /* Free the payload as it is copied in data buffer. */
-        free( *ppucPayload );   //ToDo
+        free( *ppucPayload ); /*ToDo */
         *ppucPayload = pucMessageBuffer;
 
         xErr = OTA_ERR_NONE;
