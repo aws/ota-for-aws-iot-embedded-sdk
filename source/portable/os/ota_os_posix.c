@@ -182,7 +182,7 @@ static void timerCallback( union sigval arg )
 OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
                          const char * const pTimerName,
                          const uint32_t timeout,
-                         void ( * callback )( void * ) )
+                         void ( *callback )( void * ) )
 {
     ( void ) pContext;
 
