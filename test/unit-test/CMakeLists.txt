@@ -9,6 +9,7 @@ set(project_name "aws_ota")
 # list the files to mock here
 list(APPEND mock_list
     "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include/core_json.h"
+    "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_agent_private.h"
     "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_pal.h"
 )
 # list the directories your mocks need
@@ -16,6 +17,7 @@ list(APPEND mock_include_list
     .
     "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include"
     "${MODULE_ROOT_DIR}/source/include"
+    "${MODULE_ROOT_DIR}/source/portable"
 )
 #list the definitions of your mocks to control what to be included
 list(APPEND mock_define_list
@@ -68,6 +70,7 @@ create_real_library(${real_name}
 )
 
 list(APPEND utest_link_list
+    -lpthread
     -l${mock_name}
     lib${real_name}.a
 )
@@ -76,10 +79,9 @@ list(APPEND utest_dep_list
     ${real_name}
 )
 
-set(utest_name "${project_name}_utest")
-set(utest_source "${project_name}_utest.c")
-create_test(${utest_name}
-    ${utest_source}
+set(utest_name "aws_ota_utest")
+create_test(aws_ota_utest
+    "aws_ota_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
