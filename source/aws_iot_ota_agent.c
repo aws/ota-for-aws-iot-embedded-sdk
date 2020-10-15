@@ -2758,11 +2758,6 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
     OtaEventMsg_t eventMsg = { 0 };
 
     /*
-     * OTA Task is not running yet so update the state to init direclty in OTA context.
-     */
-    otaAgent.state = OtaAgentStateInit;
-
-    /*
      * Check all the callbacks for null values and initialize the values in the ota agent context.
      * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
      * do anything and just use the defaults in the OTA structure.
@@ -2793,13 +2788,17 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
 
         if( strLength <= otaconfigMAX_THINGNAME_LEN )
         {
-            /*
-             * Store the Thing name to be used for topics later.
-             */
+            /* Store the Thing name to be used for topics later. */
             ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL ); /* Include zero terminator when saving the Thing name. */
-        }
+            retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
 
-        retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
+            /* OTA Task is not running yet so update the state to init direclty in OTA context. */
+            otaAgent.state = OtaAgentStateInit;
+        }
+        else
+        {
+            OTA_LOG_L1( "[%s]Error: Thing name is too long.\r\n", OTA_METHOD_NAME );
+        }
     }
 
     /* Return status of agent. */
