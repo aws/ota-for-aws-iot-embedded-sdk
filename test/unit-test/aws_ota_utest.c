@@ -78,7 +78,7 @@ static OtaErr_t mockOSEventReset( OtaEventContext_t * unused )
 }
 
 /* Allow an event to be sent only once, after that ignore all incoming event.
- * Useful to make sure internal OTA handler are not able to send any event. */
+* Useful to make sure internal OTA handler are not able to send any event. */
 static OtaErr_t mockOSEventSendAndStop( OtaEventContext_t * unused_1,
                                         const void * pEventMsg,
                                         uint32_t unused_2 )
@@ -189,7 +189,8 @@ static void otaInterfaceDefault()
     otaMqttInterface.dataCallback = stubMqttDataCallback;
 }
 
-static void otaInit(const char * pClientID, OtaCompleteCallback_t completeCallback)
+static void otaInit( const char * pClientID,
+                     OtaCompleteCallback_t completeCallback )
 {
     OTA_AgentInit( NULL,
                    &otaOSInterface,
@@ -201,7 +202,7 @@ static void otaInit(const char * pClientID, OtaCompleteCallback_t completeCallba
 
 static void otaInitDefault()
 {
-    otaInit(pOtaDefaultClientId, stubCompleteCallback);
+    otaInit( pOtaDefaultClientId, stubCompleteCallback );
 }
 
 static void otaDeinit()
@@ -243,13 +244,16 @@ static void otaGoToStateWithTimeout( OtaState_t state,
     switch( state )
     {
         case OtaAgentStateInit:
+
             /* Nothing needs to be done here since we should either be in init state already or
              * we are in other running states. */
             break;
+
         case OtaAgentStateReady:
             otaStartAgentTask();
             otaWaitForState( state, otaDefaultWait );
             break;
+
         default:
             break;
     }
@@ -290,7 +294,7 @@ void test_OTA_InitWhenReady()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Explicitly test NULL client name and NULL complete callback. */
-    otaInit(NULL, NULL);
+    otaInit( NULL, NULL );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 }
 
@@ -298,7 +302,7 @@ void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. */
     otaInterfaceDefault();
-    otaInit(NULL, stubCompleteCallback);
+    otaInit( NULL, stubCompleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
 
     otaInitDefault();
@@ -309,10 +313,11 @@ void test_OTA_InitWithNullName()
 void test_OTA_InitWithNameTooLong()
 {
     /* OTA doesn't accept name longer than 64. Explicitly test long client name. */
-    char long_name[100] = {0};
-    memset(long_name, 1, sizeof(long_name) - 1);
+    char long_name[ 100 ] = { 0 };
+
+    memset( long_name, 1, sizeof( long_name ) - 1 );
     otaInterfaceDefault();
-    otaInit(long_name, stubCompleteCallback);
+    otaInit( long_name, stubCompleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
 
     otaInitDefault();
@@ -329,7 +334,7 @@ void test_OTA_ShutdownWhenStopped()
 
 void test_OTA_SuspendWhenStopped( void )
 {
-    TEST_ASSERT_EQUAL(OTA_Suspend(), OTA_ERR_OTA_AGENT_STOPPED);
+    TEST_ASSERT_EQUAL( OTA_Suspend(), OTA_ERR_OTA_AGENT_STOPPED );
 }
 
 void test_OTA_SuspendWhenReady( void )
@@ -337,13 +342,13 @@ void test_OTA_SuspendWhenReady( void )
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
-    TEST_ASSERT_EQUAL(OTA_Suspend(), OTA_ERR_NONE);
+    TEST_ASSERT_EQUAL( OTA_Suspend(), OTA_ERR_NONE );
 
     /* Call OTA init again to set the event send interface to a mock function that always fail. */
     ota_SendEvent_t prev_send = otaOSInterface.event.send;
     otaOSInterface.event.send = mockOSEventSendAndFail;
     otaInitDefault();
-    TEST_ASSERT_EQUAL(OTA_Suspend(), OTA_ERR_EVENT_Q_SEND_FAILED);
+    TEST_ASSERT_EQUAL( OTA_Suspend(), OTA_ERR_EVENT_Q_SEND_FAILED );
     otaOSInterface.event.send = prev_send;
 }
 
@@ -352,8 +357,8 @@ void test_OTAStatistics()
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
-    TEST_ASSERT_EQUAL(OTA_GetPacketsDropped(), 0);
-    TEST_ASSERT_EQUAL(OTA_GetPacketsQueued(), 0);
-    TEST_ASSERT_EQUAL(OTA_GetPacketsProcessed(), 0);
-    TEST_ASSERT_EQUAL(OTA_GetPacketsReceived(), 0);
+    TEST_ASSERT_EQUAL( OTA_GetPacketsDropped(), 0 );
+    TEST_ASSERT_EQUAL( OTA_GetPacketsQueued(), 0 );
+    TEST_ASSERT_EQUAL( OTA_GetPacketsProcessed(), 0 );
+    TEST_ASSERT_EQUAL( OTA_GetPacketsReceived(), 0 );
 }

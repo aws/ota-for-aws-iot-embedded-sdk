@@ -18,7 +18,7 @@ jobs:
         run: |
           find source/ -iname '*.c' |\
           xargs complexity --scores --threshold=0 --horrid-threshold=8
-  
+
   unittest:
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +29,7 @@ jobs:
       - name: Build
         run: |
           sudo apt-get install -y lcov
-          cmake -S test -B build/ 
+          cmake -S test -B build/
           cmake --build build --target all
       - name: Test
         run: |
