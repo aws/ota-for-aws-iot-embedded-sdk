@@ -8,14 +8,13 @@ set(project_name "aws_ota")
 
 # list the files to mock here
 list(APPEND mock_list
-    "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include/core_json.h"
-    "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_agent_private.h"
+#    "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include/core_json.h"
     "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_pal.h"
 )
 # list the directories your mocks need
 list(APPEND mock_include_list
     .
-    "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include"
+#    "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include"
     "${MODULE_ROOT_DIR}/source/include"
     "${MODULE_ROOT_DIR}/source/portable"
 )
@@ -34,6 +33,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/aws_iot_ota_mqtt.c"
     "${MODULE_ROOT_DIR}/source/aws_iot_ota_cbor.c"
     ${TINYCBOR_SOURCES}
+    ${JSON_SOURCES}
 )
 # list the directories the module under test includes
 list(APPEND real_include_directories
@@ -89,6 +89,13 @@ create_test(aws_ota_utest
 
 create_test("aws_ota_base64_utest"
     "aws_ota_base64_utest.c"
+    "${utest_link_list}"
+    "${utest_dep_list}"
+    "${test_include_directories}"
+)
+
+create_test("aws_ota_jobParsing_utest"
+    "aws_ota_jobParsing_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
