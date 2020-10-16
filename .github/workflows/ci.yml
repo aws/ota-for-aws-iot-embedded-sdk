@@ -18,7 +18,7 @@ jobs:
         run: |
           find source/ -iname '*.c' |\
           xargs complexity --scores --threshold=0 --horrid-threshold=8
-  
+
   unittest:
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +29,7 @@ jobs:
       - name: Build
         run: |
           sudo apt-get install -y lcov
-          cmake -S test -B build/ 
+          cmake -S test -B build/
           cmake --build build --target all
       - name: Test
         run: |
@@ -42,7 +42,7 @@ jobs:
           lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*test*' --output-file build/coverage.info
           lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*CMakeCCompilerId*' --output-file build/coverage.info
           lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*mocks*' --output-file build/coverage.info
-          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*cbor*' --output-file build/coverage.info
+          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*tinycbor*' --output-file build/coverage.info
           lcov --list build/coverage.info
       - name: Check Coverage
         uses: ChicagoFlutter/lcov-cop@v1.0.2
@@ -57,7 +57,7 @@ jobs:
       - name: Install Doxygen
         run: |
           wget -qO- "http://doxygen.nl/files/doxygen-1.8.20.linux.bin.tar.gz" | sudo tar --strip-components=1 -xz -C /usr/local
-          sudo apt-get install -y libclang-9-dev
+          sudo apt-get install -y libclang-9-dev graphviz
       - name: Run Doxygen And Verify Stdout Is Empty
         run: |
           doxygen docs/doxygen/config.doxyfile 2>&1 | tee doxyoutput.txt
@@ -69,9 +69,11 @@ jobs:
       - name: Checkout Parent Repo
         uses: actions/checkout@v2
         with:
-          ref: ota
-          repository: aws/aws-iot-device-sdk-embedded-C-staging
-      - run: rm -r libraries/aws/ota
+          ref: master
+          repository: aws/aws-iot-device-sdk-embedded-C
+
+      - run: rm -rf libraries/aws/ota
+
       - name: Clone This Repo
         uses: actions/checkout@v2
         with:

@@ -39,63 +39,65 @@
 /**
  * @brief Base64 function success.
  */
-#define SUCCESS 0
+#define OTA_BASE64_SUCCESS                        0
 
 /**
  * @brief Invalid symbol in the encoded data.
  */
-#define INVALID_SYMBOL_ERROR -1
+#define OTA_ERR_BASE64_INVALID_SYMBOL             1
 
 /**
- * @brief A potentially valid symbol is in an invalid location in the encoded data.
+ * @brief A Base64 symbol is in an invalid location within the encoded data.
  */
-#define INVALID_SYMBOL_ORDERING -2
+#define OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING    2
 
 /**
- * @brief Length of the encoded data is impossible to have been created with valid Base64 encoding.
+ * @brief Length of the encoded data is impossible to have been created with
+ *        valid Base64 encoding.
  */
-#define INVALID_DATA_SIZE -3
-
-/**
- * @brief Length of the encoded data is impossible to have been created with valid Base64 encoding.
- */
-#define UNEXPECTED_NUMBER_OF_DATA -4
+#define OTA_ERR_BASE64_INVALID_INPUT_SIZE         3
 
 /**
  * @brief Input parameter for pointer is null.
  */
-#define NULL_PTR_ERROR -5
+#define OTA_ERR_BASE64_NULL_PTR                   4
 
 /**
  * @brief Provided buffer is too small.
  */
-#define DST_BUFFER_TOO_SMALL_ERROR -6
+#define OTA_ERR_BASE64_INVALID_BUFFER_SIZE        5
 
 /**
- * @brief Padding bits inside of the encoded data are invalid because they are not zero.
+ * @brief Padding bits inside of the encoded data are invalid because they are
+ *        not zero.
  */
-#define NON_ZERO_PADDING_ERROR -7
+#define OTA_ERR_BASE64_NON_ZERO_PADDING           6
 
 /**
  * @brief Invalid number of padding symbols.
  */
-#define INVALID_NUMBER_OF_PADDING_SYMBOL -8
+#define OTA_ERR_BASE64_INVALID_PADDING_SYMBOL     7
 
 /**
  * @brief Decode Base64 encoded data.
- * 
+ *
  * @param[out] pDest Pointer to a buffer for storing the decoded result.
  * @param[in]  destLen Length of the pDest buffer.
  * @param[out] pResultLen Pointer to the length of the decoded result.
- * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded data that is intended
- *             to be decoded.
- * @param[in]  encodedLen The number of elements in the Base64 encoded data buffer.
- * 
+ * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded
+ *             data that is intended to be decoded.
+ * @param[in]  encodedLen Length of the pEncodedData buffer.
+ *
  * @return     One of the following:
- *             - #SUCCESS if the Base64 encoded data was valid and succesfully decoded.
- *             - An error code defined in aws_ota_base64_private.h if the encoded data is invalid
- *               or the input parameters are invalid.
+ *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *               and succesfully decoded.
+ *             - An error code defined in aws_ota_base64_private.h if the
+ *               encoded data or input parameters are invalid.
  */
-int base64Decode( unsigned char* pDest , size_t destLen, size_t* pResultLen, const unsigned char* pEncodedData, size_t encodedLen );
+int base64Decode( unsigned char * pDest,
+                  const size_t destLen,
+                  size_t * pResultLen,
+                  const unsigned char * pEncodedData,
+                  const size_t encodedLen );
 
 #endif /* ifndef __AWS_OTA_BASE64_PRIVATE__H__ */

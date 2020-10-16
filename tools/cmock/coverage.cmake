@@ -1,6 +1,11 @@
 # Taken from amazon-freertos repository
 cmake_minimum_required(VERSION 3.13)
 set(BINARY_DIR ${CMAKE_BINARY_DIR})
+file(GLOB_RECURSE cov_files "${BINARY_DIR}/*.gcda")
+if(cov_files)
+    file(REMOVE ${cov_files})
+endif()
+
 # reset coverage counters
 execute_process(
             COMMAND lcov --directory ${CMAKE_BINARY_DIR}

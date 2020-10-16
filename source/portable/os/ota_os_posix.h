@@ -26,44 +26,44 @@
 #ifndef _AWS_OTA_OS_FREERTOS_H_
 #define _AWS_OTA_OS_FREERTOS_H_
 
- /* Standard library include. */
+/* Standard library include. */
 #include <stddef.h>
 
- /* OTA library interface include. */
+/* OTA library interface include. */
 #include "ota_os_interface.h"
 
 struct OtaEventContext
 {
-	/* Unused.*/
-	uint32_t dummy;
+    /* Unused.*/
+    uint32_t dummy;
 };
 
 struct OtaTimerContext
 {
-	/* Unused.*/
-	uint32_t dummy;
+    /* Unused.*/
+    uint32_t dummy;
 };
 
 OtaErr_t ota_InitEvent( OtaEventContext_t * pContext );
 
 OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
-	                    const void* pEventMsg,
-	                    unsigned int timeout );
+                        const void * pEventMsg,
+                        unsigned int timeout );
 
 OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
-	                       void* pEventMsg,
+                           void * pEventMsg,
                            uint32_t timeout );
 
 OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext );
 
 
-OtaErr_t ota_StartTimer ( OtaTimerContext_t * pContext,
-                          const char * const pTimerName,
-                          const uint32_t timeout,
-                          void ( * callback )( void * ) );
+OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
+                         const char * const pTimerName,
+                         const uint32_t timeout,
+                         void ( * callback )( void * ) );
 
-OtaErr_t ota_StopTimer ( OtaTimerContext_t * pContext );
+OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext );
 
 OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext );
 
-#endif
+#endif /* ifndef _AWS_OTA_OS_FREERTOS_H_ */
