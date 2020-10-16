@@ -90,7 +90,7 @@
  *
  * @return     One of the following:
  *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
- *               and succesfully decoded.
+ *               and successfully decoded.
  *             - An error code defined in aws_ota_base64_private.h if the
  *               encoded data or input parameters are invalid.
  */

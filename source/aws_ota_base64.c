@@ -57,19 +57,9 @@
 #define VALID_BASE64_SYMBOL_INDEX_RANGE_MAX    63U
 
 /**
- * @brief Size of the pBase64SymbolToIndexMap table.
- */
-#define ASCII_BASE64_MAP_SIZE                  256
-
-/**
  * @brief Number of bits in a sextet.
  */
 #define SEXTET_SIZE                            6
-
-/**
- * @brief Bitmask for the six least significant bits.
- */
-#define SIX_LEAST_SIG_BITS                     0x3F
 
 /**
  * @brief Maximum number of Base64 symbols to store in a buffer before decoding them.
@@ -80,12 +70,6 @@
  * @brief Maximum number of padding symbols in a string of encoded data that is considered valid.
  */
 #define MAX_EXPECTED_NUM_PADDING               2
-
-/**
- * @brief Number of elements that will be written to the decode output buffer when the sextet
- *        buffer for encoded data is full.
- */
-#define MAX_LENGTH_OF_BUFFER_WRITE             3
 
 /**
  * @brief Smallest amount of data that can be Base64 encoded is a byte. Encoding a single byte of
@@ -190,7 +174,7 @@ static const uint8_t pBase64SymbolToIndexMap[] =
  *
  * @return        One of the following:
  *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
- *                  and succesfully decoded.
+ *                  and successfully decoded.
  *                - An error code defined in aws_ota_base64_private.h if the
  *                  encoded data or input parameters are invalid.
  */
@@ -198,24 +182,24 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
                                       int64_t * pNumPadding,
                                       int64_t * pNumWhitespace )
 {
-    int32_t return_val = OTA_BASE64_SUCCESS;
+    int32_t returnVal = OTA_BASE64_SUCCESS;
     int64_t numPadding = *pNumPadding;
     int64_t numWhitespace = *pNumWhitespace;
 
     /* Validate that the Base64 index is valid and in an appropriate place. */
     if( base64Index == NON_BASE64_INDEX )
     {
-        return_val = OTA_ERR_BASE64_INVALID_SYMBOL;
+        returnVal = OTA_ERR_BASE64_INVALID_SYMBOL;
     }
     else if( base64Index == PADDING_SYMBOL )
     {
         if( numWhitespace != 0 )
         {
-            return_val = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
+            returnVal = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
         }
         else if( ++numPadding > MAX_EXPECTED_NUM_PADDING )
         {
-            return_val = OTA_ERR_BASE64_INVALID_PADDING_SYMBOL;
+            returnVal = OTA_ERR_BASE64_INVALID_PADDING_SYMBOL;
         }
         else
         {
@@ -237,13 +221,13 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
     {
         if( ( numWhitespace != 0 ) || ( numPadding != 0 ) )
         {
-            return_val = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
+            returnVal = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
         }
     }
 
     *pNumWhitespace = numWhitespace;
     *pNumPadding = numPadding;
-    return return_val;
+    return returnVal;
 }
 
 /**
@@ -299,7 +283,7 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
  *
  * @return        One of the following:
  *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
- *                  and succesfully decoded.
+ *                  and successfully decoded.
  *                - An error code defined in aws_ota_base64_private.h if the
  *                  encoded data or input parameters are invalid.
  */
@@ -309,7 +293,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
                                         const size_t destLen,
                                         size_t * pOutputLen )
 {
-    int32_t return_val = OTA_BASE64_SUCCESS;
+    int32_t returnVal = OTA_BASE64_SUCCESS;
     size_t outputLen = *pOutputLen;
     uint32_t base64IndexBuffer = *pBase64IndexBuffer;
     uint32_t numDataInBuffer = *pNumDataInBuffer;
@@ -317,14 +301,13 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
 
     if( destLen < ( outputLen + numDataToWrite ) )
     {
-        return_val = OTA_ERR_BASE64_INVALID_BUFFER_SIZE;
+        returnVal = OTA_ERR_BASE64_INVALID_BUFFER_SIZE;
     }
     else
     {
-        /* The data buffer is considered full when it contains 4 sextets of data (aka 4 pieces of
-         * encoded data). If the buffer is full, convert the 4 sextets of encoded data into 3
-         * sequential octects of decoded data starting from the most significant bits and ending
-         * at the least significant bits. */
+        /* If the buffer is full, convert the 4 sextets of encoded data into
+         * three sequential octects of decoded data starting from the most
+         * significant bits and ending at the least significant bits. */
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
             pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFFU;
@@ -340,10 +323,10 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * least significant bits are converted into two octets of data. */
             if( ( base64IndexBuffer & 0x3U ) != 0U )
             {
-                return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
+                returnVal = OTA_ERR_BASE64_NON_ZERO_PADDING;
             }
 
-            if( return_val == OTA_BASE64_SUCCESS )
+            if( returnVal == OTA_BASE64_SUCCESS )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
                 pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
@@ -359,10 +342,10 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * significant bits are converted into one octet of data. */
             if( ( base64IndexBuffer & 0xFU ) != 0U )
             {
-                return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
+                returnVal = OTA_ERR_BASE64_NON_ZERO_PADDING;
             }
 
-            if( return_val == OTA_BASE64_SUCCESS )
+            if( returnVal == OTA_BASE64_SUCCESS )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
                 pDest[ outputLen ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
@@ -376,7 +359,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
          * is encountered, it is assumed to have been a mistake and is considered an error. */
         else if( numDataInBuffer == 1U )
         {
-            return_val = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
+            returnVal = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
         }
         else
         {
@@ -387,7 +370,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     *pNumDataInBuffer = 0;
     *pOutputLen = outputLen;
     *pBase64IndexBuffer = 0;
-    return return_val;
+    return returnVal;
 }
 
 /**
@@ -402,7 +385,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
  *
  * @return     One of the following:
  *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
- *               and succesfully decoded.
+ *               and successfully decoded.
  *             - An error code defined in aws_ota_base64_private.h if the
  *               encoded data or input parameters are invalid.
  */
@@ -418,20 +401,20 @@ int32_t base64Decode( uint8_t * pDest,
     size_t outputLen = 0;
     int64_t numPadding = 0;
     int64_t numWhitespace = 0;
-    int32_t return_val = OTA_BASE64_SUCCESS;
+    int32_t returnVal = OTA_BASE64_SUCCESS;
 
     if( ( pEncodedData == NULL ) || ( pDest == NULL ) || ( pResultLen == NULL ) )
     {
-        return_val = OTA_ERR_BASE64_NULL_PTR;
+        returnVal = OTA_ERR_BASE64_NULL_PTR;
     }
 
     if( encodedLen < MIN_VALID_ENCODED_DATA_SIZE )
     {
-        return_val = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
+        returnVal = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
     }
 
     /* This loop will decode the first (encodedLen - (encodedLen % 4)) amount of data. */
-    while( ( return_val == OTA_BASE64_SUCCESS ) &&
+    while( ( returnVal == OTA_BASE64_SUCCESS ) &&
            ( pCurrBase64Symbol < ( pEncodedData + encodedLen ) ) )
     {
         uint8_t base64Index = 0;
@@ -441,11 +424,11 @@ int32_t base64Decode( uint8_t * pDest,
         base64Index = pBase64SymbolToIndexMap[ base64AsciiSymbol ];
 
         /* Verify that the current Base64 symbol representing the encoded data is valid. */
-        return_val = preprocessBase64Index( base64Index,
+        returnVal = preprocessBase64Index( base64Index,
                                             &numPadding,
                                             &numWhitespace );
 
-        if( return_val != OTA_BASE64_SUCCESS )
+        if( returnVal != OTA_BASE64_SUCCESS )
         {
             break;
         }
@@ -458,7 +441,7 @@ int32_t base64Decode( uint8_t * pDest,
         /* Decode the buffer when it's full and store the result. */
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
-            return_val = decodeBase64IndexBuffer( &base64IndexBuffer,
+            returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
                                                   &numDataInBuffer,
                                                   pDest,
                                                   destLen,
@@ -470,21 +453,21 @@ int32_t base64Decode( uint8_t * pDest,
      *
      * Note: This implementation assumes that non-zero padding bits are an error. This prevents
      * having multiple non-matching encoded data strings map to identical decoded strings. */
-    if( return_val == OTA_BASE64_SUCCESS )
+    if( returnVal == OTA_BASE64_SUCCESS )
     {
-        return_val = decodeBase64IndexBuffer( &base64IndexBuffer,
+        returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
                                               &numDataInBuffer,
                                               pDest,
                                               destLen,
                                               &outputLen );
     }
 
-    if( return_val == OTA_BASE64_SUCCESS )
+    if( returnVal == OTA_BASE64_SUCCESS )
     {
         *pResultLen = outputLen;
     }
 
-    return return_val;
+    return returnVal;
 }
 
 /*-----------------------------------------------------------*/
