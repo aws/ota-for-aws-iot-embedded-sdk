@@ -27,13 +27,13 @@ digraph ota_dependencies
     subgraph
     {
         node[fillcolor="#cc00ccff"];
-        mqtt[label="MQTT", URL="@ref mqtt"];
+        mqtt[label="MQTT"];
     }
     subgraph
     {
         node[fillcolor="#aed8a9ff"];
         rank = same;
-        http[label="HTTP", URL="@ref http"];
+        http[label="HTTP"];
     }
 
     ota -> mqtt;
