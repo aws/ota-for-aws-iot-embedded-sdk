@@ -323,9 +323,9 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
          * at the least significant bits. */
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
-            pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFF;
-            pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
-            pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+            pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFFU;
+            pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
+            pDest[ outputLen++ ] = base64IndexBuffer & 0xFFU;
         }
         else if( numDataInBuffer == 3 )
         {
@@ -333,7 +333,7 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * it is assumed that these three sextets should be decoded into two octets of data. In
              * this case, the two least significant bits are ignored and the following sixteen
              * least significant bits are converted into two octets of data. */
-            if( base64IndexBuffer & 0x3 )
+            if( base64IndexBuffer & 0x3U )
             {
                 return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
             }
@@ -341,8 +341,8 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
             if( return_val == OTA_BASE64_SUCCESS )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
-                pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFF;
-                pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+                pDest[ outputLen++ ] = ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
+                pDest[ outputLen++ ] = base64IndexBuffer & 0xFFU;
             }
         }
         else if( numDataInBuffer == 2 )
@@ -351,7 +351,7 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * is assumed that these two sextets should be decoded into one octet of data. In this
              * case, the four least significant bits are ignored and the following eight least
              * significant bits are converted into one octet of data. */
-            if( base64IndexBuffer & 0xF )
+            if( base64IndexBuffer & 0xFU )
             {
                 return_val = OTA_ERR_BASE64_NON_ZERO_PADDING;
             }
@@ -359,7 +359,7 @@ static int decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
             if( return_val == OTA_BASE64_SUCCESS )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
-                pDest[ outputLen++ ] = base64IndexBuffer & 0xFF;
+                pDest[ outputLen++ ] = base64IndexBuffer & 0xFFU;
             }
         }
 
