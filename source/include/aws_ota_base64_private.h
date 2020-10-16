@@ -94,10 +94,10 @@
  *             - An error code defined in aws_ota_base64_private.h if the
  *               encoded data or input parameters are invalid.
  */
-int base64Decode( unsigned char * pDest,
-                  const size_t destLen,
-                  size_t * pResultLen,
-                  const unsigned char * pEncodedData,
-                  const size_t encodedLen );
+int32_t base64Decode( uint8_t * pDest,
+                      const size_t destLen,
+                      size_t * pResultLen,
+                      const uint8_t * pEncodedData,
+                      const size_t encodedLen );
 
 #endif /* ifndef __AWS_OTA_BASE64_PRIVATE__H__ */
