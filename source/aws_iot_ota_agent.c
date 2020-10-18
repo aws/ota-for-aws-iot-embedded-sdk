@@ -45,8 +45,6 @@
 
 /* OTA interface includes. */
 #include "aws_iot_ota_interface_private.h"
-#include "ota_os_posix.h"
-#include "ota_os_interface.h"
 
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
@@ -68,21 +66,6 @@ typedef struct OtaStateTableEntry
     OtaState_t nextState;
 } OtaStateTableEntry_t;
 
-/*
- * This union allows us to access document model parameter addresses as their
- * actual type without casting every time we access a parameter.
- */
-
-typedef union MultiParmPtr
-{
-    const char ** pConstCharPtr;
-    uint64_t * pIntPtr;
-    uint64_t intVal;
-    bool * pBoolPtr;
-    Sig256_t ** pSig256Ptr;
-    void ** pVoidPtr;
-} MultiParmPtr_t;
-
 /* Buffers used to push event data. */
 
 static OtaEventData_t pEventBuffer[ otaconfigMAX_NUM_OTA_DATA_BUFFERS ];
@@ -96,7 +79,6 @@ static OtaControlInterface_t otaControlInterface;
 static OtaDataInterface_t otaDataInterface;
 
 /* OTA agent private function prototypes. */
-
 
 /* Start a timer used for sending data requests. */
 
@@ -1452,8 +1434,6 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        size_t valueLength )
 {
     DEFINE_OTA_METHOD_NAME( "extractParameter" );
-
-    MultiParmPtr_t paramAddr; /*lint !e9018 We intentionally use this union to cast the parameter address to the proper type. */
     void ** ppvParamAdd;
     DocParseErr_t err = DocParseErrNone;
 
