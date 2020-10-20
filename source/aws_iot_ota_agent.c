@@ -1406,7 +1406,8 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
 
         if( base64Decode( pSig256->data, sizeof( pSig256->data ), &actualLen,
                           ( const uint8_t * ) pValueInJson, valueLength ) != 0 )
-        { /* Stop processing on error. */
+        {
+            /* Stop processing on error. */
             OTA_LOG_L1( "[%s] base64Decode failed.\r\n", OTA_METHOD_NAME );
             err = DocParseErrBase64Decode;
         }
@@ -1464,7 +1465,8 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                         pStringCopy );
         }
         else
-        { /* Stop processing on error. */
+        {
+            /* Stop processing on error. */
             err = DocParseErrOutOfMemory;
         }
     }
@@ -1841,7 +1843,8 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             err = OtaJobParseErrNone;
         }
         else
-        { /* The same job is being reported so update the url. */
+        {
+            /* The same job is being reported so update the url. */
             OTA_LOG_L1( "[%s] Job received is current active job.\r\n", OTA_METHOD_NAME );
 
             if( otaAgent.pOtaFiles[ otaAgent.fileIndex ].pUpdateUrlPath != NULL )
@@ -1890,7 +1893,8 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
-    { /* Assume control of the job name from the context. */
+    {
+        /* Assume control of the job name from the context. */
         otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
         pFileContext->pJobName = NULL;
     }

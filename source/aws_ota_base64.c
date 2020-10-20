@@ -425,8 +425,8 @@ int32_t base64Decode( uint8_t * pDest,
 
         /* Verify that the current Base64 symbol representing the encoded data is valid. */
         returnVal = preprocessBase64Index( base64Index,
-                                            &numPadding,
-                                            &numWhitespace );
+                                           &numPadding,
+                                           &numWhitespace );
 
         if( returnVal != OTA_BASE64_SUCCESS )
         {
@@ -442,10 +442,10 @@ int32_t base64Decode( uint8_t * pDest,
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
             returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
-                                                  &numDataInBuffer,
-                                                  pDest,
-                                                  destLen,
-                                                  &outputLen );
+                                                 &numDataInBuffer,
+                                                 pDest,
+                                                 destLen,
+                                                 &outputLen );
         }
     }
 
@@ -456,10 +456,10 @@ int32_t base64Decode( uint8_t * pDest,
     if( returnVal == OTA_BASE64_SUCCESS )
     {
         returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
-                                              &numDataInBuffer,
-                                              pDest,
-                                              destLen,
-                                              &outputLen );
+                                             &numDataInBuffer,
+                                             pDest,
+                                             destLen,
+                                             &outputLen );
     }
 
     if( returnVal == OTA_BASE64_SUCCESS )
