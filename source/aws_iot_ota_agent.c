@@ -46,6 +46,9 @@
 /* OTA interface includes. */
 #include "aws_iot_ota_interface_private.h"
 
+/* Core JSON include */
+#include "core_json.h"
+
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
 

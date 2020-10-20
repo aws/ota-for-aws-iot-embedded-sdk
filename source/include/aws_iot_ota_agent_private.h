@@ -33,7 +33,6 @@
 #define _AWS_IOT_OTA_AGENT_INTERNAL_H_
 
 #include "aws_ota_agent_config.h"
-#include "core_json.h"
 
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
