@@ -8,7 +8,7 @@ set(project_name "aws_ota")
 
 # list the files to mock here
 list(APPEND mock_list
-#    "${MODULE_ROOT_DIR}/dependency/coreJSON/source/include/core_json.h"
+    "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_agent_private.h"
     "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_pal.h"
 )
 # list the directories your mocks need
@@ -37,7 +37,7 @@ list(APPEND real_source_files
 )
 # list the directories the module under test includes
 list(APPEND real_include_directories
-    .
+    "."
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_PRIVATE_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
@@ -46,10 +46,7 @@ list(APPEND real_include_directories
 # =====================  Create UnitTest Code here (edit)  =====================
 
 # list the directories your test needs to include
-list(APPEND test_include_directories
-    .
-    ${OTA_INCLUDE_PUBLIC_DIRS}
-)
+list(APPEND test_include_directories ".")
 
 # =============================  (end edit)  ===================================
 
