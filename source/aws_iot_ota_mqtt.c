@@ -138,7 +138,7 @@ static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * p
                                                   1,
                                                   pxAgentCtx->pOTAMqttInterface->jobCallback );
 
-        OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pcJobTopic );
+        LogInfo( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pcJobTopic );
 
         /* Build the second topic. */
         usTopicLen = ( uint16_t ) snprintf( pcJobTopic,
@@ -148,7 +148,7 @@ static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * p
     }
     else
     {
-        OTA_LOG_L1( "[%s] Invalid Topic length: %d\n\r", OTA_METHOD_NAME, usTopicLen );
+        LogError( "[%s] Invalid Topic length: %d\n\r", OTA_METHOD_NAME, usTopicLen );
     }
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcJobTopic ) ) )
@@ -193,7 +193,7 @@ static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentC
         }
         else
         {
-            OTA_LOG_L1( "[%s] Failed to build stream topic.\n\r", OTA_METHOD_NAME );
+            LogError( "[%s] Failed to build stream topic.\n\r", OTA_METHOD_NAME );
         }
     }
 
@@ -263,7 +263,7 @@ static OtaErr_t prvPublishStatusMessage( OtaAgentContext_t * pxAgentCtx,
     /* If the topic name was built, try to publish the status message to it. */
     if( ( ulTopicLen > 0UL ) && ( ulTopicLen < sizeof( pcTopicBuffer ) ) )
     {
-        OTA_LOG_L1( "[%s] Msg: %s\r\n", OTA_METHOD_NAME, pcMsg );
+        LogDebug( "[%s] Msg: %s\r\n", OTA_METHOD_NAME, pcMsg );
         ret = pxAgentCtx->pOTAMqttInterface->publish(
             pcTopicBuffer,
             ( uint16_t ) ulTopicLen,
@@ -273,16 +273,16 @@ static OtaErr_t prvPublishStatusMessage( OtaAgentContext_t * pxAgentCtx,
 
         if( ret != 0 )
         {
-            OTA_LOG_L1( "[%s] Failed: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
+            LogError( "[%s] Failed: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
         }
         else
         {
-            OTA_LOG_L1( "[%s] '%s' to %s\r\n", OTA_METHOD_NAME, pcOTA_JobStatus_Strings[ eStatus ], pcTopicBuffer );
+            LogDebug( "[%s] '%s' to %s\r\n", OTA_METHOD_NAME, pcOTA_JobStatus_Strings[ eStatus ], pcTopicBuffer );
         }
     }
     else
     {
-        OTA_LOG_L1( "[%s] Failed to build job status topic!\r\n", OTA_METHOD_NAME );
+        LogDebug( "[%s] Failed to build job status topic!\r\n", OTA_METHOD_NAME );
     }
 }
 
@@ -318,7 +318,7 @@ static uint32_t prvBuildStatusMessageReceiving( char * pcMsgBuffer,
     }
     else
     {
-        OTA_LOG_L1( "[%s] Error: null context pointer!\r\n", OTA_METHOD_NAME );
+        LogError( "[%s] Error: null context pointer!\r\n", OTA_METHOD_NAME );
     }
 
     return ulMsgSize;
@@ -428,7 +428,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
     /* Subscribe to the OTA job notification topic. */
     if( prvSubscribeToJobNotificationTopics( pxAgentCtx ) )
     {
-        OTA_LOG_L1( "[%s] Request #%u\r\n", OTA_METHOD_NAME, ulReqCounter );
+        LogDebug( "[%s] Request #%u\r\n", OTA_METHOD_NAME, ulReqCounter );
         /*lint -e586 Intentionally using snprintf. */
         ulMsgLen = ( uint32_t ) snprintf( pcMsg,
                                           sizeof( pcMsg ),
@@ -447,7 +447,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
             if( ret != 0 )
             {
-                OTA_LOG_L1( "[%s] Failed to publish MQTT message.\r\n", OTA_METHOD_NAME );
+                LogError( "[%s] Failed to publish MQTT message.\r\n", OTA_METHOD_NAME );
                 xError = OTA_ERR_PUBLISH_FAILED;
             }
             else
@@ -458,7 +458,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
         }
         else
         {
-            OTA_LOG_L1( "[%s] Topic too large for supplied buffer.\r\n", OTA_METHOD_NAME );
+            LogError( "[%s] Topic too large for supplied buffer.\r\n", OTA_METHOD_NAME );
             xError = OTA_ERR_TOPIC_TOO_LARGE;
         }
     }
@@ -513,7 +513,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pxAgentCtx,
         }
         else
         {
-            OTA_LOG_L1( "[%s] Unknown status code: %d\r\n", OTA_METHOD_NAME, eStatus );
+            LogWarning( "[%s] Unknown status code: %d\r\n", OTA_METHOD_NAME, eStatus );
         }
     }
 
@@ -600,7 +600,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx )
         }
         else
         {
-            OTA_LOG_L1( "[%s] CBOR encode failed.\r\n", OTA_METHOD_NAME );
+            LogError( "[%s] CBOR encode failed.\r\n", OTA_METHOD_NAME );
             xErr = OTA_ERR_FAILED_TO_ENCODE_CBOR;
         }
     }
@@ -623,7 +623,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx )
         else
         {
             /* 0 should never happen since we supply the format strings. It must be overflow. */
-            OTA_LOG_L1( "[%s] Failed to build stream topic!\r\n", OTA_METHOD_NAME );
+            LogError( "[%s] Failed to build stream topic!\r\n", OTA_METHOD_NAME );
             xErr = OTA_ERR_TOPIC_TOO_LARGE;
         }
     }
@@ -639,12 +639,12 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pxAgentCtx )
 
         if( ret != 0 )
         {
-            OTA_LOG_L1( "[%s] Failed: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
+            LogError( "[%s] Failed: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
             xErr = OTA_ERR_PUBLISH_FAILED;
         }
         else
         {
-            OTA_LOG_L1( "[%s] OK: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
+            LogDebug( "[%s] OK: %s\r\n", OTA_METHOD_NAME, pcTopicBuffer );
             xErr = OTA_ERR_NONE;
         }
     }

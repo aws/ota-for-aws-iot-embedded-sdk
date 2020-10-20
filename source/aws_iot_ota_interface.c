@@ -99,7 +99,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
                     pxDataInterface->cleanup = cleanup_Mqtt;
 
-                    OTA_LOG_L1( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
+                    LogInfo( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
 
                     err = OTA_ERR_NONE;
                     break;
@@ -114,7 +114,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
                     pxDataInterface->cleanup = _AwsIotOTA_Cleanup_HTTP;
 
-                    OTA_LOG_L1( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME );
+                    LogInfo( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME );
 
                     err = OTA_ERR_NONE;
                     break;

@@ -54,6 +54,11 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
 /*--------------------------- OTA Logging Defines --------------------------*/
 
+/* TODO: Remove this definition after updating the format of the errors. */
+#define DEFINE_OTA_METHOD_NAME( name )          \
+    static const char OTA_METHOD_NAME[] = name; \
+    ( void ) OTA_METHOD_NAME;
+
 /**
  * @brief Macro that is called in the OTA library for logging "Error" level
  * messages.
