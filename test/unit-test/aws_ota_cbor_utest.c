@@ -39,16 +39,11 @@
 #include "unity.h"
 
 #define CBOR_TEST_MESSAGE_BUFFER_SIZE                     ( OTA_FILE_BLOCK_SIZE * 2 )
-#define CBOR_TEST_SERVER_CHUNK_COUNT                      16
 #define CBOR_TEST_BITMAP_VALUE                            0xAAAAAAAA
 #define CBOR_TEST_GETSTREAMRESPONSE_MESSAGE_ITEM_COUNT    4
 #define CBOR_TEST_CLIENTTOKEN_VALUE                       "ThisIsAClientToken"
-#define CBOR_TEST_STREAMVERSION_VALUE                     2
-#define CBOR_TEST_STREAMDESCRIPTION_VALUE                 "ThisIsAStream"
 #define CBOR_TEST_FILEIDENTITY_VALUE                      2
 #define CBOR_TEST_BLOCKIDENTITY_VALUE                     0
-#define CBOR_TEST_STREAMFILES_COUNT                       3
-#define CBOR_TEST_STREAMFILE_FIELD_COUNT                  2
 
 /* ========================================================================== */
 
