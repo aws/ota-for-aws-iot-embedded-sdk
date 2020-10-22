@@ -70,7 +70,7 @@
 #define JOB_PARSING_INVALID_JSON_MISSING_FILEPATH_LENGTH     ( strlen( JOB_PARSING_INVALID_JSON_MISSING_FILEPATH ) )
 
 /* Replaced numeric value of 'fileid' with string. */
-#define JOB_PARSING_INVALID_JSON_INVALID_NUMERIC              "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":\"text\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_PARSING_INVALID_JSON_INVALID_NUMERIC             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":\"text\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_PARSING_INVALID_JSON_INVALID_NUMERIC_LENGTH      ( strlen( JOB_PARSING_INVALID_JSON_INVALID_NUMERIC ) )
 
 /* Invalid base64 signature key with 3 padding symbols */
@@ -178,19 +178,17 @@ void test_OTA_JobParsing_Invalid_JSON( void )
     err = parseJSONbyModel( NULL, 0, &otaJobDocModel );
     TEST_ASSERT_EQUAL( DocParseErrNullDocPointer, err );
 
-    memcpy(&otaJobDocModelCopy, &otaJobDocModel, sizeof(JsonDocModel_t));
+    memcpy( &otaJobDocModelCopy, &otaJobDocModel, sizeof( JsonDocModel_t ) );
     err = parseJSONbyModel( JOB_PARSING_INVALID_JSON_MISSING_FILEPATH, JOB_PARSING_INVALID_JSON_MISSING_FILEPATH_LENGTH, &otaJobDocModelCopy );
     TEST_ASSERT_EQUAL( DocParseErrMalformedDoc, err );
-    
-    memcpy(&otaJobDocModelCopy, &otaJobDocModel, sizeof(JsonDocModel_t));
+
+    memcpy( &otaJobDocModelCopy, &otaJobDocModel, sizeof( JsonDocModel_t ) );
     err = parseJSONbyModel( JOB_PARSING_INVALID_JSON_INVALID_BASE64KEY, JOB_PARSING_INVALID_JSON_INVALID_BASE64KEY_LENGTH, &otaJobDocModelCopy );
     TEST_ASSERT_EQUAL( DocParseErrBase64Decode, err );
 
-    memcpy(&otaJobDocModelCopy, &otaJobDocModel, sizeof(JsonDocModel_t));
+    memcpy( &otaJobDocModelCopy, &otaJobDocModel, sizeof( JsonDocModel_t ) );
     err = parseJSONbyModel( JOB_PARSING_INVALID_JSON_INVALID_NUMERIC, JOB_PARSING_INVALID_JSON_INVALID_NUMERIC_LENGTH, &otaJobDocModelCopy );
     TEST_ASSERT_EQUAL( DocParseErrInvalidNumChar, err );
-
-    
 }
 
 /**
