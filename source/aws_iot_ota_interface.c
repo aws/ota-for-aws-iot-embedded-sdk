@@ -74,6 +74,7 @@ void setControlInterface( OtaControlInterface_t * pxControlInterface )
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
         pxControlInterface->requestJob = requestJob_Mqtt;
         pxControlInterface->updateJobStatus = updateJobStatus_Mqtt;
+        pxControlInterface->cleanup = cleanupControl_Mqtt;
     #else
     #error "Enable MQTT control as control operations are only supported over MQTT."
     #endif
@@ -97,7 +98,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->initFileTransfer = initFileTransfer_Mqtt;
                     pxDataInterface->requestFileBlock = requestFileBlock_Mqtt;
                     pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
-                    pxDataInterface->cleanup = cleanup_Mqtt;
+                    pxDataInterface->cleanup = cleanupData_Mqtt;
 
                     OTA_LOG_L1( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
 
