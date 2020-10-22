@@ -29,6 +29,7 @@ bytestorecv
 bytestosend
 ca
 cbor
+cborwork
 checkforupdate
 cli
 clienttoken
@@ -40,6 +41,7 @@ config
 configassert
 connectsuccessindex
 const
+constantspage
 contextbase
 contextsize
 coremqtt

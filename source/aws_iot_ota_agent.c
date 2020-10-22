@@ -56,7 +56,7 @@
 /* ToDo: Cleanup BaseType_t. */
 #define BaseType_t    uint32_t
 
-/* OTA event handler definiton. */
+/* OTA event handler definition. */
 
 typedef OtaErr_t ( * OtaEventHandler_t )( OtaEventData_t * pEventMsg );
 
@@ -115,7 +115,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
                                        uint32_t messageSize,
                                        OtaErr_t * pCloseResult );
 
-/* Validate the incomming data block and store it in the file context. */
+/* Validate the incoming data block and store it in the file context. */
 
 static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                         uint32_t uBlockIndex,
@@ -177,7 +177,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        uint32_t messageLength,
                                                        OtaFileContext_t * pFileContext );
 
-/* Check if the incomming job document is not conflicting with current job status. */
+/* Check if the incoming job document is not conflicting with current job status. */
 
 static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                                                OtaFileContext_t ** pFinalFile,
@@ -432,7 +432,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
     {
         if( state == OtaImageStateAccepted )
         {
-            /* Now that we've accepted the firmware update, we can complete the job. */
+            /* Now that we have accepted the firmware update, we can complete the job. */
             stopSelfTestTimer();
             err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusSucceeded, JobReasonAccepted, appFirmwareVersion.u.signedVersion32 );
         }
@@ -440,7 +440,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
         {
             /*
              * The firmware update was either rejected or aborted, complete the job as FAILED (Job service
-             * doesn't allow us to set REJECTED after the job has been started already).
+             * will not allow us to set REJECTED after the job has been started already).
              */
             reason = ( state == OtaImageStateRejected ) ? JobReasonRejected : JobReasonAborted;
             err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailed, reason, subReason );
@@ -542,8 +542,8 @@ static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID )
  * time to reset the device, the user should have registered their own
  * callback function instead of this default callback to allow user level
  * self tests and a user scheduled reset.
- * If the update was rejected, just return without doing anything and we'll
- * wait for another job. If it reported that we're in self test mode, we've
+ * If the update was rejected, just return without doing anything and agent will
+ * wait for another job. If it reported that we're in self test mode, we have
  * already successfully connected to the AWS IoT broker and received the
  * latest job so go ahead and set the image as accepted since there is no
  * additional user level tests to run.
@@ -593,7 +593,7 @@ static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
 
     /*
      * The JOB document received is not conforming to AFR OTA job document and it could be a
-     * custom OTA job. No applciation callback for handling custom job document is registered so just
+     * custom OTA job. No application callback for handling custom job document is registered so just
      * return error code for non conforming job document from this default handler.
      */
     OTA_LOG_L2( "[%s] Received Custom Job inside OTA Agent which is not supported.\r\n", OTA_METHOD_NAME );
@@ -809,7 +809,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
     /*
      * A null context here could either mean we didn't receive a valid job or it could
      * signify that we're in the self test phase (where the OTA file transfer is already
-     * completed and we've reset the device and are now running the new firmware). We
+     * completed and we have reset the device and are now running the new firmware). We
      * will check the state to determine which case we're in.
      */
     if( pOtaFileContext == NULL )
@@ -1351,7 +1351,7 @@ static OtaFileContext_t * getFreeContext( void )
     }
     else
     {
-        /* Not able to support this request so we'll return NULL. */
+        /* Not able to support this request so return NULL. */
     }
 
     return pFileContext;
@@ -1605,7 +1605,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     /* Check the validity of the JSON document */
     err = validateJSON( pJson, messageLength );
 
-    /* Traverse the docModel and search the JSON if it containg the Source Key specified*/
+    /* Traverse the docModel and search the JSON if it containing the Source Key specified*/
     for( paramIndex = 0; ( paramIndex < pDocModel->numModelParams ) && ( err == DocParseErrNone ); paramIndex++ )
     {
         const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
@@ -1812,7 +1812,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
         /*Check if we received a timestamp and client token but no job ID.*/
         if( ( otaAgent.pClientTokenFromJob != NULL ) && ( otaAgent.timestampFromJob != 0U ) && ( pFileContext->pJobName == NULL ) )
         {
-            /* Received job docuement with no execution so no active job is available.*/
+            /* Received job document with no execution so no active job is available.*/
             OTA_LOG_L1( "[%s] No active jobs available in the service for execution.\r\n", OTA_METHOD_NAME );
             err = OtaJobParseErrNoActiveJobs;
         }
@@ -1826,7 +1826,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
     return err;
 }
 
-/* Check if the incomming job document is not conflicting with current job status. */
+/* Check if the incoming job document is not conflicting with current job status. */
 
 static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                                                OtaFileContext_t ** pFinalFile,
@@ -1926,7 +1926,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
          * state to "Testing." This is the success path.
          *
          * If it's the same or newer, reject the job since
-         * either the firmware wasn't accepted during self
+         * either the firmware was not accepted during self
          * test or an incorrect image was sent by the OTA
          * operator.
          */
@@ -2145,7 +2145,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
              * This keeps us from requesting those pages during retry processing or if using a windowed
              * block request. It also avoids erroneously accepting an out of range data block should it
              * get past any safety checks.
-             * Files aren't always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
+             * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
              * last byte may be out of range and those are the bits we want to clear. */
 
             uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
@@ -2205,7 +2205,7 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
     return ret;
 }
 
-/* Validate the incomming data block and store it in the file context. */
+/* Validate the incoming data block and store it in the file context. */
 
 static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                         uint32_t uBlockIndex,
@@ -2229,7 +2229,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
         /* Calculate byte offset into bitmap. */
         byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
 
-        /* Check if we've already received this block. */
+        /* Check if we have already received this block. */
         if( ( ( pFileContext->pRxBlockBitmap[ byte ] ) & bitMask ) == 0U )
         {
             OTA_LOG_L1( "[%s] block %u is a DUPLICATE. %u blocks remaining.\r\n", OTA_METHOD_NAME,
@@ -2488,7 +2488,7 @@ static void handleUnexpectedEvents( OtaEventMsg_t * pEventMsg )
                 pOtaAgentStateStrings[ otaAgent.state ],
                 pOtaEventStrings[ pEventMsg->eventId ] );
 
-    /* Perform any cleanup operations required for specifc unhandled events.*/
+    /* Perform any cleanup operations required for specific unhandled events.*/
     switch( pEventMsg->eventId )
     {
         case OtaAgentEventReceivedJobDocument:

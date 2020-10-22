@@ -371,7 +371,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     /* If the status update is for "Succeeded," we are identifying the version of firmware
      * that has been accepted. This makes it easy to find the version associated with each
-     * device (aka Thing) when examining the OTA jobs on the service side via the CLI or
+     * device (Thing) when examining the OTA jobs on the service side via the CLI or
      * possibly with some console tool.
      */
     else if( status == JobStatusSucceeded )
