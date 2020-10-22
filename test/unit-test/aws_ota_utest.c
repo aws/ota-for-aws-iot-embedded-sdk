@@ -43,6 +43,12 @@
 /* Mock OTA PAL. */
 #include "mock_aws_iot_ota_pal.h"
 
+/* Job document for testing. */
+#define JOB_DOC_VALID             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_VALID_LENGTH      ( sizeof( JOB_DOC_VALID ) - 1 )
+#define JOB_DOC_INVALID           "not a json"
+#define JOB_DOC_INVALID_LENGTH    ( sizeof( JOB_DOC_INVALID ) - 1 )
+
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
@@ -652,7 +658,7 @@ void test_OTA_ImageStateInvalidState()
 void test_OTA_ProcessJobDocumentInvalidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    const char job_doc[] = "not a json";
+    const char * job_doc = JOB_DOC_INVALID;
 
     /* Parse failuire would abort the update. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
@@ -663,8 +669,8 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, job_doc, sizeof( job_doc ) );
-    otaEvent.pEventData->dataLength = sizeof( job_doc );
+    memcpy( otaEvent.pEventData->data, job_doc, JOB_DOC_INVALID_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_INVALID_LENGTH;
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent( otaDefaultWait );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
@@ -673,7 +679,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 void test_OTA_ProcessJobDocumentValidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    const char job_doc[] = "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}";
+    const char * job_doc = JOB_DOC_VALID;
 
     /* Let the PAL says it's not in self test.*/
     prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
@@ -686,8 +692,8 @@ void test_OTA_ProcessJobDocumentValidJson()
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, job_doc, strlen( job_doc ) );
-    otaEvent.pEventData->dataLength = strlen( job_doc );
+    memcpy( otaEvent.pEventData->data, job_doc, JOB_DOC_VALID_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_VALID_LENGTH;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
