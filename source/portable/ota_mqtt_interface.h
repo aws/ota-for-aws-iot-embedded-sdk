@@ -37,7 +37,7 @@
  * @brief Subscribe to the Mqtt topics.
  *
  * This function subscribes to the Mqtt topics with the Quality of service
- * received as paramter. This function also registers a callback for the
+ * received as parameter. This function also registers a callback for the
  * topicfilter.
  *
  * @param[pTopicFilter]         Mqtt topic filter.
@@ -60,7 +60,7 @@ typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
  * @brief Unsubscribe to the Mqtt topics.
  *
  * This function unsubscribes to the Mqtt topics with the Quality of service
- * received as paramter.
+ * received as parameter.
  *
  * @param[pTopicFilter]         Mqtt topic filter.
  *

@@ -92,7 +92,7 @@ typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
                                            uint32_t timeout );
 
 /**
- * @brief Denitialize the OTA Events mechanism.
+ * @brief Deinitialize the OTA Events mechanism.
  *
  * This function de-initializes the OTA events mechanism and frees any resources
  * used.

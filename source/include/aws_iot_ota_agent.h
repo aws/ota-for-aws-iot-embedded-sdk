@@ -168,7 +168,7 @@ typedef enum OtaJobParseErr
     OtaJobParseErrZeroFileSize,        /* Job document specified a zero sized file. This is not allowed. */
     OtaJobParseErrNonConformingJobDoc, /* The job document failed to fulfill the model requirements. */
     OtaJobParseErrBadModelInitParams,  /* There was an invalid initialization parameter used in the document model. */
-    OtaJobParseErrNoContextAvailable,  /* There wasn't an OTA context available. */
+    OtaJobParseErrNoContextAvailable,  /* There was not an OTA context available. */
     OtaJobParseErrNoActiveJobs,        /* No active jobs are available in the service. */
 } OtaJobParseErr_t;
 
@@ -232,7 +232,7 @@ typedef enum OtaImageState
  * @functionpointers{ota,OTA library}
  */
 
-/* Forward delcaration of OtaFileContext_t. */
+/* Forward declaration of OtaFileContext_t. */
 typedef struct OtaFileContext   OtaFileContext_t;
 
 /**
@@ -422,7 +422,7 @@ struct OtaFileContext
     uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
     uint8_t * pUpdateUrlPath; /*!< Url for the file. */
     uint8_t * pAuthScheme;    /*!< Authorization scheme. */
-    uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of FW that did the update. */
+    uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
     bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
     Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
@@ -483,7 +483,7 @@ typedef struct
  */
 
 /* @[define_ota_err_codes] */
-#define OTA_ERR_PANIC                        0xfe000000UL /*!< Unrecoverable FW error. Probably should log error and reboot. */
+#define OTA_ERR_PANIC                        0xfe000000UL /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
 #define OTA_ERR_UNINITIALIZED                0xff000000UL /*!< The error code has not yet been set by a logic path. */
 #define OTA_ERR_NONE                         0x00000000UL
 #define OTA_ERR_SIGNATURE_CHECK_FAILED       0x01000000UL /*!< The signature check failed for the specified file. */
@@ -496,7 +496,7 @@ typedef struct
 #define OTA_ERR_PUBLISH_FAILED               0x08000000UL /*!< Attempt to publish a MQTT message failed. */
 #define OTA_ERR_BAD_IMAGE_STATE              0x09000000UL /*!< The specified OTA image state was out of range. */
 #define OTA_ERR_NO_ACTIVE_JOB                0x0a000000UL /*!< Attempt to set final image state without an active job. */
-#define OTA_ERR_NO_FREE_CONTEXT              0x0b000000UL /*!< There wasn't an OTA file context available for processing. */
+#define OTA_ERR_NO_FREE_CONTEXT              0x0b000000UL /*!< There was not an OTA file context available for processing. */
 #define OTA_ERR_HTTP_INIT_FAILED             0x0c000000UL /*!< Error initializing the HTTP connection. */
 #define OTA_ERR_HTTP_REQUEST_FAILED          0x0d000000UL /*!< Error sending the HTTP request. */
 #define OTA_ERR_FILE_ABORT                   0x10000000UL /*!< Error in low level file abort. */
@@ -515,7 +515,7 @@ typedef struct
 #define OTA_ERR_USER_ABORT                   0x28000000UL /*!< User aborted the active OTA. */
 #define OTA_ERR_RESET_NOT_SUPPORTED          0x29000000UL /*!< We tried to reset the device but the device doesn't support it. */
 #define OTA_ERR_TOPIC_TOO_LARGE              0x2a000000UL /*!< Attempt to build a topic string larger than the supplied buffer. */
-#define OTA_ERR_SELF_TEST_TIMER_FAILED       0x2b000000UL /*!< Attempt to start self-test timer faield. */
+#define OTA_ERR_SELF_TEST_TIMER_FAILED       0x2b000000UL /*!< Attempt to start self-test timer failed. */
 #define OTA_ERR_EVENT_Q_SEND_FAILED          0x2c000000UL /*!< Posting event message to the event queue failed. */
 #define OTA_ERR_INVALID_DATA_PROTOCOL        0x2d000000UL /*!< Job does not have a valid protocol for data transfer. */
 #define OTA_ERR_OTA_AGENT_STOPPED            0x2e000000UL /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
@@ -707,7 +707,7 @@ OtaErr_t OTA_Suspend( void );
  */
 OtaErr_t OTA_Resume( void * pConnection );
 
-/* OTA agent task fucntion. */
+/* OTA agent task function. */
 
 void otaAgentTask( void * pUnused );
 

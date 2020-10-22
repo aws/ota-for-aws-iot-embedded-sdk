@@ -9,6 +9,7 @@ alpn
 alpnprotoslen
 api
 apis
+appFirmwareVersion
 ascii
 attemptsdone
 aws
@@ -52,6 +53,7 @@ destlen
 destoffset
 didn
 dns
+docmodel
 docparseerrduplicatesnotallowed
 docparseerrfieldtypemismatch
 docparseerrinvalidmodelparamtype
@@ -65,6 +67,7 @@ docparseerroutofmemory
 docparseerrparamkeynotinmodel
 docparseerrtoomanyparams
 docparseerrunknown
+doesn't
 eagain
 eevent
 encodedlen
@@ -80,9 +83,13 @@ failedwithval
 fclose
 fd
 fileattributes
+fileblock
+filecontext
+fileid
 filehandle
 fileindex
 filelabel
+fileparameters
 filepath
 filepaths
 filesize
@@ -93,6 +100,7 @@ freertos
 freertos.org
 functionname
 functionpage
+functionpointers
 functionspage
 functiontofail
 getaddrinfo
@@ -161,6 +169,7 @@ messagesize
 mfln
 min
 misra
+mockoseventsendthenstop
 modelparamtype
 modelparamtypestringindoc
 mqtt
@@ -191,6 +200,7 @@ ota
 otaagent
 otaagentstatenotready
 otaagentstatenotready
+otaagentstateready
 otaclose
 otacontrolinterface
 otaimagestateaborted
@@ -233,6 +243,8 @@ paramindex
 params
 paramsreceivedbitmap
 paramsrequiredbitmap
+parsejobdoc
+parsejsonbymodel
 pauthscheme
 pblockid
 pblocksize
@@ -242,7 +254,7 @@ pcallbacks
 pcertfilepath
 pcjobtopic
 pcjson
-pcclienttokenfromjob
+pclienttokenfromjob
 pclientcertpath
 pcloseresult
 pcmsg
@@ -266,6 +278,7 @@ pjobname
 pjson
 plaintext
 platfrom
+plblockid
 plblocksize
 plisthead
 pmessagebuffer
@@ -278,10 +291,10 @@ popensslcredentials
 posix
 potafiles
 potaosctx
-potasingletonactivjobname
+potasingletonactivejobname
 poutputlen
 pparam
-ppaylod
+ppayload
 ppayloadsize
 pprivatekeypath
 pprotocols
@@ -302,7 +315,7 @@ ptcpsocket
 pthingname
 ptimercallback
 ptimerctx
-pctimername
+ptimername
 ptopicfilter
 pupdatefile
 pupdateurlpath
@@ -338,6 +351,7 @@ serverinfo
 setimagestate
 setplatformimagestate
 sigalrm
+sizeof
 sleeptimems
 sni
 snihostname
@@ -348,6 +362,7 @@ socketstatus
 srand
 src
 ssl
+startselftesttimer
 startselftimer
 statusdetails
 stddef
@@ -362,9 +377,10 @@ tcp
 tcpsocket
 tcpsocketcontext
 thingname
+thisisaclienttoken
 tickstowait
 timeinseconds
-timerhandls
+timerhandle
 timespec
 timestampfromjob
 tls
@@ -391,12 +407,15 @@ ulmsgsize
 uloffset
 ulreceived
 ultopiclen
+unhandled
 unistd
+unsignedversion32 
 updatejobstatus
 updaterversion
 url
 ustopiclen
 utils
+validatedatablock
 valuelength
 writeblock
 www

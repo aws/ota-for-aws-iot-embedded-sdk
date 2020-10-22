@@ -81,7 +81,7 @@ typedef enum
     IngestResultFileCloseFail = -3,      /* There was a problem trying to close the receive file. */
     IngestResultNullContext = -4,        /* The specified OTA context pointer is null. */
     IngestResultBadFileHandle = -5,      /* The receive file pointer is invalid. */
-    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but weren't expecting one. */
+    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but were not expecting one. */
     IngestResultBlockOutOfRange = -7,    /* The received block is out of the expected range. */
     IngestResultBadData = -8,            /* The data block from the server was malformed. */
     IngestResultWriteBlockFailed = -9,   /* The PAL layer failed to write the file block. */
