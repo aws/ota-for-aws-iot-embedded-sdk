@@ -395,7 +395,7 @@ static BaseType_t startSelfTestTimer( void )
     /* static const char pcTimerName[] = "OTA_SelfTest"; */
     int32_t xTimerStarted = 0;
 
-    return xTimerStarted; 
+    return xTimerStarted;
 }
 
 /* When the self test response timer expires, reset the device since we're likely broken. */
@@ -1525,9 +1525,8 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 
     if( err != DocParseErrNone )
     {
-        OTA_LOG_L1( "[%s] Error (%d) extracting parameter %s.\r\n", OTA_METHOD_NAME, ( int32_t ) err, docParam.pSrcKey);
+        OTA_LOG_L1( "[%s] Error (%d) extracting parameter %s.\r\n", OTA_METHOD_NAME, ( int32_t ) err, docParam.pSrcKey );
     }
-    
 
     return err;
 }
@@ -1711,7 +1710,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
 
     if( err != DocParseErrNone )
     {
-        OTA_LOG_L1( "[%s] Error (%d): Failed to initialize Doc model.\r\n", OTA_METHOD_NAME, ( int32_t ) err);
+        OTA_LOG_L1( "[%s] Error (%d): Failed to initialize Doc model.\r\n", OTA_METHOD_NAME, ( int32_t ) err );
     }
 
     return err;
@@ -1931,7 +1930,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
          * test or an incorrect image was sent by the OTA
          * operator.
          */
-        if( pFileContext->isInSelfTest == true)
+        if( pFileContext->isInSelfTest == true )
         {
             OTA_LOG_L1( "[%s] In self test mode.\r\n", OTA_METHOD_NAME );
 
@@ -2813,7 +2812,7 @@ OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
         eventMsg.eventId = OtaAgentEventShutdown;
 
         /* Send signal to OTA task. */
-        if( OTA_SignalEvent( &eventMsg ) == false)
+        if( OTA_SignalEvent( &eventMsg ) == false )
         {
             OTA_LOG_L1( "[%s] Failed to signal the OTA agent to shutdown.", OTA_METHOD_NAME );
         }
