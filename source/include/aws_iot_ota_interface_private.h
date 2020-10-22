@@ -54,6 +54,7 @@ typedef struct
                                     OtaJobStatus_t eStatus,
                                     int32_t lReason,
                                     int32_t lSubReason );
+    OtaErr_t ( * cleanup )( OtaAgentContext_t * pAgentCtx );
 } OtaControlInterface_t;
 
 /**
