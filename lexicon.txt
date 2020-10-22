@@ -9,7 +9,7 @@ alpn
 alpnprotoslen
 api
 apis
-appFirmwareVersion
+appfirmwareversion
 ascii
 attemptsdone
 aws
