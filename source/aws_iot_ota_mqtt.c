@@ -176,7 +176,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 
     if( ( pFileContext != NULL ) && ( pFileContext->pStreamName != NULL ) )
     {
-        /* Try to build the dynamic data stream topic and un-subscribe from it. */
+        /* Try to build the dynamic data stream topic and unsubscribe from it. */
 
         topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic, /*lint -e586 Intentionally using snprintf. */
                                           sizeof( pOtaRxStreamTopic ),

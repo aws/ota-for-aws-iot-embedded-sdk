@@ -98,8 +98,8 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
 /**
  * @brief Cleanup related to OTA control plane over MQTT.
  *
- * This function perfroms cleanup by unsubscribing from any topics that were
- * subscribed for performing OTA control over MQTT.
+ * This function cleanup by unsubscribing from any topics that were
+ * subscribed for performing OTA over MQTT.
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
