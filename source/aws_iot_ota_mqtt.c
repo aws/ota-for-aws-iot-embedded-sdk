@@ -105,21 +105,21 @@ const char * pcOTA_JobReason_Strings[ NumJobReasons ] = { "", "ready", "active",
 
 /* Subscribe to the jobs notification topic (i.e. New file version available). */
 
-static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx );
+static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx );
 
 /* UnSubscribe from the firmware update receive topic. */
 
-static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx );
+static OtaErr_t unSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx );
 
 /* UnSubscribe from the jobs notification topic. */
 
-static OtaErr_t prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx );
+static OtaErr_t unSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx );
 
 /* Subscribe to the OTA job notification topics. */
 
-static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx )
+static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pxAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvSubscribeToJobNotificationTopics" );
+    DEFINE_OTA_METHOD_NAME( "subscribeToJobNotificationTopics" );
 
     bool bResult = false;
     char pcJobTopic[ OTA_MAX_TOPIC_LEN ];
@@ -165,9 +165,9 @@ static OtaErr_t prvSubscribeToJobNotificationTopics( const OtaAgentContext_t * p
 /*
  * UnSubscribe from the OTA data stream topic.
  */
-static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx )
+static OtaErr_t unSubscribeFromDataStream( const OtaAgentContext_t * pxAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvUnSubscribeFromDataStream" );
+    DEFINE_OTA_METHOD_NAME( "unSubscribeFromDataStream" );
 
     bool bResult = false;
     char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
@@ -203,9 +203,9 @@ static OtaErr_t prvUnSubscribeFromDataStream( const OtaAgentContext_t * pxAgentC
 /*
  * Unsubscribe from the OTA job notification topics.
  */
-static OtaErr_t prvUnSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx )
+static OtaErr_t unSubscribeFromJobNotificationTopic( const OtaAgentContext_t * pxAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvUnSubscribeFromJobNotificationTopic" );
+    DEFINE_OTA_METHOD_NAME( "unSubscribeFromJobNotificationTopic" );
 
     char pcJobTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t usTopicLen = 0;
@@ -426,7 +426,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pxAgentCtx )
     char pcMsg[ CONST_STRLEN( pcOTA_GetNextJob_MsgTemplate ) + U32_MAX_PLACES + otaconfigMAX_THINGNAME_LEN ];
 
     /* Subscribe to the OTA job notification topic. */
-    if( prvSubscribeToJobNotificationTopics( pxAgentCtx ) )
+    if( subscribeToJobNotificationTopics( pxAgentCtx ) )
     {
         OTA_LOG_L1( "[%s] Request #%u\r\n", OTA_METHOD_NAME, ulReqCounter );
         /*lint -e586 Intentionally using snprintf. */
@@ -694,12 +694,23 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pucMessageBuffer,
 }
 
 /*
- * Perform any cleanup operations required like unsubscribing from
- * job topics.
+ * Perform any cleanup operations required for control plane.
  */
-OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pxAgentCtx )
+OtaErr_t cleanupControl_Mqtt( OtaAgentContext_t * pxAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvCleanup_Mqtt" );
+    /* Unsubscribe from job notification topics. */
+    unSubscribeFromJobNotificationTopic( pxAgentCtx );
+
+    return OTA_ERR_NONE;
+}
+
+/*
+ * Perform any cleanup operations required for data plane.
+ */
+OtaErr_t cleanupData_Mqtt( OtaAgentContext_t * pxAgentCtx )
+{
+    /* Unsubscribe from data stream topics. */
+    unSubscribeFromDataStream( pxAgentCtx );
 
     return OTA_ERR_NONE;
 }

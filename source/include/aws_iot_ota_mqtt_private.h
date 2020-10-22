@@ -96,17 +96,30 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
                                size_t * pPayloadSize );
 
 /**
- * @brief Cleanup related to OTA over MQTT.
+ * @brief Cleanup related to OTA control plane over MQTT.
  *
  * This function perfroms cleanup by unsubscribing from any topics that were
- * subscribed for performing OTA over MQTT.
+ * subscribed for performing OTA control over MQTT.
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
  */
 
-OtaErr_t cleanup_Mqtt( OtaAgentContext_t * pAgentCtx );
+OtaErr_t cleanupControl_Mqtt( OtaAgentContext_t * pAgentCtx );
+
+/**
+ * @brief Cleanup related to OTA data plane over MQTT.
+ *
+ * This function perfroms cleanup by unsubscribing from any topics that were
+ * subscribed for performing OTA data over MQTT.
+ *
+ * @param[in] pAgentCtx The OTA agent context.
+ *
+ * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ */
+
+OtaErr_t cleanupData_Mqtt( OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Update job status over MQTT.

@@ -2438,7 +2438,13 @@ static void agentShutdownCleanup( void )
 
     otaAgent.state = OtaAgentStateShuttingDown;
 
-    /* Cleanup related to selected protocol. */
+    /* Control plane cleanup related to selected protocol. */
+    if( otaControlInterface.cleanup != NULL )
+    {
+        ( void ) otaControlInterface.cleanup( &otaAgent );
+    }
+
+    /* Data plane cleanup related to selected protocol. */
     if( otaDataInterface.cleanup != NULL )
     {
         ( void ) otaDataInterface.cleanup( &otaAgent );
