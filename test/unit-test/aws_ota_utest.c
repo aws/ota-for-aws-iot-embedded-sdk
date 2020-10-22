@@ -1,5 +1,5 @@
 /*
- * coreMQTT v1.0.0
+ * FreeRTOS OTA V1.2.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,6 +18,9 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://aws.amazon.com/freertos
+ * http://www.FreeRTOS.org
  */
 
 /**
@@ -530,7 +533,7 @@ void test_OTA_ResumeFailedWhenSuspended()
     otaOSInterface.event.send = prev_send;
 }
 
-void test_OTAStatistics()
+void test_OTA_Statistics()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -541,7 +544,7 @@ void test_OTAStatistics()
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsReceived() );
 }
 
-void test_OTACheckForUpdate()
+void test_OTA_CheckForUpdate()
 {
     otaGoToState( OtaAgentStateRequestingJob );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
@@ -563,7 +566,7 @@ void test_OTACheckForUpdate()
     otaOSInterface.event.send = prev_send;
 }
 
-void test_OTAActivateNewImage()
+void test_OTA_ActivateNewImage()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -573,17 +576,17 @@ void test_OTAActivateNewImage()
 }
 
 /* OTA pal function pointers should be NULL when OTA agent is not started. */
-void test_OTAActivateNewImageWhenStopped()
+void test_OTA_ActivateNewImageWhenStopped()
 {
     TEST_ASSERT_EQUAL( OTA_ERR_UNINITIALIZED, OTA_ActivateNewImage() );
 }
 
-void test_OTAImageStateAbortWithActiveJob()
+void test_OTA_ImageStateAbortWithActiveJob()
 {
     /* TODO. */
 }
 
-void test_OTAImageStateAbortWithNoJob()
+void test_OTA_ImageStateAbortWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -593,7 +596,7 @@ void test_OTAImageStateAbortWithNoJob()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 }
 
-void test_OTAImageStateAbortFailToSendEvent()
+void test_OTA_ImageStateAbortFailToSendEvent()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -611,12 +614,12 @@ void test_OTAImageStateAbortFailToSendEvent()
     otaOSInterface.event.send = prev_send;
 }
 
-void test_OTAImageStateRjectWithActiveJob()
+void test_OTA_ImageStateRjectWithActiveJob()
 {
     /* TODO. */
 }
 
-void test_OTAImageStateRjectWithNoJob()
+void test_OTA_ImageStateRjectWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -626,12 +629,12 @@ void test_OTAImageStateRjectWithNoJob()
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
 
-void test_OTAImageStateAcceptWithActiveJob()
+void test_OTA_ImageStateAcceptWithActiveJob()
 {
     /* TODO. */
 }
 
-void test_OTAImageStateAcceptWithNoJob()
+void test_OTA_ImageStateAcceptWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -641,12 +644,12 @@ void test_OTAImageStateAcceptWithNoJob()
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
-void test_OTAImageStateInvalidState()
+void test_OTA_ImageStateInvalidState()
 {
     TEST_ASSERT_EQUAL( OTA_ERR_BAD_IMAGE_STATE, OTA_SetImageState( -1 ) );
 }
 
-void test_OTAProcessJobDocumentInvalidJson()
+void test_OTA_ProcessJobDocumentInvalidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
     const char job_doc[] = "not a json";
@@ -667,7 +670,7 @@ void test_OTAProcessJobDocumentInvalidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 }
 
-void test_OTAProcessJobDocumentValidJson()
+void test_OTA_ProcessJobDocumentValidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
     const char job_doc[] = "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}";
