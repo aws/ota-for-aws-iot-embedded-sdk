@@ -50,19 +50,23 @@
 #include "utest_helpers.h"
 
 /* Job document for testing. */
-#define OTA_TEST_FILE_SIZE        10240
-#define OTA_TEST_FILE_SIZE_STR    "10240"
-#define JOB_DOC_VALID             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
-#define JOB_DOC_VALID_LENGTH      ( sizeof( JOB_DOC_VALID ) - 1 )
-#define JOB_DOC_INVALID           "not a json"
-#define JOB_DOC_INVALID_LENGTH    ( sizeof( JOB_DOC_INVALID ) - 1 )
+#define OTA_TEST_FILE_SIZE          10240
+#define OTA_TEST_FILE_SIZE_STR      "10240"
+#define JOB_DOC_A                   "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_A_LENGTH            ( sizeof( JOB_DOC_A ) - 1 )
+#define JOB_DOC_B                   "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob21\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_B_LENGTH            ( sizeof( JOB_DOC_B ) - 1 )
+#define JOB_DOC_SELF_TEST           "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_SELF_TEST_LENGTH    ( sizeof( JOB_DOC_SELF_TEST ) - 1 )
+#define JOB_DOC_INVALID             "not a json"
+#define JOB_DOC_INVALID_LENGTH      ( sizeof( JOB_DOC_INVALID ) - 1 )
 
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
     .u.x.major = 1,
     .u.x.minor = 0,
-    .u.x.build = 0,
+    .u.x.build = 1,
 };
 
 /* OTA code signing signature algorithm. */
@@ -363,15 +367,15 @@ static void otaGoToStateWithTimeout( OtaState_t state,
             break;
 
         case OtaAgentStateCreatingFile:
+            otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
             /* Let the PAL says it's not in self test.*/
             prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
             /* Parse success would create the file, let it invoke our mock when creating file. */
             prvPAL_CreateFileForRx_Stub( mockOtaPalCreateFileForRx );
-            otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
             otaEvent.eventId = OtaAgentEventReceivedJobDocument;
             otaEvent.pEventData = otaEventBufferGet();
-            memcpy( otaEvent.pEventData->data, JOB_DOC_VALID, JOB_DOC_VALID_LENGTH );
-            otaEvent.pEventData->dataLength = JOB_DOC_VALID_LENGTH;
+            memcpy( otaEvent.pEventData->data, JOB_DOC_A, JOB_DOC_A_LENGTH );
+            otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
             OTA_SignalEvent( &otaEvent );
             break;
 
@@ -741,7 +745,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 void test_OTA_ProcessJobDocumentValidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    const char * pJobDoc = JOB_DOC_VALID;
+    const char * pJobDoc = JOB_DOC_A;
 
     /* Let the PAL says it's not in self test.*/
     prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
@@ -754,8 +758,8 @@ void test_OTA_ProcessJobDocumentValidJson()
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_VALID_LENGTH );
-    otaEvent.pEventData->dataLength = JOB_DOC_VALID_LENGTH;
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_A_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
@@ -883,4 +887,90 @@ void test_OTA_ReceiveFileBlockComplete()
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+}
+
+void test_OTA_SelfTest()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    const char * pJobDoc = JOB_DOC_SELF_TEST;
+
+    /* Call OTA init to set the event send interface to a mock function that allows events to be
+     * sent continuously. This is to complete the self test process. */
+    ota_SendEvent_t prev_send = otaOSInterface.event.send;
+    otaOSInterface.event.send = mockOSEventSend;
+    otaInit( pOtaDefaultClientId, NULL ); /* Use default complete callback. */
+
+    /* Let the PAL says it's in self test and bypass setting platform image state. */
+    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStatePendingCommit );
+    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
+    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+
+    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+    otaEvent.pEventData = otaEventBufferGet();
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_SELF_TEST_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_SELF_TEST_LENGTH;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateCreatingFile );
+    otaWaitForState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
+}
+
+void test_OTA_ReceiveNewJobDocWhileInProgress()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    const char * pJobDoc = JOB_DOC_B;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+
+    /* Reset the event queue so that we can send the next event. */
+    mockOSEventReset( NULL );
+
+    /* Let abort pass. */
+    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
+    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+
+    /* Sending another job document should cause OTA agent to abort current update. */
+    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+    otaEvent.pEventData = otaEventBufferGet();
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_B_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_B_LENGTH;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateRequestingJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+}
+
+void test_OTA_RefreshJobDocWhileInProgress()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    const char * pJobDoc = JOB_DOC_A;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+
+    /* Call OTA init to set the event send interface to a mock function that allows events to be
+     * sent continuously. We need this to go through the process of refreshing job doc. */
+    ota_SendEvent_t prev_send = otaOSInterface.event.send;
+    otaOSInterface.event.send = mockOSEventSend;
+    otaInitDefault();
+
+    /* First send request job doc event while we're in progress, this should make OTA agent to
+     * to request job doc again and transit to waiting for job state. */
+    otaEvent.eventId = OtaAgentEventRequestJobDocument;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+
+    /* Now send the same job doc, OTA agent should resume the download. */
+    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+    otaEvent.pEventData = otaEventBufferGet();
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_A_LENGTH );
+    otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
 }

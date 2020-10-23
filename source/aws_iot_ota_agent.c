@@ -2023,7 +2023,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 {
     DEFINE_OTA_METHOD_NAME( "parseJobDoc" );
 
-    static OtaFileContext_t fileContext = { 0 };
+    OtaFileContext_t fileContext = { 0 };
     OtaErr_t otaErr = OTA_ERR_NONE;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     OtaFileContext_t * pFinalFile = NULL;
