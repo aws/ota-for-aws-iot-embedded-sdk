@@ -108,7 +108,7 @@ typedef enum
     DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
     DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
     DocParseErrTooManyParams,         /* The document model has more parameters than we can handle. */
-    DocParseErrParamKeyNotInModel,    /* The document model doesn't include the specified parameter key. */
+    DocParseErrParamKeyNotInModel,    /* The document model does not include the specified parameter key. */
     DocParseErrInvalidModelParamType, /* The document model specified an invalid parameter type. */
     DocParseErrInvalidToken           /* The Jasmine token was invalid, producing a NULL pointer. */
 } DocParseErr_t;
@@ -145,7 +145,7 @@ typedef struct
 {
     const char * pSrcKey;                  /* Expected key name. */
     const bool required;                   /* If true, this parameter must exist in the document. */
-    void * const pDestOffset;              /* Pointer or offset to where we'll store the value, if not ~0. */
+    void * const pDestOffset;              /* Pointer or offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 

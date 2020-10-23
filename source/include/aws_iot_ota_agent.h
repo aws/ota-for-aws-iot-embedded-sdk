@@ -418,7 +418,7 @@ struct OtaFileContext
     uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
     uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
     uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for de-duping and missing block request). */
+    uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for deduplicating and missing block request). */
     uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
     uint8_t * pUpdateUrlPath; /*!< Url for the file. */
     uint8_t * pAuthScheme;    /*!< Authorization scheme. */
@@ -513,7 +513,7 @@ typedef struct
 #define OTA_ERR_IMAGE_STATE_MISMATCH         0x26000000UL /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
 #define OTA_ERR_GENERIC_INGEST_ERROR         0x27000000UL /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
 #define OTA_ERR_USER_ABORT                   0x28000000UL /*!< User aborted the active OTA. */
-#define OTA_ERR_RESET_NOT_SUPPORTED          0x29000000UL /*!< We tried to reset the device but the device doesn't support it. */
+#define OTA_ERR_RESET_NOT_SUPPORTED          0x29000000UL /*!< We tried to reset the device but the device does not support it. */
 #define OTA_ERR_TOPIC_TOO_LARGE              0x2a000000UL /*!< Attempt to build a topic string larger than the supplied buffer. */
 #define OTA_ERR_SELF_TEST_TIMER_FAILED       0x2b000000UL /*!< Attempt to start self-test timer failed. */
 #define OTA_ERR_EVENT_Q_SEND_FAILED          0x2c000000UL /*!< Posting event message to the event queue failed. */

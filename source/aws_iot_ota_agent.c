@@ -2785,7 +2785,7 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
             ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL ); /* Include zero terminator when saving the Thing name. */
             retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
 
-            /* OTA Task is not running yet so update the state to init direclty in OTA context. */
+            /* OTA Task is not running yet so update the state to init directly in OTA context. */
             otaAgent.state = OtaAgentStateInit;
         }
         else

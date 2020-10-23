@@ -363,7 +363,7 @@ void test_OTA_InitWhenStopped()
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetAgentState() );
 
     /* TODO, fix the bug. Once OTA agent is initialized. It has to be start first before calling
-     * shutdown. There's no way to deinit when it's in init state.*/
+     * shutdown. There's no way to deinitialize when it's in init state.*/
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 }
@@ -391,7 +391,7 @@ void test_OTA_InitWithNullName()
 
 void test_OTA_InitWithNameTooLong()
 {
-    /* OTA doesn't accept name longer than 64. Explicitly test long client name. */
+    /* OTA does not accept name longer than 64. Explicitly test long client name. */
     char long_name[ 100 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
@@ -660,7 +660,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
     OtaEventMsg_t otaEvent = { 0 };
     const char * job_doc = JOB_DOC_INVALID;
 
-    /* Parse failuire would abort the update. */
+    /* Parse failure would abort the update. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 

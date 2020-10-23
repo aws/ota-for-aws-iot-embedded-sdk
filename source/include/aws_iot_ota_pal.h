@@ -130,7 +130,7 @@ int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
  * This function shall do whatever is necessary to activate the newest MCU
  * firmware received via OTA. It is typically just a reset of the device.
  *
- * @note This function SHOULD not return. If it does, the platform doesn't support
+ * @note This function SHOULD not return. If it does, the platform does not support
  * an automatic reset or an error occurred.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
@@ -143,7 +143,7 @@ OtaErr_t prvPAL_ActivateNewImage( void );
  *
  * This function shall reset the MCU and cause a reboot of the system.
  *
- * @note This function SHOULD not return. If it does, the platform doesn't support
+ * @note This function SHOULD not return. If it does, the platform does not support
  * an automatic reset or an error occurred.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
