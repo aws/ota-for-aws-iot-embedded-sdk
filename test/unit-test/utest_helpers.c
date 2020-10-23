@@ -130,7 +130,7 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
     }
 
     /* Get the encoded size. */
-    if( CborNoError == cborResult && pEncodedSize != NULL )
+    if( ( CborNoError == cborResult ) && ( pEncodedSize != NULL ) )
     {
         *pEncodedSize = cbor_encoder_get_buffer_size(
             &cborEncoder,

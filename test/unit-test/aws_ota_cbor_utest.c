@@ -41,9 +41,9 @@
 /* test incldues. */
 #include "utest_helpers.h"
 
-#define CBOR_TEST_MESSAGE_BUFFER_SIZE                     ( OTA_FILE_BLOCK_SIZE * 2 )
-#define CBOR_TEST_BITMAP_VALUE                            0xAAAAAAAA
-#define CBOR_TEST_BLOCKIDENTITY_VALUE                     0
+#define CBOR_TEST_MESSAGE_BUFFER_SIZE    ( OTA_FILE_BLOCK_SIZE * 2 )
+#define CBOR_TEST_BITMAP_VALUE           0xAAAAAAAA
+#define CBOR_TEST_BLOCKIDENTITY_VALUE    0
 
 /* ========================================================================== */
 
