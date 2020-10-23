@@ -801,7 +801,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     otaOSInterface.event.send = mockOSEventSend;
     otaInitDefault();
 
-    /* Decode failuire would reject this the update. */
+    /* Decode failure would reject this the update. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 

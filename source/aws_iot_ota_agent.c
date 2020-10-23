@@ -2829,7 +2829,6 @@ OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
              */
             while( ( ticks > 0U ) && ( otaAgent.state != OtaAgentStateStopped ) )
             {
-                /*vTaskDelay( 1 ); */
                 ticks--;
             }
         }
