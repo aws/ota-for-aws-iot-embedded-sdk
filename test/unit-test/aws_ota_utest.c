@@ -46,7 +46,7 @@
 /* Mock OTA PAL. */
 #include "mock_aws_iot_ota_pal.h"
 
-/* test incldues. */
+/* test includes. */
 #include "utest_helpers.h"
 
 /* Job document for testing. */
