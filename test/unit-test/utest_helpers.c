@@ -34,7 +34,7 @@
 /* 3rdparty includes. */
 #include "cbor.h"
 
-/* test incldues. */
+/* test includes. */
 #include "utest_helpers.h"
 
 /* ========================================================================== */

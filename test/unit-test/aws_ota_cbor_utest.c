@@ -38,7 +38,7 @@
 #include "unity_fixture.h"
 #include "unity.h"
 
-/* test incldues. */
+/* test includes. */
 #include "utest_helpers.h"
 
 #define CBOR_TEST_MESSAGE_BUFFER_SIZE    ( OTA_FILE_BLOCK_SIZE * 2 )
