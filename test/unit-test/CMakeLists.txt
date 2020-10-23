@@ -33,6 +33,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/aws_iot_ota_cbor.c"
     ${TINYCBOR_SOURCES}
     ${JSON_SOURCES}
+    "utest_helpers.c"
 )
 # list the directories the module under test includes
 list(APPEND real_include_directories

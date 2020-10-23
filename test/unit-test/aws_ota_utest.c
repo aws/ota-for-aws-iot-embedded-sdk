@@ -27,12 +27,15 @@
  * @file aws_ota_utest.c
  * @brief Unit tests for functions in OTA agent.
  */
+
+/* Standard includes. */
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
+/* 3rdparty includes. */
 #include <unistd.h>
 #include <pthread.h>
-
 #include "unity.h"
 
 /* For accessing OTA private functions. */
@@ -43,8 +46,13 @@
 /* Mock OTA PAL. */
 #include "mock_aws_iot_ota_pal.h"
 
+/* test incldues. */
+#include "utest_helpers.h"
+
 /* Job document for testing. */
-#define JOB_DOC_VALID             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define OTA_TEST_FILE_SIZE        10240
+#define OTA_TEST_FILE_SIZE_STR    "10240"
+#define JOB_DOC_VALID             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_VALID_LENGTH      ( sizeof( JOB_DOC_VALID ) - 1 )
 #define JOB_DOC_INVALID           "not a json"
 #define JOB_DOC_INVALID_LENGTH    ( sizeof( JOB_DOC_INVALID ) - 1 )
@@ -72,10 +80,37 @@ static OtaEventMsg_t otaEvent;
 static pthread_mutex_t eventLock;
 static bool eventIgnore;
 
+/* OTA File handle and buffer. */
+static FILE * pOtaFileHandle = NULL;
+static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
+
 /* Default wait time for OTA state machine transition. */
 static const int otaDefaultWait = 1000;
 
 /* ========================================================================== */
+
+OtaErr_t mockOtaPalCreateFileForRx( OtaFileContext_t * pOtaFileCtx,
+                                    int numCalls )
+{
+    pOtaFileHandle = ( FILE * ) pOtaFileBuffer;
+    pOtaFileCtx->pFile = pOtaFileHandle;
+    return OTA_ERR_NONE;
+}
+
+int16_t mockOtaPalWriteFileBlock( OtaFileContext_t * const pOtaFileCtx,
+                                  uint32_t offset,
+                                  uint8_t * const pData,
+                                  uint32_t blockSize,
+                                  int numCalls )
+{
+    if( offset >= OTA_TEST_FILE_SIZE )
+    {
+        TEST_ASSERT_TRUE_MESSAGE( false, "Offset is bigger than test file buffer." );
+    }
+
+    memcpy( pOtaFileBuffer + offset, pData, blockSize );
+    return blockSize;
+}
 
 static OtaErr_t mockOSEventReset( OtaEventContext_t * unused )
 {
@@ -86,8 +121,8 @@ static OtaErr_t mockOSEventReset( OtaEventContext_t * unused )
     return OTA_ERR_NONE;
 }
 
-/* Allow an event to be sent only once, after that ignore all incoming event.
-* Useful to make sure internal OTA handler are not able to send any event. */
+/* Allow an event to be sent only once, after that ignore all incoming event. Useful to make sure
+ * internal OTA handler are not able to send any event. */
 static OtaErr_t mockOSEventSendThenStop( OtaEventContext_t * unused_1,
                                          const void * pEventMsg,
                                          uint32_t unused_2 )
@@ -327,6 +362,31 @@ static void otaGoToStateWithTimeout( OtaState_t state,
             OTA_SignalEvent( &otaEvent );
             break;
 
+        case OtaAgentStateCreatingFile:
+            /* Let the PAL says it's not in self test.*/
+            prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+            /* Parse success would create the file, let it invoke our mock when creating file. */
+            prvPAL_CreateFileForRx_Stub( mockOtaPalCreateFileForRx );
+            otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
+            otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+            otaEvent.pEventData = otaEventBufferGet();
+            memcpy( otaEvent.pEventData->data, JOB_DOC_VALID, JOB_DOC_VALID_LENGTH );
+            otaEvent.pEventData->dataLength = JOB_DOC_VALID_LENGTH;
+            OTA_SignalEvent( &otaEvent );
+            break;
+
+        case OtaAgentStateRequestingFileBlock:
+            otaGoToStateWithTimeout( OtaAgentStateCreatingFile, timeout_ms );
+            otaEvent.eventId = OtaAgentEventCreateFile;
+            OTA_SignalEvent( &otaEvent );
+            break;
+
+        case OtaAgentStateWaitingForFileBlock:
+            otaGoToStateWithTimeout( OtaAgentStateRequestingFileBlock, timeout_ms );
+            otaEvent.eventId = OtaAgentEventRequestFileBlock;
+            OTA_SignalEvent( &otaEvent );
+            break;
+
         case OtaAgentStateSuspended:
             otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
             OTA_Suspend();
@@ -352,6 +412,8 @@ void setUp()
 
 void tearDown()
 {
+    pOtaFileHandle = NULL;
+    memset( pOtaFileBuffer, 0, OTA_TEST_FILE_SIZE );
     otaDeinit();
     otaWaitForState( OtaAgentStateStopped );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
@@ -658,7 +720,7 @@ void test_OTA_ImageStateInvalidState()
 void test_OTA_ProcessJobDocumentInvalidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    const char * job_doc = JOB_DOC_INVALID;
+    const char * pJobDoc = JOB_DOC_INVALID;
 
     /* Parse failure would abort the update. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
@@ -669,7 +731,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, job_doc, JOB_DOC_INVALID_LENGTH );
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_INVALID_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_INVALID_LENGTH;
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent( otaDefaultWait );
@@ -679,7 +741,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 void test_OTA_ProcessJobDocumentValidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    const char * job_doc = JOB_DOC_VALID;
+    const char * pJobDoc = JOB_DOC_VALID;
 
     /* Let the PAL says it's not in self test.*/
     prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
@@ -692,9 +754,133 @@ void test_OTA_ProcessJobDocumentValidJson()
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, job_doc, JOB_DOC_VALID_LENGTH );
+    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_VALID_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_VALID_LENGTH;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
+}
+
+void test_OTA_InitFileTransfer()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
+
+    otaEvent.eventId = OtaAgentEventCreateFile;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetAgentState() );
+}
+
+void test_OTA_RequestFileBlock()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetAgentState() );
+
+    otaEvent.eventId = OtaAgentEventRequestFileBlock;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+}
+
+void test_OTA_ReceiveFileBlockEmpty()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+
+    /* Call OTA init to set the event send interface to a mock function that allows events to be
+     * sent continuously. This is required because decode failure would cause OtaAgentEventCloseFile
+     * event to be sent within the OTA event handler and we want it to be processed. */
+    ota_SendEvent_t prev_send = otaOSInterface.event.send;
+    otaOSInterface.event.send = mockOSEventSend;
+    otaInitDefault();
+
+    /* Decode failuire would reject this the update. */
+    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
+    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData->dataLength = 0;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+}
+
+void test_OTA_ReceiveFileBlockComplete()
+{
+    OtaEventMsg_t otaEvent = { NULL, OtaAgentEventReceivedFileBlock };
+    uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
+    size_t streamingMessageSize = 0;
+    int remainingBlocks = OTA_TEST_FILE_SIZE;
+    int idx = 0;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+
+    /* Call OTA init to set the event send interface to a mock function that allows events to be
+     * sent continuously because we're receiving multiple blocks in this test. */
+    ota_SendEvent_t prev_send = otaOSInterface.event.send;
+    otaOSInterface.event.send = mockOSEventSend;
+    otaInitDefault();
+
+    /* Set up mock to write file block to our buffer. */
+    prvPAL_WriteBlock_Stub( mockOtaPalWriteFileBlock );
+
+    /* By pass signature validation and ignore the final abort call. */
+    prvPAL_CloseFile_IgnoreAndReturn( OTA_ERR_NONE );
+    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+
+    /* Fill the file block. */
+    for( idx = 0; idx < sizeof( pFileBlock ); idx++ )
+    {
+        pFileBlock[ idx ] = idx % UINT8_MAX;
+    }
+
+    /* Send blocks. */
+    idx = 0;
+
+    while( remainingBlocks > OTA_FILE_BLOCK_SIZE )
+    {
+        /* Construct a AWS IoT streaming message. */
+        createOtaStreammingMessage(
+            pStreamingMessage,
+            sizeof( pStreamingMessage ),
+            idx++,
+            pFileBlock,
+            OTA_FILE_BLOCK_SIZE,
+            &streamingMessageSize );
+        otaEvent.pEventData = otaEventBufferGet();
+        memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+        otaEvent.pEventData->dataLength = streamingMessageSize;
+
+        OTA_SignalEvent( &otaEvent );
+        otaWaitForEmptyEvent();
+        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+        remainingBlocks -= OTA_FILE_BLOCK_SIZE;
+    }
+
+    /* Send last block. */
+    createOtaStreammingMessage(
+        pStreamingMessage,
+        sizeof( pStreamingMessage ),
+        idx,
+        pFileBlock,
+        remainingBlocks,
+        &streamingMessageSize );
+    otaEvent.pEventData = otaEventBufferGet();
+    memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+    otaEvent.pEventData->dataLength = streamingMessageSize;
+
+    /* OTA agent should complete the update and go back to waiting for job state. */
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForEmptyEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 }

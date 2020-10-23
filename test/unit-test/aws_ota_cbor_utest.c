@@ -38,115 +38,14 @@
 #include "unity_fixture.h"
 #include "unity.h"
 
+/* test incldues. */
+#include "utest_helpers.h"
+
 #define CBOR_TEST_MESSAGE_BUFFER_SIZE                     ( OTA_FILE_BLOCK_SIZE * 2 )
 #define CBOR_TEST_BITMAP_VALUE                            0xAAAAAAAA
-#define CBOR_TEST_GETSTREAMRESPONSE_MESSAGE_ITEM_COUNT    4
-#define CBOR_TEST_CLIENTTOKEN_VALUE                       "ThisIsAClientToken"
-#define CBOR_TEST_FILEIDENTITY_VALUE                      2
 #define CBOR_TEST_BLOCKIDENTITY_VALUE                     0
 
 /* ========================================================================== */
-
-static CborError createSampleGetStreamResponseMessage( uint8_t * pMessageBuffer,
-                                                       size_t messageBufferSize,
-                                                       int blockIndex,
-                                                       uint8_t * pBlockPayload,
-                                                       size_t blockPayloadSize,
-                                                       size_t * pEncodedSize )
-{
-    CborError cborResult = CborNoError;
-    CborEncoder cborEncoder, cborMapEncoder;
-
-    /* Initialize the CBOR encoder. */
-    cbor_encoder_init(
-        &cborEncoder,
-        pMessageBuffer,
-        messageBufferSize,
-        0 );
-    cborResult = cbor_encoder_create_map(
-        &cborEncoder,
-        &cborMapEncoder,
-        CBOR_TEST_GETSTREAMRESPONSE_MESSAGE_ITEM_COUNT );
-
-    /* Encode the file identity. */
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_text_stringz(
-            &cborMapEncoder,
-            OTA_CBOR_FILEID_KEY );
-    }
-
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_int(
-            &cborMapEncoder,
-            CBOR_TEST_FILEIDENTITY_VALUE );
-    }
-
-    /* Encode the block identity. */
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_text_stringz(
-            &cborMapEncoder,
-            OTA_CBOR_BLOCKID_KEY );
-    }
-
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_int(
-            &cborMapEncoder,
-            blockIndex );
-    }
-
-    /* Encode the block size. */
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_text_stringz(
-            &cborMapEncoder,
-            OTA_CBOR_BLOCKSIZE_KEY );
-    }
-
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_int(
-            &cborMapEncoder,
-            blockPayloadSize );
-    }
-
-    /* Encode the block payload. */
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_text_stringz(
-            &cborMapEncoder,
-            OTA_CBOR_BLOCKPAYLOAD_KEY );
-    }
-
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encode_byte_string(
-            &cborMapEncoder,
-            pBlockPayload,
-            blockPayloadSize );
-    }
-
-    /* Done with the encoder. */
-    if( CborNoError == cborResult )
-    {
-        cborResult = cbor_encoder_close_container_checked(
-            &cborEncoder,
-            &cborMapEncoder );
-    }
-
-    /* Get the encoded size. */
-    if( CborNoError == cborResult )
-    {
-        *pEncodedSize = cbor_encoder_get_buffer_size(
-            &cborEncoder,
-            pMessageBuffer );
-    }
-
-    return cborResult;
-}
 
 void test_OTA_CborEncodeStreamRequest()
 {
@@ -191,22 +90,21 @@ void test_OTA_CborDecodeStreamResponse()
     uint8_t blockPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
     uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ] = { 0 };
     size_t encodedSize = 0;
-    int fileId = 0;
-    int fileSize = 0;
-    int blockIndex = 0;
-    int blockSize = 0;
+    int fileId = -1;
+    int blockIndex = -1;
+    int blockSize = -1;
     uint8_t * pPayload = NULL;
-    size_t payloadSize = 0;
+    size_t payloadSize = -1;
     bool result = false;
     int i = 0;
 
     /* Test OTA_CBOR_Decode_GetStreamResponseMessage( ). */
     for( i = 0; i < sizeof( blockPayload ); i++ )
     {
-        blockPayload[ i ] = i;
+        blockPayload[ i ] = i % UINT8_MAX;
     }
 
-    result = createSampleGetStreamResponseMessage(
+    result = createOtaStreammingMessage(
         cborWork,
         sizeof( cborWork ),
         CBOR_TEST_BLOCKIDENTITY_VALUE,
