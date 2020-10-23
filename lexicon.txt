@@ -51,6 +51,8 @@ cr
 createfileforrx
 customjobcallback
 cwd
+deduplicate
+deinitialize
 destlen
 destoffset
 didn
@@ -73,6 +75,7 @@ doesn't
 eagain
 eevent
 encodedlen
+encodedsize
 endcode
 endif
 enum
@@ -154,6 +157,7 @@ jobreasonrejected
 jobreasonselftestactive
 jobreasonsigcheckpassed
 jobstatusfailedwithval
+jobstatusinprogress
 jobstatusrejected
 json
 lf
@@ -176,6 +180,7 @@ modelparamtype
 modelparamtypestringindoc
 mqtt
 msec
+msgsize
 mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
@@ -277,6 +282,7 @@ pfilepath
 pformat
 phostname
 pjobname
+pjobtopic
 pjson
 plaintext
 platfrom
@@ -284,6 +290,7 @@ plblockid
 plblocksize
 plisthead
 pmessagebuffer
+pmsgbuffer
 pnetworkcontext
 png
 pnumdatainbuffer
@@ -293,7 +300,9 @@ popensslcredentials
 posix
 potafiles
 potaosctx
+potarxstreamtopic
 potasingletonactivejobname
+potastringfailed
 poutputlen
 pparam
 ppayload
@@ -318,6 +327,7 @@ pthingname
 ptimercallback
 ptimerctx
 ptimername
+ptopicbuffer
 ptopicfilter
 pupdatefile
 pupdateurlpath
@@ -389,8 +399,10 @@ tls
 tlscontext
 tlsrecv
 tlssend
+todo
 topicfilter
 topicfilterlength
+topiclen
 tq
 ttimer
 transportcallback
@@ -421,4 +433,6 @@ validatedatablock
 valuelength
 writeblock
 www
+xaa
+xyz
 zg
