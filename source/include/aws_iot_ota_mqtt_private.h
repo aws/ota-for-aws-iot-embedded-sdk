@@ -111,7 +111,7 @@ OtaErr_t cleanupControl_Mqtt( OtaAgentContext_t * pAgentCtx );
 /**
  * @brief Cleanup related to OTA data plane over MQTT.
  *
- * This function perfroms cleanup by unsubscribing from any topics that were
+ * This function performs cleanup by unsubscribing from any topics that were
  * subscribed for performing OTA data over MQTT.
  *
  * @param[in] pAgentCtx The OTA agent context.
