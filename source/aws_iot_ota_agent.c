@@ -202,8 +202,8 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 
 /* Internal function to set the image state including an optional reason code. */
 
-static OtaErr_t setImageStateWithReason( OtaImageState_t state,
-                                         uint32_t reason );
+static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
+                                         uint32_t reasonToSet );
 
 /* The default OTA callback handler if not provided to OTA_AgentInit(). */
 
@@ -557,7 +557,7 @@ static void defaultOTACompleteCallback( OtaJobEvent_t event )
     if( event == OtaJobEventActivate )
     {
         OTA_LOG_L1( "[%s] Received OtaJobEventActivate callback from OTA Agent.\r\n", OTA_METHOD_NAME );
-        ( void ) OTA_ActivateNewImage();
+        err = OTA_ActivateNewImage();
     }
     else if( event == OtaJobEventFail )
     {
@@ -720,6 +720,8 @@ static OtaErr_t inSelfTestHandler( OtaEventData_t * pEventData )
 {
     DEFINE_OTA_METHOD_NAME( "inSelfTestHandler" );
 
+    OtaErr_t err = OTA_ERR_UNINITIALIZED;
+
     ( void ) pEventData;
 
     OTA_LOG_L1( "[%s] inSelfTestHandler, platform is in self-test.\r\n", OTA_METHOD_NAME );
@@ -736,7 +738,7 @@ static OtaErr_t inSelfTestHandler( OtaEventData_t * pEventData )
          * an attack on the platform image state. Reject the update (this should also
          * cause the image to be erased), aborting the job and reset the device. */
         OTA_LOG_L1( "[%s] Job in self test but platform state is not, rejecting the update & rebooting.\r\n", OTA_METHOD_NAME );
-        ( void ) setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
+        err = setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
         ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
     }
 
@@ -797,6 +799,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
     DEFINE_OTA_METHOD_NAME( "processJobHandler" );
 
     OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
+    OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaFileContext_t * pOtaFileContext = NULL;
     OtaEventMsg_t eventMsg = { 0 };
 
@@ -839,7 +842,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
              *
              * If there is a valid job id, then a job status update will be sent.
              */
-            ( void ) setImageStateWithReason( OtaImageStateAborted, OTA_ERR_JOB_PARSER_ERROR );
+            err = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_JOB_PARSER_ERROR );
 
             retVal = OTA_ERR_JOB_PARSER_ERROR;
         }
@@ -873,7 +876,7 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
                  * Failed to set the data interface so abort the OTA.If there is a valid job id,
                  * then a job status update will be sent.
                  */
-                ( void ) setImageStateWithReason( OtaImageStateAborted, retVal );
+                err =  setImageStateWithReason( OtaImageStateAborted, retVal );
             }
         }
         else
@@ -961,7 +964,7 @@ static OtaErr_t requestDataHandler( OtaEventData_t * pEventData )
         else
         {
             /* Failed to send data request abort and close file. */
-            ( void ) setImageStateWithReason( OtaImageStateAborted, err );
+            err = setImageStateWithReason( OtaImageStateAborted, err );
 
             /* Send shutdown event. */
             eventMsg.eventId = OtaAgentEventShutdown;
@@ -1893,6 +1896,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     DEFINE_OTA_METHOD_NAME( "validateAndStartJob" );
 
     OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
+    OtaErr_t setError = OTA_ERR_UNINITIALIZED;
     OtaJobParseErr_t err = OtaJobParseErrNone;
 
     /* Validate the job document parameters. */
@@ -1948,12 +1952,12 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                  */
                 OTA_LOG_L1( "[%s] Setting image state to Testing for file ID %d\r\n", OTA_METHOD_NAME, otaAgent.serverFileID );
 
-                ( void ) setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
+                setError = setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
             }
             else
             {
                 OTA_LOG_L1( "[%s] Downgrade or same version not allowed, rejecting the update & rebooting.\r\n", OTA_METHOD_NAME );
-                ( void ) setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
+                setError = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
                 /* All reject cases must reset the device. */
                 ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
@@ -1979,6 +1983,11 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     else
     {
         OTA_LOG_L1( "[%s] Error %d parsing job document.\r\n", OTA_METHOD_NAME, err );
+    }
+
+    if( setError != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Error in updating the state with appropriate error.\r\n", OTA_METHOD_NAME);
     }
 
     return err;
@@ -2031,22 +2040,28 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     OtaFileContext_t * pFileContext = &fileContext;
     JsonDocModel_t otaJobDocModel;
 
-    if( initDocModel( &otaJobDocModel,
+    err = initDocModel( &otaJobDocModel,
                       otaJobDocModelParamStructure,
                       ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
                       sizeof( OtaFileContext_t ),
-                      OTA_NUM_JOB_PARAMS ) != DocParseErrNone )
+                      OTA_NUM_JOB_PARAMS );
+    if( err != DocParseErrNone )
     {
         err = OtaJobParseErrBadModelInitParams;
     }
-    else if( parseJSONbyModel( pJson, messageLength, &otaJobDocModel ) == DocParseErrNone )
+    else 
     {
-        err = validateAndStartJob( pFileContext, &pFinalFile, pUpdateJob );
+        err = parseJSONbyModel( pJson, messageLength, &otaJobDocModel );
+        if( err == DocParseErrNone )
+        {
+            err = validateAndStartJob( pFileContext, &pFinalFile, pUpdateJob );
+        }
+        else
+        {
+            err = parseJobDocFromCustomCallback( pJson, messageLength, pFileContext );
+        }
     }
-    else
-    {
-        err = parseJobDocFromCustomCallback( pJson, messageLength, pFileContext );
-    }
+    
 
     if( err != OtaJobParseErrNone )
     {
@@ -2059,6 +2074,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
             /* Assume control of the job name from the context. */
             otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
             pFileContext->pJobName = NULL;
+            OTA_LOG_L1( "[%s] yaha pahuche!\r\n",
+                            OTA_METHOD_NAME);
             otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                           JobStatusFailedWithVal,
                                                           ( int32_t ) OTA_ERR_JOB_PARSER_ERROR,
@@ -2165,7 +2182,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             if( err != OTA_ERR_NONE )
             {
-                ( void ) setImageStateWithReason( OtaImageStateAborted, err );
+                err = setImageStateWithReason( OtaImageStateAborted, err );
                 ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
                 pUpdateFile = NULL;
             }
@@ -2176,6 +2193,11 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             ( void ) otaClose( pUpdateFile );
             pUpdateFile = NULL;
         }
+    }
+
+    if( err != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Error(%d) in getting file context from the job.\r\n", OTA_METHOD_NAME, err );
     }
 
     return pUpdateFile; /* Return the OTA file context. */
