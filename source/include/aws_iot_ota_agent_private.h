@@ -81,7 +81,7 @@ typedef enum
     IngestResultFileCloseFail = -3,      /* There was a problem trying to close the receive file. */
     IngestResultNullContext = -4,        /* The specified OTA context pointer is null. */
     IngestResultBadFileHandle = -5,      /* The receive file pointer is invalid. */
-    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but weren't expecting one. */
+    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but were not expecting one. */
     IngestResultBlockOutOfRange = -7,    /* The received block is out of the expected range. */
     IngestResultBadData = -8,            /* The data block from the server was malformed. */
     IngestResultWriteBlockFailed = -9,   /* The PAL layer failed to write the file block. */
@@ -108,7 +108,7 @@ typedef enum
     DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
     DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
     DocParseErrTooManyParams,         /* The document model has more parameters than we can handle. */
-    DocParseErrParamKeyNotInModel,    /* The document model doesn't include the specified parameter key. */
+    DocParseErrParamKeyNotInModel,    /* The document model does not include the specified parameter key. */
     DocParseErrInvalidModelParamType, /* The document model specified an invalid parameter type. */
     DocParseErrInvalidToken           /* The Jasmine token was invalid, producing a NULL pointer. */
 } DocParseErr_t;
@@ -145,7 +145,7 @@ typedef struct
 {
     const char * pSrcKey;                  /* Expected key name. */
     const bool required;                   /* If true, this parameter must exist in the document. */
-    void * const pDestOffset;              /* Pointer or offset to where we'll store the value, if not ~0. */
+    void * const pDestOffset;              /* Pointer or offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 

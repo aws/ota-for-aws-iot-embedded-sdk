@@ -70,7 +70,7 @@ OtaErr_t prvPAL_Abort( OtaFileContext_t * const C );
  * error codes information in aws_iot_ota_agent.h.
  *
  * OTA_ERR_NONE is returned when file creation is successful.
- * OTA_ERR_RX_FILE_TOO_LARGE is returned if the file to be created exceeds the device's non-volatile memory size contraints.
+ * OTA_ERR_RX_FILE_TOO_LARGE is returned if the file to be created exceeds the device's non-volatile memory size constraints.
  * OTA_ERR_BOOT_INFO_CREATE_FAILED is returned if the bootloader information file creation fails.
  * OTA_ERR_RX_FILE_CREATE_FAILED is returned for other errors creating the file in the device's non-volatile memory.
  */
@@ -130,7 +130,7 @@ int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
  * This function shall do whatever is necessary to activate the newest MCU
  * firmware received via OTA. It is typically just a reset of the device.
  *
- * @note This function SHOULD not return. If it does, the platform doesn't support
+ * @note This function SHOULD not return. If it does, the platform does not support
  * an automatic reset or an error occurred.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
@@ -143,7 +143,7 @@ OtaErr_t prvPAL_ActivateNewImage( void );
  *
  * This function shall reset the MCU and cause a reboot of the system.
  *
- * @note This function SHOULD not return. If it does, the platform doesn't support
+ * @note This function SHOULD not return. If it does, the platform does not support
  * an automatic reset or an error occurred.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent

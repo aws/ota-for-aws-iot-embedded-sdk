@@ -188,11 +188,11 @@ OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    /* Create the timer stuctures. */
+    /* Create the timer structures. */
     struct sigevent sgEvent;
     struct itimerspec timerAttr;
 
-    /* clear everythig in the strucutures. */
+    /* clear everything in the structures. */
     memset( &sgEvent, 0, sizeof( struct sigevent ) );
     memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
