@@ -558,6 +558,10 @@ static void defaultOTACompleteCallback( OtaJobEvent_t event )
     {
         OTA_LOG_L1( "[%s] Received OtaJobEventActivate callback from OTA Agent.\r\n", OTA_METHOD_NAME );
         err = OTA_ActivateNewImage();
+        if( err != OTA_ERR_NONE )
+        {
+            OTA_LOG_L1( "[%s] Error! Failed to activate new image.\r\n", OTA_METHOD_NAME );
+        }
     }
     else if( event == OtaJobEventFail )
     {
@@ -956,6 +960,8 @@ static OtaErr_t initFileHandler( OtaEventData_t * pEventData )
 
 static OtaErr_t requestDataHandler( OtaEventData_t * pEventData )
 {
+    DEFINE_OTA_METHOD_NAME( "requestDataHandler" );
+
     ( void ) pEventData;
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
@@ -975,6 +981,10 @@ static OtaErr_t requestDataHandler( OtaEventData_t * pEventData )
         {
             /* Failed to send data request abort and close file. */
             err = setImageStateWithReason( OtaImageStateAborted, err );
+            if ( err != OTA_ERR_NONE )
+            {
+                OTA_LOG_L1( "[%s] Internal error in updating the state \r\n", OTA_METHOD_NAME );
+            }
 
             /* Send shutdown event. */
             eventMsg.eventId = OtaAgentEventShutdown;
@@ -3032,6 +3042,11 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
             err = OTA_ERR_BAD_IMAGE_STATE;
 
             break;
+    }
+
+    if ( err != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Internal error in updating the state \r\n", OTA_METHOD_NAME );
     }
 
     return err;
