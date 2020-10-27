@@ -742,6 +742,11 @@ static OtaErr_t inSelfTestHandler( OtaEventData_t * pEventData )
         ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
     }
 
+    if ( err != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Internal error in updating the state \r\n", OTA_METHOD_NAME );
+    }
+
     return OTA_ERR_NONE;
 }
 
@@ -892,6 +897,11 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
 
     /*Free the OTA event buffer. */
     otaEventBufferFree( pEventData );
+
+    if ( err != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Internal error in updating the state \r\n", OTA_METHOD_NAME );
+    }
 
     return retVal;
 }
@@ -1573,7 +1583,7 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         /* The job document did not have all required document model parameters. */
         for( scanIndex = 0UL; scanIndex < pDocModel->numModelParams; scanIndex++ )
         {
-            if( ( missingParams & ( 1UL << scanIndex ) ) != 0UL )
+            if( ( missingParams & ( 1U << scanIndex ) ) != 0UL )
             {
                 OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
                             OTA_METHOD_NAME,
@@ -1704,7 +1714,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
             if( pDocModel->pBodyDef[ scanIndex ].required == true )
             {
                 /* Add parameter to the required bitmap. */
-                pDocModel->paramsRequiredBitmap |= ( 1UL << scanIndex );
+                pDocModel->paramsRequiredBitmap |= ( 1U << scanIndex );
             }
         }
 
@@ -2694,7 +2704,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     DEFINE_OTA_METHOD_NAME( "OTA_SignalEvent" );
 
     bool retVal = false;
-    BaseType_t err = 0;
+    OtaErr_t err = OTA_ERR_NONE;
 
     /*
      * Send event to back of the queue.
@@ -2705,7 +2715,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
                                               0 );
     }
 
-    if( err == 0 )
+    if( err == OTA_ERR_NONE )
     {
         retVal = true;
         OTA_LOG_L3( "Success: Pushed event message to queue.\r\n" );

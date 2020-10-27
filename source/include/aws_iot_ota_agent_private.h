@@ -39,9 +39,9 @@
 
 
 /* General constants. */
-#define LOG2_BITS_PER_BYTE           3UL                                               /* Log base 2 of bits per byte. */
-#define BITS_PER_BYTE                ( 1UL << LOG2_BITS_PER_BYTE )                     /* Number of bits in a byte. This is used by the block bitmap implementation. */
-#define OTA_FILE_BLOCK_SIZE          ( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE )          /* Data section size of the file data block message (excludes the header). */
+#define LOG2_BITS_PER_BYTE           3U                                                /* Log base 2 of bits per byte. */
+#define BITS_PER_BYTE                ( 1U << LOG2_BITS_PER_BYTE )                      /* Number of bits in a byte. This is used by the block bitmap implementation. */
+#define OTA_FILE_BLOCK_SIZE          ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE )           /* Data section size of the file data block message (excludes the header). */
 #define OTA_MAX_FILES                1U                                                /* [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
 #define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                              /* Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )

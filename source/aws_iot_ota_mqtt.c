@@ -31,6 +31,7 @@
 /* Standard includes. */
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* OTA includes. */
 #include "aws_iot_ota_agent.h"
@@ -206,6 +207,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 {
     DEFINE_OTA_METHOD_NAME( "unsubscribeFromJobNotificationTopic" );
 
+    OtaErr_t err = OTA_ERR_UNINITIALIZED;
     char pJobTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
 
@@ -218,7 +220,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
-        pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
+        err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
                                                    topicLen,
                                                    0 );
     }
@@ -231,10 +233,17 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
-        pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
+        err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
                                                    topicLen,
                                                    0 );
     }
+
+    if ( err != OTA_ERR_NONE )
+    {
+        OTA_LOG_L1( "[%s] Failed to Unsubscribe to Notification Topic %s\r\n", OTA_METHOD_NAME,  pJobTopic );
+    }
+
+    return err;
 }
 
 /*
@@ -248,9 +257,9 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
 {
     DEFINE_OTA_METHOD_NAME( "publishStatusMessage" );
 
+    OtaErr_t err = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
     char pTopicBuffer[ OTA_MAX_TOPIC_LEN ];
-    int32_t ret;
 
     /* Try to build the dynamic job status topic . */
     topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
@@ -263,14 +272,14 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     if( ( topicLen > 0UL ) && ( topicLen < sizeof( pTopicBuffer ) ) )
     {
         OTA_LOG_L1( "[%s] Msg: %s\r\n", OTA_METHOD_NAME, pMsg );
-        ret = pAgentCtx->pOTAMqttInterface->publish(
+        err = pAgentCtx->pOTAMqttInterface->publish(
             pTopicBuffer,
             ( uint16_t ) topicLen,
             &pMsg[ 0 ],
             msgSize,
             1 );
 
-        if( ret != 0 )
+        if( err != OTA_ERR_NONE )
         {
             OTA_LOG_L1( "[%s] Failed: %s\r\n", OTA_METHOD_NAME, pTopicBuffer );
         }
@@ -283,6 +292,8 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     {
         OTA_LOG_L1( "[%s] Failed to build job status topic!\r\n", OTA_METHOD_NAME );
     }
+
+    return err;
 }
 
 static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
@@ -476,6 +487,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 {
     DEFINE_OTA_METHOD_NAME( "updateJobStatus_Mqtt" );
 
+    OtaErr_t err = OTA_ERR_UNINITIALIZED;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
@@ -518,10 +530,10 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 
     if( msgSize > 0UL )
     {
-        publishStatusMessage( pAgentCtx, status, pMsg, msgSize, 0 );
+        err = publishStatusMessage( pAgentCtx, status, pMsg, msgSize, 0 );
     }
 
-    return OTA_ERR_NONE;
+    return err;
 }
 
 /*
