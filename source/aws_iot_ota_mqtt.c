@@ -116,32 +116,38 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 
 /* Subscribe to the OTA job notification topics. */
 
+static char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];
+
+static char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ];
+
+static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+
 static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
     DEFINE_OTA_METHOD_NAME( "subscribeToJobNotificationTopics" );
 
     bool result = false;
-    char pJobTopic[ OTA_MAX_TOPIC_LEN ];
+
     uint16_t topicLen = 0;
 
     /* Build the first topic. */
-    topicLen = ( uint16_t ) snprintf( pJobTopic,
-                                      sizeof( pJobTopic ),
+    topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
+                                      sizeof( pJobTopicGetNext ),
                                       pOtaJobsGetNextAcceptedTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
+    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) )
     {
-        pAgentCtx->pOTAMqttInterface->subscribe( pJobTopic,
+        pAgentCtx->pOTAMqttInterface->subscribe( pJobTopicGetNext,
                                                  topicLen,
                                                  1,
                                                  pAgentCtx->pOTAMqttInterface->jobCallback );
 
-        OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pJobTopic );
+        OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pJobTopicGetNext );
 
         /* Build the second topic. */
-        topicLen = ( uint16_t ) snprintf( pJobTopic,
-                                          sizeof( pJobTopic ),
+        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
+                                          sizeof( pJobTopicNotifyNext ),
                                           pOtaJobsNotifyNextTopicTemplate,
                                           pAgentCtx->pThingName );
     }
@@ -150,12 +156,14 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
         OTA_LOG_L1( "[%s] Invalid Topic length: %d\n\r", OTA_METHOD_NAME, topicLen );
     }
 
-    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
+    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
     {
-        pAgentCtx->pOTAMqttInterface->subscribe( pJobTopic,
+        pAgentCtx->pOTAMqttInterface->subscribe( pJobTopicNotifyNext,
                                                  topicLen,
                                                  1,
                                                  pAgentCtx->pOTAMqttInterface->jobCallback );
+
+        OTA_LOG_L1( "[%s] OK: %s\n\r", OTA_METHOD_NAME, pJobTopicNotifyNext );
     }
 
     return true;
@@ -533,7 +541,6 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     OtaErr_t xResult = OTA_ERR_PUBLISH_FAILED;
 
-    static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t usTopicLen = 0;
     const OtaFileContext_t * pFileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
 
