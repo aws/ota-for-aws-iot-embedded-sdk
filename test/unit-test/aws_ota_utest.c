@@ -266,12 +266,11 @@ static void otaInterfaceDefault()
 static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
-    OTA_AgentInit( NULL,
-                   &otaOSInterface,
+    OTA_AgentInit( &otaOSInterface,
                    &otaMqttInterface,
+                   NULL,
                    ( const uint8_t * ) pClientID,
-                   completeCallback,
-                   ( uint32_t ) ~0 );
+                   completeCallback );
 }
 
 static void otaInitDefault()

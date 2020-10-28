@@ -2668,10 +2668,9 @@ void otaAgentTask( const void * pUnused )
     }
 }
 
-static BaseType_t startOTAAgentTask( void * pConnectionContext,
-                                     void * pOTAOSCtx,
+static BaseType_t startOTAAgentTask( void * pOTAOSCtx,
                                      void * pOtaMqttInterface,
-                                     uint32_t ticksToWait )
+                                     void * pOtaHttpInterface )
 {
     BaseType_t retVal = 0;
     uint32_t index = 0;
@@ -2685,11 +2684,6 @@ static BaseType_t startOTAAgentTask( void * pConnectionContext,
      * The current OTA image state as set by the OTA agent.
      */
     otaAgent.imageState = OtaImageStateUnknown;
-
-    /*
-     * Save the current connection context provided by the user.
-     */
-    otaAgent.pConnectionContext = pConnectionContext;
 
     otaAgent.pOTAOSCtx = ( OtaOSInterface_t * ) pOTAOSCtx;
 
@@ -2754,12 +2748,11 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
  * modify the existing OTA agent context. You must first call OTA_AgentShutdown()
  * successfully.
  */
-OtaState_t OTA_AgentInit( void * pConnectionContext,
-                          void * pOtaOSCtx,
+OtaState_t OTA_AgentInit( void * pOtaOSCtx,
                           void * pOtaMqttInterface,
+                          void * pOtaHttpInterface,
                           const uint8_t * pThingName,
-                          OtaCompleteCallback_t completeCallback,
-                          uint32_t ticksToWait )
+                          OtaCompleteCallback_t completeCallback )
 {
     OtaState_t state;
 
@@ -2771,7 +2764,7 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
         /* Set the OTA complete callback. */
         palCallbacks.completeCallback = completeCallback;
 
-        state = OTA_AgentInit_internal( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, pThingName, &palCallbacks, ticksToWait );
+        state = OTA_AgentInit_internal( pOtaOSCtx, pOtaMqttInterface, pOtaMqttInterface, pThingName, &palCallbacks );
     }
     /* If OTA agent is already running, just update the CompleteCallback and reset the statistics. */
     else
@@ -2788,12 +2781,11 @@ OtaState_t OTA_AgentInit( void * pConnectionContext,
     return state;
 }
 
-OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
-                                   void * pOtaOSCtx,
+OtaState_t OTA_AgentInit_internal( void * pOtaOSCtx,
                                    void * pOtaMqttInterface,
+                                   void * pOtaHttpInterface,
                                    const uint8_t * pThingName,
-                                   const OtaPalCallbacks_t * pCallbacks,
-                                   uint32_t ticksToWait )
+                                   const OtaPalCallbacks_t * pCallbacks )
 {
     DEFINE_OTA_METHOD_NAME( "OTA_AgentInit_internal" );
 
@@ -2832,7 +2824,7 @@ OtaState_t OTA_AgentInit_internal( void * pConnectionContext,
         {
             /* Store the Thing name to be used for topics later. */
             ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL ); /* Include zero terminator when saving the Thing name. */
-            retVal = startOTAAgentTask( pConnectionContext, pOtaOSCtx, pOtaMqttInterface, ticksToWait );
+            retVal = startOTAAgentTask( pOtaOSCtx, pOtaMqttInterface, pOtaHttpInterface );
 
             /* OTA Task is not running yet so update the state to init directly in OTA context. */
             otaAgent.state = OtaAgentStateInit;
