@@ -38,6 +38,9 @@
 #include "aws_iot_ota_agent_private.h"
 #include "aws_iot_ota_cbor_private.h"
 
+/* Private include. */
+#include "aws_iot_ota_mqtt_private.h"
+
 /* Include firmware version struct definition. */
 #include "iot_appversion32.h"
 

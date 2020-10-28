@@ -709,7 +709,7 @@ OtaErr_t OTA_Resume( void * pConnection );
 
 /* OTA agent task function. */
 
-void otaAgentTask( void * pUnused );
+void otaAgentTask( const void * pUnused );
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */
