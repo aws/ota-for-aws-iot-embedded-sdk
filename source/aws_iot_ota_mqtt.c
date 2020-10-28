@@ -232,8 +232,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
         err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
-                                                   topicLen,
-                                                   0 );
+                                                         topicLen,
+                                                         0 );
     }
 
     /* Try to unsubscribe from the second of two job topics. */
@@ -245,13 +245,13 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
         err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
-                                                   topicLen,
-                                                   0 );
+                                                         topicLen,
+                                                         0 );
     }
 
-    if ( err != OTA_ERR_NONE )
+    if( err != OTA_ERR_NONE )
     {
-        OTA_LOG_L1( "[%s] Failed to Unsubscribe to Notification Topic %s\r\n", OTA_METHOD_NAME,  pJobTopic );
+        OTA_LOG_L1( "[%s] Failed to Unsubscribe to Notification Topic %s\r\n", OTA_METHOD_NAME, pJobTopic );
     }
 
     return err;
