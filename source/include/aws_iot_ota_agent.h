@@ -618,7 +618,7 @@ OtaState_t OTA_AgentInit_internal( void * pOtaOSCtx,
                                    void * pOtaMqttInterface,
                                    void * pOtaHttpInterface,
                                    const uint8_t * pThingName,
-                                   const OtaPalCallbacks_t * pCallbacks ); 
+                                   const OtaPalCallbacks_t * pCallbacks );
 
 /**
  * @brief Signal to the OTA Agent to shut down.

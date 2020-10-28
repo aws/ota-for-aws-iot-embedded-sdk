@@ -68,7 +68,8 @@ typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart, uint32_t rangeEnd  );
+typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
+                                            uint32_t rangeEnd );
 
 /**
  * @brief Publish message to a topic.

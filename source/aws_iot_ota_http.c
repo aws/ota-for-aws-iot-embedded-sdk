@@ -166,11 +166,11 @@ OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pAgentCtx )
     OtaFileContext_t * fileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
 
     /* Get pre-signed URL from pAgentCtx. */
-    pURL = ( const char * ) ( fileContext->pUpdateUrlPath);
+    pURL = ( const char * ) ( fileContext->pUpdateUrlPath );
     OTA_LOG_L1( "Pre-signed URL size: %d.", strlen( pURL ) );
 
     /* Connect to the HTTP server and initialize download information. */
-    pAgentCtx->pOTAHttpInterface->init(pURL);
+    pAgentCtx->pOTAHttpInterface->init( pURL );
 
     return OTA_ERR_NONE;
 }
@@ -180,7 +180,7 @@ OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pAgentCtx )
     OTA_LOG_L1( "Invoking _AwsIotOTA_RequestDataBlock_HTTP" );
 
     /* Return status. */
-     OtaErr_t status = OTA_ERR_NONE;
+    OtaErr_t status = OTA_ERR_NONE;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
@@ -190,16 +190,16 @@ OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pAgentCtx )
     OtaFileContext_t * fileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
 
     /* Calculate ranges. */
-     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
+    rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
 
     if( fileContext->blocksRemaining == 1 )
-     {
-         rangeEnd = fileContext->fileSize - 1;
-     }
-     else
-     {
-         rangeEnd = rangeStart + OTA_FILE_BLOCK_SIZE - 1;
-     }
+    {
+        rangeEnd = fileContext->fileSize - 1;
+    }
+    else
+    {
+        rangeEnd = rangeStart + OTA_FILE_BLOCK_SIZE - 1;
+    }
 
     pAgentCtx->pOTAHttpInterface->request( rangeStart, rangeEnd );
 
@@ -207,15 +207,15 @@ OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pAgentCtx )
 }
 
 OtaErr_t _AwsIotOTA_DecodeFileBlock_HTTP( uint8_t * pMessageBuffer,
-                                           size_t messageSize,
-                                           int32_t * pFileId,
-                                           int32_t * pBlockId,
-                                           int32_t * pBlockSize,
-                                           uint8_t ** pPayload,
-                                           size_t * pPayloadSize )
+                                          size_t messageSize,
+                                          int32_t * pFileId,
+                                          int32_t * pBlockId,
+                                          int32_t * pBlockSize,
+                                          uint8_t ** pPayload,
+                                          size_t * pPayloadSize )
 {
-     /* Unused parameters. */
-     ( void ) messageSize;
+    /* Unused parameters. */
+    ( void ) messageSize;
 
     *pPayload = pMessageBuffer;
     *pFileId = 0;

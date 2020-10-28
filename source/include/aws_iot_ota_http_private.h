@@ -36,12 +36,12 @@ OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pxAgentCtx );
 OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pxAgentCtx );
 
 OtaErr_t _AwsIotOTA_DecodeFileBlock_HTTP( uint8_t * pMessageBuffer,
-                                           size_t messageSize,
-                                           int32_t * pFileId,
-                                           int32_t * pBlockId,
-                                           int32_t * pBlockSize,
-                                           uint8_t ** pPayload,
-                                           size_t * pPayloadSize );
+                                          size_t messageSize,
+                                          int32_t * pFileId,
+                                          int32_t * pBlockId,
+                                          int32_t * pBlockSize,
+                                          uint8_t ** pPayload,
+                                          size_t * pPayloadSize );
 
 OtaErr_t _AwsIotOTA_CleanupData_HTTP( OtaAgentContext_t * pxAgentCtx );
 
