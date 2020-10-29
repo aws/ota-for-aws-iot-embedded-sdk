@@ -33,13 +33,24 @@
 #include "ota_cbor_private.h"
 
 /**
- * @brief Message field definitions, per the server specification.
+ * @brief Number of keys in cbor get stream request message.
  */
-
 #define OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT    6
+
+/* ========================================================================== */
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
+ *
+ * @param[in] pMessageBuffer message to decode.
+ * @param[in] messageSize size of the message to decode.
+ * @param[out] pFileId Decoded file id value.
+ * @param[out] pBlockId Decoded block id value.
+ * @param[out] pBlockSize Decoded block size value.
+ * @param[out] pPayload Buffer for the decoded payload.
+ * @param[out] pPayloadSize Size of the buffer for the decoded payload.
+ *
+ * @return TRUE when success, otherwise FALSE.
  */
 bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
                                                size_t messageSize,
@@ -179,12 +190,23 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     return CborNoError == cborResult;
 }
 
-
-
 /**
  * @brief Create an encoded Get Stream Request message for the AWS IoT OTA
  * service. The service allows block count or block bitmap to be requested,
  * but not both.
+ *
+ * @param[in,out] pMessageBuffer Buffer to store the encoded message.
+ * @param[in] messageBufferSize Size of the buffer to store the encoded message.
+ * @param[out] pEncodedMessageSize Size of the final encoded message.
+ * @param[in] pClientToken Client token in the encoded message.
+ * @param[in] fileId Value of file id in the encoded message.
+ * @param[in] blockSize Value of block size in the encoded message.
+ * @param[in] blockOffset Value of block offset in the encoded message.
+ * @param[in] pBlockBitmap bitmap in the encoded message.
+ * @param[in] blockBitmapSize Size of the provided bitmap buffer.
+ * @param[in] numOfBlocksRequested number of blocks to request in the encoded message.
+ *
+ * @return TRUE when success, otherwise FALSE.
  */
 bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t messageBufferSize,
