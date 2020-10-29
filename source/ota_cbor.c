@@ -39,15 +39,6 @@
 #define OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT    6
 
 /**
- * @brief Internal context structure for decoding CBOR arrays.
- */
-typedef struct OtaMessageDecodeContext
-{
-    CborParser cborParser;
-    CborValue xCborRecursedItem;
-} OtaMessageDecodeContext_t, * OtaMessageDecodeContextPtr_t;
-
-/**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
  */
 bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
