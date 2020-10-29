@@ -26,14 +26,14 @@
 
 /**
  * @file aws_ota_base64_utest.c
- * @brief Unit tests for functions in aws_ota_base64.c
+ * @brief Unit tests for functions in ota_base64.c
  */
 
 #include <string.h>
 #include "unity.h"
 
 /* For accessing OTA private functions and error codes. */
-#include "aws_ota_base64_private.h"
+#include "ota_base64_private.h"
 
 /* Testing Constants. */
 

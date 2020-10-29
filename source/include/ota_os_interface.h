@@ -27,7 +27,7 @@
 #define _AWS_OTA_OS_INTERFACE_H_
 
 /* OTA library interface include. */
-#include "aws_iot_ota_agent.h"
+#include "ota.h"
 
 struct OtaEventContext;
 typedef struct OtaEventContext   OtaEventContext_t;

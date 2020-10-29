@@ -23,15 +23,15 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_HTTP_INTERFACE_H_
-#define _AWS_OTA_HTTP_INTERFACE_H_
+#ifndef _AWS_OTA_MQTT_INTERFACE_H_
+#define _AWS_OTA_MQTT_INTERFACE_H_
 
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
 
 /* OTA library interface include. */
-#include "aws_iot_ota_agent.h"
+#include "ota.h"
 
 /**
  * @brief Subscribe to the Mqtt topics.
@@ -51,7 +51,10 @@
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
+typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
+                                             uint16_t topicFilterLength,
+                                             uint8_t ucQoS,
+                                             void * pvCallback );
 
 /**
  * @brief Unsubscribe to the Mqtt topics.
@@ -68,8 +71,9 @@ typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
-                                            uint32_t rangeEnd );
+typedef OtaErr_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
+                                                uint16_t topicFilterLength,
+                                                uint8_t ucQoS );
 
 /**
  * @brief Publish message to a topic.
@@ -88,17 +92,27 @@ typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_HttpDeinit )( void );
+typedef OtaErr_t ( * ota_MqttPublish_t )( const char * const pacTopic,
+                                          uint16_t usTopicLen,
+                                          const char * pcMsg,
+                                          uint32_t ulMsgSize,
+                                          uint8_t ucQos );
 
+/**
+ * @brief OTA Mqtt callback.
+ */
+typedef void ( * ota_MqttCallback_t )( void * pvParam );
 
 /**
  *  OTA Event Interface structure.
  */
-typedef struct OtaHttpInterface
+typedef struct OtaMqttInterface
 {
-    ota_HttpInit_t init;
-    ota_HttpRequest_t request;
-    ota_HttpDeinit deinit;
-} OtaHttpInterface_t;
+    ota_MqttSubscribe_t subscribe;
+    ota_MqttUnsubscribe_t unsubscribe;
+    ota_MqttPublish_t publish;
+    ota_MqttCallback_t jobCallback;
+    ota_MqttCallback_t dataCallback;
+} OtaMqttInterface_t;
 
-#endif /* ifndef _AWS_OTA_HTTP_INTERFACE_H_ */
+#endif /* ifndef _AWS_OTA_MQTT_INTERFACE_H_ */

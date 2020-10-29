@@ -29,9 +29,9 @@
 
 /* CBOR and OTA includes. */
 #include "aws_ota_agent_config.h"
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
-#include "aws_iot_ota_cbor_private.h"
+#include "ota.h"
+#include "ota_private.h"
+#include "ota_cbor_private.h"
 #include "cbor.h"
 
 /* Unity framework includes. */

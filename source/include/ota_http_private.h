@@ -27,8 +27,8 @@
 #define __AWS_OTA_HTTP__H__
 
 /* OTA includes. */
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
+#include "ota.h"
+#include "ota_private.h"
 
 
 OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pxAgentCtx );

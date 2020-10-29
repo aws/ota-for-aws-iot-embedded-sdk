@@ -30,9 +30,9 @@
 #include <stdio.h>
 
 /* OTA includes. */
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
-#include "aws_iot_ota_http_private.h"
+#include "ota.h"
+#include "ota_private.h"
+#include "ota_http_private.h"
 
 
 

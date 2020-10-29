@@ -35,8 +35,8 @@
 #include "ota_os_posix.h"
 
 /* OTA Library include. */
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
+#include "ota.h"
+#include "ota_private.h"
 
 /* OTA Event queue attributes.*/
 #define OTA_QUEUE_NAME    "/otaqueue"

@@ -39,12 +39,12 @@
 #include "unity.h"
 
 /* For accessing OTA private functions. */
-#include "iot_appversion32.h"
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
+#include "ota_appversion32.h"
+#include "ota.h"
+#include "ota_private.h"
 
 /* Mock OTA PAL. */
-#include "mock_aws_iot_ota_pal.h"
+#include "mock_ota_platform_interface.h"
 
 /* test includes. */
 #include "utest_helpers.h"

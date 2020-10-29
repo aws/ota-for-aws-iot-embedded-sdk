@@ -8,8 +8,8 @@ set(project_name "aws_ota")
 
 # list the files to mock here
 list(APPEND mock_list
-    "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_agent_private.h"
-    "${MODULE_ROOT_DIR}/source/include/aws_iot_ota_pal.h"
+    "${MODULE_ROOT_DIR}/source/include/ota_private.h"
+    "${MODULE_ROOT_DIR}/source/include/ota_platform_interface.h"
 )
 # list the directories your mocks need
 list(APPEND mock_include_list
@@ -26,11 +26,11 @@ list(APPEND mock_define_list
 
 # list the files you would like to test here
 list(APPEND real_source_files
-    "${MODULE_ROOT_DIR}/source/aws_iot_ota_agent.c"
-    "${MODULE_ROOT_DIR}/source/aws_iot_ota_interface.c"
-    "${MODULE_ROOT_DIR}/source/aws_ota_base64.c"
-    "${MODULE_ROOT_DIR}/source/aws_iot_ota_mqtt.c"
-    "${MODULE_ROOT_DIR}/source/aws_iot_ota_cbor.c"
+    "${MODULE_ROOT_DIR}/source/ota.c"
+    "${MODULE_ROOT_DIR}/source/ota_interface.c"
+    "${MODULE_ROOT_DIR}/source/ota_base64.c"
+    "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
+    "${MODULE_ROOT_DIR}/source/ota_cbor.c"
     ${TINYCBOR_SOURCES}
     ${JSON_SOURCES}
     "utest_helpers.c"
