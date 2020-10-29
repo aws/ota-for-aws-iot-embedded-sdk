@@ -18,6 +18,9 @@ backoffdelay
 basedefs
 bitmaplen
 bitmask
+blockbitmapsize
+blockoffset
+blocksize
 blocksremaining
 bool
 bootloader
@@ -90,8 +93,8 @@ fd
 fileattributes
 fileblock
 filecontext
-fileid
 filehandle
+fileid
 fileindex
 filelabel
 fileparameters
@@ -133,13 +136,13 @@ ingestresultbadfilehandle
 ingestresultblockoutofrange
 ingestresultfileclosefail
 ingestresultfilecomplete
+ingestresultfilecomplete
 ingestresultnullcontext
 ingestresultnullresultpointer
 ingestresultsigcheckfail
 ingestresultunexpectedblock
 ingestresultuninitialized
 ingestresultwriteblockfailed
-ingestresultfilecomplete
 ingroup
 init
 initdocmodel
@@ -169,6 +172,7 @@ maxattempts
 maxfragmentlength
 mcu
 memcpy
+messagebuffersize
 messagelength
 messagelevel
 messagesize
@@ -185,9 +189,9 @@ mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
 mytcpsocketcontext
+mythreadsleepfunction
 mytime
 mytimefunction
-mythreadsleepfunction
 mytlscontext
 nanosleep
 networkcontext
@@ -195,6 +199,7 @@ nextjittermax
 noninfringement
 numblocks
 nummodelparams
+numofblocksrequested
 numofblockstoreceive
 ok
 onlinepubs
@@ -254,6 +259,7 @@ paramsrequiredbitmap
 parsejobdoc
 parsejsonbymodel
 pauthscheme
+pblockbitmap
 pblockid
 pblocksize
 pbodydef
@@ -262,8 +268,9 @@ pcallbacks
 pcertfilepath
 pcjobtopic
 pcjson
-pclienttokenfromjob
 pclientcertpath
+pclienttoken
+pclienttokenfromjob
 pcloseresult
 pcmsg
 pcmsgbuffer
@@ -274,6 +281,7 @@ pdest
 pdestoffset
 pem
 pencodeddata
+pencodedmessagesize
 peventctx
 peventmsg
 pfile
@@ -405,13 +413,13 @@ topicfilter
 topicfilterlength
 topiclen
 tq
-ttimer
 transportcallback
 transportinterface
 transportpage
 transportsectionimplementation
 transportsectionoverview
 transportstruct
+ttimer
 twe
 ublockindex
 ucqos
