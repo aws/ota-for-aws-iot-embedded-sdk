@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_PAL_H_
-#define _AWS_OTA_PAL_H_
+#ifndef _OTA_PLATFORM_INTERFACE_
+#define _OTA_PLATFORM_INTERFACE_
 
 #include "ota_types.h"
 #include "ota.h"
@@ -196,4 +196,4 @@ OtaErr_t prvPAL_SetPlatformImageState( OtaImageState_t eState );
  */
 OtaPalImageState_t prvPAL_GetPlatformImageState( void );
 
-#endif /* ifndef _AWS_OTA_PAL_H_ */
+#endif /* ifndef _OTA_PLATFORM_INTERFACE_ */

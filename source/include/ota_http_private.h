@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_OTA_HTTP__H__
-#define __AWS_OTA_HTTP__H__
+#ifndef __OTA_HTTP__H__
+#define __OTA_HTTP__H__
 
 /* OTA includes. */
 #include "ota.h"
@@ -45,4 +45,4 @@ OtaErr_t _AwsIotOTA_DecodeFileBlock_HTTP( uint8_t * pMessageBuffer,
 
 OtaErr_t _AwsIotOTA_CleanupData_HTTP( OtaAgentContext_t * pxAgentCtx );
 
-#endif /* ifndef __AWS_OTA_HTTP__H__ */
+#endif /* ifndef __OTA_HTTP__H__ */

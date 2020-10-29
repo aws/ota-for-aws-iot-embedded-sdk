@@ -28,8 +28,8 @@
  * @brief Function declarations and error codes for ota_base64.c.
  */
 
-#ifndef __AWS_OTA_BASE64_PRIVATE__H__
-#define __AWS_OTA_BASE64_PRIVATE__H__
+#ifndef __OTA_BASE64_PRIVATE__H__
+#define __OTA_BASE64_PRIVATE__H__
 
 /* Standard includes. */
 #include <stdint.h>
@@ -100,4 +100,4 @@ int32_t base64Decode( uint8_t * pDest,
                       const uint8_t * pEncodedData,
                       const size_t encodedLen );
 
-#endif /* ifndef __AWS_OTA_BASE64_PRIVATE__H__ */
+#endif /* ifndef __OTA_BASE64_PRIVATE__H__ */

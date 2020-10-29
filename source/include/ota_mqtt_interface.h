@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_MQTT_INTERFACE_H_
-#define _AWS_OTA_MQTT_INTERFACE_H_
+#ifndef _OTA_MQTT_INTERFACE_H_
+#define _OTA_MQTT_INTERFACE_H_
 
 /* Standard library includes. */
 #include <stddef.h>
@@ -115,4 +115,4 @@ typedef struct OtaMqttInterface
     ota_MqttCallback_t dataCallback;
 } OtaMqttInterface_t;
 
-#endif /* ifndef _AWS_OTA_MQTT_INTERFACE_H_ */
+#endif /* ifndef _OTA_MQTT_INTERFACE_H_ */

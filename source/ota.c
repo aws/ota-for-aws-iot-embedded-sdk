@@ -33,7 +33,7 @@
 
 /* OTA agent includes. */
 #include "ota.h"
-#include "aws_ota_agent_config.h"
+#include "ota_config.h"
 
 /* OTA Base64 includes */
 #include "ota_base64_private.h"

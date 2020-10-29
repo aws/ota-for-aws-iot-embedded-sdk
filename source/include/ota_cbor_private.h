@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_OTACBOR__H__
-#define __AWS_OTACBOR__H__
+#ifndef __OTAC_BOR__H__
+#define __OTAC_BOR__H__
 
 /**
  * @brief Message field definitions, per the server specification. These are
@@ -68,4 +68,4 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested );
 
-#endif /* ifndef __AWS_OTACBOR__H__ */
+#endif /* ifndef __OTACBOR__H__ */
