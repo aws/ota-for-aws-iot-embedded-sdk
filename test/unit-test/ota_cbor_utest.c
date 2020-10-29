@@ -28,7 +28,7 @@
 #include <stdbool.h>
 
 /* CBOR and OTA includes. */
-#include "aws_ota_agent_config.h"
+#include "ota_config.h"
 #include "ota.h"
 #include "ota_private.h"
 #include "ota_cbor_private.h"

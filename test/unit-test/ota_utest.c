@@ -24,7 +24,7 @@
  */
 
 /**
- * @file aws_ota_utest.c
+ * @file ota_utest.c
  * @brief Unit tests for functions in OTA agent.
  */
 

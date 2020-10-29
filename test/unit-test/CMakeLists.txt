@@ -76,32 +76,32 @@ list(APPEND utest_dep_list
     ${real_name}
 )
 
-create_test(aws_ota_utest
-    "aws_ota_utest.c"
+create_test(ota_utest
+    "ota_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 
-create_test(aws_ota_base64_utest
-    "aws_ota_base64_utest.c"
+create_test(ota_base64_utest
+    "ota_base64_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 
-create_test(aws_ota_jobParsing_utest
-    "aws_ota_jobParsing_utest.c"
+create_test(ota_job_parsing_utest
+    "ota_job_parsing_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 
-create_test(aws_ota_cbor_utest
-    "aws_ota_cbor_utest.c"
+create_test(ota_cbor_utest
+    "ota_cbor_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 # Disable unity memory handling since we need to free memory allocated from library.
-target_compile_definitions(aws_ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
+target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)

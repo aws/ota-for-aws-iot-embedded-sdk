@@ -25,7 +25,7 @@
 
 
 /**
- * @file aws_ota_jobParsing_utest.c
+ * @file ota_jobParsing_utest.c
  * @brief Unit tests for job parsing functions in ota.c
  */
 

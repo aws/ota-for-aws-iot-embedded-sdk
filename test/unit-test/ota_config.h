@@ -24,12 +24,12 @@
  */
 
 /**
- * @file aws_ota_agent_config.h
+ * @file ota_config.h
  * @brief OTA user configurable settings.
  */
 
-#ifndef _AWS_OTA_AGENT_CONFIG_H_
-#define _AWS_OTA_AGENT_CONFIG_H_
+#ifndef _OTA_CONFIG_H_
+#define _OTA_CONFIG_H_
 
 /**
  * @brief The number of words allocated to the stack for the OTA agent.
@@ -148,4 +148,4 @@
 
 #define configOTA_PRIMARY_DATA_PROTOCOL    ( OTA_DATA_OVER_MQTT )
 
-#endif /* _AWS_OTA_AGENT_CONFIG_H_ */
+#endif /* _OTA_CONFIG_H_ */
