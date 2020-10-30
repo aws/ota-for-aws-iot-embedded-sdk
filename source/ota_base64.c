@@ -116,13 +116,13 @@
  *        - The 11th entry in this table has the number 64. This is to identify the ascii character
  *          '\n' as a newline character.
  *        - The 14th entry in this table has the number 64. This is to identify the ascii character
- *          '\r' as a newline character.
+ *          '\\r' as a newline character.
  *        - The 33rd entry in this table has the number 65. This is to identify the ascii character
  *          ' ' as a whitespace character.
  *        - The 62nd entry in this table has the number 66. This is to identify the ascii character
  *          '=' as the padding character.
  *        - All positions in the ascii table that are invalid symbols are identified with the
- *          number 67 (other than '\n','\r',' ','=').
+ *          number 67 (other than '\n','\\r',' ','=').
  */
 static const uint8_t pBase64SymbolToIndexMap[] =
 {
