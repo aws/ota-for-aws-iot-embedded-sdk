@@ -33,6 +33,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/aws_iot_ota_cbor.c"
     ${TINYCBOR_SOURCES}
     ${JSON_SOURCES}
+    "utest_helpers.c"
 )
 # list the directories the module under test includes
 list(APPEND real_include_directories
@@ -75,7 +76,6 @@ list(APPEND utest_dep_list
     ${real_name}
 )
 
-set(utest_name "aws_ota_utest")
 create_test(aws_ota_utest
     "aws_ota_utest.c"
     "${utest_link_list}"
@@ -83,16 +83,25 @@ create_test(aws_ota_utest
     "${test_include_directories}"
 )
 
-create_test("aws_ota_base64_utest"
+create_test(aws_ota_base64_utest
     "aws_ota_base64_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 
-create_test("aws_ota_jobParsing_utest"
+create_test(aws_ota_jobParsing_utest
     "aws_ota_jobParsing_utest.c"
     "${utest_link_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
+
+create_test(aws_ota_cbor_utest
+    "aws_ota_cbor_utest.c"
+    "${utest_link_list}"
+    "${utest_dep_list}"
+    "${test_include_directories}"
+)
+# Disable unity memory handling since we need to free memory allocated from library.
+target_compile_definitions(aws_ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)

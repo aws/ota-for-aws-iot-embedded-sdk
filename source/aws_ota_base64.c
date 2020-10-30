@@ -306,7 +306,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     else
     {
         /* If the buffer is full, convert the 4 sextets of encoded data into
-         * three sequential octects of decoded data starting from the most
+         * three sequential octets of decoded data starting from the most
          * significant bits and ending at the least significant bits. */
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
@@ -355,7 +355,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
 
         /* This scenario is only possible when the number of encoded symbols ( excluding newlines
          * and padding ) being decoded mod four is equal to one. There is no valid scenario where
-         * unencoded data can be encoded to create a result of this size. Therefore if this size
+         * data can be encoded to create a result of this size. Therefore if this size
          * is encountered, it is assumed to have been a mistake and is considered an error. */
         else if( numDataInBuffer == 1U )
         {

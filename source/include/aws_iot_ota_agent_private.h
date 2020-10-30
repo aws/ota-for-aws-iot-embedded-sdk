@@ -36,14 +36,15 @@
 
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
+#include "ota_http_interface.h"
 
 
 /* General constants. */
-#define LOG2_BITS_PER_BYTE           3UL                                               /* Log base 2 of bits per byte. */
-#define BITS_PER_BYTE                ( 1UL << LOG2_BITS_PER_BYTE )                     /* Number of bits in a byte. This is used by the block bitmap implementation. */
-#define OTA_FILE_BLOCK_SIZE          ( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE )          /* Data section size of the file data block message (excludes the header). */
-#define OTA_MAX_FILES                1U                                                /* [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
-#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                              /* Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
+#define LOG2_BITS_PER_BYTE           3U                                                   /* Log base 2 of bits per byte. */
+#define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /* Number of bits in a byte. This is used by the block bitmap implementation. */
+#define OTA_FILE_BLOCK_SIZE          ( ( uint32_t ) 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) /* Data section size of the file data block message (excludes the header). */
+#define OTA_MAX_FILES                1U                                                   /* [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
+#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /* Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )
 #define OTA_ERASED_BLOCKS_VAL        0xffU                 /* The starting state of a group of erased blocks in the Rx block bitmap. */
@@ -81,7 +82,7 @@ typedef enum
     IngestResultFileCloseFail = -3,      /* There was a problem trying to close the receive file. */
     IngestResultNullContext = -4,        /* The specified OTA context pointer is null. */
     IngestResultBadFileHandle = -5,      /* The receive file pointer is invalid. */
-    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but weren't expecting one. */
+    IngestResultUnexpectedBlock = -6,    /* We were asked to ingest a block but were not expecting one. */
     IngestResultBlockOutOfRange = -7,    /* The received block is out of the expected range. */
     IngestResultBadData = -8,            /* The data block from the server was malformed. */
     IngestResultWriteBlockFailed = -9,   /* The PAL layer failed to write the file block. */
@@ -108,7 +109,7 @@ typedef enum
     DocParseErrNullBodyPointer,       /* The document model's internal body pointer was NULL. */
     DocParseErrNullDocPointer,        /* The pointer to the JSON document was NULL. */
     DocParseErrTooManyParams,         /* The document model has more parameters than we can handle. */
-    DocParseErrParamKeyNotInModel,    /* The document model doesn't include the specified parameter key. */
+    DocParseErrParamKeyNotInModel,    /* The document model does not include the specified parameter key. */
     DocParseErrInvalidModelParamType, /* The document model specified an invalid parameter type. */
     DocParseErrInvalidToken           /* The Jasmine token was invalid, producing a NULL pointer. */
 } DocParseErr_t;
@@ -145,7 +146,7 @@ typedef struct
 {
     const char * pSrcKey;                  /* Expected key name. */
     const bool required;                   /* If true, this parameter must exist in the document. */
-    void * const pDestOffset;              /* Pointer or offset to where we'll store the value, if not ~0. */
+    void * const pDestOffset;              /* Pointer or offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /* We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -251,6 +252,7 @@ typedef struct OtaAgentContext
     uint32_t requestMomentum;                              /* The number of requests sent before a response was received. */
     OtaOSInterface_t * pOTAOSCtx;
     OtaMqttInterface_t * pOTAMqttInterface;
+    OtaHttpInterface_t * pOTAHttpInterface;
 } OtaAgentContext_t;
 
 /* The OTA Agent event and data structures. */

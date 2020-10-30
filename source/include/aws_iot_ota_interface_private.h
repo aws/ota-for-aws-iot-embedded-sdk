@@ -54,6 +54,7 @@ typedef struct
                                     OtaJobStatus_t eStatus,
                                     int32_t lReason,
                                     int32_t lSubReason );
+    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx );
 } OtaControlInterface_t;
 
 /**
@@ -73,7 +74,7 @@ typedef struct
                                     int32_t * plBlockSize,
                                     uint8_t ** ppucPayload,
                                     size_t * pxPayloadSize );
-    OtaErr_t ( * cleanup )( OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx );
 } OtaDataInterface_t;
 
 /**
