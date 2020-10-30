@@ -106,7 +106,7 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t cleanupControl_Mqtt( OtaAgentContext_t * pAgentCtx );
+OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Cleanup related to OTA data plane over MQTT.
@@ -119,7 +119,7 @@ OtaErr_t cleanupControl_Mqtt( OtaAgentContext_t * pAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t cleanupData_Mqtt( OtaAgentContext_t * pAgentCtx );
+OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Update job status over MQTT.

@@ -50,25 +50,6 @@
     #error "Primary data protocol must be enabled in aws_iot_ota_agent_config.h"
 #endif
 
-/*
- * Primary data protocol will be the protocol used for file download if more
- * than one protocol is selected while creating OTA job.
- */
-#if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
-    static const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
-    {
-        "MQTT",
-        "HTTP"
-    };
-#elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
-    static const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
-    {
-        "HTTP",
-        "MQTT"
-    };
-#endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
-
-
 void setControlInterface( OtaControlInterface_t * pxControlInterface )
 {
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
@@ -88,6 +69,24 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
     OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
+    /*
+     * Primary data protocol will be the protocol used for file download if more
+     * than one protocol is selected while creating OTA job.
+     */
+    #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
+        const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
+        {
+            "MQTT",
+            "HTTP"
+        };
+    #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
+        const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
+        {
+            "HTTP",
+            "MQTT"
+        };
+    #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+
     for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
     {
         if( NULL != strstr( ( const char * ) pucProtocol, pcProtocolPriority[ i ] ) )
@@ -100,7 +99,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
                     pxDataInterface->cleanup = cleanupData_Mqtt;
 
-                    OTA_LOG_L1( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME );
+                    LogInfo( ( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME ) );
 
                     err = OTA_ERR_NONE;
                     break;
@@ -115,7 +114,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
                     pxDataInterface->cleanup = _AwsIotOTA_Cleanup_HTTP;
 
-                    OTA_LOG_L1( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME );
+                    LogInfo( ( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME ) );
 
                     err = OTA_ERR_NONE;
                     break;

@@ -154,7 +154,7 @@ void vLoggingPrint( const char * pcMessage );
 
 OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pAgentCtx )
 {
-    OTA_LOG_L1( "Invoking _AwsIotOTA_InitFileTransfer_HTTP" );
+    LogInfo( ( "Invoking _AwsIotOTA_InitFileTransfer_HTTP" ) );
 
     /* Return status. */
     OtaErr_t status = OTA_ERR_NONE;
@@ -167,7 +167,7 @@ OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pAgentCtx )
 
     /* Get pre-signed URL from pAgentCtx. */
     pURL = ( const char * ) ( fileContext->pUpdateUrlPath );
-    OTA_LOG_L1( "Pre-signed URL size: %d.", strlen( pURL ) );
+    LogDebug( ( "Pre-signed URL size: %d.", strlen( pURL ) ) );
 
     /* Connect to the HTTP server and initialize download information. */
     pAgentCtx->pOTAHttpInterface->init( pURL );
@@ -177,7 +177,7 @@ OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pAgentCtx )
 uint32_t currBlock;
 OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pAgentCtx )
 {
-    OTA_LOG_L1( "Invoking _AwsIotOTA_RequestDataBlock_HTTP" );
+    LogInfo( ( "Invoking _AwsIotOTA_RequestDataBlock_HTTP" ) );
 
     /* Return status. */
     OtaErr_t status = OTA_ERR_NONE;

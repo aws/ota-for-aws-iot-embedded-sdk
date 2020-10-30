@@ -52,37 +52,95 @@
 #define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
+/*--------------------------- OTA Logging Defines --------------------------*/
+
+/* TODO: Remove this definition after updating the format of the errors. */
+#define DEFINE_OTA_METHOD_NAME( name )          \
+    static const char OTA_METHOD_NAME[] = name; \
+    ( void ) OTA_METHOD_NAME;
+
 /**
- * @brief Special OTA Agent printing definition.
+ * @brief Macro that is called in the OTA library for logging "Error" level
+ * messages.
+ *
+ * To enable error level logging in the OTA library, this macro should be
+ * mapped to the application-specific logging implementation that supports
+ * error logging.
+ *
+ * @note This logging macro is called in the OTA library with parameters
+ * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
+ * reference POSIX implementation of the logging macros, refer to the ota
+ * default config file, and the logging-stack in demos folder of the
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ *
+ * <b>Default value</b>: Error logging is turned off, and no code is generated
+ * for calls to the macro in the OTA library on compilation.
  */
-#define vLoggingPrintf         printf
-#define OTA_DEBUG_LOG_LEVEL    1
-#if OTA_DEBUG_LOG_LEVEL >= 1
-    #define DEFINE_OTA_METHOD_NAME( name )      \
-    static const char OTA_METHOD_NAME[] = name; \
-    ( void ) OTA_METHOD_NAME;
-    #define OTA_LOG_L1         vLoggingPrintf
-#else
-    #define DEFINE_OTA_METHOD_NAME( name )
-    #define OTA_LOG_L1( ... )
+#ifndef LogError
+    #define LogError( message )
 #endif
-#if OTA_DEBUG_LOG_LEVEL >= 2
-    #define DEFINE_OTA_METHOD_NAME_L2( name )   \
-    static const char OTA_METHOD_NAME[] = name; \
-    ( void ) OTA_METHOD_NAME;
-    #define OTA_LOG_L2    vLoggingPrintf
-#else
-    #define DEFINE_OTA_METHOD_NAME_L2( name )
-    #define OTA_LOG_L2( ... )
+
+/**
+ * @brief Macro that is called in the OTA library for logging "Warning" level
+ * messages.
+ *
+ * To enable warning level logging in the OTA library, this macro should be
+ * mapped to the application-specific logging implementation that supports
+ * warning logging.
+ *
+ * @note This logging macro is called in the OTA library with parameters
+ * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
+ * reference POSIX implementation of the logging macros, refer to the ota
+ * default config file, and the logging-stack in demos folder of the
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ *
+ * <b>Default value</b>: Warning logging is turned off, and no code is
+ * generated for calls to the macro in the OTA library on compilation.
+ */
+#ifndef LogWarn
+    #define LogWarn( message )
 #endif
-#if OTA_DEBUG_LOG_LEVEL >= 3
-    #define DEFINE_OTA_METHOD_NAME_L3( name )   \
-    static const char OTA_METHOD_NAME[] = name; \
-    ( void ) OTA_METHOD_NAME;
-    #define OTA_LOG_L3    vLoggingPrintf
-#else
-    #define DEFINE_OTA_METHOD_NAME_L3( name )
-    #define OTA_LOG_L3( ... )
+
+/**
+ * @brief Macro that is called in the OTA library for logging "Info" level
+ * messages.
+ *
+ * To enable info level logging in the OTA library, this macro should be
+ * mapped to the application-specific logging implementation that supports
+ * info logging.
+ *
+ * @note This logging macro is called in the OTA library with parameters
+ * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
+ * reference POSIX implementation of the logging macros, refer to the ota
+ * default config file, and the logging-stack in demos folder of the
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ *
+ * <b>Default value</b>: Info logging is turned off, and no code is
+ * generated for calls to the macro in the OTA library on compilation.
+ */
+#ifndef LogInfo
+    #define LogInfo( message )
+#endif
+
+/**
+ * @brief Macro that is called in the OTA library for logging "Debug" level
+ * messages.
+ *
+ * To enable Debug level logging in the OTA library, this macro should be
+ * mapped to the application-specific logging implementation that supports
+ * debug logging.
+ *
+ * @note This logging macro is called in the OTA library with parameters
+ * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
+ * reference POSIX implementation of the logging macros, refer to the ota
+ * default config file, and the logging-stack in demos folder of the
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ *
+ * <b>Default value</b>: Debug logging is turned off, and no code is
+ * generated for calls to the macro in the OTA library on compilation.
+ */
+#ifndef LogDebug
+    #define LogDebug( message )
 #endif
 
 /*-------------------------- OTA enumerated types --------------------------*/
