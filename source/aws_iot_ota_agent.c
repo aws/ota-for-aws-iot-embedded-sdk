@@ -1598,7 +1598,7 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         /* The job document did not have all required document model parameters. */
         for( scanIndex = 0U; scanIndex < pDocModel->numModelParams; scanIndex++ )
         {
-            if( ( missingParams & ( 1U << scanIndex ) ) != 0U )
+            if( ( missingParams & ( ( uint32_t ) 1U << scanIndex ) ) != 0U )
             {
                 OTA_LOG_L1( "[%s] parameter not present: %s\r\n",
                             OTA_METHOD_NAME,
@@ -1660,7 +1660,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
             else if( ( void * ) OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
             {
                 pFileParams = pValueInJson + 1;
-                fileParamsLength = valueLength - 2U;
+                fileParamsLength = ( uint32_t ) valueLength - 2U;
             }
             else
             {
@@ -1729,7 +1729,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
             if( pDocModel->pBodyDef[ scanIndex ].required == true )
             {
                 /* Add parameter to the required bitmap. */
-                pDocModel->paramsRequiredBitmap |= ( 1U << scanIndex );
+                pDocModel->paramsRequiredBitmap |= ( ( uint32_t ) 1U << scanIndex );
             }
         }
 
