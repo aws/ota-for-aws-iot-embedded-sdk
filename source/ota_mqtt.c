@@ -24,7 +24,7 @@
  */
 
 /**
- * @file aws_iot_ota_mqtt.c
+ * @file ota_mqtt.c
  * @brief Routines for supporting over the air updates using MQTT.
  */
 
@@ -34,15 +34,15 @@
 #include <stdlib.h>
 
 /* OTA includes. */
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
-#include "aws_iot_ota_cbor_private.h"
+#include "ota.h"
+#include "ota_private.h"
+#include "ota_cbor_private.h"
 
 /* Private include. */
-#include "aws_iot_ota_mqtt_private.h"
+#include "ota_mqtt_private.h"
 
 /* Include firmware version struct definition. */
-#include "iot_appversion32.h"
+#include "ota_appversion32.h"
 
 /* General constants. */
 #define OTA_SUBSCRIBE_WAIT_MS          30000UL

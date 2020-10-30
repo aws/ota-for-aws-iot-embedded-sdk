@@ -24,7 +24,7 @@
  */
 
 /**
- * @file aws_iot_ota_agent.h
+ * @file ota.h
  * @brief OTA Agent Interface
  */
 

@@ -32,26 +32,26 @@
 #include <pthread.h>
 
 /* OTA agent includes. */
-#include "aws_iot_ota_agent.h"
-#include "aws_ota_agent_config.h"
+#include "ota.h"
+#include "ota_config.h"
 
 /* OTA Base64 includes */
-#include "aws_ota_base64_private.h"
+#include "ota_base64_private.h"
 
 /* OTA pal includes. */
-#include "aws_iot_ota_pal.h"
+#include "ota_platform_interface.h"
 
 /* Internal header file for shared OTA definitions. */
-#include "aws_iot_ota_agent_private.h"
+#include "ota_private.h"
 
 /* OTA interface includes. */
-#include "aws_iot_ota_interface_private.h"
+#include "ota_interface_private.h"
 
 /* Core JSON include */
 #include "core_json.h"
 
 /* Include firmware version struct definition. */
-#include "iot_appversion32.h"
+#include "ota_appversion32.h"
 
 /* ToDo: Cleanup BaseType_t. */
 #define BaseType_t    uint32_t

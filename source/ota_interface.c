@@ -24,7 +24,7 @@
  */
 
 /**
- * @file aws_iot_ota_interface.c
+ * @file ota_interface.c
  * @brief .
  */
 
@@ -32,16 +32,16 @@
 #include <string.h>
 
 /* OTA interface includes. */
-#include "aws_iot_ota_interface_private.h"
+#include "ota_interface_private.h"
 
 /* OTA transport interface includes. */
 
 #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) || ( configENABLED_CONTROL_PROTOCOL & OTA_CONTROL_OVER_MQTT )
-    #include "aws_iot_ota_mqtt_private.h"
+    #include "ota_mqtt_private.h"
 #endif
 
 #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP )
-    #include "aws_iot_ota_http_private.h"
+    #include "ota_http_private.h"
 #endif
 
 /* Check if primary protocol is enabled in aws_iot_ota_agent_config.h. */

@@ -23,15 +23,15 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_HTTP_INTERFACE_H_
-#define _AWS_OTA_HTTP_INTERFACE_H_
+#ifndef _OTA_HTTP_INTERFACE_H_
+#define _OTA_HTTP_INTERFACE_H_
 
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
 
 /* OTA library interface include. */
-#include "aws_iot_ota_agent.h"
+#include "ota.h"
 
 /**
  * @brief Subscribe to the Mqtt topics.
@@ -101,4 +101,4 @@ typedef struct OtaHttpInterface
     ota_HttpDeinit deinit;
 } OtaHttpInterface_t;
 
-#endif /* ifndef _AWS_OTA_HTTP_INTERFACE_H_ */
+#endif /* ifndef _OTA_HTTP_INTERFACE_H_ */

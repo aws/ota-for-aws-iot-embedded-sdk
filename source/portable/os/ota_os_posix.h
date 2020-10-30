@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_OS_FREERTOS_H_
-#define _AWS_OTA_OS_FREERTOS_H_
+#ifndef _OTA_OS_POSIX_H_
+#define _OTA_OS_POSIX_H_
 
 /* Standard library include. */
 #include <stddef.h>
@@ -66,4 +66,4 @@ OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext );
 
 OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext );
 
-#endif /* ifndef _AWS_OTA_OS_FREERTOS_H_ */
+#endif /* ifndef _OTA_OS_POSIX_H_ */

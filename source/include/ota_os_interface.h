@@ -23,11 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _AWS_OTA_OS_INTERFACE_H_
-#define _AWS_OTA_OS_INTERFACE_H_
+#ifndef _OTA_OS_INTERFACE_H_
+#define _OTA_OS_INTERFACE_H_
 
 /* OTA library interface include. */
-#include "aws_iot_ota_agent.h"
+#include "ota.h"
 
 struct OtaEventContext;
 typedef struct OtaEventContext   OtaEventContext_t;
@@ -205,4 +205,4 @@ typedef struct OtaOSInterface
     OtaTimerInterface_t timer; /**< OTA Timer interface. */
 } OtaOSInterface_t;
 
-#endif /* ifndef _AWS_OTA_OS_INTERFACE_H_ */
+#endif /* ifndef _OTA_OS_INTERFACE_H_ */

@@ -29,7 +29,7 @@
 #include <stdbool.h>
 
 /* OTA library includes. */
-#include "aws_iot_ota_cbor_private.h"
+#include "ota_cbor_private.h"
 
 /* 3rdparty includes. */
 #include "cbor.h"

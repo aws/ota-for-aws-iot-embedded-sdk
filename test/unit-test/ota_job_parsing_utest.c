@@ -25,8 +25,8 @@
 
 
 /**
- * @file aws_ota_jobParsing_utest.c
- * @brief Unit tests for job parsing functions in aws_iot_ota_agent.c
+ * @file ota_jobParsing_utest.c
+ * @brief Unit tests for job parsing functions in ota.c
  */
 
 #include <string.h>
@@ -34,11 +34,11 @@
 #include "unity.h"
 
 /* For accessing OTA private functions. */
-#include "aws_iot_ota_agent_private.h"
-#include "aws_iot_ota_agent.c"
+#include "ota_private.h"
+#include "ota.c"
 #include "core_json.h"
 
-/* Error defines based on aws_iot_ota_agent_private.h */
+/* Error defines based on ota_private.h */
 #define DocParseErrUnknown                  -1
 #define DocParseErrNone                     0
 #define DocParseErrOutOfMemory              1

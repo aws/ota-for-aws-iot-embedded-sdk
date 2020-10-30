@@ -27,8 +27,8 @@
 #define __AWS_IOT_OTA_MQTT__H__
 
 /* OTA includes. */
-#include "aws_iot_ota_agent.h"
-#include "aws_iot_ota_agent_private.h"
+#include "ota.h"
+#include "ota_private.h"
 
 /**
  * @brief Check for available OTA job over MQTT.
@@ -38,7 +38,7 @@
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
- * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
 OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx );
@@ -51,7 +51,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx );
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
- * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
 OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx );
@@ -65,7 +65,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx );
  * @param[in] pAgentCtx The OTA agent context.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
- * error codes information in aws_iot_ota_agent.h.
+ * error codes information in ota.h.
  */
 
 OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx );
@@ -84,7 +84,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx );
  * @param[out] pPayloadSize   The payload size.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
- * error codes information in aws_iot_ota_agent.h.
+ * error codes information in ota.h.
  */
 
 OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
@@ -103,7 +103,7 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
- * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
 OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx );
@@ -116,7 +116,7 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx );
  *
  * @param[in] pAgentCtx The OTA agent context.
  *
- * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
 OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx );
@@ -135,7 +135,7 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx );
  *
  * @param[in] subReason The platform specific reason.
  *
- * @return The OTA error code. See OTA Agent error codes information in aws_iot_ota_agent.h.
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
 OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
