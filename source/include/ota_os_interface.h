@@ -35,32 +35,22 @@ typedef struct OtaEventContext   OtaEventContext_t;
 struct OtaTimerContext;
 typedef struct OtaTimerContext   OtaTimerContext_t;
 
-typedef enum
-{
-    OTASelfTestTimer = 0,
-    OTARequestTimer,
-    OTANumOfTimers
-} OTATimers_t;
-
 /**
  * @brief Initialize the OTA events.
  *
- * This function initializes the OTA events mechanism for maximum events passed as a
- * parameter.
+ * This function initializes the OTA events mechanism.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @param[size]          Maximum number of events.
- *
- * @return               OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_InitEvent_t ) ( OtaEventContext_t * pContext );
+typedef OtaErr_t ( * OtaInitEvent_t ) ( OtaEventContext_t * pEventCtx );
 
 /**
  * @brief Sends an OTA event.
  *
- * This function sends an event to the OTA event handler.
+ * This function sends an event to OTA library event hanler.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
@@ -68,16 +58,18 @@ typedef OtaErr_t ( * ota_InitEvent_t ) ( OtaEventContext_t * pContext );
  *
  * @param[timeout]       The maximum amount of time (msec) the task should block.
  *
- * @return               OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_SendEvent_t )( OtaEventContext_t * pContext,
-                                        const void * pEventMsg,
-                                        unsigned int timeout );
+
+typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
+                                       const void * pEventMsg,
+                                       unsigned int timeout );
 
 /**
+ * /**
  * @brief Receive an OTA event.
  *
- * This function receives an event from the pending OTA events.
+ * This function receives next event from the pending OTA events.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
@@ -85,9 +77,10 @@ typedef OtaErr_t ( * ota_SendEvent_t )( OtaEventContext_t * pContext,
  *
  * @param[timeout]       The maximum amount of time the task should block.
  *
- * @return               OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
+
+typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
                                            void * pEventMsg,
                                            uint32_t timeout );
 
@@ -99,89 +92,66 @@ typedef OtaErr_t ( * ota_ReceiveEvent_t )( OtaEventContext_t * pContext,
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_DeinitEvent_t )( OtaEventContext_t * pContext );
+typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
 
 /**
- * @brief Create timer.
+ * @brief Start timer.
  *
- * This function creates a timer with the timeout passed as parameter as well as
- * registers the callback.
+ * This function starts the timer or resets it if it is already started.
  *
- * @param[pTimerName]           Timer name string.
+ * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * 
+ * @param[pTimerName]       Timer name.
  *
- * @param[timeout]              Period of the timer in msec.
+ * @param[timeout]          Timeout for the timer.
+ * 
+ * @param[callback]         Callback to be called when timer expires.
  *
- * @param[pTimerCallback]       Callback function when timer expires.
- *
- * @return[OtaTimerContext_t]   Timer context created or NULL on failure.
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_CreateTimer_t ) ( OtaTimerContext_t * pContext,
-                                           const char * const pTimerName,
-                                           const uint32_t timeout );
-
-/**
- * @brief start timer.
- *
- * This function starts the timer and reset it if it is already started.
- *
- * @param[mutexHandle ]     Pointer to the timer context to start/reset.
- *
- * @param[timeout ]         timeout for the timer.
- *
- * @return                  0 if success , otaOSErr_t on failure.
- */
-typedef OtaErr_t ( * ota_StartTimer_t ) ( OtaTimerContext_t * pContext,
+typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerContext_t * pTimerCtx,
                                           const char * const pTimerName,
                                           const uint32_t timeout,
                                           void ( * callback )( void * pParam ) );
 
 /**
- * @brief stop timer.
+ * @brief Stop timer.
  *
- * This function stops the timer.
+ * This function stops the time.
  *
- * @param[mutexHandle ]     Pointer to the timer context to start/reset. to stop.
+ * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
  *
- * @return                  0 if success , otaOSErr_t on failure.
+ * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_StopTimer_t ) ( OtaTimerContext_t * pContext );
+
+typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerContext_t * pTimerCtx );
 
 /**
  * @brief Delete a timer.
  *
- * This function deletes a timer.
+ * This function deletes a timer for POSIX platforms.
  *
- * @param[timerHandle  ]    Pointer to the timer object to delete.
+ * @param[pTimerCtx]        Pointer to the timer object to delete.
  *
- * @return                  0 if success , otaOSErr_t on failure.
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_DeleteTimer_t ) ( OtaTimerContext_t * pContext );
 
-/**
- * @brief TTimer Callback
- *
- * This function deletes a timer.
- *
- * @param[timerHandle  ]    Pointer to the timer object to delete.
- *
- * @return                  0 if success , otaOSErr_t on failure.
- */
-typedef void ( * ota_TimerCallback_t ) ( OtaTimerContext_t * pContext );
+typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerContext_t * pTimerCtx );
 
 /**
  *  OTA Event Interface structure.
  */
 typedef struct OtaEventInterface
 {
-    ota_InitEvent_t init;
-    ota_SendEvent_t send;
-    ota_ReceiveEvent_t recv;
-    ota_DeinitEvent_t deinit;
-    OtaEventContext_t * pContext;
+    OtaInitEvent_t init;
+    OtaSendEvent_t send;
+    OtaReceiveEvent_t recv;
+    OtaDeinitEvent_t deinit;
+    OtaEventContext_t * pEventContext;
 } OtaEventInterface_t;
 
 /**
@@ -189,11 +159,10 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    ota_StartTimer_t start;
-    ota_StopTimer_t stop;
-    ota_DeleteTimer_t delete;
-    ota_TimerCallback_t callback;
-    OtaTimerContext_t * PTimerCtx[ OTANumOfTimers ]; /**< Implementation-defined ota timer context. */
+    OtaStartTimer_t start;
+    OtaStopTimer_t stop;
+    OtaDeleteTimer_t delete;
+    OtaTimerContext_t * PTimerCtx; /**< Implementation-defined ota timer context. */
 } OtaTimerInterface_t;
 
 /**
