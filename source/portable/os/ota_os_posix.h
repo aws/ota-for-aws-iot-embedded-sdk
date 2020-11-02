@@ -32,38 +32,104 @@
 /* OTA library interface include. */
 #include "ota_os_interface.h"
 
-struct OtaEventContext
-{
-    /* Unused.*/
-    uint32_t dummy;
-};
+/**
+ * @brief Initialize the OTA events.
+ *
+ * This function initializes the OTA events mechanism for POSIX platforms.
+ *
+ * @param[pEventCtx]     Pointer to the OTA event context.
+ *
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx );
 
-struct OtaTimerContext
-{
-    /* Unused.*/
-    uint32_t dummy;
-};
+/**
+ * @brief Sends an OTA event.
+ *
+ * This function sends an event to OTA library event hanler for POSIX platforms.
+ *
+ * @param[pEventCtx]     Pointer to the OTA event context.
+ *
+ * @param[pEventMsg]     Event to be sent to the OTA handler.
+ *
+ * @param[timeout]       The maximum amount of time (msec) the task should block.
+ *
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout );
 
-OtaErr_t ota_InitEvent( OtaEventContext_t * pContext );
+/**
+ * @brief Receive an OTA event.
+ *
+ * This function receives next event from the pending OTA events for POSIX platforms.
+ *
+ * @param[pEventCtx]     Pointer to the OTA event context.
+ *
+ * @param[pEventMsg]     Pointer to store message.
+ *
+ * @param[timeout]       The maximum amount of time the task should block.
+ *
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
+                                void * pEventMsg,
+                                uint32_t timeout );
 
-OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
-                        const void * pEventMsg,
-                        unsigned int timeout );
+/**
+ * @brief Deinitialize the OTA Events mechanism.
+ *
+ * This function deinitialize the OTA events mechanism and frees any resources
+ * used on POSIX platforms.
+ *
+ * @param[pEventCtx]     Pointer to the OTA event context.
+ *
+ * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
 
-OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
-                           void * pEventMsg,
-                           uint32_t timeout );
 
-OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext );
+/**
+ * @brief Start timer.
+ *
+ * This function starts the timer or resets it if it is already started for POSIX platforms.
+ *
+ * @param[pTimerCtx ]       Pointer to the timer context to start/reset.
+ * 
+ * @param[pTimerName ]      Timer name.
+ *
+ * @param[timeout ]         Timeout for the timer.
+ * 
+ * @param[callback ]        Callback to be called when timer expires.
+ *
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+                              const char * const pTimerName,
+                              const uint32_t timeout,
+                              void ( * callback )( void * ) );
 
+/**
+ * @brief Stop timer.
+ *
+ * This function stops the timer fro POSIX platforms.
+ *
+ * @param[pTimerCtx ]     Pointer to the timer context to start/reset. to stop.
+ *
+ * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx );
 
-OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
-                         const char * const pTimerName,
-                         const uint32_t timeout,
-                         void ( * callback )( void * ) );
-
-OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext );
-
-OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext );
+/**
+ * @brief Delete a timer.
+ *
+ * This function deletes a timer for POSIX platforms.
+ *
+ * @param[pTimerCtx  ]      Pointer to the timer object to delete.
+ *
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+OtaErr_t Posix_OtaDeleteTimer( OtaTimerContext_t * pTimerCtx );
 
 #endif /* ifndef _OTA_OS_POSIX_H_ */
