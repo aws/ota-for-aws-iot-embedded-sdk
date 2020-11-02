@@ -81,8 +81,8 @@ typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
  */
 
 typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
-                                           void * pEventMsg,
-                                           uint32_t timeout );
+                                          void * pEventMsg,
+                                          uint32_t timeout );
 
 /**
  * @brief Deinitialize the OTA Events mechanism.
@@ -103,20 +103,20 @@ typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
  * This function starts the timer or resets it if it is already started.
  *
  * @param[pTimerCtx]        Pointer to the timer context to start/reset.
- * 
+ *
  * @param[pTimerName]       Timer name.
  *
  * @param[timeout]          Timeout for the timer.
- * 
+ *
  * @param[callback]         Callback to be called when timer expires.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerContext_t * pTimerCtx,
-                                          const char * const pTimerName,
-                                          const uint32_t timeout,
-                                          void ( * callback )( void * pParam ) );
+                                         const char * const pTimerName,
+                                         const uint32_t timeout,
+                                         void ( * callback )( void * pParam ) );
 
 /**
  * @brief Stop timer.

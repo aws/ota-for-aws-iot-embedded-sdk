@@ -96,11 +96,11 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  * This function starts the timer or resets it if it is already started for POSIX platforms.
  *
  * @param[pTimerCtx]        Pointer to the timer context to start/reset.
- * 
+ *
  * @param[pTimerName]       Timer name.
  *
  * @param[timeout]          Timeout for the timer.
- * 
+ *
  * @param[callback]         Callback to be called when timer expires.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
