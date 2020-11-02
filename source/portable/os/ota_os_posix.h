@@ -46,7 +46,7 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx );
 /**
  * @brief Sends an OTA event.
  *
- * This function sends an event to OTA library event hanler for POSIX platforms.
+ * This function sends an event to OTA library event handler for POSIX platforms.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *

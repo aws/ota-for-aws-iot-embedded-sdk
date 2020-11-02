@@ -50,7 +50,7 @@ typedef OtaErr_t ( * OtaInitEvent_t ) ( OtaEventContext_t * pEventCtx );
 /**
  * @brief Sends an OTA event.
  *
- * This function sends an event to OTA library event hanler.
+ * This function sends an event to OTA library event handler.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
