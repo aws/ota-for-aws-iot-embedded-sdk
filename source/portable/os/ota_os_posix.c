@@ -41,7 +41,7 @@
 /* OTA Event queue attributes.*/
 #define OTA_QUEUE_NAME    "/otaqueue"
 #define MAX_MESSAGES      10
-#define MAX_MSG_SIZE      12
+#define MAX_MSG_SIZE      sizeof( OtaEventMsg_t ) 
 
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
@@ -49,9 +49,9 @@ static mqd_t otaEventQueue;
 /* OTA Timer.*/
 timer_t otaTimer;
 
-OtaErr_t ota_InitEvent( OtaEventContext_t * pContext )
+OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
-    ( void ) pContext;
+    ( void ) pEventCtx;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
     struct mq_attr attr;
@@ -65,7 +65,7 @@ OtaErr_t ota_InitEvent( OtaEventContext_t * pContext )
     attr.mq_msgsize = MAX_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
-    /* Open the event queue .*/
+    /* Open the event queue.*/
     otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
 
     if( otaEventQueue == -1 )
@@ -84,11 +84,11 @@ OtaErr_t ota_InitEvent( OtaEventContext_t * pContext )
     return otaErrRet;
 }
 
-OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
-                        const void * pEventMsg,
-                        unsigned int timeout )
+OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout )
 {
-    ( void ) pContext;
+    ( void ) pEventCtx;
     ( void ) timeout;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
@@ -97,8 +97,6 @@ OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
     {
         LogError( ( "OTA Event Send failed." ) );
-
-        perror( "Blah blah" );
 
         otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
     }
@@ -112,9 +110,9 @@ OtaErr_t ota_SendEvent( OtaEventContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
-                           void * pEventMsg,
-                           uint32_t timeout )
+OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
+                                void * pEventMsg,
+                                uint32_t timeout )
 {
     ( void ) pContext;
     ( void ) timeout;
@@ -124,9 +122,7 @@ OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
 
-    /* Delay a bit.*/
-    sleep( 1 );
-
+    /* Receive the next event from OTA event queue.*/
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
     {
         LogError( ( "OTA Event receive fatal error." ) );
@@ -146,7 +142,7 @@ OtaErr_t ota_ReceiveEvent( OtaEventContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t ota_DeinitEvent( OtaEventContext_t * pContext )
+OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
 {
     ( void ) pContext;
 
@@ -179,12 +175,12 @@ static void timerCallback( union sigval arg )
     OTA_SignalEvent( &xEventMsg );
 }
 
-OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
-                         const char * const pTimerName,
-                         const uint32_t timeout,
-                         void ( *callback )( void * ) )
+OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+                              const char * const pTimerName,
+                              const uint32_t timeout,
+                              void ( *callback )( void * ) )
 {
-    ( void ) pContext;
+    ( void ) pTimerCtx;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
@@ -232,9 +228,9 @@ OtaErr_t ota_StartTimer( OtaTimerContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext )
+OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx )
 {
-    ( void ) pContext;
+    ( void ) pTimerCtx;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
@@ -259,9 +255,9 @@ OtaErr_t ota_StopTimer( OtaTimerContext_t * pContext )
     return otaErrRet;
 }
 
-OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pContext )
+OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
 {
-    ( void ) pContext;
+    ( void ) pTimerCtx;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
