@@ -2637,7 +2637,7 @@ void otaAgentTask( const void * pUnused )
         /*
          * Receive the next event form the OTA event queue to process.
          */
-        if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pContext, &eventMsg, 0 ) == OTA_ERR_NONE )
+        if( otaAgent.pOTAOSCtx->event.recv( otaAgent.pOTAOSCtx->event.pEventContext, &eventMsg, 0 ) == OTA_ERR_NONE )
         {
             /*
              * Search transition index if available in the table.
@@ -2687,7 +2687,7 @@ static BaseType_t startOTAAgentTask( void * pOTAOSCtx,
 
     otaAgent.pOTAOSCtx = ( OtaOSInterface_t * ) pOTAOSCtx;
 
-    ( void ) otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pContext );
+    ( void ) otaAgent.pOTAOSCtx->event.init( otaAgent.pOTAOSCtx->event.pEventContext );
 
     otaAgent.pOTAMqttInterface = pOtaMqttInterface;
 
@@ -2721,7 +2721,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
      * Send event to back of the queue.
      */
     {
-        err = otaAgent.pOTAOSCtx->event.send( otaAgent.pOTAOSCtx->event.pContext,
+        err = otaAgent.pOTAOSCtx->event.send( otaAgent.pOTAOSCtx->event.pEventContext,
                                               pEventMsg,
                                               0 );
     }
