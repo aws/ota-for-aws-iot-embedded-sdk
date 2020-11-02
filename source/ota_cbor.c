@@ -163,6 +163,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
         }
     }
 
+    /* Calculate the size we need to malloc for the payload. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_calculate_string_length( &cborValue,
@@ -310,7 +311,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                       numOfBlocksRequested );
     }
 
-    /* Done with the encoder. */
+    /* Close the encoder. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encoder_close_container_checked( &cborEncoder,
