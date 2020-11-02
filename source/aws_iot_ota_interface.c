@@ -64,8 +64,6 @@ void setControlInterface( OtaControlInterface_t * pxControlInterface )
 OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                            const uint8_t * pucProtocol )
 {
-    DEFINE_OTA_METHOD_NAME( "setDataInterface" );
-
     OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
@@ -99,7 +97,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
                     pxDataInterface->cleanup = cleanupData_Mqtt;
 
-                    LogInfo( ( "[%s] Data interface is set to MQTT.\r\n", OTA_METHOD_NAME ) );
+                    LogInfo( ( "Data interface is set to MQTT.\r\n" ) );
 
                     err = OTA_ERR_NONE;
                     break;
@@ -114,7 +112,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
                     pxDataInterface->decodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
                     pxDataInterface->cleanup = _AwsIotOTA_Cleanup_HTTP;
 
-                    LogInfo( ( "[%s] Data interface is set to HTTP.\r\n", OTA_METHOD_NAME ) );
+                    LogInfo( ( "Data interface is set to HTTP.\r\n" ) );
 
                     err = OTA_ERR_NONE;
                     break;

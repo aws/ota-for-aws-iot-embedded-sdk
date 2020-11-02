@@ -36,6 +36,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/**
+ * @cond DOXYGEN_IGNORE
+ * Doxygen should ignore this section.
+ */
+
 /* bool is defined in only C99+. */
 #if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) )
     #include <stdbool.h>
@@ -44,20 +49,15 @@
     #define false    ( int8_t ) 0
     #define true     ( int8_t ) 1
 #endif
+/** @endcond */
 
-/* Evaluates to the length of a constant string defined like 'static const char str[]= "xyz"; */
+/**
+ * @ingroup ota_helpers
+ * @brief Evaluates to the length of a constant string defined like 'static const char str[]= "xyz"; 
+ */
 #define CONST_STRLEN( s )    ( ( ( uint32_t ) sizeof( s ) ) - 1UL )
 
-/* The OTA signature algorithm string is specified by the PAL. */
-#define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32
-extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
-
 /*--------------------------- OTA Logging Defines --------------------------*/
-
-/* TODO: Remove this definition after updating the format of the errors. */
-#define DEFINE_OTA_METHOD_NAME( name )          \
-    static const char OTA_METHOD_NAME[] = name; \
-    ( void ) OTA_METHOD_NAME;
 
 /**
  * @brief Macro that is called in the OTA library for logging "Error" level
@@ -264,13 +264,13 @@ typedef enum OtaJobEvent
  * After an OTA update image is received and authenticated, it is logically moved to
  * the Self Test state by the OTA agent pending final acceptance. After the image is
  * activated and tested by your user code, you should put it into either the Accepted
- * or Rejected state by calling @ref ota_function_setimagestate( OtaImageStateAccepted ) or
- * @ref ota_function_setimagestate( OtaImageStateRejected ). If the image is accepted, it becomes
+ * or Rejected state by calling @ref ota_function_setimagestate ( OtaImageStateAccepted ) or
+ * @ref ota_function_setimagestate ( OtaImageStateRejected ). If the image is accepted, it becomes
  * the main firmware image to be booted from then on. If it is rejected, the image is
  * no longer valid and shall not be used, reverting to the last known good image.
  *
  * If you want to abort an active OTA transfer, you may do so by calling the API
- * @ref ota_function_setimagestate( OtaImageStateAborted ).
+ * @ref ota_function_setimagestate ( OtaImageStateAborted ).
  */
 typedef enum OtaImageState
 {
@@ -449,10 +449,16 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
 
 #define kOTA_MaxSignatureSize    256        /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
 
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA File Signature info.
+ *
+ * File key signature information to verify the authenticity of the incomming file 
+ */
 typedef struct
 {
-    uint16_t size;                         /* Size, in bytes, of the signature. */
-    uint8_t data[ kOTA_MaxSignatureSize ]; /* The binary signature data. */
+    uint16_t size;                         /*!< Size, in bytes, of the signature. */
+    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
 } Sig256_t;
 
 /**
@@ -488,33 +494,20 @@ struct OtaFileContext
 
 /**
  * @ingroup ota_datatypes_structs
- * @brief OTA Connection context.
- *
- * Connection information that the user provides to initialize control and data transfer for OTA.
- */
-typedef struct
-{
-    void * pControlClient;
-    const void * pNetworkInterface;
-    void * pNetworkCredentials;
-} OtaConnectionContext_t;
-
-/**
- * @ingroup ota_datatypes_structs
  * @brief OTA PAL callback structure
  */
 typedef struct
 {
-    OtaPALAbortCallback_t abortUpdate;                           /* OTA Abort callback pointer */
-    OtaPALActivateNewImageCallback_t activateNewImage;           /* OTA Activate New Image callback pointer */
-    OtaPALCloseFileCallback_t closeFile;                         /* OTA Close File callback pointer */
-    OtaPALCreateFileForRxCallback_t createFileForRx;             /* OTA Create File for Receive callback pointer */
-    OtaPALGetPlatformImageStateCallback_t getPlatformImageState; /* OTA Get Platform Image State callback pointer */
-    OtaPALResetDeviceCallback_t resetDevice;                     /* OTA Reset Device callback pointer */
-    OtaPALSetPlatformImageStateCallback_t setPlatformImageState; /* OTA Set Platform Image State callback pointer */
-    OtaPALWriteBlockCallback_t writeBlock;                       /* OTA Write Block callback pointer */
-    OtaCompleteCallback_t completeCallback;                      /* OTA Job Completed callback pointer */
-    OtaCustomJobCallback_t customJobCallback;                    /* OTA Custom Job callback pointer */
+    OtaPALAbortCallback_t abortUpdate;                           /*!< OTA Abort callback pointer */
+    OtaPALActivateNewImageCallback_t activateNewImage;           /*!< OTA Activate New Image callback pointer */
+    OtaPALCloseFileCallback_t closeFile;                         /*!< OTA Close File callback pointer */
+    OtaPALCreateFileForRxCallback_t createFileForRx;             /*!< OTA Create File for Receive callback pointer */
+    OtaPALGetPlatformImageStateCallback_t getPlatformImageState; /*!< OTA Get Platform Image State callback pointer */
+    OtaPALResetDeviceCallback_t resetDevice;                     /*!< OTA Reset Device callback pointer */
+    OtaPALSetPlatformImageStateCallback_t setPlatformImageState; /*!< OTA Set Platform Image State callback pointer */
+    OtaPALWriteBlockCallback_t writeBlock;                       /*!< OTA Write Block callback pointer */
+    OtaCompleteCallback_t completeCallback;                      /*!< OTA Job Completed callback pointer */
+    OtaCustomJobCallback_t customJobCallback;                    /*!< OTA Custom Job callback pointer */
 } OtaPalCallbacks_t;
 
 
@@ -635,13 +628,12 @@ typedef struct
  * be called with the connection client context before calling @ref ota_function_checkforupdate. Only one
  * OTA Agent may exist.
  *
- * @param[in] pConnectionContext A pointer to a OtaConnectionContext_t object.
+ * @param[in]  pOtaOSCtx A pointer to the OS context
+ * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
+ * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.
- * @param[in] ticksToWait The number of ticks to wait until the OTA Task signals that it is ready.
- * If this is set to zero, then the function will return immediately after creating the OTA task but
- * the OTA task may not be ready to operate yet. The state may be queried with @ref ota_function_getagentstate.
  *
  * @return The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
@@ -660,14 +652,13 @@ OtaState_t OTA_AgentInit( void * pOtaOSCtx,
  * be called with the MQTT messaging client context before calling @ref ota_function_checkforupdate. Only one
  * OTA Agent may exist.
  *
- * @param[in] pConnectionContext A pointer to a OtaConnectionContext_t object.
+ * @param[in] pOtaOSCtx A pointer to the OS context
+ * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
+ * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] pCallbacks Static callback structure for various OTA events. This function will have
  * input of the state of the OTA image after download and during self-test.
- * @param[in] ticksToWait The number of ticks to wait until the OTA Task signals that it is ready.
- * If this is set to zero, then the function will return immediately after creating the OTA task but
- * the OTA task may not be ready to operate yet. The state may be queried with @ref ota_function_getagentstate.
- *
+ * 
  * @return The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
@@ -720,7 +711,7 @@ OtaErr_t OTA_ActivateNewImage( void );
  * OtaImageStateRejected; see OtaImageState_t documentation. This will update the status of the
  * current image and publish to the active job status topic.
  *
- * @param[in] The state to set of the OTA image.
+ * @param[in] state The state to set of the OTA image.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
@@ -756,7 +747,7 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @param[in] pxConnection Update connection context.
+ * @param[in] pConnection Update connection context.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
