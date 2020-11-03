@@ -38,13 +38,13 @@
 #include "ota_os_freertos.h"
 
 /* OTA Event queue attributes.*/
-#define MAX_MESSAGES 10
-#define MAX_MSG_SIZE 12
+#define MAX_MESSAGES    10
+#define MAX_MSG_SIZE    12
 
 /* Array containing pointer to the OTA event structures used to send events to the OTA task. */
 static OTA_EventMsg_t xQueueData[ MAX_MESSAGES ];
 
- /* The queue control structure.  .*/
+/* The queue control structure.  .*/
 static StaticQueue_t xStaticQueue;
 
 /* The queue control handle.  .*/
@@ -53,78 +53,75 @@ QueueHandle_t xOtaEventQueue;
 /* OTA Timer.*/
 
 
-int32_t ota_InitEvent( OtaEventContext_t* pContext )
+int32_t ota_InitEvent( OtaEventContext_t * pContext )
 {
-    (void) pContext;
+    ( void ) pContext;
 
-    xOtaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES, 
-                                          ( UBaseType_t ) MAX_MSG_SIZE, 
-                                          ( uint8_t * ) xQueueData, 
-                                            &xStaticQueue );
-                                            
-    if(  xOtaEventQueue == NULL)
+    xOtaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
+                                         ( UBaseType_t ) MAX_MSG_SIZE,
+                                         ( uint8_t * ) xQueueData,
+                                         &xStaticQueue );
+
+    if( xOtaEventQueue == NULL )
     {
         return 0;
     }
-   
+
     return 1;
 }
 
-int32_t ota_SendEvent( OtaEventContext_t* pContext,
-                       const void* pEventMsg,
-                       unsigned int timeout)
+int32_t ota_SendEvent( OtaEventContext_t * pContext,
+                       const void * pEventMsg,
+                       unsigned int timeout )
 {
-
-    (void) pContext;
-    (void) timeout;
+    ( void ) pContext;
+    ( void ) timeout;
 
     /* Send the event to OTA event queue.*/
-    if ( xQueueSendToBack( xOtaEventQueue, pxEventMsg, ( TickType_t ) 0 ))
+    if( xQueueSendToBack( xOtaEventQueue, pxEventMsg, ( TickType_t ) 0 ) )
     {
-        LogInfo( (  "OTA Event Sent." ) );
+        LogInfo( ( "OTA Event Sent." ) );
         return 1;
-
-    }else
-    {
-        LogDebug ( ( "OTA Event send failed" ) );
-        return 0;
-    }
-
-}
-
-int32_t ota_ReceiveEvent( OtaEventContext_t* pContext,
-                          void* pEventMsg,
-                          uint32_t timeout)
-{
-    (void) pContext;
-    (void) timeout;
-
-    char buff[MAX_MSG_SIZE];
-
-    if( xQueueReceive( xOtaEventQueue, &buff, portMAX_DELAY ) == pdTRUE )
-    {
-        LogInfo( (  "OTA Event receive failed." ) );
     }
     else
     {
-        LogInfo( (  "OTA Event received" ) );
+        LogDebug( ( "OTA Event send failed" ) );
+        return 0;
+    }
+}
+
+int32_t ota_ReceiveEvent( OtaEventContext_t * pContext,
+                          void * pEventMsg,
+                          uint32_t timeout )
+{
+    ( void ) pContext;
+    ( void ) timeout;
+
+    char buff[ MAX_MSG_SIZE ];
+
+    if( xQueueReceive( xOtaEventQueue, &buff, portMAX_DELAY ) == pdTRUE )
+    {
+        LogInfo( ( "OTA Event receive failed." ) );
+    }
+    else
+    {
+        LogInfo( ( "OTA Event received" ) );
 
         /* copy the data from local buffer.*/
         memcpy( pEventMsg, buff, MAX_MSG_SIZE );
         return 1;
     }
-    
+
     return 0;
 }
 
-void ota_DeinitEvent( OtaEventContext_t* pContext )
+void ota_DeinitEvent( OtaEventContext_t * pContext )
 {
-  (void) pContext;
+    ( void ) pContext;
 
-  /* Remove the event queue.*/
-  if( xOtaEventQueue != NULL )
-  {
+    /* Remove the event queue.*/
+    if( xOtaEventQueue != NULL )
+    {
         vQueueDelete( xOtaEventQueue );
-  }
+    }
 }
-
