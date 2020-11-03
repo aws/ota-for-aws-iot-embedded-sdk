@@ -40,6 +40,9 @@ add_library( coverity_analysis
     ${OTA_OS_POSIX_SOURCES}
     ${OTA_MQTT_SOURCES} )
 
+# Build OTA library target without custom config dependency
+target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )
+
 # OTA include path.
 target_include_directories( coverity_analysis PUBLIC
     ${OTA_INCLUDE_PUBLIC_DIRS}
