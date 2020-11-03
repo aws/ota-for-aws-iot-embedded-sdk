@@ -48,7 +48,7 @@ jobs:
         uses: ChicagoFlutter/lcov-cop@v1.0.2
         with:
           path: "build/coverage.info"
-          min_coverage: 100
+          min_coverage: 85
           exclude: "**/*test*"
   doxygen:
     runs-on: ubuntu-20.04
