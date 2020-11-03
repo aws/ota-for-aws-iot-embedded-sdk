@@ -38,14 +38,6 @@
 
 #define OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT    6
 
-/**
- * @brief Internal context structure for decoding CBOR arrays.
- */
-typedef struct OtaMessageDecodeContext
-{
-    CborParser cborParser;
-    CborValue xCborRecursedItem;
-} OtaMessageDecodeContext_t, * OtaMessageDecodeContextPtr_t;
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
@@ -98,7 +90,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pFileId );
+                                         pFileId );
     }
 
     /* Find the block ID. */
@@ -120,7 +112,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pBlockId );
+                                         pBlockId );
     }
 
     /* Find the block size. */
@@ -142,7 +134,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pBlockSize );
+                                         pBlockSize );
     }
 
     /* Find the payload bytes. */
@@ -169,7 +161,8 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        *pPayload = malloc( *pPayloadSize );
+        uint8_t payload[ *pPayloadSize ];
+        *pPayload = payload;
 
         if( NULL == *pPayload )
         {
@@ -202,7 +195,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              uint8_t * pBlockBitmap,
+                                              const uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested )
 {

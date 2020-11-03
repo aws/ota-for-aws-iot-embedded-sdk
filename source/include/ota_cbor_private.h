@@ -64,7 +64,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              uint8_t * pBlockBitmap,
+                                              const uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested );
 
