@@ -57,6 +57,10 @@
  */
 #define CONST_STRLEN( s )    ( ( ( uint32_t ) sizeof( s ) ) - 1UL )
 
+/* The OTA signature algorithm string is specified by the PAL. */
+#define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32
+extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
+
 /*--------------------------- OTA Logging Defines --------------------------*/
 
 /**
