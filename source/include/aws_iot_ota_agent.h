@@ -53,7 +53,7 @@
 
 /**
  * @ingroup ota_helpers
- * @brief Evaluates to the length of a constant string defined like 'static const char str[]= "xyz"; 
+ * @brief Evaluates to the length of a constant string defined like 'static const char str[]= "xyz";
  */
 #define CONST_STRLEN( s )    ( ( ( uint32_t ) sizeof( s ) ) - 1UL )
 
@@ -445,7 +445,10 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  * @structs{ota,OTA library}
  */
 
-/* A composite cryptographic signature structure able to hold our largest supported signature. */
+/**
+ * @ingroup ota_datatypes_struct_constants
+ * @brief A composite cryptographic signature structure able to hold our largest supported signature.
+ */
 
 #define kOTA_MaxSignatureSize    256        /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
 
@@ -453,7 +456,7 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  * @ingroup ota_datatypes_structs
  * @brief OTA File Signature info.
  *
- * File key signature information to verify the authenticity of the incomming file 
+ * File key signature information to verify the authenticity of the incomming file
  */
 typedef struct
 {
@@ -536,7 +539,7 @@ typedef struct
 /* @[define_ota_err_codes] */
 #define OTA_ERR_PANIC                        0xfe000000U /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
 #define OTA_ERR_UNINITIALIZED                0xff000000U /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                         0x00000000U
+#define OTA_ERR_NONE                         0x00000000U /*!< No error occured during the operation. */
 #define OTA_ERR_SIGNATURE_CHECK_FAILED       0x01000000U /*!< The signature check failed for the specified file. */
 #define OTA_ERR_BAD_SIGNER_CERT              0x02000000U /*!< The signer certificate was not readable or zero length. */
 #define OTA_ERR_OUT_OF_MEMORY                0x03000000U /*!< General out of memory error. */
@@ -658,7 +661,7 @@ OtaState_t OTA_AgentInit( void * pOtaOSCtx,
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] pCallbacks Static callback structure for various OTA events. This function will have
  * input of the state of the OTA image after download and during self-test.
- * 
+ *
  * @return The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
@@ -754,8 +757,11 @@ OtaErr_t OTA_Suspend( void );
  */
 OtaErr_t OTA_Resume( void * pConnection );
 
-/* OTA agent task function. */
-
+/**
+ * @brief OTA agent task function.
+ *
+ * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
+ */
 void otaAgentTask( const void * pUnused );
 
 /*---------------------------------------------------------------------------*/
