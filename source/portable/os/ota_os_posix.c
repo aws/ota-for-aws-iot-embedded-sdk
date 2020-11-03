@@ -178,7 +178,7 @@ static void timerCallback( union sigval arg )
 OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
                               const char * const pTimerName,
                               const uint32_t timeout,
-                              void ( * callback )( void * ) )
+                              void ( *callback )( void * ) )
 {
     ( void ) pTimerCtx;
 
