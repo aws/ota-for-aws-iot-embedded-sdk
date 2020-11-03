@@ -2658,7 +2658,7 @@ void otaAgentTask( const void * pUnused )
             {
                 OTA_LOG_L3( "[%s] , State matched [%s],  Event matched  [%s]\n",
                             OTA_METHOD_NAME,
-                            pOtaAgentStateStrings[ i ]
+                            pOtaAgentStateStrings[ i ],
                             pOtaEventStrings[ i ] );
 
                 /*
