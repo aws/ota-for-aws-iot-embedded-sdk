@@ -128,8 +128,6 @@ static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
 
 static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "subscribeToJobNotificationTopics" );
-
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
     uint16_t topicLen = 0;
@@ -183,8 +181,6 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
  */
 static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "unsubscribeFromDataStream" );
-
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     char pOtaRxStreamTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
@@ -226,8 +222,6 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
  */
 static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "unsubscribeFromJobNotificationTopic" );
-
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     char pJobTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
@@ -276,8 +270,6 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       uint32_t msgSize,
                                       uint8_t qos )
 {
-    DEFINE_OTA_METHOD_NAME( "publishStatusMessage" );
-
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
     char pTopicBuffer[ OTA_MAX_TOPIC_LEN ];
@@ -322,8 +314,6 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              const OtaFileContext_t * pOTAFileCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "buildStatusMessageReceiving" );
-
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
@@ -443,8 +433,6 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
 OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvRequestJob_Mqtt" );
-
     char pJobTopic[ OTA_MAX_TOPIC_LEN ];
     static uint32_t reqCounter = 0;
     OtaErr_t ret = OTA_ERR_UNINITIALIZED;
@@ -506,8 +494,6 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t reason,
                                int32_t subReason )
 {
-    DEFINE_OTA_METHOD_NAME( "updateJobStatus_Mqtt" );
-
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
@@ -567,8 +553,6 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
  */
 OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvInitFileTransfer_Mqtt" );
-
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
 
     uint16_t usTopicLen = 0;
@@ -601,8 +585,6 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
  */
 OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
-    DEFINE_OTA_METHOD_NAME( "prvRequestFileBlock_Mqtt" );
-
     size_t msgSizeFromStream;
     uint32_t numBlocks, bitmapLen;
     uint32_t msgSizeToPublish = 0;
@@ -705,7 +687,6 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
                                uint8_t ** pPayload,
                                size_t * pPayloadSize )
 {
-    DEFINE_OTA_METHOD_NAME( "prvDecodeFileBlock_Mqtt" );
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
 
     /* Decode the CBOR content. */
