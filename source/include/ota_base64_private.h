@@ -34,7 +34,6 @@
 /* Standard includes. */
 #include <stdint.h>
 #include <stdlib.h>
-#include <inttypes.h>
 
 /**
  * @brief Base64 function success.
