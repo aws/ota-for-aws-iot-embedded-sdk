@@ -32,7 +32,16 @@
 #ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
 #define _AWS_IOT_OTA_AGENT_INTERNAL_H_
 
-#include "ota_config.h"
+/* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
+ * without a custom config. If a custom config is provided, the
+ * OTA_DO_NOT_USE_CUSTOM_CONFIG macro should not be defined. */
+#ifndef OTA_DO_NOT_USE_CUSTOM_CONFIG
+    #include "ota_config.h"
+#endif
+
+/* Include config defaults header to get default values of configs not defined
+ * in ota_config.h file. */
+#include "ota_config_defaults.h"
 
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
