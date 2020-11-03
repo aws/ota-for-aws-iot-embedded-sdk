@@ -29,74 +29,95 @@
  */
 
 #include "ota_base64_private.h"
+#include <assert.h>
 
 /**
  * @brief Number to represent both line feed and carriage return symbols in the
  *        pBase64SymbolToIndexMap table.
  */
-#define NEWLINE                                64U
+#define NEWLINE                                  64U
 
 /**
  * @brief Number to represent the whitespace character in the pBase64SymbolToIndexMap table.
  */
-#define WHITESPACE                             65U
+#define WHITESPACE                               65U
 
 /**
  * @brief Number to represent the Base64 padding symbol in the pBase64SymbolToIndexMap table.
  */
-#define PADDING_SYMBOL                         66U
+#define PADDING_SYMBOL                           66U
 
 /**
  * @brief Number to represent values that are invalid in the pBase64SymbolToIndexMap table.
  */
-#define NON_BASE64_INDEX                       67U
+#define NON_BASE64_INDEX                         67U
 
 /**
  * @brief Maximum value for a Base64 index that represents a valid, non-formatting Base64 symbol.
  */
-#define VALID_BASE64_SYMBOL_INDEX_RANGE_MAX    63U
+#define VALID_BASE64_SYMBOL_INDEX_RANGE_MAX      63U
 
 /**
  * @brief Number of bits in a sextet.
  */
-#define SEXTET_SIZE                            6
+#define SEXTET_SIZE                              6
 
 /**
  * @brief Maximum number of Base64 symbols to store in a buffer before decoding them.
  */
-#define MAX_NUM_BASE64_DATA                    4U
+#define MAX_NUM_BASE64_DATA                      4U
 
 /**
  * @brief Maximum number of padding symbols in a string of encoded data that is considered valid.
  */
-#define MAX_EXPECTED_NUM_PADDING               2
+#define MAX_EXPECTED_NUM_PADDING                 2
 
 /**
  * @brief Smallest amount of data that can be Base64 encoded is a byte. Encoding a single byte of
  *        data results in 2 bytes of encoded data. Therefore if the encoded data is smaller than 2
  *        bytes, there is an error with the data.
  */
-#define MIN_VALID_ENCODED_DATA_SIZE            2U
+#define MIN_VALID_ENCODED_DATA_SIZE              2U
 
 /**
  * @brief The number of bits in a single octet.
  */
-#define SIZE_OF_ONE_OCTET                      8U
+#define SIZE_OF_ONE_OCTET                        8U
 
 /**
  * @brief The number of bits in two octets.
  */
-#define SIZE_OF_TWO_OCTETS                     16U
+#define SIZE_OF_TWO_OCTETS                       16U
 
 /**
  * @brief The number of padding bits that are present when there are two sextets of encoded data.
  */
-#define SIZE_OF_PADDING_WITH_TWO_SEXTETS       4
+#define SIZE_OF_PADDING_WITH_TWO_SEXTETS         4
 
 /**
  * @brief The number of padding bits that are present when there are three sextets of encoded data.
  */
-#define SIZE_OF_PADDING_WITH_THREE_SEXTETS     2
+#define SIZE_OF_PADDING_WITH_THREE_SEXTETS       2
+
+/**
+ * @brief Inclusive lower bound for valid values that can be contained in pBase64SymbolToIndexMap.
+ */
+#define SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND    0U
+
+/**
+ * @brief Inclusive upper bound for valid values that can be contained in pBase64SymbolToIndexMap.
+ */
+#define SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND    67U
+
+/**
+ * @brief Inclusive lower bound for the range of valid Base64 index values.
+ */
+#define BASE64_INDEX_VALUE_LOWER_BOUND           0U
+
+/**
+ * @brief Inclusive upper bound for the range of valid Base64 index values.
+ */
+#define BASE64_INDEX_VALUE_UPPER_BOUND           63U
 
 /**
  * @brief This table takes is indexed by an Ascii character and returns the respective Base64 index.
@@ -183,8 +204,14 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
                                       int64_t * pNumWhitespace )
 {
     int32_t returnVal = OTA_BASE64_SUCCESS;
-    int64_t numPadding = *pNumPadding;
-    int64_t numWhitespace = *pNumWhitespace;
+    int64_t numPadding;
+    int64_t numWhitespace;
+
+    assert( pNumPadding != NULL );
+    assert( pNumWhitespace != NULL );
+
+    numPadding = *pNumPadding;
+    numWhitespace = *pNumWhitespace;
 
     /* Validate that the Base64 index is valid and in an appropriate place. */
     if( base64Index == NON_BASE64_INDEX )
@@ -219,6 +246,9 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
      * and 63. Check that there was not a whitespace or padding symbol before this valid index. */
     else
     {
+        assert( ( BASE64_INDEX_VALUE_LOWER_BOUND <= base64Index )
+                && ( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND ) );
+
         if( ( numWhitespace != 0 ) || ( numPadding != 0 ) )
         {
             returnVal = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
@@ -246,8 +276,16 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
                                         uint32_t * pBase64IndexBuffer,
                                         uint32_t * pNumDataInBuffer )
 {
-    uint32_t base64IndexBuffer = *pBase64IndexBuffer;
-    uint32_t numDataInBuffer = *pNumDataInBuffer;
+    uint32_t base64IndexBuffer;
+    uint32_t numDataInBuffer;
+
+    assert( pBase64IndexBuffer != NULL );
+    assert( pNumDataInBuffer != NULL );
+    assert( ( SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND <= base64Index )
+            && ( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND ) );
+
+    base64IndexBuffer = *pBase64IndexBuffer;
+    numDataInBuffer = *pNumDataInBuffer;
 
     /* Only update the buffer if the Base64 index is representing a Base64 digit. Base64 digits
      * have a Base64 index that is inclusively between 0 and 63. */
@@ -294,10 +332,20 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
                                         size_t * pOutputLen )
 {
     int32_t returnVal = OTA_BASE64_SUCCESS;
-    size_t outputLen = *pOutputLen;
-    uint32_t base64IndexBuffer = *pBase64IndexBuffer;
-    uint32_t numDataInBuffer = *pNumDataInBuffer;
-    uint32_t numDataToWrite = ( numDataInBuffer * 3U ) / 4U;
+    size_t outputLen;
+    uint32_t base64IndexBuffer;
+    uint32_t numDataInBuffer;
+    uint32_t numDataToWrite;
+
+    assert( pBase64IndexBuffer != NULL );
+    assert( pNumDataInBuffer != NULL );
+    assert( pDest != NULL );
+    assert( pOutputLen != NULL );
+
+    outputLen = *pOutputLen;
+    base64IndexBuffer = *pBase64IndexBuffer;
+    numDataInBuffer = *pNumDataInBuffer;
+    numDataToWrite = ( numDataInBuffer * 3U ) / 4U;
 
     if( destLen < ( outputLen + numDataToWrite ) )
     {
