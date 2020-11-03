@@ -64,12 +64,24 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     CborParser cborParser;
     CborValue cborValue, cborMap;
 
+    if( ( pFileId == NULL ) ||
+        ( pBlockId == NULL ) ||
+        ( pBlockSize == NULL ) ||
+        ( pPayload == NULL ) ||
+        ( pPayloadSize == NULL ) )
+    {
+        cborResult = CborUnknownError;
+    }
+
     /* Initialize the parser. */
-    cborResult = cbor_parser_init( pMessageBuffer,
-                                   messageSize,
-                                   0,
-                                   &cborParser,
-                                   &cborMap );
+    if( CborNoError == cborResult )
+    {
+        cborResult = cbor_parser_init( pMessageBuffer,
+                                       messageSize,
+                                       0,
+                                       &cborParser,
+                                       &cborMap );
+    }
 
     /* Get the outer element and confirm that it's a "map," i.e., a set of
      * CBOR key/value pairs. */
@@ -223,14 +235,25 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
     CborError cborResult = CborNoError;
     CborEncoder cborEncoder, cborMapEncoder;
 
+    if( ( pMessageBuffer == NULL ) ||
+        ( pEncodedMessageSize == NULL ) ||
+        ( pClientToken == NULL ) ||
+        ( pBlockBitmap == NULL ) )
+    {
+        cborResult = CborUnknownError;
+    }
+
     /* Initialize the CBOR encoder. */
-    cbor_encoder_init( &cborEncoder,
-                       pMessageBuffer,
-                       messageBufferSize,
-                       0 );
-    cborResult = cbor_encoder_create_map( &cborEncoder,
-                                          &cborMapEncoder,
-                                          OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
+    if( CborNoError == cborResult )
+    {
+        cbor_encoder_init( &cborEncoder,
+                           pMessageBuffer,
+                           messageBufferSize,
+                           0 );
+        cborResult = cbor_encoder_create_map( &cborEncoder,
+                                              &cborMapEncoder,
+                                              OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
+    }
 
     /* Encode the client token key and value. */
     if( CborNoError == cborResult )
