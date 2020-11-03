@@ -161,8 +161,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        uint8_t payload[ *pPayloadSize ];
-        *pPayload = payload;
+        *pPayload = malloc( *pPayloadSize );
 
         if( NULL == *pPayload )
         {
