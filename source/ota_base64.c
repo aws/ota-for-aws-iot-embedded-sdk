@@ -194,16 +194,16 @@ static const uint8_t pBase64SymbolToIndexMap[] =
  *                whitespace symbol.
  *
  * @return        One of the following:
- *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *                - #Base64Success if the Base64 encoded data was valid
  *                  and successfully decoded.
  *                - An error code defined in ota_base64_private.h if the
  *                  encoded data or input parameters are invalid.
  */
-static int32_t preprocessBase64Index( uint8_t base64Index,
-                                      int64_t * pNumPadding,
-                                      int64_t * pNumWhitespace )
+static Base64Status_t preprocessBase64Index( uint8_t base64Index,
+                                             int64_t * pNumPadding,
+                                             int64_t * pNumWhitespace )
 {
-    int32_t returnVal = OTA_BASE64_SUCCESS;
+    Base64Status_t returnVal = Base64Success;
     int64_t numPadding;
     int64_t numWhitespace;
 
@@ -216,17 +216,17 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
     /* Validate that the Base64 index is valid and in an appropriate place. */
     if( base64Index == NON_BASE64_INDEX )
     {
-        returnVal = OTA_ERR_BASE64_INVALID_SYMBOL;
+        returnVal = Base64InvalidSymbol;
     }
     else if( base64Index == PADDING_SYMBOL )
     {
         if( numWhitespace != 0 )
         {
-            returnVal = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
+            returnVal = Base64InvalidSymbolOrdering;
         }
         else if( ++numPadding > MAX_EXPECTED_NUM_PADDING )
         {
-            returnVal = OTA_ERR_BASE64_INVALID_PADDING_SYMBOL;
+            returnVal = Base64InvalidPaddingSymbol;
         }
         else
         {
@@ -246,12 +246,12 @@ static int32_t preprocessBase64Index( uint8_t base64Index,
      * and 63. Check that there was not a whitespace or padding symbol before this valid index. */
     else
     {
-        assert( ( BASE64_INDEX_VALUE_LOWER_BOUND <= base64Index )
-                && ( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND ) );
+        assert( ( BASE64_INDEX_VALUE_LOWER_BOUND <= base64Index ) &&
+                ( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND ) );
 
         if( ( numWhitespace != 0 ) || ( numPadding != 0 ) )
         {
-            returnVal = OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING;
+            returnVal = Base64InvalidSymbolOrdering;
         }
     }
 
@@ -281,8 +281,8 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
 
     assert( pBase64IndexBuffer != NULL );
     assert( pNumDataInBuffer != NULL );
-    assert( ( SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND <= base64Index )
-            && ( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND ) );
+    assert( ( SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND <= base64Index ) &&
+            ( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND ) );
 
     base64IndexBuffer = *pBase64IndexBuffer;
     numDataInBuffer = *pNumDataInBuffer;
@@ -320,18 +320,18 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
  *                should be written.
  *
  * @return        One of the following:
- *                - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *                - #Base64Success if the Base64 encoded data was valid
  *                  and successfully decoded.
  *                - An error code defined in ota_base64_private.h if the
  *                  encoded data or input parameters are invalid.
  */
-static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
-                                        uint32_t * pNumDataInBuffer,
-                                        uint8_t * pDest,
-                                        const size_t destLen,
-                                        size_t * pOutputLen )
+static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
+                                               uint32_t * pNumDataInBuffer,
+                                               uint8_t * pDest,
+                                               const size_t destLen,
+                                               size_t * pOutputLen )
 {
-    int32_t returnVal = OTA_BASE64_SUCCESS;
+    Base64Status_t returnVal = Base64Success;
     size_t outputLen;
     uint32_t base64IndexBuffer;
     uint32_t numDataInBuffer;
@@ -349,7 +349,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
 
     if( destLen < ( outputLen + numDataToWrite ) )
     {
-        returnVal = OTA_ERR_BASE64_INVALID_BUFFER_SIZE;
+        returnVal = Base64InvalidBufferSize;
     }
     else
     {
@@ -371,10 +371,10 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * least significant bits are converted into two octets of data. */
             if( ( base64IndexBuffer & 0x3U ) != 0U )
             {
-                returnVal = OTA_ERR_BASE64_NON_ZERO_PADDING;
+                returnVal = Base64NonZeroPadding;
             }
 
-            if( returnVal == OTA_BASE64_SUCCESS )
+            if( returnVal == Base64Success )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
                 pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
@@ -390,10 +390,10 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
              * significant bits are converted into one octet of data. */
             if( ( base64IndexBuffer & 0xFU ) != 0U )
             {
-                returnVal = OTA_ERR_BASE64_NON_ZERO_PADDING;
+                returnVal = Base64NonZeroPadding;
             }
 
-            if( returnVal == OTA_BASE64_SUCCESS )
+            if( returnVal == Base64Success )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
                 pDest[ outputLen ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
@@ -407,7 +407,7 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
          * is encountered, it is assumed to have been a mistake and is considered an error. */
         else if( numDataInBuffer == 1U )
         {
-            returnVal = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
+            returnVal = Base64InvalidInputSize;
         }
         else
         {
@@ -432,16 +432,16 @@ static int32_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
  * @param[in]  encodedLen Length of the pEncodedData buffer.
  *
  * @return     One of the following:
- *             - #OTA_BASE64_SUCCESS if the Base64 encoded data was valid
+ *             - #Base64Success if the Base64 encoded data was valid
  *               and successfully decoded.
  *             - An error code defined in ota_base64_private.h if the
  *               encoded data or input parameters are invalid.
  */
-int32_t base64Decode( uint8_t * pDest,
-                      const size_t destLen,
-                      size_t * pResultLen,
-                      const uint8_t * pEncodedData,
-                      const size_t encodedLen )
+Base64Status_t base64Decode( uint8_t * pDest,
+                             const size_t destLen,
+                             size_t * pResultLen,
+                             const uint8_t * pEncodedData,
+                             const size_t encodedLen )
 {
     uint32_t base64IndexBuffer = 0;
     uint32_t numDataInBuffer = 0;
@@ -449,20 +449,20 @@ int32_t base64Decode( uint8_t * pDest,
     size_t outputLen = 0;
     int64_t numPadding = 0;
     int64_t numWhitespace = 0;
-    int32_t returnVal = OTA_BASE64_SUCCESS;
+    Base64Status_t returnVal = Base64Success;
 
     if( ( pEncodedData == NULL ) || ( pDest == NULL ) || ( pResultLen == NULL ) )
     {
-        returnVal = OTA_ERR_BASE64_NULL_PTR;
+        returnVal = Base64NullPointerInput;
     }
 
     if( encodedLen < MIN_VALID_ENCODED_DATA_SIZE )
     {
-        returnVal = OTA_ERR_BASE64_INVALID_INPUT_SIZE;
+        returnVal = Base64InvalidInputSize;
     }
 
     /* This loop will decode the first (encodedLen - (encodedLen % 4)) amount of data. */
-    while( ( returnVal == OTA_BASE64_SUCCESS ) &&
+    while( ( returnVal == Base64Success ) &&
            ( pCurrBase64Symbol < ( pEncodedData + encodedLen ) ) )
     {
         uint8_t base64Index = 0;
@@ -476,7 +476,7 @@ int32_t base64Decode( uint8_t * pDest,
                                            &numPadding,
                                            &numWhitespace );
 
-        if( returnVal != OTA_BASE64_SUCCESS )
+        if( returnVal != Base64Success )
         {
             break;
         }
@@ -501,7 +501,7 @@ int32_t base64Decode( uint8_t * pDest,
      *
      * Note: This implementation assumes that non-zero padding bits are an error. This prevents
      * having multiple non-matching encoded data strings map to identical decoded strings. */
-    if( returnVal == OTA_BASE64_SUCCESS )
+    if( returnVal == Base64Success )
     {
         returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
                                              &numDataInBuffer,
@@ -510,7 +510,7 @@ int32_t base64Decode( uint8_t * pDest,
                                              &outputLen );
     }
 
-    if( returnVal == OTA_BASE64_SUCCESS )
+    if( returnVal == Base64Success )
     {
         *pResultLen = outputLen;
     }

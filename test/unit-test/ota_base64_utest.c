@@ -172,7 +172,7 @@ void test_OTA_base64Decode_ValidTwoPaddingSymbols( void )
                            BASE64_VALID_DATA_TWO_PADDING_ENCODED,
                            BASE64_VALID_DATA_TWO_PADDING_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_TWO_PADDING_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_TWO_PADDING_DECODED, pDecodedResultBuffer );
 }
@@ -193,7 +193,7 @@ void test_OTA_base64Decode_ValidOnePaddingSymbol( void )
                            BASE64_VALID_DATA_ONE_PADDING_ENCODED,
                            BASE64_VALID_DATA_ONE_PADDING_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ONE_PADDING_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ONE_PADDING_DECODED, pDecodedResultBuffer );
 }
@@ -214,7 +214,7 @@ void test_OTA_base64Decode_ValidNoPaddingSymbols( void )
                            BASE64_VALID_DATA_ZERO_PADDING_ENCODED,
                            BASE64_VALID_DATA_ZERO_PADDING_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ZERO_PADDING_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ZERO_PADDING_DECODED, pDecodedResultBuffer );
 }
@@ -236,7 +236,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
                            BASE64_VALID_DATA_TWO_PADDING_REMOVED_ENCODED,
                            BASE64_VALID_DATA_TWO_PADDING_REMOVED_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED, pDecodedResultBuffer );
 
@@ -249,7 +249,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
                            BASE64_VALID_DATA_ONE_PADDING_REMOVED_ENCODED,
                            BASE64_VALID_DATA_ONE_PADDING_REMOVED_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ONE_PADDING_REMOVED_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ONE_PADDING_REMOVED_DECODED, pDecodedResultBuffer );
 }
@@ -270,7 +270,7 @@ void test_OTA_base64Decode_ValidDataContainsLF( void )
                            BASE64_VALID_DATA_LF_ENCODED,
                            BASE64_VALID_DATA_LF_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_LF_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_LF_DECODED, pDecodedResultBuffer );
 }
@@ -291,7 +291,7 @@ void test_OTA_base64Decode_ValidDataContainsCRLF( void )
                            BASE64_VALID_DATA_CRLF_ENCODED,
                            BASE64_VALID_DATA_CRLF_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_CRLF_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_CRLF_DECODED, pDecodedResultBuffer );
 }
@@ -313,7 +313,7 @@ void test_OTA_base64Decode_ValidDecodeBufferExactSize( void )
                            BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_DECODED, pDecodedResultBuffer );
 }
@@ -336,7 +336,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
                            BASE64_VALID_DATA_WHITESPACE_ENCODED,
                            BASE64_VALID_DATA_WHITESPACE_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_WHITESPACE_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_WHITESPACE_DECODED, pDecodedResultBuffer );
 
@@ -350,13 +350,13 @@ void test_OTA_base64Decode_ValidWhitespace( void )
                            BASE64_VALID_DATA_PADDING_WHITESPACE_ENCODED,
                            BASE64_VALID_DATA_PADDING_WHITESPACE_ENCODED_LEN );
 
-    TEST_ASSERT_EQUAL_INT( OTA_BASE64_SUCCESS, result );
+    TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED_LEN, resultLen );
     TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED, pDecodedResultBuffer );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_NULL_PTR when a null
+ * @brief Test that base64Decode returns Base64NullPointerInput when a null
  *        pointer is passed into the function.
  */
 void test_OTA_base64Decode_InvalidNullInputs( void )
@@ -372,7 +372,7 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
                            &resultLen,
                            BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_NULL_PTR, result );
+    TEST_ASSERT_EQUAL_INT( Base64NullPointerInput, result );
 
     /* Test for having a null pointer passed in for pResultLen while other
      * parameters are valid. */
@@ -383,7 +383,7 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
                            NULL,
                            BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_NULL_PTR, result );
+    TEST_ASSERT_EQUAL_INT( Base64NullPointerInput, result );
 
     /* Test for having a null pointer passed in for pEncodedData while other
      * parameters are valid. */
@@ -394,11 +394,11 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
                            &resultLen,
                            NULL,
                            BASE64_VALID_DATA_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_NULL_PTR, result );
+    TEST_ASSERT_EQUAL_INT( Base64NullPointerInput, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_PADDING_SYMBOL
+ * @brief Test that base64Decode returns Base64InvalidPaddingSymbol
  *        when there are three padding symbols in the encoded data.
  */
 void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
@@ -413,7 +413,7 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
                            &resultLen,
                            BASE64_INVALID_DATA_ONE_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_ONE_EXCESS_PADDING_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_PADDING_SYMBOL, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 
     /* Test for three padding characters when there should be only one or zero. */
     resultLen = 0;
@@ -423,7 +423,7 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
                            &resultLen,
                            BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_PADDING_SYMBOL, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 
     /* Test for three padding characters when there should be zero. */
     resultLen = 0;
@@ -433,11 +433,11 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
                            &resultLen,
                            BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_PADDING_SYMBOL, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_SYMBOL when
+ * @brief Test that base64Decode returns Base64InvalidSymbol when
  *        there is a symbol that is not a valid Base64 symbol. The valid Base64
  *        symbols are assumed to be the Base64 digits, line feeds, carriage
  *        returns, spaces, and the padding symbol '='.
@@ -488,12 +488,12 @@ void test_OTA_base64Decode_InvalidNonBase64Symbols( void )
                                &resultLen,
                                pModifiedEncodedData,
                                BASE64_VALID_DATA_ENCODED_LEN );
-        TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL, result );
+        TEST_ASSERT_EQUAL_INT( Base64InvalidSymbol, result );
     }
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_NON_ZERO_PADDING when
+ * @brief Test that base64Decode returns Base64NonZeroPadding when
  *        the encoded data contains padding bits and they are not set to zero.
  */
 void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
@@ -508,7 +508,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
                            &resultLen,
                            BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED,
                            BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_NON_ZERO_PADDING, result );
+    TEST_ASSERT_EQUAL_INT( Base64NonZeroPadding, result );
 
     /* Test the case where there are four padding bits and they have non-zero values. */
     resultLen = 0;
@@ -518,11 +518,11 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
                            &resultLen,
                            BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED,
                            BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_NON_ZERO_PADDING, result );
+    TEST_ASSERT_EQUAL_INT( Base64NonZeroPadding, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING
+ * @brief Test that base64Decode returns Base64InvalidSymbolOrdering
  *        when the encoded data contains spaces that are in places other than
  *        the end of the string.
  */
@@ -539,7 +539,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
                            &resultLen,
                            BASE64_INVALID_DATA_WHITESPACE_AT_FRONT_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_AT_FRONT_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
     /* Test for having a whitespace character in the middle of an otherwise
      * valid Base64 encoded data string. */
@@ -550,7 +550,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
                            &resultLen,
                            BASE64_INVALID_DATA_WHITESPACE_AT_MIDDLE_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_AT_MIDDLE_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
     /* Test for having a whitespace character in between the valid Base64
      * encoded data and a valid padding character. */
@@ -561,11 +561,11 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
                            &resultLen,
                            BASE64_INVALID_DATA_WHITESPACE_BEFORE_PADDING_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_BEFORE_PADDING_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_INPUT_SIZE when
+ * @brief Test that base64Decode returns Base64InvalidInputSize when
  *        the encoded data is impossibly small. The smallest amount of data
  *        that can be encoded is one byte. When one byte is encoded, it will
  *        always result in two bytes of data.
@@ -582,11 +582,11 @@ void test_OTA_base64Decode_InvalidInputSize( void )
                            &resultLen,
                            BASE64_INVALID_DATA_IMPOSSIBLY_SMALL_ENCODED,
                            BASE64_INVALID_DATA_IMPOSSIBLY_SMALL_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_INPUT_SIZE, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidInputSize, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_BUFFER_SIZE
+ * @brief Test that base64Decode returns Base64InvalidBufferSize
  *        when the buffer passed in for the pDest parameter is too small to
  *        contain the decoded result.
  */
@@ -604,11 +604,11 @@ void test_OTA_base64Decode_InvalidDecodeBufferSize( void )
                            &resultLen,
                            BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_BUFFER_SIZE, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidBufferSize, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_INPUT_SIZE when the
+ * @brief Test that base64Decode returns Base64InvalidInputSize when the
  *        encoded data to decode is a length that is not possible if the
  *        original encoded data was encoded correctly.
  */
@@ -626,11 +626,11 @@ void test_OTA_base64Decode_InvalidEncodedDataLength( void )
                            &resultLen,
                            BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED,
                            BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_INPUT_SIZE, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidInputSize, result );
 }
 
 /**
- * @brief Test that base64Decode returns OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING
+ * @brief Test that base64Decode returns Base64InvalidSymbolOrdering
  *        when the encoded data to decode has a padding symbol that is located
  *        somewhere other than at the end of the data.
  */
@@ -646,7 +646,7 @@ void test_OTA_base64Decode_InvalidPaddingPlacement( void )
                            &resultLen,
                            BASE64_INVALID_DATA_PADDING_AT_FRONT_ENCODED,
                            BASE64_INVALID_DATA_PADDING_AT_FRONT_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
     /* Test for when a Base64 padding symbol in the middle of otherwise valid data. */
     resultLen = 0;
@@ -656,7 +656,7 @@ void test_OTA_base64Decode_InvalidPaddingPlacement( void )
                            &resultLen,
                            BASE64_INVALID_DATA_PADDING_AT_MIDDLE_ENCODED,
                            BASE64_INVALID_DATA_PADDING_AT_MIDDLE_ENCODED_LEN );
-    TEST_ASSERT_EQUAL_INT( OTA_ERR_BASE64_INVALID_SYMBOL_ORDERING, result );
+    TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 }
 
 /* ========================================================================== */
