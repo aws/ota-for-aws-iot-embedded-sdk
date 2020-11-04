@@ -286,7 +286,7 @@ pformat
 phostname
 pjobname
 pjobtopic
-pJobtopicgetnext
+pjobtopicgetnext
 pjobtopicnotifynext
 pjson
 plaintext
@@ -311,6 +311,7 @@ potagetstreamtopictemplate
 potajobsgetnextacceptedtopictemplate
 potajobsgetnexttopictemplate
 potajobsnotifynexttopictemplate
+potajobstatusreasonstrtemplate
 potajobstatusreasonvaltemplate
 potajobstatusreceivedetailstemplate
 potajobstatusselftestdetailstemplate
