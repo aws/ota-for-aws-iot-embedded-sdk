@@ -45,16 +45,16 @@
 #include "ota_appversion32.h"
 
 /* General constants. */
-#define OTA_SUBSCRIBE_WAIT_MS          30000UL  /*!< Timeout in seconds for a subscribe. */
-#define OTA_UNSUBSCRIBE_WAIT_MS        1000UL   /*!< Timeout in seconds for a unsubscribe. */
-#define OTA_PUBLISH_WAIT_MS            10000UL  /*!< Timeout in seconds for publish operation. */
-#define OTA_SUBSCRIBE_WAIT_TICKS       pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_MS ) /*!< Timeout in ticks for a subscribe. */
+#define OTA_SUBSCRIBE_WAIT_MS          30000UL                                  /*!< Timeout in seconds for a subscribe. */
+#define OTA_UNSUBSCRIBE_WAIT_MS        1000UL                                   /*!< Timeout in seconds for a unsubscribe. */
+#define OTA_PUBLISH_WAIT_MS            10000UL                                  /*!< Timeout in seconds for publish operation. */
+#define OTA_SUBSCRIBE_WAIT_TICKS       pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_MS )   /*!< Timeout in ticks for a subscribe. */
 #define OTA_UNSUBSCRIBE_WAIT_TICKS     pdMS_TO_TICKS( OTA_UNSUBSCRIBE_WAIT_MS ) /*!< Timeout in ticks for a unsubscribe. */
-#define OTA_PUBLISH_WAIT_TICKS         pdMS_TO_TICKS( OTA_PUBLISH_WAIT_MS ) /*!< Timeout in ticks for publish operation. */
-#define OTA_MAX_PUBLISH_RETRIES        3                    /*!< Max number of publish retries */
-#define OTA_RETRY_DELAY_MS             1000UL               /*!< Delay between publish retries */
-#define U32_MAX_PLACES                 10U                  /*!< Maximum number of output digits of an unsigned long value. */
-#define OTA_MAX_TOPIC_LEN              256U                 /*!< Max length of a dynamically generated topic string (usually on the stack). */
+#define OTA_PUBLISH_WAIT_TICKS         pdMS_TO_TICKS( OTA_PUBLISH_WAIT_MS )     /*!< Timeout in ticks for publish operation. */
+#define OTA_MAX_PUBLISH_RETRIES        3                                        /*!< Max number of publish retries */
+#define OTA_RETRY_DELAY_MS             1000UL                                   /*!< Delay between publish retries */
+#define U32_MAX_PLACES                 10U                                      /*!< Maximum number of output digits of an unsigned long value. */
+#define OTA_MAX_TOPIC_LEN              256U                                     /*!< Max length of a dynamically generated topic string (usually on the stack). */
 
 /* Stream GET message constants. */
 #define OTA_CLIENT_TOKEN               "rdy"                /*!< Arbitrary client token sent in the stream "GET" message. */
@@ -63,34 +63,45 @@
 #define OTA_STATUS_MSG_MAX_SIZE        128U             /*!< Max length of a job status message to the service. */
 #define OTA_UPDATE_STATUS_FREQUENCY    64U              /*!< Update the job status every 64 unique blocks received. */
 
-/*lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future. */
-/* Topic strings used by the OTA process. */
-/* These first few are topic extensions to the dynamic base topic that includes the Thing name. */
-static const char pOtaJobsGetNextAcceptedTopicTemplate[] = "$aws/things/%s/jobs/$next/get/accepted";
-static const char pOtaJobsNotifyNextTopicTemplate[] = "$aws/things/%s/jobs/notify-next";
-static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";
-static const char pOtaJobStatusTopicTemplate[] = "$aws/things/%s/jobs/%s/update";
-static const char pOtaStreamDataTopicTemplate[] = "$aws/things/%s/streams/%s/data/cbor";
-static const char pOtaGetStreamTopicTemplate[] = "$aws/things/%s/streams/%s/get/cbor";
-static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";
-static const char pOtaJobStatusStatusTemplate[] = "{\"status\":\"%s\",\"statusDetails\":{";
-static const char pOtaJobStatusReceiveDetailsTemplate[] = "\"%s\":\"%u/%u\"}}";
-static const char pOtaJobStatusSelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}";
-static const char pOtaJobStatusReasonStrTemplate[] = "\"reason\":\"%s: 0x%08x\"}}";
-static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.%u\"}}";
-static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";
-static const char pOtaStringReceive[] = "receive";
 
-/* We map all of the above status cases to one of these 4 status strings.
+/**
+ *  @addtogroup ota_mqtt_topic_strings
+ *  @brief Topic strings used by the OTA process.
+ *
+ * These first few are topic extensions to the dynamic base topic that includes the Thing name.
+ * lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future.
+ *  @{
+ */
+static const char pOtaJobsGetNextAcceptedTopicTemplate[] = "$aws/things/%s/jobs/$next/get/accepted";                        /*!< Topic template for getting next job. */
+static const char pOtaJobsNotifyNextTopicTemplate[] = "$aws/things/%s/jobs/notify-next";                                    /*!< Topic template to notify next . */
+static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
+static const char pOtaJobStatusTopicTemplate[] = "$aws/things/%s/jobs/%s/update";                                           /*!< Topic template to update the current job. */
+static const char pOtaStreamDataTopicTemplate[] = "$aws/things/%s/streams/%s/data/cbor";                                    /*!< Topic template to receive data over a stream. */
+static const char pOtaGetStreamTopicTemplate[] = "$aws/things/%s/streams/%s/get/cbor";                                      /*!< Topic template to request next data over a stream. */
+static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                              /*!< Used to specify client token id to authenticate job. */
+static const char pOtaJobStatusStatusTemplate[] = "{\"status\":\"%s\",\"statusDetails\":{";                                 /*!< Used to specify the status of the current job. */
+static const char pOtaJobStatusReceiveDetailsTemplate[] = "\"%s\":\"%u/%u\"}}";                                             /*!< Tail of the job receive status. */
+static const char pOtaJobStatusSelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}"; /*!< Tail os self test job status. */
+static const char pOtaJobStatusReasonStrTemplate[] = "\"reason\":\"%s: 0x%08x\"}}";                                         /*!< Tail template to report job failure string. */
+static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.%u\"}}";                                    /*!< Tail tempplate to report job succeeded. */
+static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";                                     /*!< Tail template to report job failure error code. */
+static const char pOtaStringReceive[] = "receive";                                                                          /*!< Used to build the job receive template. */
+/** @}*/
+
+/** We map all of the above status cases to one of these 4 status strings.
  * These are the only strings that are supported by the Job Service. You
  * shall not change them to arbitrary strings or the job will not change
  * states.
  * */
-static const char pOtaStringInProgress[] = "IN_PROGRESS";
-static const char pOtaStringFailed[] = "FAILED";
-static const char pOtaStringSucceeded[] = "SUCCEEDED";
-static const char pOtaStringRejected[] = "REJECTED";
+static const char pOtaStringInProgress[] = "IN_PROGRESS"; /*!< The job document has be received on the device and update is in progress. */
+static const char pOtaStringFailed[] = "FAILED";          /*!< OTA update failed due to an error. */
+static const char pOtaStringSucceeded[] = "SUCCEEDED";    /*!< OTA update succeeded. */
+static const char pOtaStringRejected[] = "REJECTED";      /*!< The job was rejected due to invalid parameters. */
 
+/**
+ * @brief List of all the status cases a job can be in.
+ *
+ */
 static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
 {
     pOtaStringInProgress,
@@ -100,31 +111,104 @@ static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
     pOtaStringFailed, /* eJobStatus_FailedWithVal */
 };
 
-/* These are the associated statusDetails 'reason' codes that go along with
+/**
+ * @brief These are the associated statusDetails 'reason' codes that go along with
  * the above enums during the OTA update process. The 'Receiving' state is
- * updated with transfer progress as #blocks received of #total.
+ * updated with transfer progress as number of blocks received of total blocks.
+ *
  */
 static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "active", "accepted", "rejected", "aborted" };
 
-/* Subscribe to the jobs notification topic (i.e. New file version available). */
-
+/**
+ * @brief Subscribe to the jobs notification topic (i.e. New file version available).
+ *
+ * @param[in] pAgentCtx Agent context which stores the thing details and mqtt interface.
+ * @return OtaErr_t Result of the subscribe operation, OTA_ERR_NONE if the operation is successful
+ */
 static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx );
 
-/* UnSubscribe from the firmware update receive topic. */
-
+/**
+ * @brief UnSubscribe from the firmware update receive topic.
+ *
+ * @param[in] pAgentCtx Agent context which stores the thing details and mqtt interface.
+ * @return OtaErr_t Result of the unsubscribe operation, OTA_ERR_NONE if the operation is successful.
+ */
 static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx );
 
-/* UnSubscribe from the jobs notification topic. */
-
+/**
+ * @brief UnSubscribe from the jobs notification topic.
+ *
+ * @param[in] pAgentCtx Agent context which stores the thing details and mqtt interface.
+ * @return OtaErr_t Result of the unsubscribe operation, OTA_ERR_NONE if the operation is successful.
+ */
 static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx );
 
+/**
+ * @brief Publish a message to the job status topic.
+ *
+ * @param[in] pAgentCtx Agent context which provides the details for the thing, job and mqtt interface.
+ * @param[in] pMsg Message to publish.
+ * @param[in] status Status of the operation.
+ * @param[in] msgSize Size of message to send.
+ * @param[in] qos Quality of Service determines the expected response from the server
+ * @return OtaErr_t OTA_ERR_NONE if the message is publish is successful.
+ */
+static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
+                                      OtaJobStatus_t status,
+                                      const char * pMsg,
+                                      uint32_t msgSize,
+                                      uint8_t qos );
+
+/**
+ * @brief Populate the message buffer with the job status message.
+ *
+ * @param[in] pMsgBuffer Buffer to populate.
+ * @param[in] msgBufferSize Size of the message.
+ * @param[in] status Status of the operation.
+ * @param[in] pOTAFileCtx File context stores the information about the downloaded blocks and required size.
+ * @return uint32_t Size of the message built.
+ */
+static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
+                                             size_t msgBufferSize,
+                                             OtaJobStatus_t status,
+                                             const OtaFileContext_t * pOTAFileCtx );
+
+/**
+ * @brief Populate the message buffer with the message to indicate device in self-test.
+ *
+ * @param[in] pMsgBuffer Buffer to populate.
+ * @param[in] msgBufferSize Size of the message.
+ * @param[in] status Status of the operation.
+ * @param[in] reason Reason for job failure (if any).
+ * @return uint32_t Size of the message.
+ */
+static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
+                                               size_t msgBufferSize,
+                                               OtaJobStatus_t status,
+                                               int32_t reason );
+
+/**
+ * @brief Populate the response message with the status of the job.
+ *
+ * @param[in] pMsgBuffer Buffer to populate.
+ * @param[in] msgBufferSize Size of the message.
+ * @param[in] status Status of the operation.
+ * @param[in] reason Reason for failure or the new firmware version .
+ * @param[in] subReason Error code due to which the operation failed.
+ * @return uint32_t Size of the message.
+ */
+static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
+                                             size_t msgBufferSize,
+                                             OtaJobStatus_t status,
+                                             int32_t reason,
+                                             int32_t subReason );
 /* Subscribe to the OTA job notification topics. */
 
-static char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];
+static char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];    /*!< Buffer to store the topic generated for requesting next topic. */
 
-static char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ];
+static char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for notifying next topic. */
 
-static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for requesting data stream. */
 
 static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
