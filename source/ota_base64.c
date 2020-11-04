@@ -177,7 +177,10 @@ static const uint8_t pBase64SymbolToIndexMap[] =
 
 /**
  * @brief         Validates the input Base64 index based on the context of what
- *                has been decoded so far and the value of the index.
+ *                has been decoded so far and the value of the index. Updates
+ *                the input counters that are used to keep track of the number
+ *                of whitespace and padding symbols that have been parsed so
+ *                far.
  *
  * @param[in]     base64Index Base64 index that can have on of the values
  *                listed in pBase64SymbolToIndexMap. This index represents the
@@ -403,8 +406,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
 
         /* This scenario is only possible when the number of encoded symbols ( excluding newlines
          * and padding ) being decoded mod four is equal to one. There is no valid scenario where
-         * data can be encoded to create a result of this size. Therefore if this size
-         * is encountered, it is assumed to have been a mistake and is considered an error. */
+         * data can be encoded to create a result of this size. Therefore if this size is
+         * encountered, it's assumed that the incoming Base64 data is not encoded correctly. */
         else if( numDataInBuffer == 1U )
         {
             returnVal = Base64InvalidInputSize;
@@ -471,7 +474,7 @@ Base64Status_t base64Decode( uint8_t * pDest,
         /* Get the Base64 index that represents the Base64 symbol. */
         base64Index = pBase64SymbolToIndexMap[ base64AsciiSymbol ];
 
-        /* Verify that the current Base64 symbol representing the encoded data is valid. */
+        /* Validate the input and update counters for padding and whitespace. */
         returnVal = preprocessBase64Index( base64Index,
                                            &numPadding,
                                            &numWhitespace );
