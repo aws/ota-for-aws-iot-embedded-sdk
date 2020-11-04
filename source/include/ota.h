@@ -456,7 +456,7 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  * @ingroup ota_datatypes_structs
  * @brief OTA File Signature info.
  *
- * File key signature information to verify the authenticity of the incomming file
+ * File key signature information to verify the authenticity of the incoming file
  */
 typedef struct
 {
@@ -539,7 +539,7 @@ typedef struct
 /* @[define_ota_err_codes] */
 #define OTA_ERR_PANIC                        0xfe000000U /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
 #define OTA_ERR_UNINITIALIZED                0xff000000U /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                         0x00000000U /*!< No error occured during the operation. */
+#define OTA_ERR_NONE                         0x00000000U /*!< No error occurred during the operation. */
 #define OTA_ERR_SIGNATURE_CHECK_FAILED       0x01000000U /*!< The signature check failed for the specified file. */
 #define OTA_ERR_BAD_SIGNER_CERT              0x02000000U /*!< The signer certificate was not readable or zero length. */
 #define OTA_ERR_OUT_OF_MEMORY                0x03000000U /*!< General out of memory error. */
@@ -633,7 +633,7 @@ typedef struct
  *
  * @param[in]  pOtaOSCtx A pointer to the OS context
  * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
- * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
+ * @param[in]  A pointer to the HTTP interface
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.

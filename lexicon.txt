@@ -12,7 +12,9 @@ apis
 appfirmwareversion
 ascii
 attemptsdone
+attr
 aws
+aws-iot-device-sdk-embedded-c
 backoff
 backoffdelay
 basedefs
@@ -23,13 +25,17 @@ bool
 bootloader
 br
 buf
+bufferused
 bytesreceived
 bytessent
 bytestorecv
 bytestosend
+c89
+c90
 ca
 cbor
 cborwork
+certfile
 checkforupdate
 cli
 clienttoken
@@ -37,6 +43,7 @@ closefile
 cmock
 com
 completecallback
+cond
 config
 configassert
 connectsuccessindex
@@ -49,8 +56,10 @@ couldn
 coverity
 cr
 createfileforrx
+currentstate
 customjobcallback
 cwd
+datalength
 deduplicate
 deinitialize
 destlen
@@ -58,6 +67,7 @@ destoffset
 didn
 dns
 docmodel
+docparseerrnone
 docparseerrduplicatesnotallowed
 docparseerrfieldtypemismatch
 docparseerrinvalidmodelparamtype
@@ -72,16 +82,19 @@ docparseerrparamkeynotinmodel
 docparseerrtoomanyparams
 docparseerrunknown
 doesn't
+doxygen
 eagain
 eevent
 encodedlen
 encodedsize
 endcode
+endcond
 endif
 enum
 enums
 errno
 errornumber
+eventid
 ewouldblock
 expectedstatus
 failedwithval
@@ -118,6 +131,7 @@ getpacketsprocessed
 getpacketsqueued
 getpacketsreceived
 getplatformimagestate
+github.com
 hostnamelength
 html
 http
@@ -150,6 +164,9 @@ iot
 ip
 ip
 isinselftest
+iso
+jobdocument
+jobid
 jobreasonaborted
 jobreasonaccepted
 jobreasonreceiving
@@ -192,6 +209,7 @@ mytlscontext
 nanosleep
 networkcontext
 nextjittermax
+nextstate
 noninfringement
 numblocks
 nummodelparams
@@ -267,6 +285,7 @@ pclientcertpath
 pcloseresult
 pcmsg
 pcmsgbuffer
+pconnection
 pconnectioncontext
 pctimername
 pctopicbuffer
@@ -275,6 +294,7 @@ pdestoffset
 pem
 pencodeddata
 peventctx
+peventdata
 peventmsg
 pfile
 pfilecontext
@@ -300,6 +320,8 @@ pnumwhitespace
 popensslcredentials
 posix
 potafiles
+potahttpinterface
+potamqttinterface
 potaosctx
 potarxstreamtopic
 potasingletonactivejobname
@@ -312,6 +334,7 @@ pprivatekeypath
 pprotocols
 ppucpayload
 pquerykey
+presigned
 presultlen
 pretryparams
 prootcapath
@@ -330,6 +353,7 @@ ptimerctx
 ptimername
 ptopicbuffer
 ptopicfilter
+punused
 pupdatefile
 pupdateurlpath
 pvalueinjson
@@ -356,6 +380,7 @@ rsa
 rtos
 rx
 sdk
+selftest
 selftesttimercallback
 sendtimeout
 sendtimeoutms
@@ -380,6 +405,7 @@ startselftimer
 statusdetails
 stddef
 str
+streamname
 strlength
 struct
 structs
@@ -425,6 +451,7 @@ ultopiclen
 unhandled
 unistd
 unsignedversion32
+updatedby
 updatejobstatus
 updaterversion
 url

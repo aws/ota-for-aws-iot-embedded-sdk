@@ -1077,7 +1077,7 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
 
             /*   if( err != OTA_ERR_NONE ) */
             /*   { */
-            /*        LogError(( "Failed to update job status %d\r\n", err ); */
+            /*        LogError( ( "Failed to update job status %d\r\n", err ) ); */
             /*    } */
         }
 
@@ -1791,7 +1791,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
         /*Check if we received a timestamp and client token but no job ID.*/
         if( ( otaAgent.pClientTokenFromJob != NULL ) && ( otaAgent.timestampFromJob != 0U ) && ( pFileContext->pJobName == NULL ) )
         {
-            /* Received job docuement with no execution so no active job is available.*/
+            /* Received job document with no execution so no active job is available.*/
             LogWarn( ( "No active jobs available in the service for execution.\r\n" ) );
             err = OtaJobParseErrNoActiveJobs;
         }

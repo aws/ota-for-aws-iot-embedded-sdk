@@ -88,7 +88,7 @@
  * size, attributes, etc. The following value specifies the number of parameters
  * that are included in the job document model although some may be optional.
  */
-#define OTA_JSON_SEPARATOR              "."                                                        /*!< Separater used to define nested keys. */
+#define OTA_JSON_SEPARATOR              "."                                                        /*!< Separator used to define nested keys. */
 #define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"                                              /*!< Client token. */
 #define OTA_JSON_TIMESTAMP_KEY          "timestamp"                                                /*!< Used to calculate timeout and time spent on the operation. */
 #define OTA_JSON_EXECUTION_KEY          "execution"                                                /*!< Contains job execution parameters . */
@@ -106,7 +106,7 @@
 #define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< Path to store the image on the device. */
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< Size of the file to be downloaded. */
 #define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< Used to identify the file in case of multiple file downloads. */
-#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Addtitional file attributes. */
+#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Additional file attributes. */
 #define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"                                                 /*!< Location of the certificate on the device to find code signing. */
 #define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"                                          /*!< S3 bucket presigned url to fetch the image from . */
 #define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"                                              /*!< Authentication scheme for downloading a the image over HTTP. */
