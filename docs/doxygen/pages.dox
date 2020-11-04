@@ -55,7 +55,7 @@ Currently, the OTA library has the following dependencies:
 
 @section ota_design_library_configs OTA Library Configurations
 
-The OTA library also provides various configuration options you can fine tune depending on network type and conditions. The library is provided with sensible default values for these configuration options. As these configuration settings are C pre-processor constant, they can be set with a #define in the config file (ota_config.h). It is recommended to review the configuration options and update as per use case and application requirement. Because they are compile-time constants, a library must be rebuilt if a configuration setting is changed.
+The OTA library also provides various configuration options you can fine tune depending on network type and conditions. The library is provided with sensible default values for these configuration options. As these configuration settings are C pre-processor constant, they can be set with a `#define` in the config file (ota_config.h). It is recommended to review the configuration options and update as per use case and application requirement. Because they are compile-time constants, a library must be rebuilt if a configuration setting is changed.
 
 For more details on OTA configuration at @ref ota_config
 
@@ -121,7 +121,7 @@ More about OTA Demo configurations at @subpage ota_demo_config
 */
 
 /**
-@configpage{ota_demo,OTA demo,Demo,demos}
+configpage{ota_demo,OTA demo}
 
 @section OTA_DEMO_CONNECTION_TIMEOUT_MS
 
@@ -221,7 +221,7 @@ The timeout for requesting the file blocks from the service if the requested blo
 
 @section otaconfigMAX_THINGNAME_LEN
 
-The maximum allowed length of the thing name used by the OTA agent. AWS IoT requires Thing names to be unique for each device that connects to the broker. Likewise, the OTA agent requires the developer to construct and pass in the Thing name when initializing the OTA agent. The agent uses this size to allocate static storage for the Thing name used in all OTA base topics. Namely $aws/things/<thingName>
+The maximum allowed length of the thing name used by the OTA agent. AWS IoT requires Thing names to be unique for each device that connects to the broker. Likewise, the OTA agent requires the developer to construct and pass in the Thing name when initializing the OTA agent. The agent uses this size to allocate static storage for the Thing name used in all OTA base topics. Namely `$aws/things/<thingName>`
 
 @configpossible Minimum length of 1. Maximum length of 128. <br>
 @configrecommended As per solution requirement for Thing Name lengths. <br>

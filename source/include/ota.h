@@ -236,7 +236,7 @@ typedef enum OtaJobParseErr
  * @brief OTA Job callback events.
  *
  * After an OTA update image is received and authenticated, the agent calls the user
- * callback (set with the @ref ota_function_init API) with the value OtaJobEventActivate to
+ * callback (set with the @ref OTA_AgentInit API) with the value OtaJobEventActivate to
  * signal that the device must be rebooted to activate the new image. When the device
  * boots, if the OTA job status is in self test mode, the agent calls the user callback
  * with the value OtaJobEventStartTest, signaling that any additional self tests
@@ -264,13 +264,13 @@ typedef enum OtaJobEvent
  * After an OTA update image is received and authenticated, it is logically moved to
  * the Self Test state by the OTA agent pending final acceptance. After the image is
  * activated and tested by your user code, you should put it into either the Accepted
- * or Rejected state by calling @ref ota_function_setimagestate ( OtaImageStateAccepted ) or
- * @ref ota_function_setimagestate ( OtaImageStateRejected ). If the image is accepted, it becomes
+ * or Rejected state by calling @ref OTA_SetImageState ( OtaImageStateAccepted ) or
+ * @ref OTA_SetImageState ( OtaImageStateRejected ). If the image is accepted, it becomes
  * the main firmware image to be booted from then on. If it is rejected, the image is
  * no longer valid and shall not be used, reverting to the last known good image.
  *
  * If you want to abort an active OTA transfer, you may do so by calling the API
- * @ref ota_function_setimagestate ( OtaImageStateAborted ).
+ * @ref OTA_SetImageState ( OtaImageStateAborted ).
  */
 typedef enum OtaImageState
 {
@@ -305,9 +305,9 @@ typedef uint32_t                OtaErr_t;
  * The user may register a callback function when initializing the OTA Agent. This
  * callback is used to notify the main application when the OTA update job is complete.
  * Typically, it is used to reset the device after a successful update by calling
- * @ref ota_function_activatenewimage and may also be used to kick off user specified self tests
+ * @ref OTA_ActivateNewImage and may also be used to kick off user specified self tests
  * during the Self Test phase. If the user does not supply a custom callback function,
- * a default callback handler is used that automatically calls @ref ota_function_activatenewimage
+ * a default callback handler is used that automatically calls @ref OTA_ActivateNewImage
  * after a successful update.
  *
  * The callback function is called with one of the following arguments:
@@ -591,44 +591,12 @@ typedef struct
 
 /*------------------------- OTA Public API --------------------------*/
 
-/**
- * @functionspage{ota,OTA library}
- * - @functionname{ota_function_init}
- * - @functionname{ota_function_shutdown}
- * - @functionname{ota_function_getagentstate}
- * - @functionname{ota_function_activatenewimage}
- * - @functionname{ota_function_setimagestate}
- * - @functionname{ota_function_getimagestate}
- * - @functionname{ota_function_checkforupdate}
- * - @functionname{ota_function_suspend}
- * - @functionname{ota_function_resume}
- * - @functionname{ota_function_getpacketsreceived}
- * - @functionname{ota_function_getpacketsqueued}
- * - @functionname{ota_function_getpacketsprocessed}
- * - @functionname{ota_function_getpacketsdropped}
- */
-
-/**
- * @functionpage{OTA_AgentInit,ota,init}
- * @functionpage{OTA_AgentShutdown,ota,shutdown}
- * @functionpage{OTA_GetAgentState,ota,getagentstate}
- * @functionpage{OTA_ActivateNewImage,ota,activatenewimage}
- * @functionpage{OTA_SetImageState,ota,setimagestate}
- * @functionpage{OTA_GetImageState,ota,getimagestate}
- * @functionpage{OTA_CheckForUpdate,ota,checkforupdate}
- * @functionpage{OTA_Suspend,ota,suspend}
- * @functionpage{OTA_Resume,ota,resume}
- * @functionpage{OTA_GetPacketsReceived,ota,getpacketsreceived}
- * @functionpage{OTA_GetPacketsQueued,ota,getpacketsqueued}
- * @functionpage{OTA_GetPacketsProcessed,ota,getpacketsprocessed}
- * @functionpage{OTA_GetPacketsDropped,ota,getpacketsdropped}
- */
 
 /**
  * @brief OTA Agent initialization function.
  *
  * Initialize the OTA engine by starting the OTA Agent ("OTA Task") in the system. This function must
- * be called with the connection client context before calling @ref ota_function_checkforupdate. Only one
+ * be called with the connection client context before calling @ref OTA_CheckForUpdate. Only one
  * OTA Agent may exist.
  *
  * @param[in]  pOtaOSCtx A pointer to the OS context
@@ -652,7 +620,7 @@ OtaState_t OTA_AgentInit( void * pOtaOSCtx,
  * @brief Internal OTA Agent initialization function.
  *
  * Initialize the OTA engine by starting the OTA Agent ("OTA Task") in the system. This function must
- * be called with the MQTT messaging client context before calling @ref ota_function_checkforupdate. Only one
+ * be called with the MQTT messaging client context before calling @ref OTA_CheckForUpdate. Only one
  * OTA Agent may exist.
  *
  * @param[in] pOtaOSCtx A pointer to the OS context
@@ -700,7 +668,7 @@ OtaState_t OTA_GetAgentState( void );
  * This function should reset the MCU and cause a reboot of the system to execute the newly updated
  * firmware. It should be called by the user code sometime after the OtaJobEventActivate event
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
- * @ref ota_function_init function for more information about configuring the callback.
+ * @ref OTA_AgentInit function for more information about configuring the callback.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
@@ -771,7 +739,7 @@ void otaAgentTask( const void * pUnused );
 /**
  * @brief Get the number of OTA message packets received by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return The number of OTA packets that have been received but not
  * necessarily queued for processing by the OTA agent.
@@ -781,7 +749,7 @@ uint32_t OTA_GetPacketsReceived( void );
 /**
  * @brief Get the number of OTA message packets queued by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return The number of OTA packets that have been queued for processing.
  * This implies there was a free message queue entry so it can be passed
@@ -792,7 +760,7 @@ uint32_t OTA_GetPacketsQueued( void );
 /**
  * @brief Get the number of OTA message packets processed by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return the number of OTA packets that have actually been processed.
  *
@@ -802,7 +770,7 @@ uint32_t OTA_GetPacketsProcessed( void );
 /**
  * @brief Get the number of OTA message packets dropped by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return the number of OTA packets that have been dropped because
  * of either no queue or at shutdown cleanup.

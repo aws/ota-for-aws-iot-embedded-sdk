@@ -1073,12 +1073,6 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
             /* We're actively receiving a file so update the job status as needed. */
             /* First reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
-            /* err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 ); */
-
-            /*   if( err != OTA_ERR_NONE ) */
-            /*   { */
-            /*        LogError( ( "Failed to update job status %d\r\n", err ) ); */
-            /*    } */
         }
 
         if( otaAgent.numOfBlocksToReceive > 1U )
