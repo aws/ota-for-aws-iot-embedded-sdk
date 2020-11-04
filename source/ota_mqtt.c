@@ -45,23 +45,23 @@
 #include "ota_appversion32.h"
 
 /* General constants. */
-#define OTA_SUBSCRIBE_WAIT_MS          30000UL
-#define OTA_UNSUBSCRIBE_WAIT_MS        1000UL
-#define OTA_PUBLISH_WAIT_MS            10000UL
-#define OTA_SUBSCRIBE_WAIT_TICKS       pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_MS )
-#define OTA_UNSUBSCRIBE_WAIT_TICKS     pdMS_TO_TICKS( OTA_UNSUBSCRIBE_WAIT_MS )
-#define OTA_PUBLISH_WAIT_TICKS         pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_TICKS )
-#define OTA_MAX_PUBLISH_RETRIES        3                    /* Max number of publish retries */
-#define OTA_RETRY_DELAY_MS             1000UL               /* Delay between publish retries */
-#define U32_MAX_PLACES                 10U                  /* Maximum number of output digits of an unsigned long value. */
-#define OTA_MAX_TOPIC_LEN              256U                 /* Max length of a dynamically generated topic string (usually on the stack). */
+#define OTA_SUBSCRIBE_WAIT_MS          30000UL  /*!< Timeout in seconds for a subscribe. */
+#define OTA_UNSUBSCRIBE_WAIT_MS        1000UL   /*!< Timeout in seconds for a unsubscribe. */
+#define OTA_PUBLISH_WAIT_MS            10000UL  /*!< Timeout in seconds for publish operation. */
+#define OTA_SUBSCRIBE_WAIT_TICKS       pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_MS ) /*!< Timeout in ticks for a subscribe. */
+#define OTA_UNSUBSCRIBE_WAIT_TICKS     pdMS_TO_TICKS( OTA_UNSUBSCRIBE_WAIT_MS ) /*!< Timeout in ticks for a unsubscribe. */
+#define OTA_PUBLISH_WAIT_TICKS         pdMS_TO_TICKS( OTA_PUBLISH_WAIT_MS ) /*!< Timeout in ticks for publish operation. */
+#define OTA_MAX_PUBLISH_RETRIES        3                    /*!< Max number of publish retries */
+#define OTA_RETRY_DELAY_MS             1000UL               /*!< Delay between publish retries */
+#define U32_MAX_PLACES                 10U                  /*!< Maximum number of output digits of an unsigned long value. */
+#define OTA_MAX_TOPIC_LEN              256U                 /*!< Max length of a dynamically generated topic string (usually on the stack). */
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN               "rdy"                /* Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN               "rdy"                /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE        128U             /* Max length of a job status message to the service. */
-#define OTA_UPDATE_STATUS_FREQUENCY    64U              /* Update the job status every 64 unique blocks received. */
+#define OTA_STATUS_MSG_MAX_SIZE        128U             /*!< Max length of a job status message to the service. */
+#define OTA_UPDATE_STATUS_FREQUENCY    64U              /*!< Update the job status every 64 unique blocks received. */
 
 /*lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future. */
 /* Topic strings used by the OTA process. */
