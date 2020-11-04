@@ -35,6 +35,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+/**
+ * @brief The Base64 functionality return status.
+ */
 typedef enum Base64Status
 {
     /**
