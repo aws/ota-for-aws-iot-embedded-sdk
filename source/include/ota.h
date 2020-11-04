@@ -633,7 +633,7 @@ typedef struct
  *
  * @param[in]  pOtaOSCtx A pointer to the OS context
  * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
- * @param[in]  A pointer to the HTTP interface
+ * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.

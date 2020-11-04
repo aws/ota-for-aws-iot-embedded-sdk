@@ -131,7 +131,7 @@ getpacketsprocessed
 getpacketsqueued
 getpacketsreceived
 getplatformimagestate
-github.com
+github
 hostnamelength
 html
 http
