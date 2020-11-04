@@ -604,7 +604,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     if( C != NULL )
     {
-        uint32_t blockSize = OTA_FILE_BLOCK_SIZE & 0x7fffffffU; /* Mask to keep lint happy. It's still a constant. */
+        uint32_t blockSize = OTA_FILE_BLOCK_SIZE & 0x7fffffffU;
         numBlocks = ( C->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
