@@ -342,6 +342,9 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
 
     assert( pBase64IndexBuffer != NULL );
     assert( pNumDataInBuffer != NULL );
+    assert( ( *pNumDataInBuffer == 2U ) ||
+            ( *pNumDataInBuffer == 3U ) ||
+            ( *pNumDataInBuffer == 4U ) );
     assert( pDest != NULL );
     assert( pOutputLen != NULL );
 
@@ -366,7 +369,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
             pDest[ outputLen + 2U ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
             outputLen += 3U;
         }
-        else if( numDataInBuffer == 3U )
+
+        if( numDataInBuffer == 3U )
         {
             /* When there are only three sextets of data remaining at the end of the encoded data,
              * it is assumed that these three sextets should be decoded into two octets of data. In
@@ -385,7 +389,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
                 outputLen += 2U;
             }
         }
-        else if( numDataInBuffer == 2U )
+
+        if( numDataInBuffer == 2U )
         {
             /* When there are only two sextets of data remaining at the end of the encoded data, it
              * is assumed that these two sextets should be decoded into one octet of data. In this
@@ -402,19 +407,6 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
                 pDest[ outputLen ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
                 outputLen += 1U;
             }
-        }
-
-        /* This scenario is only possible when the number of encoded symbols ( excluding newlines
-         * and padding ) being decoded mod four is equal to one. There is no valid scenario where
-         * data can be encoded to create a result of this size. Therefore if this size is
-         * encountered, it's assumed that the incoming Base64 data is not encoded correctly. */
-        else if( numDataInBuffer == 1U )
-        {
-            returnVal = Base64InvalidInputSize;
-        }
-        else
-        {
-            /* No action required. */
         }
     }
 
@@ -500,17 +492,32 @@ Base64Status_t base64Decode( uint8_t * pDest,
         }
     }
 
-    /* Handle the scenarios where there is padding at the end of the encoded data.
-     *
-     * Note: This implementation assumes that non-zero padding bits are an error. This prevents
-     * having multiple non-matching encoded data strings map to identical decoded strings. */
     if( returnVal == Base64Success )
     {
-        returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
-                                             &numDataInBuffer,
-                                             pDest,
-                                             destLen,
-                                             &outputLen );
+        /* This scenario is only possible when the number of encoded symbols ( excluding newlines
+         * and padding ) being decoded mod four is equal to one. There is no valid scenario where
+         * data can be encoded to create a result of this size. Therefore if this size is
+         * encountered, it's assumed that the incoming Base64 data is not encoded correctly. */
+        if( numDataInBuffer == 1U )
+        {
+            returnVal = Base64InvalidInputSize;
+        }
+    }
+
+    if( returnVal == Base64Success )
+    {
+        /* Handle the scenarios where there is padding at the end of the encoded data.
+         *
+         * Note: This implementation assumes that non-zero padding bits are an error. This prevents
+         * having multiple non-matching encoded data strings map to identical decoded strings. */
+        if( ( numDataInBuffer == 2U ) || ( numDataInBuffer == 3U ) )
+        {
+            returnVal = decodeBase64IndexBuffer( &base64IndexBuffer,
+                                                 &numDataInBuffer,
+                                                 pDest,
+                                                 destLen,
+                                                 &outputLen );
+        }
     }
 
     if( returnVal == Base64Success )
