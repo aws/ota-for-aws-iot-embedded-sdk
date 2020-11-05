@@ -1591,12 +1591,12 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         size_t queryKeyLength = strlen( pQueryKey );
         char * pValueInJson;
         size_t valueLength;
-        result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
+        result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength );
 
         /* If not found in pJSon search for the key in FileParameters JSON*/
         if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
         {
-            result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, OTA_JSON_SEPARATOR[ 0 ], &pValueInJson, &valueLength );
+            result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength );
         }
 
         if( result == JSONSuccess )
