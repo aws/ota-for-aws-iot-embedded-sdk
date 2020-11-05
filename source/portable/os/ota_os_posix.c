@@ -198,7 +198,7 @@ static void timerCallback( union sigval arg )
     OTA_SignalEvent( &xEventMsg );
 }
 
-OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+OtaErr_t Posix_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
                               const char * const pTimerName,
                               const uint32_t timeout,
                               void ( *callback )( void * ) )
