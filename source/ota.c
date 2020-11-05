@@ -449,7 +449,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
         /*
          * We don't need the job name memory anymore since we're done with this job.
          */
-        free( otaAgent.pOtaSingletonActiveJobName );
+        OtaFree( otaAgent.pOtaSingletonActiveJobName );
         otaAgent.pOtaSingletonActiveJobName = NULL;
     }
 
@@ -1062,7 +1062,7 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
         /* Free any remaining string memory holding the job name since this job is done. */
         if( otaAgent.pOtaSingletonActiveJobName != NULL )
         {
-            free( otaAgent.pOtaSingletonActiveJobName );
+            otaFree( otaAgent.pOtaSingletonActiveJobName );
             otaAgent.pOtaSingletonActiveJobName = NULL;
         }
     }
@@ -1385,7 +1385,7 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
     DocParseErr_t err = DocParseErrNone;
 
     /* Allocate space for and decode the base64 signature. */
-    void * pSignature = malloc( sizeof( Sig256_t ) );
+    void * pSignature = otaMalloc( sizeof( Sig256_t ) );
 
     if( pSignature != NULL )
     {
@@ -1434,7 +1434,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
         /* Malloc memory for a copy of the value string plus a zero terminator. */
-        char * pStringCopy = malloc( valueLength + 1U );
+        char * pStringCopy = otaMalloc( valueLength + 1U );
 
         if( pStringCopy != NULL )
         {
@@ -1984,6 +1984,7 @@ static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
     { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pAuthScheme ), ModelParamTypeStringCopy},
     { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pSignature ), ModelParamTypeSigBase64},
     { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileAttributes ), ModelParamTypeUInt32},
+    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileAttributes ), ModelParamTypeUInt32}
 };
 
 /* Parse the OTA job document and validate. Return the populated
@@ -2111,7 +2112,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) malloc( bitmapLen ); /*lint !e9079 FreeRTOS malloc port returns void*. */
+        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaMalloc( bitmapLen ); /*lint !e9079 FreeRTOS malloc port returns void*. */
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
@@ -2267,7 +2268,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     {
         LogInfo( ( "Received final expected block of file.\r\n" ) );
 
-        free( pFileContext->pRxBlockBitmap ); /* Free the bitmap now that we're done with the download. */
+        otaFree( pFileContext->pRxBlockBitmap ); /* Free the bitmap now that we're done with the download. */
         pFileContext->pRxBlockBitmap = NULL;
 
         if( pFileContext->pFile != NULL )
@@ -2437,7 +2438,7 @@ static void agentShutdownCleanup( void )
      */
     if( otaAgent.pOtaSingletonActiveJobName != NULL )
     {
-        free( otaAgent.pOtaSingletonActiveJobName );
+        otaFree( otaAgent.pOtaSingletonActiveJobName );
         otaAgent.pOtaSingletonActiveJobName = NULL;
     }
 

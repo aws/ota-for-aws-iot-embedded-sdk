@@ -110,7 +110,7 @@
 #define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"                                                 /*!< Location of the certificate on the device to find code signing. */
 #define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"                                          /*!< S3 bucket presigned url to fetch the image from . */
 #define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"                                              /*!< Authentication scheme for downloading a the image over HTTP. */
-
+#define OTA_JSON_FILETYPE_KEY           "fileType"                                                 /*!< Used to identify the file in case of multi file type support. */
 
 /**
  * @ingroup ota_private_datatypes_enums

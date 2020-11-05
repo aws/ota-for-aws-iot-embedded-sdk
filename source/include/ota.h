@@ -411,6 +411,7 @@ struct OtaFileContext
     bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
     Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
+    uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
 };
 
 /**
