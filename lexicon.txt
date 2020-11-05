@@ -52,6 +52,7 @@ createfileforrx
 customjobcallback
 cwd
 deduplicate
+deinit
 deinitialize
 destlen
 destoffset
@@ -274,6 +275,7 @@ pdest
 pdestoffset
 pem
 pencodeddata
+peventcontext
 peventctx
 peventmsg
 pfile
