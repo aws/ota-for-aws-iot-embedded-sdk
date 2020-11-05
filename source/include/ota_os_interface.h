@@ -66,7 +66,6 @@ typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
                                        unsigned int timeout );
 
 /**
- * /**
  * @brief Receive an OTA event.
  *
  * This function receives next event from the pending OTA events.
@@ -147,11 +146,11 @@ typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerContext_t * pTimerCtx );
  */
 typedef struct OtaEventInterface
 {
-    OtaInitEvent_t init;
-    OtaSendEvent_t send;
-    OtaReceiveEvent_t recv;
-    OtaDeinitEvent_t deinit;
-    OtaEventContext_t * pEventContext;
+    OtaInitEvent_t init;               /*!< Initialization event. */
+    OtaSendEvent_t send;               /*!< Send data. */
+    OtaReceiveEvent_t recv;            /*!< Receive data. */
+    OtaDeinitEvent_t deinit;           /*!< De-Initialize event. */
+    OtaEventContext_t * pEventContext; /*!< Event context to store event information. */
 } OtaEventInterface_t;
 
 /**
@@ -159,10 +158,10 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;
-    OtaStopTimer_t stop;
-    OtaDeleteTimer_t delete;
-    OtaTimerContext_t * PTimerCtx; /**< Implementation-defined ota timer context. */
+    OtaStartTimer_t start;         /*!< Timer start state. */
+    OtaStopTimer_t stop;           /*!< Timer stop state.. */
+    OtaDeleteTimer_t delete;       /*!< Delete timer. */
+    OtaTimerContext_t * PTimerCtx; /*!< Implementation-defined ota timer context. */
 } OtaTimerInterface_t;
 
 /**
@@ -170,8 +169,8 @@ typedef struct OtaTimerInterface
  */
 typedef struct OtaOSInterface
 {
-    OtaEventInterface_t event; /**< OTA Event interface. */
-    OtaTimerInterface_t timer; /**< OTA Timer interface. */
+    OtaEventInterface_t event; /*!< OTA Event interface. */
+    OtaTimerInterface_t timer; /*!< OTA Timer interface. */
 } OtaOSInterface_t;
 
 #endif /* ifndef _OTA_OS_INTERFACE_H_ */
