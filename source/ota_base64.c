@@ -100,19 +100,9 @@
 #define SIZE_OF_PADDING_WITH_THREE_SEXTETS       2
 
 /**
- * @brief Inclusive lower bound for valid values that can be contained in pBase64SymbolToIndexMap.
- */
-#define SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND    0U
-
-/**
  * @brief Inclusive upper bound for valid values that can be contained in pBase64SymbolToIndexMap.
  */
 #define SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND    67U
-
-/**
- * @brief Inclusive lower bound for the range of valid Base64 index values.
- */
-#define BASE64_INDEX_VALUE_LOWER_BOUND           0U
 
 /**
  * @brief Inclusive upper bound for the range of valid Base64 index values.
@@ -249,8 +239,7 @@ static Base64Status_t preprocessBase64Index( uint8_t base64Index,
      * and 63. Check that there was not a whitespace or padding symbol before this valid index. */
     else
     {
-        assert( ( BASE64_INDEX_VALUE_LOWER_BOUND <= base64Index ) &&
-                ( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND ) );
+        assert( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND );
 
         if( ( numWhitespace != 0 ) || ( numPadding != 0 ) )
         {
@@ -284,8 +273,7 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
 
     assert( pBase64IndexBuffer != NULL );
     assert( pNumDataInBuffer != NULL );
-    assert( ( SYMBOL_TO_INDEX_MAP_VALUE_LOWER_BOUND <= base64Index ) &&
-            ( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND ) );
+    assert( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND );
 
     base64IndexBuffer = *pBase64IndexBuffer;
     numDataInBuffer = *pNumDataInBuffer;
