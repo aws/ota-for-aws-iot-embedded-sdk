@@ -149,7 +149,7 @@ typedef struct OtaEventInterface
     OtaInitEvent_t init;               /*!< Initialization event. */
     OtaSendEvent_t send;               /*!< Send data. */
     OtaReceiveEvent_t recv;            /*!< Receive data. */
-    OtaDeinitEvent_t deinit;           /*!< De-Initialize event. */
+    OtaDeinitEvent_t deinit;           /*!< Deinitialize event. */
     OtaEventContext_t * pEventContext; /*!< Event context to store event information. */
 } OtaEventInterface_t;
 
