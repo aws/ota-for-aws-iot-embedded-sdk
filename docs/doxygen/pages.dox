@@ -55,6 +55,8 @@ Currently, the OTA library has the following dependencies:
 
 @section ota_design_library_configs OTA Library Configurations
 
+The OTA library also provides various configuration options you can fine tune depending on network type and conditions. The library is provided with sensible default values for these configuration options. As these configuration settings are C pre-processor constant, they can be set with a `#define` in the config file (ota_config.h). It is recommended to review the configuration options and update as per use case and application requirement. Because they are compile-time constants, a library must be rebuilt if a configuration setting is changed.
+
 For more details on OTA configuration at @ref ota_config
 
 @section ota_design_library OTA Library
