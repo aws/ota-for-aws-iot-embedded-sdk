@@ -53,8 +53,10 @@ coverity
 cr
 createfileforrx
 customjobcallback
+currblock
 cwd
 deduplicate
+deinit
 deinitialize
 destlen
 destoffset
@@ -320,6 +322,7 @@ pprivatekeypath
 pprotocols
 ppucpayload
 pquerykey
+pre
 presultlen
 pretryparams
 prootcapath
@@ -349,6 +352,8 @@ qos
 querykeylength
 ramdom
 rand
+rangeend
+rangestart
 rdy
 reconnectparam
 recv

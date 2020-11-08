@@ -38,7 +38,7 @@
  *
  * This function parses the pre-signed url and initializes connection.
  *
- * @param[pUrl]         Pointer to the pre-signed url for downloading update file.
+ * @param[in] pUrl         Pointer to the pre-signed url for downloading update file.
  *
  * @return              OTA_ERR_NONE if success , other error code on failure.
  */
@@ -50,9 +50,9 @@ typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
  *
  * This function requests file block over Http from the rangeStart and rangeEnd.
  *
- * @param[rangeStart]  Starting index of the file data to be requested.
+ * @param[in] rangeStart  Starting index of the file data to be requested.
  *
- * @param[rangeEnd]    End index of the file data to be requested.
+ * @param[in] rangeEnd    End index of the file data to be requested.
  *
  * @return             OTA_ERR_NONE if success , other error code on failure.
  */
@@ -64,20 +64,21 @@ typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  * @brief Deinit OTA Http interface.
  *
  * This function cleanups Http connection and other data used for
- * requesting file blocks using the presigned url.
+ * requesting file blocks using the pre-signed url.
  *
  * @return        OTA_ERR_NONE if success , other error code on failure.
  */
 typedef OtaErr_t ( * ota_HttpDeinit )( void );
 
 /**
- *  OTA Event Interface structure.
+ * @brief OTA Event Interface structure.
+ *
  */
 typedef struct OtaHttpInterface
 {
-    ota_HttpInit_t init;
-    ota_HttpRequest_t request;
-    ota_HttpDeinit deinit;
+    ota_HttpInit_t init;       /*!< Reference to HTTP initialization. */
+    ota_HttpRequest_t request; /*!< Reference to HTTP data request. */
+    ota_HttpDeinit deinit;     /*!< Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
 #endif /* ifndef _OTA_HTTP_INTERFACE_H_ */

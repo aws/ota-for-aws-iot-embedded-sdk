@@ -103,7 +103,7 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
     /* Unused parameters. */
     ( void ) messageSize;
 
-    /* The data received over HTTP does not requrire any decoding. */
+    /* The data received over HTTP does not require any decoding. */
     *pPayload = pMessageBuffer;
     *pFileId = 0;
     *pBlockId = currBlock;
