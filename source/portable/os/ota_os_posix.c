@@ -86,7 +86,7 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
     }
     else
     {
-        LogInfo( ( "OTA Event Queue created." ) );
+        LogDebug( ( "OTA Event Queue created." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -117,7 +117,7 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     }
     else
     {
-        LogInfo( ( "OTA Event Sent." ) );
+        LogDebug( ( "OTA Event Sent." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -151,7 +151,7 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     }
     else
     {
-        LogInfo( ( "OTA Event received." ) );
+        LogDebug( ( "OTA Event received." ) );
 
         /* copy the data from local buffer.*/
         memcpy( pDst, buff, MAX_MSG_SIZE );
@@ -182,7 +182,7 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
     }
     else
     {
-        LogInfo( ( "OTA Event queue deleted." ) );
+        LogDebug( ( "OTA Event queue deleted." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
