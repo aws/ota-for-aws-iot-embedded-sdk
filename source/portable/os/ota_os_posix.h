@@ -27,7 +27,7 @@
 #define _OTA_OS_POSIX_H_
 
 /* Standard library include. */
-#include <stddef.h>
+#include <stdint.h>
 
 /* OTA library interface include. */
 #include "ota_os_interface.h"
