@@ -142,6 +142,33 @@ typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerContext_t * pTimerCtx );
 typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerContext_t * pTimerCtx );
 
 /**
+ * @brief Allocate memory.
+ *
+ * This function allocates the requested memory and returns a pointer to it.
+ *
+ * @param[size]        This is the size of the memory block, in bytes..
+ *
+ * @return             This function returns a pointer to the allocated memory, or NULL if
+ *                     the request fails.
+ */
+
+typedef void * ( * OtaMalloc_t ) ( size_t size );
+
+/**
+ * @brief Free memory.
+ *
+ * This function deallocates the memory previously allocated by a call to allocation
+ * function of type OtaMalloc_t.
+ *
+ * @param[size]        ptr − This is the pointer to a memory block previously allocated with function
+ *                     of type OtaMalloc_t. If a null pointer is passed as argument, no action occurs.
+ *
+ * @return             None.
+ */
+
+typedef void ( * OtaFree_t ) ( void * ptr );
+
+/**
  *  OTA Event Interface structure.
  */
 typedef struct OtaEventInterface
@@ -165,12 +192,22 @@ typedef struct OtaTimerInterface
 } OtaTimerInterface_t;
 
 /**
+ *  OTA memory allocation interface.
+ */
+typedef struct OtaMallocInterface
+{
+    OtaMalloc_t malloc;
+    OtaFree_t free;
+} OtaMallocInterface_t;
+
+/**
  * @brief  OTA OS Interface.
  */
 typedef struct OtaOSInterface
 {
     OtaEventInterface_t event; /*!< OTA Event interface. */
     OtaTimerInterface_t timer; /*!< OTA Timer interface. */
+    OtaMallocInterface_t mem;  /*!< OTA mem interface. */
 } OtaOSInterface_t;
 
 #endif /* ifndef _OTA_OS_INTERFACE_H_ */

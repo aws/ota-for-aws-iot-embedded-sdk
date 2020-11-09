@@ -320,3 +320,15 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
 
     return otaErrRet;
 }
+
+void * STDC_Malloc( size_t size )
+{
+    /* Use standard C malloc.*/
+    return malloc( size );
+}
+
+void STDC_Free( void * ptr )
+{
+    /* Use standard C free.*/
+    free( ptr );
+}
