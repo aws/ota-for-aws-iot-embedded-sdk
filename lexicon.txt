@@ -148,6 +148,7 @@ ingestresultwriteblockfailed
 ingroup
 init
 initdocmodel
+initfiletransfer
 inprogress
 int
 ioffset
@@ -277,8 +278,10 @@ pcloseresult
 pcmsg
 pcmsgbuffer
 pconnectioncontext
+pcontrolinterface
 pctimername
 pctopicbuffer
+pdatainterface
 pdest
 pdestoffset
 pem
@@ -319,6 +322,7 @@ pparam
 ppayload
 ppayloadsize
 pprivatekeypath
+pprotocol
 pprotocols
 ppucpayload
 pquerykey
@@ -359,6 +363,8 @@ reconnectparam
 recv
 recvtimeout
 recvtimeoutms
+requestfileblock
+requestjob
 requestmomentum
 requesttimercallback
 resetdevice

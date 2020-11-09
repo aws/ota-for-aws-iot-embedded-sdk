@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_http.c
+ * @brief Data transfer over HTTP routines.
+ */
+
 /* Standard library include. */
 #include <stdbool.h>
 #include <string.h>
@@ -33,11 +38,15 @@
 #include "ota_private.h"
 #include "ota_http_private.h"
 
-/* Track the current block for HTTP requests */
+/**
+ * @brief Track the current block for HTTP requests
+ *
+ */
 static uint32_t currBlock;
 
-/*-----------------------------------------------------------*/
-
+/*
+ * Init file transfer by initializing the http module with the pre-signed url.
+ */
 OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
     LogInfo( ( "Invoking initFileTransfer_Http" ) );
@@ -60,6 +69,9 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     return status;
 }
 
+/*
+ * Check for next available OTA job from the job service.
+ */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
     LogInfo( ( "Invoking requestDataBlock_Http" ) );
@@ -92,6 +104,9 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     return status;
 }
 
+/*
+ * Decode a cbor encoded fileblock received from streaming service.
+ */
 OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
@@ -116,6 +131,9 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
     return OTA_ERR_NONE;
 }
 
+/*
+ * Perform any cleanup operations required for data plane.
+ */
 OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx )
 {
     /* Return status. */
