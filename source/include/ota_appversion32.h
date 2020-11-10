@@ -36,7 +36,7 @@
 
 /**
  * @brief Application version structure.
- * 
+ *
  */
 typedef struct
 {
