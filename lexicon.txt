@@ -55,6 +55,7 @@ createfileforrx
 customjobcallback
 cwd
 deduplicate
+deinit
 deinitialize
 destlen
 destoffset
@@ -171,6 +172,7 @@ malloc
 maxattempts
 maxfragmentlength
 mcu
+mem
 memcpy
 messagebuffersize
 messagelength
@@ -281,6 +283,7 @@ pdest
 pdestoffset
 pem
 pencodeddata
+peventcontext
 pencodedmessagesize
 peventctx
 peventmsg
@@ -338,6 +341,7 @@ ptimerctx
 ptimername
 ptopicbuffer
 ptopicfilter
+ptr
 pupdatefile
 pupdateurlpath
 pvalueinjson
