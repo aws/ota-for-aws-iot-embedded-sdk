@@ -87,30 +87,6 @@ static OtaDataInterface_t otaDataInterface;
 
 /* OTA agent private function prototypes. */
 
-/* Start a timer used for sending data requests. */
-
-static void startRequestTimer( uint32_t periodMS );
-
-/* Stop the data request timer. */
-
-static void stopRequestTimer( void );
-
-/* Data request timer callback. */
-
-static void requestTimerCallback( /*TimerHandle_t T*/ void * pParam );
-
-/* Start the self test timer if in self-test mode. */
-
-static BaseType_t startSelfTestTimer( void );
-
-/* Stop the OTA self test timer if it is running. */
-
-static void stopSelfTestTimer( void );
-
-/* Self-test timer callback, reset the device if this timer expires. */
-
-static void selfTestTimerCallback( /*TimerHandle_t T*/ void * pParam );
-
 /* Called when the OTA agent receives a file data block message. */
 
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
@@ -384,40 +360,6 @@ static bool inSelftest( void )
     return selfTest;
 }
 
-/*
- * If we're in self test mode, start the self test timer. The latest job should
- * also be in the self test state. We must complete the self test and either
- * accept or reject the image before the timer expires or we shall reset the
- * device to initiate a roll back of the MCU firmware bundle. This will catch
- * issues like improper credentials or a device that is connected to a non-
- * production stage of the job service resulting in a different job queue being
- * used.
- */
-static BaseType_t startSelfTestTimer( void )
-{
-    /* static const char pcTimerName[] = "OTA_SelfTest"; */
-    int32_t xTimerStarted = 0;
-
-    return xTimerStarted;
-}
-
-/* When the self test response timer expires, reset the device since we're likely broken. */
-
-static void selfTestTimerCallback( /*TimerHandle_t T*/ void * pParam )
-{
-    LogWarn( ( "Failed to complete self test: "
-               "Timeout occured after %ums",
-               otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
-    /* ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID ); */
-}
-
-/* Stop the OTA self test timer if it is running. */
-
-static void stopSelfTestTimer( void )
-{
-    /* otaAgent.pOTAOSCtx->timer.stop(otaAgent.pOTAOSCtx->timer.PTimerCtx[0]); */
-}
-
 static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
                                                int32_t subReason )
 {
@@ -434,7 +376,6 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
         if( state == OtaImageStateAccepted )
         {
             /* Now that we have accepted the firmware update, we can complete the job. */
-            stopSelfTestTimer();
             err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusSucceeded, JobReasonAccepted, appFirmwareVersion.u.signedVersion32 );
         }
         else
@@ -719,9 +660,6 @@ static OtaErr_t startHandler( const OtaEventData_t * pEventData )
     OtaErr_t retVal = OTA_ERR_NONE;
     OtaEventMsg_t eventMsg = { 0 };
 
-    /* Start self-test timer, if platform is in self-test. */
-    ( void ) startSelfTestTimer();
-
     /* Send event to OTA task to get job document. */
     eventMsg.eventId = OtaAgentEventRequestJobDocument;
 
@@ -753,7 +691,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
         /* The job is in self test but the platform image state is not so it could be
          * an attack on the platform image state. Reject the update (this should also
          * cause the image to be erased), aborting the job and reset the device. */
-        LogWarn( ( "Rejecting new image and rebooting:" 
+        LogWarn( ( "Rejecting new image and rebooting:"
                    "The job is in the self-test state while the platform is not." ) );
 
         err = setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
@@ -1037,7 +975,7 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Get the file context. */
-    OtaFileContext_t * pFileContext = &(otaAgent.fileContext);
+    OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
 
     /* Ingest data blocks received. */
     IngestResult_t result = ingestDataBlock( pFileContext,
@@ -1233,7 +1171,7 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
 
     /* Abort the current job. */
     ( void ) otaAgent.palCallbacks.setPlatformImageState( otaAgent.serverFileID, OtaImageStateAborted );
-    ( void ) otaClose( &( otaAgent.fileContext) );
+    ( void ) otaClose( &( otaAgent.fileContext ) );
 
     /* Free the active job name as its no longer required. */
     if( otaAgent.pOtaSingletonActiveJobName != NULL )
@@ -1274,66 +1212,6 @@ OtaEventData_t * otaEventBufferGet( void )
     return pOtaFreeMsg;
 }
 
-static void otaFreeContext( OtaFileContext_t * const pFileContext )
-{
-    if( pFileContext != NULL )
-    {
-        if( pFileContext->pStreamName != NULL )
-        {
-            free( pFileContext->pStreamName ); /* Free any previously allocated stream name memory. */
-            pFileContext->pStreamName = NULL;
-        }
-
-        if( pFileContext->pJobName != NULL )
-        {
-            free( pFileContext->pJobName ); /* Free the job name memory. */
-            pFileContext->pJobName = NULL;
-        }
-
-        if( pFileContext->pRxBlockBitmap != NULL )
-        {
-            free( pFileContext->pRxBlockBitmap ); /* Free the previously allocated block bitmap. */
-            pFileContext->pRxBlockBitmap = NULL;
-        }
-
-        if( pFileContext->pSignature != NULL )
-        {
-            free( pFileContext->pSignature ); /* Free the image signature memory. */
-            pFileContext->pSignature = NULL;
-        }
-
-        if( pFileContext->pFilePath != NULL )
-        {
-            free( pFileContext->pFilePath ); /* Free the file path name string memory. */
-            pFileContext->pFilePath = NULL;
-        }
-
-        if( pFileContext->pCertFilepath != NULL )
-        {
-            free( pFileContext->pCertFilepath ); /* Free the certificate path name string memory. */
-            pFileContext->pCertFilepath = NULL;
-        }
-
-        if( pFileContext->pUpdateUrlPath != NULL )
-        {
-            free( pFileContext->pUpdateUrlPath ); /* Free the url path name string memory. */
-            pFileContext->pUpdateUrlPath = NULL;
-        }
-
-        if( pFileContext->pAuthScheme != NULL )
-        {
-            free( pFileContext->pAuthScheme ); /* Free the pAuthScheme name string memory. */
-            pFileContext->pAuthScheme = NULL;
-        }
-
-        if( pFileContext->pProtocols != NULL )
-        {
-            free( pFileContext->pProtocols ); /* Free the pProtocols string memory. */
-            pFileContext->pProtocols = NULL;
-        }
-    }
-}
-
 /* Close an existing OTA file context and free its resources. */
 
 static bool otaClose( OtaFileContext_t * const pFileContext )
@@ -1342,7 +1220,7 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
 
     LogDebug( ( "Attempting to close OTA file context: "
                 "file context address=0x%p",
-               pFileContext ) );
+                pFileContext ) );
 
     /* Cleanup related to selected protocol. */
     if( otaDataInterface.cleanup != NULL )
@@ -1357,9 +1235,6 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
          */
         ( void ) otaAgent.palCallbacks.abortUpdate( pFileContext );
 
-        /* Free the resources. */
-        otaFreeContext( pFileContext );
-
         /* Clear the entire structure now that it is free. */
         ( void ) memset( pFileContext, 0, sizeof( OtaFileContext_t ) );
 
@@ -1369,7 +1244,6 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
     return result;
 }
 
-
 /* Find an available OTA transfer context structure. */
 
 static OtaFileContext_t * getFreeContext( void )
@@ -1377,14 +1251,14 @@ static OtaFileContext_t * getFreeContext( void )
     uint32_t index = 0U;
     OtaFileContext_t * pFileContext = NULL;
 
-    while( ( index < OTA_MAX_FILES ) && ( otaAgent.fileContext .pFilePath != NULL ) )
+    while( ( index < OTA_MAX_FILES ) && ( otaAgent.fileContext.pFilePath != NULL ) )
     {
         index++;
     }
 
     if( index != OTA_MAX_FILES )
     {
-        ( void ) memset( &(otaAgent.fileContext), 0, sizeof( OtaFileContext_t ) );
+        ( void ) memset( &( otaAgent.fileContext ), 0, sizeof( OtaFileContext_t ) );
         pFileContext = &( otaAgent.fileContext );
         otaAgent.fileIndex = index;
     }
@@ -1452,6 +1326,7 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
                                      &actualLen,
                                      ( const uint8_t * ) pValueInJson,
                                      valueLength );
+
         if( base64Status != 0 )
         {
             /* Stop processing on error. */
@@ -1619,7 +1494,7 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
                 LogDebug( ( "Failed job document content check: "
                             "Required job document parameter was not extracted: "
                             "parameter=%s",
-                            pModelParam[ scanIndex ].pSrcKey) );
+                            pModelParam[ scanIndex ].pSrcKey ) );
             }
         }
 
@@ -1802,7 +1677,7 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
                        "Old image version=%u"
                        ", New image version=%u",
                        appFirmwareVersion.u.unsignedVersion32,
-                       pFileContext->updaterVersion) );
+                       pFileContext->updaterVersion ) );
 
             err = OTA_ERR_NONE;
         }
@@ -1859,7 +1734,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
 
             LogError( ( "Custom job document was parsed, but the job name is NULL: "
                         "OtaJobParseErr_t=%i",
-                        err) );
+                        err ) );
         }
     }
     else
@@ -1918,8 +1793,6 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                 otaAgent.fileContext.pUpdateUrlPath = pFileContext->pUpdateUrlPath;
                 pFileContext->pUpdateUrlPath = NULL;
             }
-
-            otaFreeContext( pFileContext );
 
             *pFinalFile = &( otaAgent.fileContext );
             *pUpdateJob = true;
@@ -2012,7 +1885,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                 LogWarn( ( "New image is being rejected: "
                            "Application version of the new image is invalid: "
                            "OtaErr_t=%u",
-                            errVersionCheck) );
+                           errVersionCheck ) );
                 setError = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
                 /* All reject cases must reset the device. */
@@ -2021,7 +1894,8 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         }
         else
         {
-            *pFinalFile = getFreeContext();
+            /**pFinalFile = getFreeContext(); */
+            *pFinalFile = pFileContext;
 
             if( *pFinalFile == NULL )
             {
@@ -2092,12 +1966,11 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob )
 {
-    OtaFileContext_t fileContext = { 0 };
     OtaErr_t otaErr = OTA_ERR_NONE;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     DocParseErr_t parseError = DocParseErrNone;
     OtaFileContext_t * pFinalFile = NULL;
-    OtaFileContext_t * pFileContext = &fileContext;
+    OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
     JsonDocModel_t otaJobDocModel;
 
     parseError = initDocModel( &otaJobDocModel,
@@ -2167,11 +2040,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     /* If we failed, close the open files. */
     if( pFinalFile == NULL )
     {
-        /* Free the current reserved file context. */
-        otaFreeContext( pFileContext );
-
         /* Close any open files. */
-        ( void ) otaClose( & ( otaAgent.fileContext ) );
+        ( void ) otaClose( &( otaAgent.fileContext ) );
     }
 
     /* Return pointer to populated file context or NULL if it failed. */
@@ -2207,11 +2077,12 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
     {
-        if( pUpdateFile->pRxBlockBitmap != NULL )
-        {
-            free( pUpdateFile->pRxBlockBitmap ); /* Free any previously allocated bitmap. */
-            pUpdateFile->pRxBlockBitmap = NULL;
-        }
+        /* if( pUpdateFile->pRxBlockBitmap != NULL ) */
+        /* { */
+        /*     free( pUpdateFile->pRxBlockBitmap ); / * Free any previously allocated bitmap. * / */
+        /*     pUpdateFile->pRxBlockBitmap = NULL; */
+        /* } */
+        /*todo */
 
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
@@ -2435,7 +2306,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     else
     {
         LogInfo( ( "Number of blocks remaining: %u",
-                    pFileContext->blocksRemaining ) );
+                   pFileContext->blocksRemaining ) );
     }
 
     return eIngestResult;
@@ -2735,8 +2606,8 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
      */
     {
         err = otaAgent.pOtaInterface->os.event.send( NULL,
-                                              pEventMsg,
-                                              0 );
+                                                     pEventMsg,
+                                                     0 );
     }
 
     if( err == OTA_ERR_NONE )
@@ -2770,7 +2641,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
                         OtaCompleteCallback_t completeCallback )
 {
     /* Return value from this function */
-    OtaErr_t  returnStatus = OTA_ERR_UNINITIALIZED;
+    OtaErr_t returnStatus = OTA_ERR_UNINITIALIZED;
 
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )
@@ -2780,7 +2651,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
          * do anything and just use the defaults in the OTA structure.
          */
-        //setPALCallbacks( &(pOtaInterfaces->pal ));
+        /*setPALCallbacks( &(pOtaInterfaces->pal )); */
 
         /*
          * Initialize the OTA control interface based on the application protocol
@@ -2796,14 +2667,14 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.statistics.otaPacketsQueued = 0;
         otaAgent.statistics.otaPacketsProcessed = 0;
 
-       /*
-        * Initialize the OTA inerface.
-        */
+        /*
+         * Initialize the OTA inerface.
+         */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
-       /*
-        * Initialize filecontext.
-        */
+        /*
+         * Initialize filecontext.
+         */
         otaAgent.fileContext.pFilePath = pOtaBuffer->pUpdateFilePath;
         otaAgent.fileContext.pRxBlockBitmap = pOtaBuffer->pFileBitmap;
         otaAgent.fileContext.pUpdateUrlPath = pOtaBuffer->pUrl;
@@ -2811,21 +2682,21 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.fileContext.pCertFilepath = pOtaBuffer->pCertFilePath;
 
         otaAgent.palCallbacks.completeCallback = completeCallback;
-        
-       /*
-        * The current OTA image state as set by the OTA agent.
-        */
+
+        /*
+         * The current OTA image state as set by the OTA agent.
+         */
         otaAgent.imageState = OtaImageStateUnknown;
-    
-       /*
-        * .
-        */
-       otaAgent.pOtaInterface->os.event.init( NULL );
+
+        /*
+         * .
+         */
+        otaAgent.pOtaInterface->os.event.init( NULL );
 
         if( pThingName == NULL )
         {
             LogError( ( "Error: Thing name is NULL.\r\n" ) );
-            //returnStatus = OTA_ERR_THING_NAME_NULL; //ToDo
+            /*returnStatus = OTA_ERR_THING_NAME_NULL; //ToDo */
         }
         else
         {
@@ -2833,25 +2704,24 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
 
             if( strLength <= otaconfigMAX_THINGNAME_LEN )
             {
-                /* 
-                 * Store the Thing name to be used for topics later. Include zero terminator 
-                 * when saving the Thing name. 
+                /*
+                 * Store the Thing name to be used for topics later. Include zero terminator
+                 * when saving the Thing name.
                  */
-                ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL ); 
+                ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL );
                 returnStatus = OTA_ERR_NONE;
-
             }
             else
             {
                 LogError( ( "Error: Thing name is too long.\r\n" ) );
-                //returnStatus = OTA_ERR_THING_NAME_TOO_LONG;  //ToDo
+                /*returnStatus = OTA_ERR_THING_NAME_TOO_LONG;  //ToDo */
             }
         }
 
         if( returnStatus == OTA_ERR_NONE )
         {
             /* OTA Task is not running yet so update the state to init directly in OTA context. */
-            otaAgent.state = OtaAgentStateInit;       
+            otaAgent.state = OtaAgentStateInit;
         }
     }
     /* If OTA agent is already running, just reset the statistics. */
