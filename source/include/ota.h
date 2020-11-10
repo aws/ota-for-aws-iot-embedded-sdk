@@ -36,6 +36,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/* OTA Library Interface include. */
+#include "ota_os_interface.h"
+#include "ota_mqtt_interface.h"
+#include "ota_http_interface.h"
+
 /**
  * @cond DOXYGEN_IGNORE
  * Doxygen should ignore this section.
@@ -364,6 +369,24 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  */
 
 /**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA PAL callback structure
+ */
+typedef struct
+{
+    OtaPALAbortCallback_t abortUpdate;                           /*!< OTA Abort callback pointer */
+    OtaPALActivateNewImageCallback_t activateNewImage;           /*!< OTA Activate New Image callback pointer */
+    OtaPALCloseFileCallback_t closeFile;                         /*!< OTA Close File callback pointer */
+    OtaPALCreateFileForRxCallback_t createFileForRx;             /*!< OTA Create File for Receive callback pointer */
+    OtaPALGetPlatformImageStateCallback_t getPlatformImageState; /*!< OTA Get Platform Image State callback pointer */
+    OtaPALResetDeviceCallback_t resetDevice;                     /*!< OTA Reset Device callback pointer */
+    OtaPALSetPlatformImageStateCallback_t setPlatformImageState; /*!< OTA Set Platform Image State callback pointer */
+    OtaPALWriteBlockCallback_t writeBlock;                       /*!< OTA Write Block callback pointer */
+    OtaCompleteCallback_t completeCallback;                      /*!< OTA Job Completed callback pointer */
+    OtaCustomJobCallback_t customJobCallback;                    /*!< OTA Custom Job callback pointer */
+} OtaPalCallbacks_t;
+
+/**
  * @ingroup ota_datatypes_struct_constants
  * @brief A composite cryptographic signature structure able to hold our largest supported signature.
  */
@@ -381,6 +404,32 @@ typedef struct
     uint16_t size;                         /*!< Size, in bytes, of the signature. */
     uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
 } Sig256_t;
+
+typedef struct OtaInterface
+{
+    OtaOSInterface_t os;
+    OtaMqttInterface_t mqtt;
+    OtaHttpInterface_t http;
+    OtaPalCallbacks_t pal;
+}OtaInterfaces_t;
+
+typedef struct OtaAppBuffer
+{
+    uint8_t * pUpdateFilePath;
+    uint16_t updateFilePathsize;
+    uint8_t * pCertFilePath;
+    uint16_t certFilePathSize;
+    uint8_t * pStreamName;
+    uint16_t  streamNameSize;
+    uint8_t * pDecodeMemory;
+    uint32_t decodeMemorySize;
+    uint8_t * pFileBitmap;
+    uint16_t fileBitmapSize;
+    uint8_t * pUrl;
+    uint16_t urlSize;
+    uint8_t * pAuthScheme;
+    uint16_t authSchemeSize;
+}OtaAppBuffer_t;
 
 /**
  * @ingroup ota_datatypes_structs
@@ -411,27 +460,8 @@ struct OtaFileContext
     bool isInSelfTest;        /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;     /*!< Authorization scheme. */
     Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
-    uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
+    uint32_t fileType;        /*!< The file is referenced by this numeric ID in the OTA job. */
 };
-
-/**
- * @ingroup ota_datatypes_structs
- * @brief OTA PAL callback structure
- */
-typedef struct
-{
-    OtaPALAbortCallback_t abortUpdate;                           /*!< OTA Abort callback pointer */
-    OtaPALActivateNewImageCallback_t activateNewImage;           /*!< OTA Activate New Image callback pointer */
-    OtaPALCloseFileCallback_t closeFile;                         /*!< OTA Close File callback pointer */
-    OtaPALCreateFileForRxCallback_t createFileForRx;             /*!< OTA Create File for Receive callback pointer */
-    OtaPALGetPlatformImageStateCallback_t getPlatformImageState; /*!< OTA Get Platform Image State callback pointer */
-    OtaPALResetDeviceCallback_t resetDevice;                     /*!< OTA Reset Device callback pointer */
-    OtaPALSetPlatformImageStateCallback_t setPlatformImageState; /*!< OTA Set Platform Image State callback pointer */
-    OtaPALWriteBlockCallback_t writeBlock;                       /*!< OTA Write Block callback pointer */
-    OtaCompleteCallback_t completeCallback;                      /*!< OTA Job Completed callback pointer */
-    OtaCustomJobCallback_t customJobCallback;                    /*!< OTA Custom Job callback pointer */
-} OtaPalCallbacks_t;
-
 
 /*------------------------- OTA defined constants --------------------------*/
 
@@ -529,35 +559,10 @@ typedef struct
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
-OtaState_t OTA_AgentInit( void * pOtaOSCtx,
-                          void * pOtaMqttInterface,
-                          void * pOtaHttpInterface,
-                          const uint8_t * pThingName,
-                          OtaCompleteCallback_t completeCallback );
-
-/**
- * @brief Internal OTA Agent initialization function.
- *
- * Initialize the OTA engine by starting the OTA Agent ("OTA Task") in the system. This function must
- * be called with the MQTT messaging client context before calling @ref OTA_CheckForUpdate. Only one
- * OTA Agent may exist.
- *
- * @param[in] pOtaOSCtx A pointer to the OS context
- * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
- * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
- * @param[in] pThingName A pointer to a C string holding the Thing name.
- * @param[in] pCallbacks Static callback structure for various OTA events. This function will have
- * input of the state of the OTA image after download and during self-test.
- *
- * @return The state of the OTA Agent upon return from the OtaState_t enum.
- * If the agent was successfully initialized and ready to operate, the state will be
- * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
- */
-OtaState_t OTA_AgentInit_internal( void * pOtaOSCtx,
-                                   void * pOtaMqttInterface,
-                                   void * pOtaHttpInterface,
-                                   const uint8_t * pThingName,
-                                   const OtaPalCallbacks_t * pCallbacks );
+OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
+                        OtaInterfaces_t * pOtaInterfaces,
+                        const uint8_t * pThingName,
+                        OtaCompleteCallback_t completeCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.

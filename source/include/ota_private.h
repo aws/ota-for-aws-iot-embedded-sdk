@@ -32,6 +32,12 @@
 #ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
 #define _AWS_IOT_OTA_AGENT_INTERNAL_H_
 
+/* Standard includes. */
+/* For FILE type in OtaFileContext_t.*/
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 #include "ota_config.h"
 
 #include "ota_os_interface.h"
@@ -273,8 +279,7 @@ typedef struct OtaAgentContext
 {
     OtaState_t state;                                      /*!< State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /*!< Thing name + zero terminator. */
-    void * pConnectionContext;                             /*!< Connection context for control and data plane. */
-    OtaFileContext_t pOtaFiles[ OTA_MAX_FILES ];           /*!< Static array of OTA file structures. */
+    OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
     uint32_t fileIndex;                                    /*!< Index of current file in the array. */
     uint32_t serverFileID;                                 /*!< Variable to store current file ID passed down */
     uint8_t * pOtaSingletonActiveJobName;                  /*!< The currently active job name. We only allow one at a time. */
@@ -285,9 +290,7 @@ typedef struct OtaAgentContext
     uint32_t numOfBlocksToReceive;                         /*!< Number of data blocks to receive per data request. */
     OtaAgentStatistics_t statistics;                       /*!< The OTA agent statistics block. */
     uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
-    OtaOSInterface_t * pOTAOSCtx;                          /*!< Pointer to OS interface context. */
-    OtaMqttInterface_t * pOTAMqttInterface;                /*!< Pointer to MQTT interface context.*/
-    OtaHttpInterface_t * pOTAHttpInterface;                /*!< Pointer to HTTP interface context.*/
+    OtaInterfaces_t * pOtaInterface;
 } OtaAgentContext_t;
 
 /**
