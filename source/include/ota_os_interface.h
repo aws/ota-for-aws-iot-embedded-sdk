@@ -207,7 +207,7 @@ typedef struct OtaOSInterface
 {
     OtaEventInterface_t event; /*!< OTA Event interface. */
     OtaTimerInterface_t timer; /*!< OTA Timer interface. */
-    OtaMallocInterface_t mem;  /*!< OTA mem interface. */
+    OtaMallocInterface_t mem;  /*!< OTA memory interface. */
 } OtaOSInterface_t;
 
 #endif /* ifndef _OTA_OS_INTERFACE_H_ */
