@@ -186,7 +186,7 @@ typedef struct OtaEventInterface
 typedef struct OtaTimerInterface
 {
     OtaStartTimer_t start;         /*!< Timer start state. */
-    OtaStopTimer_t stop;           /*!< Timer stop state.. */
+    OtaStopTimer_t stop;           /*!< Timer stop state. */
     OtaDeleteTimer_t delete;       /*!< Delete timer. */
     OtaTimerContext_t * PTimerCtx; /*!< Implementation-defined ota timer context. */
 } OtaTimerInterface_t;
@@ -196,8 +196,8 @@ typedef struct OtaTimerInterface
  */
 typedef struct OtaMallocInterface
 {
-    OtaMalloc_t malloc;
-    OtaFree_t free;
+    OtaMalloc_t malloc; /*!< OTA memory allocate interface. */
+    OtaFree_t free;     /*!< OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 
 /**
