@@ -169,6 +169,7 @@ malloc
 maxattempts
 maxfragmentlength
 mcu
+mem
 memcpy
 messagelength
 messagelevel
@@ -332,6 +333,7 @@ ptimerctx
 ptimername
 ptopicbuffer
 ptopicfilter
+ptr
 pupdatefile
 pupdateurlpath
 pvalueinjson

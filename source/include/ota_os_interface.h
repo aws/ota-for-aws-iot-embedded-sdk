@@ -160,7 +160,7 @@ typedef void * ( * OtaMalloc_t ) ( size_t size );
  * This function deallocates the memory previously allocated by a call to allocation
  * function of type OtaMalloc_t.
  *
- * @param[size]        ptr − This is the pointer to a memory block previously allocated with function
+ * @param[ptr]         This is the pointer to a memory block previously allocated with function
  *                     of type OtaMalloc_t. If a null pointer is passed as argument, no action occurs.
  *
  * @return             None.
