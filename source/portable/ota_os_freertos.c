@@ -71,7 +71,7 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
     {
         otaErrRet = OTA_ERR_NONE;
 
-        LogInfo( ( "OTA Event Queue created." ) );
+        LogDebug( ( "OTA Event Queue created." ) );
     }
 
     return otaErrRet;
@@ -95,7 +95,7 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pContext,
     {
         otaErrRet = OTA_ERR_NONE;
 
-        LogInfo( ( "OTA Event Sent." ) );
+        LogDebug( ( "OTA Event Sent." ) );
     }
     else
     {
@@ -132,7 +132,7 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pContext,
 
         otaErrRet = OTA_ERR_NONE;
 
-        LogInfo( ( "OTA Event received" ) );
+        LogDebug( ( "OTA Event received" ) );
     }
     else
     {
@@ -156,7 +156,7 @@ void OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
     {
         vQueueDelete( xOtaEventQueue );
 
-        LogInfo( ( "OTA Event Queue Deleted." ) );
+        LogDebug( ( "OTA Event Queue Deleted." ) );
     }
 }
 
@@ -204,7 +204,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
         {
             otaErrRet = OTA_ERR_NONE;
 
-            LogInfo( ( "OTA Timer created." ) );
+            LogDebug( ( "OTA Timer created." ) );
 
             /* Start the timer. */
             xRet = xTimerStart( xTimer, portMAX_DELAY );
@@ -213,13 +213,14 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
             {
                 otaErrRet = OTA_ERR_NONE;
 
-                LogInfo( ( "OTA Timer started." ) );
+                LogDebug( ( "OTA Timer started." ) );
             }
             else
             {
                 otaErrRet = OTA_ERR_TIMER_START_FAILED;
 
-                LogInfo( ( "Failed to start OTA timer." ) );
+                LogError( ( "Failed to start OTA timer: "
+                            "xTimerStart returned error." ) );
             }
         }
     }
@@ -232,13 +233,14 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
         {
             otaErrRet = OTA_ERR_NONE;
 
-            LogInfo( ( "OTA Timer restarted." ) );
+            LogDebug( ( "OTA Timer restarted." ) );
         }
         else
         {
             otaErrRet = OTA_ERR_TIMER_START_FAILED;
 
-            LogError( ( "Failed to restart OTA timer." ) );
+            LogError( ( "Failed to restart OTA timer: "
+                        "xTimerReset returned error." ) );
         }
     }
 
@@ -260,18 +262,20 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx )
         {
             otaErrRet = OTA_ERR_NONE;
 
-            LogInfo( ( "OTA Timer restarted." ) );
+            LogDebug( ( "OTA Timer restarted." ) );
         }
         else
         {
             otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
 
-            LogError( ( "Failed to stop OTA timer." ) );
+            LogError( ( "Failed to stop OTA timer: "
+                        "xTimerStop returned error." ) );
         }
     }
     else
     {
-        LogError( ( "Failed to stop, timer is not created" ) );
+        LogError( ( "Failed to stop OTA timer: "
+                    "Timer does not exist." ) );
     }
 
     return otaErrRet;
@@ -292,20 +296,22 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
         {
             otaErrRet = OTA_ERR_NONE;
 
-            LogInfo( ( "OTA Timer deleted." ) );
+            LogDebug( ( "OTA Timer deleted." ) );
         }
         else
         {
             otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
 
-            LogError( ( "Failed to delete OTA timer." ) );
+            LogError( ( "Failed to delete OTA timer: "
+                        "xTimerDelete returned error." ) );
         }
     }
     else
     {
         otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
 
-        LogError( ( "Failed to delete, timer is not created" ) );
+        LogError( ( "Failed to delete OTA timer: "
+                    "Timer does not exist." ) );
     }
 
     return otaErrRet;
