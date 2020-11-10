@@ -224,10 +224,10 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) )
     {
-        result = pAgentCtx->pOTAMqttInterface->subscribe( pJobTopicGetNext,
+        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
                                                           topicLen,
                                                           1,
-                                                          pAgentCtx->pOTAMqttInterface->jobCallback );
+                                                          pAgentCtx->pOtaInterface->mqtt.jobCallback);
 
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
@@ -250,10 +250,10 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
     {
-        result = pAgentCtx->pOTAMqttInterface->subscribe( pJobTopicNotifyNext,
+        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                           topicLen,
                                                           1,
-                                                          pAgentCtx->pOTAMqttInterface->jobCallback );
+                                                          pAgentCtx->pOtaInterface->mqtt.jobCallback );
 
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
@@ -279,7 +279,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
     char pOtaRxStreamTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
 
-    const OtaFileContext_t * pFileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
+    const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
     if( ( pFileContext != NULL ) && ( pFileContext->pStreamName != NULL ) )
     {
@@ -293,7 +293,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 
         if( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) )
         {
-            result = pAgentCtx->pOTAMqttInterface->unsubscribe( pOtaRxStreamTopic,
+            result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
                                                                 topicLen,
                                                                 1 );
         }
@@ -335,7 +335,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
-        err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
+        err = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                          topicLen,
                                                          0 );
     }
@@ -348,7 +348,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
 
     if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
     {
-        err = pAgentCtx->pOTAMqttInterface->unsubscribe( pJobTopic,
+        err = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                          topicLen,
                                                          0 );
     }
@@ -387,7 +387,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     if( ( topicLen > 0UL ) && ( topicLen < sizeof( pTopicBuffer ) ) )
     {
         LogDebug( ( "MQTT status message to publish: %s", pcMsg ) );
-        err = pAgentCtx->pOTAMqttInterface->publish(
+        err = pAgentCtx->pOtaInterface->mqtt.publish(
             pTopicBuffer,
             ( uint16_t ) topicLen,
             &pMsg[ 0 ],
@@ -577,7 +577,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 
         if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) )
         {
-            ret = pAgentCtx->pOTAMqttInterface->publish( pJobTopic, topicLen, pMsg, msgLen, 1 );
+            ret = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgLen, 1 );
 
             if( ret != OTA_ERR_NONE )
             {
@@ -624,13 +624,13 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     uint8_t qos = 1;
 
     /* Get the current file context. */
-    const OtaFileContext_t * C = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
+    const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
     if( status == JobStatusInProgress )
     {
         if( reason == ( int32_t ) JobReasonReceiving )
         {
-            msgSize = buildStatusMessageReceiving( pMsg, sizeof( pMsg ), status, C );
+            msgSize = buildStatusMessageReceiving( pMsg, sizeof( pMsg ), status, pFileContext );
 
             if( msgSize > 0U )
             {
@@ -681,7 +681,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
 
     uint16_t usTopicLen = 0;
-    const OtaFileContext_t * pFileContext = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
+    const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
     usTopicLen = ( uint16_t ) snprintf( pcOTA_RxStreamTopic,
                                         sizeof( pcOTA_RxStreamTopic ),
@@ -691,10 +691,10 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     if( ( usTopicLen > 0U ) && ( usTopicLen < sizeof( pcOTA_RxStreamTopic ) ) )
     {
-        result = pAgentCtx->pOTAMqttInterface->subscribe( pcOTA_RxStreamTopic,
+        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pcOTA_RxStreamTopic,
                                                           usTopicLen,
                                                           0,
-                                                          pAgentCtx->pOTAMqttInterface->dataCallback );
+                                                          pAgentCtx->pOtaInterface->mqtt.dataCallback );
     }
 
     if( result != OTA_ERR_NONE )
@@ -727,15 +727,15 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     /*
      * Get the current file context.
      */
-    const OtaFileContext_t * C = &( pAgentCtx->pOtaFiles[ pAgentCtx->fileIndex ] );
+    const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
 
-    if( C != NULL )
+    if( pFileContext != NULL )
     {
         uint32_t blockSize = OTA_FILE_BLOCK_SIZE & 0x7fffffffU;
-        numBlocks = ( C->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+        numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
         if( OTA_CBOR_Encode_GetStreamRequestMessage(
@@ -743,10 +743,10 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                 sizeof( pMsg ),
                 &msgSizeFromStream,
                 OTA_CLIENT_TOKEN,
-                ( int32_t ) C->serverFileID,
+                ( int32_t ) pFileContext->serverFileID,
                 ( int32_t ) blockSize,
                 0,
-                C->pRxBlockBitmap,
+                pFileContext->pRxBlockBitmap,
                 bitmapLen,
                 ( int32_t ) otaconfigMAX_NUM_BLOCKS_REQUEST ) == true )
         {
@@ -770,7 +770,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                                           sizeof( pTopicBuffer ),
                                           pOtaGetStreamTopicTemplate,
                                           pAgentCtx->pThingName,
-                                          ( const char * ) C->pStreamName );
+                                          ( const char * ) pFileContext->pStreamName );
 
         if( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) )
         {
@@ -790,7 +790,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     if( err == OTA_ERR_NONE )
     {
-        ret = pAgentCtx->pOTAMqttInterface->publish(
+        ret = pAgentCtx->pOtaInterface->mqtt.publish(
             pTopicBuffer,
             ( uint16_t ) topicLen,
             &pMsg[ 0 ],
@@ -869,10 +869,10 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     if( err != OTA_ERR_NONE )
     {
-        LogWarning( ( "Failed cleanup for MQTT control plane: "
-                      "unsubscribeFromJobNotificationTopic returned error: "
-                      "OtaErr_t=%u",
-                      err ) );
+        LogWarn( ( "Failed cleanup for MQTT control plane: "
+                   "unsubscribeFromJobNotificationTopic returned error: "
+                   "OtaErr_t=%u",
+                   err ) );
     }
 
     return OTA_ERR_NONE;
@@ -890,10 +890,10 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     if( err != OTA_ERR_NONE )
     {
-        LogWarning( ( "Failed cleanup for MQTT data plane: "
-                      "unsubscribeFromDataStream returned error: "
-                      "OtaErr_t=%u",
-                      err ) );
+        LogWarn( ( "Failed cleanup for MQTT data plane: "
+                   "unsubscribeFromDataStream returned error: "
+                   "OtaErr_t=%u",
+                   err ) );
     }
 
     return OTA_ERR_NONE;
