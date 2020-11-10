@@ -226,7 +226,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
     else
     {
         /* Reset the timer. */
-        xRet = xTimerStart( xTimer, portMAX_DELAY );
+        xRet = xTimerReset( xTimer, portMAX_DELAY );
 
         if( xRet == pdTRUE )
         {
