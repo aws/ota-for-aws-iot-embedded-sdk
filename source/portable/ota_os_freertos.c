@@ -42,10 +42,10 @@ static OtaEventMsg_t xQueueData[ MAX_MESSAGES ];
 static StaticQueue_t xStaticQueue;
 
 /* The queue control handle.  .*/
-QueueHandle_t xOtaEventQueue;
+static QueueHandle_t xOtaEventQueue;
 
 /* The timer handle.  .*/
-TimerHandle_t xTimer;
+static TimerHandle_t xTimer;
 
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
