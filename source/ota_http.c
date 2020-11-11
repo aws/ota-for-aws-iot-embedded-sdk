@@ -58,10 +58,10 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     char * pURL = NULL;
 
     /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = pAgentCtx->pOtaFiles;
+    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
 
     /* Get pre-signed URL from pAgentCtx. */
-    pURL = fileContext->urlInfo.pUpdateUrl;
+    pURL = fileContext->pUpdateUrlPath;
 
     /* Connect to the HTTP server and initialize download information. */
     status = pAgentCtx->pOtaInterface->http.init( pURL );
@@ -84,7 +84,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     uint32_t rangeEnd = 0;
 
     /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = pAgentCtx->pOtaFiles;
+    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
 
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
