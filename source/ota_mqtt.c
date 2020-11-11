@@ -146,10 +146,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  * @return OtaErr_t OTA_ERR_NONE if the message is publish is successful.
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
-                                      OtaJobStatus_t status,
                                       const char * pMsg,
-                                      uint32_t msgSize,
-                                      uint8_t qos );
+                                      uint32_t msgSize );
 
 /**
  * @brief Populate the message buffer with the job status message.
@@ -367,10 +365,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  * Publish a message to the job status topic.
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
-                                      OtaJobStatus_t status,
                                       const char * pMsg,
-                                      uint32_t msgSize,
-                                      uint8_t qos )
+                                      uint32_t msgSize );
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
@@ -406,10 +402,8 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
         else
         {
             LogDebug( ( "MQTT Topic: "
-                        "topic=%s"
-                        ", job status=%i",
-                        pTopicBuffer,
-                        status ) );
+                        "topic=%s",
+                        pTopicBuffer ) );
         }
     }
     else
@@ -659,7 +653,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 
     if( msgSize > 0UL )
     {
-        err = publishStatusMessage( pAgentCtx, status, pMsg, msgSize, 0 );
+        err = publishStatusMessage( pAgentCtx, pMsg, msgSize );
 
         if( err != OTA_ERR_NONE )
         {
