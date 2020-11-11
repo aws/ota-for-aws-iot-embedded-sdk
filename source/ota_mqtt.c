@@ -224,32 +224,43 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
                    pJobTopicGetNext ) );
-
-        /* Build the second topic. */
-        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
-                                          sizeof( pJobTopicNotifyNext ),
-                                          pOtaJobsNotifyNextTopicTemplate,
-                                          pAgentCtx->pThingName );
     }
     else
     {
         LogError( ( "Failed to subscribe to MQTT topic: "
                     "Topic length is %d: "
-                    "Topic length should be > 0 and < %d:",
+                    "Topic length should be > 0 and < %d.",
                     topicLen,
                     sizeof( pJobTopicGetNext ) ) );
     }
 
-    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
+    if( result == OTA_ERR_NONE )
     {
-        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
-                                                          topicLen,
-                                                          1,
-                                                          pAgentCtx->pOtaInterface->mqtt.jobCallback );
+        /* Build the second topic. */
+        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
+                                          sizeof( pJobTopicNotifyNext ),
+                                          pOtaJobsNotifyNextTopicTemplate,
+                                          pAgentCtx->pThingName );
 
-        LogInfo( ( "Subscribed to MQTT topic: "
-                   "%s",
-                   pJobTopicGetNext ) );
+        if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
+        {
+            result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
+                                                               topicLen,
+                                                               1,
+                                                               pAgentCtx->pOtaInterface->mqtt.jobCallback );
+
+            LogInfo( ( "Subscribed to MQTT topic: "
+                       "%s",
+                       pJobTopicGetNext ) );
+        }
+        else
+        {
+            LogError( ( "Failed to subscribe to MQTT topic: "
+                        "Topic length is %d: "
+                        "Topic length should be > 0 and < %d.",
+                        topicLen,
+                        sizeof( pJobTopicGetNext ) ) );
+        }
     }
 
     if( result != OTA_ERR_NONE )
@@ -293,7 +304,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
         {
             LogError( ( "Failed to unsubscribe from MQTT topic: "
                         "Topic length is %d: "
-                        "Topic length should be > 0 and < %d:",
+                        "Topic length should be > 0 and < %d.",
                         topicLen,
                         sizeof( pOtaRxStreamTopic ) ) );
         }
@@ -408,7 +419,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     {
         LogError( ( "Failed to publish to MQTT topic: "
                     "Topic length is %d: "
-                    "Topic length should be > 0 and < %d:",
+                    "Topic length should be > 0 and < %d.",
                     topicLen,
                     sizeof( pTopicBuffer ) ) );
     }
@@ -589,7 +600,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         {
             LogError( ( "Failed to publish to MQTT topic: "
                         "Topic length is %d: "
-                        "Topic length should be > 0 and < %d:",
+                        "Topic length should be > 0 and < %d.",
                         topicLen,
                         sizeof( pJobTopic ) ) );
             error = OTA_ERR_TOPIC_TOO_LARGE;
@@ -773,7 +784,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
             /* 0 should never happen since we supply the format strings. It must be overflow. */
             LogError( ( "Failed to build MQTT topic: "
                         "Topic length is %d: "
-                        "Topic length should be > 0 and < %d:",
+                        "Topic length should be > 0 and < %d.",
                         topicLen,
                         sizeof( pTopicBuffer ) ) );
             err = OTA_ERR_TOPIC_TOO_LARGE;
