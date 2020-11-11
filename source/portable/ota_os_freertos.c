@@ -36,16 +36,16 @@
 #define MAX_MSG_SIZE    sizeof( OtaEventMsg_t )
 
 /* Array containing pointer to the OTA event structures used to send events to the OTA task. */
-static OtaEventMsg_t xQueueData[ MAX_MESSAGES ];
+static OtaEventMsg_t queueData[ MAX_MESSAGES ];
 
 /* The queue control structure.  .*/
-static StaticQueue_t xStaticQueue;
+static StaticQueue_t staticQueue;
 
 /* The queue control handle.  .*/
-static QueueHandle_t xOtaEventQueue;
+static QueueHandle_t otaEventQueue;
 
 /* The timer handle.  .*/
-static TimerHandle_t xTimer;
+static TimerHandle_t timer;
 
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
@@ -53,12 +53,12 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    xOtaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
+    otaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
                                          ( UBaseType_t ) MAX_MSG_SIZE,
-                                         ( uint8_t * ) xQueueData,
-                                         &xStaticQueue );
+                                         ( uint8_t * ) queueData,
+                                         &staticQueue );
 
-    if( xOtaEventQueue == NULL )
+    if( otaEventQueue == NULL )
     {
         otaErrRet = OTA_ERR_EVENT_Q_CREATE_FAILED;
 
@@ -86,12 +86,12 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pContext,
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    BaseType_t xRet = pdFALSE;
+    BaseType_t retVal = pdFALSE;
 
     /* Send the event to OTA event queue.*/
-    xRet = xQueueSendToBack( xOtaEventQueue, pxEventMsg, ( TickType_t ) 0 );
+    retVal = xQueueSendToBack( otaEventQueue, pxEventMsg, ( TickType_t ) 0 );
 
-    if( xRet == pdTRUE )
+    if( retVal == pdTRUE )
     {
         otaErrRet = OTA_ERR_NONE;
 
@@ -118,14 +118,14 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pContext,
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    BaseType_t xRet = pdFALSE;
+    BaseType_t retVal = pdFALSE;
 
     /* Temp buffer.*/
     char buff[ MAX_MSG_SIZE ];
 
-    xRet = xQueueReceive( xOtaEventQueue, &buff, portMAX_DELAY );
+    retVal = xQueueReceive( otaEventQueue, &buff, portMAX_DELAY );
 
-    if( xRet == pdTRUE )
+    if( retVal == pdTRUE )
     {
         /* copy the data from local buffer.*/
         memcpy( pEventMsg, buff, MAX_MSG_SIZE );
@@ -152,15 +152,15 @@ void OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
     ( void ) pContext;
 
     /* Remove the event queue.*/
-    if( xOtaEventQueue != NULL )
+    if( otaEventQueue != NULL )
     {
-        vQueueDelete( xOtaEventQueue );
+        vQueueDelete( otaEventQueue );
 
         LogDebug( ( "OTA Event Queue Deleted." ) );
     }
 }
 
-static void timerCallback( TimerHandle_t xTimer )
+static void timerCallback( TimerHandle_t timer )
 {
     OtaEventMsg_t xEventMsg = { 0 };
 
@@ -179,24 +179,24 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    BaseType_t xRet = pdFALSE;
+    BaseType_t retVal = pdFALSE;
 
     /* If timer is not created.*/
-    if( xTimer == NULL )
+    if( timer == NULL )
     {
         /* Create the timer. */
-        xTimer = xTimerCreate( pTimerName,
+        timer = timerCreate( pTimerName,
                                pdMS_TO_TICKS( timeout ),
                                pdFALSE,
                                NULL,
                                timerCallback );
 
-        if( xTimer == NULL )
+        if( timer == NULL )
         {
             otaErrRet = OTA_ERR_TIMER_CREATE_FAILED;
 
             LogError( ( "Failed to create OTA timer: "
-                        "xTimerCreate returned NULL "
+                        "timerCreate returned NULL "
                         "otaErrRet=%i "
                         otaErrRet ) );
         }
@@ -207,9 +207,9 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
             LogDebug( ( "OTA Timer created." ) );
 
             /* Start the timer. */
-            xRet = xTimerStart( xTimer, portMAX_DELAY );
+            retVal = timerStart( timer, portMAX_DELAY );
 
-            if( xRet == pdTRUE )
+            if( retVal == pdTRUE )
             {
                 otaErrRet = OTA_ERR_NONE;
 
@@ -220,16 +220,16 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
                 otaErrRet = OTA_ERR_TIMER_START_FAILED;
 
                 LogError( ( "Failed to start OTA timer: "
-                            "xTimerStart returned error." ) );
+                            "timerStart returned error." ) );
             }
         }
     }
     else
     {
         /* Reset the timer. */
-        xRet = xTimerReset( xTimer, portMAX_DELAY );
+        retVal = timerReset( timer, portMAX_DELAY );
 
-        if( xRet == pdTRUE )
+        if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
 
@@ -240,7 +240,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
             otaErrRet = OTA_ERR_TIMER_START_FAILED;
 
             LogError( ( "Failed to restart OTA timer: "
-                        "xTimerReset returned error." ) );
+                        "timerReset returned error." ) );
         }
     }
 
@@ -253,12 +253,12 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx )
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    if( xTimer != NULL )
+    if( timer != NULL )
     {
         /* Stop the timer. */
-        xRet = xTimerStop( xTimer, portMAX_DELAY );
+        retVal = timerStop( timer, portMAX_DELAY );
 
-        if( xRet == pdTRUE )
+        if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
 
@@ -269,7 +269,7 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx )
             otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
 
             LogError( ( "Failed to stop OTA timer: "
-                        "xTimerStop returned error." ) );
+                        "timerStop returned error." ) );
         }
     }
     else
@@ -287,12 +287,12 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    if( xTimer != NULL )
+    if( timer != NULL )
     {
         /* Stop the timer. */
-        xRet = xTimerDelete( xTimer, portMAX_DELAY );
+        retVal = timerDelete( timer, portMAX_DELAY );
 
-        if( xRet == pdTRUE )
+        if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
 
@@ -303,7 +303,7 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
             otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
 
             LogError( ( "Failed to delete OTA timer: "
-                        "xTimerDelete returned error." ) );
+                        "timerDelete returned error." ) );
         }
     }
     else
