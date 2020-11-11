@@ -261,9 +261,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 
         if ( result == OTA_ERR_NONE )
         {
-            LogInfo( ( "Subscribed to MQTT topic: "
-                       "%s",
-                       pJobTopicNotifyNext ) );
+            LogInfo( ( "Subscribed to MQTT topic: %s", pJobTopicNotifyNext ) );
         }
         else
         {
@@ -287,42 +285,44 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     char pOtaRxStreamTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
-
-    const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
+    const OtaFileContext_t * pFileContext;
 
     assert( pAgentCtx != NULL );
 
-    if( ( pFileContext != NULL ) && ( pFileContext->pStreamName != NULL ) )
+    pFileContext = &( pAgentCtx->fileContext );
+
+    /* This function is only called when there is a valid file context. */
+    assert( pFileContxt != NULL );
+
+    if( pFileContext->pStreamName != NULL )
     {
         /* Try to build the dynamic data stream topic and unsubscribe from it. */
-
         topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic, /*lint -e586 Intentionally using snprintf. */
                                           sizeof( pOtaRxStreamTopic ),
                                           pOtaStreamDataTopicTemplate,
                                           pAgentCtx->pThingName,
                                           ( const char * ) pFileContext->pStreamName );
 
-        if( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) )
+        /* The buffer used by snprintf is checked at compile time to see if it's large enough. */
+        assert( topicLen > 0 );
+
+        result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
+                                                             topicLen,
+                                                             1 );
+
+        if ( result == OTA_ERR_NONE )
         {
-            result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
-                                                                 topicLen,
-                                                                 1 );
+            LogInfo( ( "Unsubscribed to MQTT topic: %s", pOtaRxStreamTopic ) );
         }
         else
         {
-            LogError( ( "Failed to unsubscribe from MQTT topic: "
-                        "Topic length is %d: "
-                        "Topic length should be > 0 and < %d.",
-                        topicLen,
-                        sizeof( pOtaRxStreamTopic ) ) );
+            LogError( ( "Failed to unsubscribe to MQTT notification topic: "
+                        "unsubscribe returned error: "
+                        "OtaErr_t=%u"
+                        "topic=%s",
+                        result,
+                        pOtaRxStreamTopic ) );
         }
-    }
-
-    if( result != OTA_ERR_NONE )
-    {
-        LogError( ( "Failed to unsubscribe from MQTT datastream topic: "
-                    "OtaErr_t=%u",
-                    result ) );
     }
 
     return result;
