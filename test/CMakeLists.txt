@@ -40,11 +40,15 @@ add_library( coverity_analysis
     ${OTA_OS_POSIX_SOURCES}
     ${OTA_MQTT_SOURCES} )
 
+# Build OTA library target without custom config dependency
+target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )
+
 # OTA include path.
 target_include_directories( coverity_analysis PUBLIC
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
-    ${CMAKE_CURRENT_LIST_DIR}/unit-test )
+    ${CMAKE_CURRENT_LIST_DIR}/unit-test
+    ${CMAKE_CURRENT_LIST_DIR}/unit-test-http )
 target_include_directories( coverity_analysis PRIVATE
     ${OTA_INCLUDE_PRIVATE_DIRS} )
 
@@ -88,6 +92,6 @@ add_subdirectory( unit-test )
 add_custom_target( coverage
     COMMAND ${CMAKE_COMMAND} -DCMOCK_DIR=${CMOCK_DIR}
     -P ${MODULE_ROOT_DIR}/tools/cmock/coverage.cmake
-    DEPENDS cmock unity ota_utest ota_base64_utest ota_job_parsing_utest ota_cbor_utest
+    DEPENDS cmock unity ota_utest ota_base64_utest ota_job_parsing_utest ota_cbor_utest ota_http_utest ota_os_posix_utest
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

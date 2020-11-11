@@ -15,7 +15,7 @@ list(APPEND mock_list
 list(APPEND mock_include_list
     .
     "${MODULE_ROOT_DIR}/source/include"
-    "${MODULE_ROOT_DIR}/source/portable"
+    "${MODULE_ROOT_DIR}/source/portable/os"
 )
 #list the definitions of your mocks to control what to be included
 list(APPEND mock_define_list
@@ -31,6 +31,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/ota_base64.c"
     "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
     "${MODULE_ROOT_DIR}/source/ota_cbor.c"
+    "${MODULE_ROOT_DIR}/source/portable/os/ota_os_posix.c"
     ${TINYCBOR_SOURCES}
     ${JSON_SOURCES}
     "utest_helpers.c"
@@ -70,6 +71,7 @@ list(APPEND utest_link_list
     -lpthread
     -l${mock_name}
     lib${real_name}.a
+    -lrt
 )
 
 list(APPEND utest_dep_list
@@ -103,5 +105,14 @@ create_test(ota_cbor_utest
     "${utest_dep_list}"
     "${test_include_directories}"
 )
+
+create_test(ota_os_posix_utest
+    "ota_os_posix_utest.c"
+    "${utest_link_list}"
+    "${utest_dep_list}"
+    "${test_include_directories}"
+)
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
+
+target_link_libraries(ota_os_posix_utest ${LIBRT})
