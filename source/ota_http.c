@@ -51,6 +51,8 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
     LogInfo( ( "Invoking initFileTransfer_Http" ) );
 
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+
     /* Return status. */
     OtaErr_t status = OTA_ERR_UNINITIALIZED;
 
@@ -75,6 +77,8 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
     LogInfo( ( "Invoking requestDataBlock_Http" ) );
+
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
 
     /* Return status. */
     OtaErr_t status = OTA_ERR_UNINITIALIZED;
@@ -115,6 +119,9 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
                                uint8_t ** pPayload,
                                size_t * pPayloadSize )
 {
+    assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
+            pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
+
     /* Unused parameters. */
     ( void ) messageSize;
 
@@ -136,14 +143,13 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
  */
 OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx )
 {
-    /* Return status. */
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+
+    /* Call HTTP deinit to cleanup */
+    OtaErr_t status = pAgentCtx->pOtaInterface->http.deinit();
 
     /* Reset currBlock. */
     currBlock = 0;
-
-    /* Call HTTP deinit to cleanup */
-    status = pAgentCtx->pOtaInterface->http.deinit();
 
     return status;
 }
