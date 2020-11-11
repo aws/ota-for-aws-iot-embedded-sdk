@@ -54,9 +54,9 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     otaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
-                                         ( UBaseType_t ) MAX_MSG_SIZE,
-                                         ( uint8_t * ) queueData,
-                                         &staticQueue );
+                                        ( UBaseType_t ) MAX_MSG_SIZE,
+                                        ( uint8_t * ) queueData,
+                                        &staticQueue );
 
     if( otaEventQueue == NULL )
     {
@@ -173,7 +173,7 @@ static void timerCallback( TimerHandle_t timer )
 OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
                                  const char * const pTimerName,
                                  const uint32_t timeout,
-                                 void ( *callback )( void * ) )
+                                 void ( * callback )( void * ) )
 {
     ( void ) pTimerCtx;
 
@@ -186,10 +186,10 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
     {
         /* Create the timer. */
         timer = timerCreate( pTimerName,
-                               pdMS_TO_TICKS( timeout ),
-                               pdFALSE,
-                               NULL,
-                               timerCallback );
+                             pdMS_TO_TICKS( timeout ),
+                             pdFALSE,
+                             NULL,
+                             timerCallback );
 
         if( timer == NULL )
         {
