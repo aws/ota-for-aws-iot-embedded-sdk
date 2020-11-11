@@ -52,6 +52,8 @@
 
 void setControlInterface( OtaControlInterface_t * pControlInterface )
 {
+    assert( pControlInterface != NULL );
+
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
         pControlInterface->requestJob = requestJob_Mqtt;
         pControlInterface->updateJobStatus = updateJobStatus_Mqtt;
@@ -64,6 +66,9 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
+    assert( pDataInterface != NULL );
+    assert( pProtocol != NULL );
+
     OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
