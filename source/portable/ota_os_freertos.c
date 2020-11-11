@@ -319,12 +319,10 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
 
 void * Malloc_FreeRTOS( size_t size )
 {
-    /* Use vPortMalloc.*/
     return vPortMalloc( size );
 }
 
 void Malloc_Free( void * ptr )
 {
-    /* Use vPortFree.*/
     vPortFree( ptr );
 }
