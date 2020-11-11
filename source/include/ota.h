@@ -411,7 +411,7 @@ typedef struct OtaInterface
     OtaMqttInterface_t mqtt;
     OtaHttpInterface_t http;
     OtaPalCallbacks_t pal;
-}OtaInterfaces_t;
+} OtaInterfaces_t;
 
 typedef struct OtaAppBuffer
 {
@@ -420,7 +420,7 @@ typedef struct OtaAppBuffer
     uint8_t * pCertFilePath;
     uint16_t certFilePathSize;
     uint8_t * pStreamName;
-    uint16_t  streamNameSize;
+    uint16_t streamNameSize;
     uint8_t * pDecodeMemory;
     uint32_t decodeMemorySize;
     uint8_t * pFileBitmap;
@@ -429,7 +429,7 @@ typedef struct OtaAppBuffer
     uint16_t urlSize;
     uint8_t * pAuthScheme;
     uint16_t authSchemeSize;
-}OtaAppBuffer_t;
+} OtaAppBuffer_t;
 
 /**
  * @ingroup ota_datatypes_structs
@@ -440,27 +440,35 @@ typedef struct OtaAppBuffer
  */
 struct OtaFileContext
 {
-    uint8_t * pFilePath;      /*!< Local file pathname. */
+    uint8_t * pFilePath;         /*!< Update file pathname. */
+    int16_t filePathMaxSize;     /*!< Maximum size of the update file path */
     #if defined( WIN32 ) || defined( __linux__ )
-        FILE * pFile;         /*!< File type is stdio FILE structure after file is open for write. */
+        FILE * pFile;            /*!< File type is stdio FILE structure after file is open for write. */
     #else
-        uint8_t * pFile;      /*!< File type is RAM/Flash image pointer after file is open for write. */
+        uint8_t * pFile;         /*!< File type is RAM/Flash image pointer after file is open for write. */
     #endif
-    uint32_t fileSize;        /*!< The size of the file in bytes. */
-    uint32_t blocksRemaining; /*!< How many blocks remain to be received (a code optimization). */
-    uint32_t fileAttributes;  /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
-    uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
-    uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
-    uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for deduplicating and missing block request). */
-    uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
-    uint8_t * pUpdateUrlPath; /*!< Url for the file. */
-    uint8_t * pAuthScheme;    /*!< Authorization scheme. */
-    uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
-    bool isInSelfTest;        /*!< True if the job is in self test mode. */
-    uint8_t * pProtocols;     /*!< Authorization scheme. */
-    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
-    uint32_t fileType;        /*!< The file is referenced by this numeric ID in the OTA job. */
+    uint32_t fileSize;           /*!< The size of the file in bytes. */
+    uint32_t blocksRemaining;    /*!< How many blocks remain to be received (a code optimization). */
+    uint32_t fileAttributes;     /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
+    uint32_t serverFileID;       /*!< The file is referenced by this numeric ID in the OTA job. */
+    uint8_t * pJobName;          /*!< The job name associated with this file from the job service. */
+    int16_t jobNameMaxSize;      /*!< Maximum size of the job name. */
+    uint8_t * pStreamName;       /*!< The stream associated with this file from the OTA service. */
+    int16_t streamNameMaxSize;   /*!< Maximum size of the stream name. */
+    uint8_t * pRxBlockBitmap;    /*!< Bitmap of blocks received (for deduplicating and missing block request). */
+    int16_t blockBitmapMaxSize;  /*!< Maximum size of the block bitmap. */
+    uint8_t * pCertFilepath;     /*!< Pathname of the certificate file used to validate the receive file. */
+    int16_t certFilePathMaxSize; /*!< Maximum certificate path size. */
+    uint8_t * pUpdateUrlPath;    /*!< Url for the file. */
+    int8_t updateUrlMaxSize;     /*!< Maximum size of the url. */
+    uint8_t * pAuthScheme;       /*!< Authorization scheme. */
+    int8_t authSchemeMaxSize;    /*!< Maximum size of the auth scheme. */
+    uint32_t updaterVersion;     /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
+    bool isInSelfTest;           /*!< True if the job is in self test mode. */
+    uint8_t * pProtocols;        /*!< Authorization scheme. */
+    int16_t protocolMaxSize;     /*!< Maximum size of the  supported protocols string. */
+    uint32_t fileType;           /*!< The file type id set when creating the OTA job. */
+    Sig256_t * pSignature;       /*!< Pointer to the file's signature structure. */
 };
 
 /*------------------------- OTA defined constants --------------------------*/

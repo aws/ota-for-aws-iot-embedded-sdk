@@ -72,19 +72,18 @@
 
 
 /* OTA Agent task event flags. */
-#define OTA_EVT_MASK_JOB_MSG_READY     0x00000001UL                                                                                                                              /*!< Event flag for OTA Job message ready. */
-#define OTA_EVT_MASK_DATA_MSG_READY    0x00000002UL                                                                                                                              /*!< Event flag for OTA Data message ready. */
-#define OTA_EVT_MASK_SHUTDOWN          0x00000004UL                                                                                                                              /*!< Event flag to request OTA shutdown. */
-#define OTA_EVT_MASK_REQ_TIMEOUT       0x00000008UL                                                                                                                              /*!< Event flag indicating the request timer has timed out. */
-#define OTA_EVT_MASK_USER_ABORT        0x000000016UL                                                                                                                             /*!< Event flag to indicate user initiated OTA abort. */
-#define OTA_EVT_MASK_ALL_EVENTS        ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT ) /*!< Event flag to mask indicate all events.*/
+#define OTA_EVT_MASK_JOB_MSG_READY      0x00000001UL                                                                                                                              /*!< Event flag for OTA Job message ready. */
+#define OTA_EVT_MASK_DATA_MSG_READY     0x00000002UL                                                                                                                              /*!< Event flag for OTA Data message ready. */
+#define OTA_EVT_MASK_SHUTDOWN           0x00000004UL                                                                                                                              /*!< Event flag to request OTA shutdown. */
+#define OTA_EVT_MASK_REQ_TIMEOUT        0x00000008UL                                                                                                                              /*!< Event flag indicating the request timer has timed out. */
+#define OTA_EVT_MASK_USER_ABORT         0x000000016UL                                                                                                                             /*!< Event flag to indicate user initiated OTA abort. */
+#define OTA_EVT_MASK_ALL_EVENTS         ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT ) /*!< Event flag to mask indicate all events.*/
 
 /**
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS             ( 20 )
-
+#define OTA_NUM_JOB_PARAMS              ( 20 )
 
 /**
  * @brief Keys in OTA job doc.
@@ -149,7 +148,8 @@ typedef enum
 {
     DocParseErrUnknown = -1,          /*!< The error code has not yet been set by a logic path. */
     DocParseErrNone = 0,              /*!< No error in parsing the document. */
-    DocParseErrOutOfMemory,           /*!< We failed to allocate enough memory for a field. */
+    DocParseErrOutOfMemory,           /*!< We failed to allocate enough dynamic memory for a field. */
+    DocParseErrUserBufferInsuffcient, /*!< The supplied user buffer is insufficient for a field. */
     DocParseErrFieldTypeMismatch,     /*!< The field type parsed does not match the document model. */
     DocParseErrBase64Decode,          /*!< There was an error decoding the base64 data. */
     DocParseErrInvalidNumChar,        /*!< There was an invalid character in a numeric value field. */
@@ -230,7 +230,8 @@ typedef struct
 {
     const char * pSrcKey;                  /*!< Expected key name. */
     const bool required;                   /*!< If true, this parameter must exist in the document. */
-    void * const pDestOffset;              /*!< Pointer or offset to where we will store the value, if not ~0. */
+    uint16_t pDestOffset;                  /*!< Pointer or offset to where we will store the value, if not ~0. */
+    uint16_t pDestSizeOffset;              /*!< Pointer or offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /*!< We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -250,7 +251,7 @@ typedef struct
 typedef struct
 {
     void * contextBase;              /*!< The base address of the destination OTA context structure. */
-    uint64_t contextSize;            /*!< The size, in bytes, of the destination context structure. */
+    uint32_t contextSize;            /*!< The size, in bytes, of the destination context structure. */
     const JsonDocParam_t * pBodyDef; /*!< Pointer to the document model body definition. */
     uint16_t numModelParams;         /*!< The number of entries in the document model (limited to 32). */
     uint32_t paramsReceivedBitmap;   /*!< Bitmap of the parameters received based on the model. */

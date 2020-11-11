@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <pthread.h>
 
 /* OTA agent includes. */
 #include "ota.h"
@@ -129,7 +128,7 @@ static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
 /* Store the parameter from the json to the offset specified by the document model. */
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
-                                       uint64_t modelContextBase,
+                                       void * modelContextBase,
                                        char * pValueInJson,
                                        size_t valueLength );
 
@@ -1339,9 +1338,9 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
         else
         {
             pSig256->size = ( uint16_t ) actualLen;
-            LogDebug( ( "Extracted parameter [ %s: %.32s... ]",
-                        OTA_JsonFileSignatureKey,
-                        pValueInJson ) );
+            LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
+                       OTA_JsonFileSignatureKey,
+                       pValueInJson ) );
         }
     }
     else
@@ -1356,39 +1355,74 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
 /* Store the parameter from the json to the offset specified by the document model. */
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
-                                       uint64_t modelContextBase,
+                                       void * pContextBase,
                                        char * pValueInJson,
                                        size_t valueLength )
 {
     void ** ppvParamAdd;
+    uint32_t * pParamSizeAdd;
     DocParseErr_t err = DocParseErrNone;
 
-    /* Get destination offset to parameter storage location. */
-    ppvParamAdd = modelContextBase + docParam.pDestOffset;
+    /* Get destination offset to parameter storage location.*/
+    ppvParamAdd = pContextBase + docParam.pDestOffset;
+
+    /* Get destination buffer size to parameter storage location. */
+    pParamSizeAdd = pContextBase + docParam.pDestSizeOffset;
+
+    char * pStringCopy = NULL;
 
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
-        /* Malloc memory for a copy of the value string plus a zero terminator. */
-        char * pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
-
-        if( pStringCopy != NULL )
+        if( *ppvParamAdd == NULL )
         {
-            *ppvParamAdd = pStringCopy;
+            /* Malloc memory for a copy of the value string plus a zero terminator. */
+            pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
 
+            if( pStringCopy != NULL )
+            {
+                *ppvParamAdd = pStringCopy;
+            }
+            else
+            {
+                /* Stop processing on error. */
+                err = DocParseErrOutOfMemory;
+
+                LogError( ( "Memory allocation failed "
+                            "[key: valueLength]=[%s: %s]",
+                            docParam.pSrcKey,
+                            valueLength ) );
+            }
+        }
+        else
+        {
+            if( *pParamSizeAdd < ( valueLength + 1U ) )
+            {
+                err = DocParseErrUserBufferInsuffcient;
+
+                LogError( ( "Insufficient user memory: "
+                            "[key: valueLength]=[%s: %s]",
+                            docParam.pSrcKey,
+                            valueLength ) );
+            }
+            else
+            {
+                pStringCopy = *ppvParamAdd;
+                err = DocParseErrNone;
+            }
+        }
+
+        if( err == DocParseErrNone )
+        {
             /* Copy parameter string into newly allocated memory. */
-            ( void ) memcpy( pStringCopy, pValueInJson, valueLength );
+            ( void ) memcpy( ( *ppvParamAdd ), pValueInJson, valueLength );
 
             /* Zero terminate the new string. */
             pStringCopy[ valueLength ] = '\0';
 
-            LogDebug( ( "Extracted parameter: "
-                        "[key: value]=[%s: %s]",
-                        docParam.pSrcKey,
-                        pStringCopy ) );
-        }
-        else
-        {   /* Stop processing on error. */
-            err = DocParseErrOutOfMemory;
+            LogInfo( ( "Extracted parameter: "
+                       "[key: value]=[%s: %s]",
+                       docParam.pSrcKey,
+                       pStringCopy ) );
         }
     }
     else if( ModelParamTypeStringInDoc == docParam.modelParamType )
@@ -1397,11 +1431,11 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
         char * pStringInDoc = pValueInJson;
         *ppvParamAdd = pStringInDoc;
 
-        LogDebug( ( "Extracted parameter: "
-                    "[key: value]=[%s: %.*s]",
-                    docParam.pSrcKey,
-                    ( int16_t ) valueLength,
-                    pStringInDoc ) );
+        LogInfo( ( "Extracted parameter: "
+                   "[key: value]=[%s: %.*s]",
+                   docParam.pSrcKey,
+                   ( int16_t ) valueLength,
+                   pStringInDoc ) );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
@@ -1414,10 +1448,10 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 
         if( ( errno == 0 ) && ( pEnd == &pValueInJson[ valueLength ] ) )
         {
-            LogDebug( ( "Extracted parameter: "
-                        "[key: value]=[%s: %u]",
-                        docParam.pSrcKey,
-                        *puint32 ) );
+            LogInfo( ( "Extracted parameter: "
+                       "[key: value]=[%s: %u]",
+                       docParam.pSrcKey,
+                       *puint32 ) );
         }
         else
         {
@@ -1554,7 +1588,10 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
             }
             else
             {
-                err = extractParameter( pModelParam[ paramIndex ], ( uint64_t ) pDocModel->contextBase, pValueInJson, valueLength );
+                err = extractParameter( pModelParam[ paramIndex ],
+                                        ( void * ) pDocModel->contextBase,
+                                        pValueInJson,
+                                        valueLength );
             }
         }
     }
@@ -1935,27 +1972,27 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 
 static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 {
-    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeStringInDoc },                  /*lint !e9078 !e923 Get address of token as value. */
-    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeUInt32      },
-    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeObject      },
-    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pJobName ), ModelParamTypeStringCopy},
-    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeObject      },
-    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, isInSelfTest ), ModelParamTypeIdent},
-    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, updaterVersion ), ModelParamTypeUInt32},
-    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeObject      },
-    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ModelParamTypeObject      },
-    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pStreamName ), ModelParamTypeStringCopy},
-    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pProtocols ), ModelParamTypeArrayCopy},
-    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_STORE_NESTED_JSON,      ModelParamTypeArray       },
-    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pFilePath ), ModelParamTypeStringCopy},
-    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, fileSize ), ModelParamTypeUInt32},
-    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, serverFileID ), ModelParamTypeUInt32},
-    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pCertFilepath ), ModelParamTypeStringCopy},
-    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pUpdateUrlPath ), ModelParamTypeStringCopy},
-    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pAuthScheme ), ModelParamTypeStringCopy},
-    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pSignature ), ModelParamTypeSigBase64},
-    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileAttributes ), ModelParamTypeUInt32},
-    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileType ), ModelParamTypeUInt32}
+    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeStringInDoc },
+    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32      },
+    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pJobName ),                      ( void * ) offsetof( OtaFileContext_t, jobNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, isInSelfTest ),                  ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeIdent},
+    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, updaterVersion ),                ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pStreamName ),                   ( void * ) offsetof( OtaFileContext_t, streamNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pProtocols ),                    ( void * ) offsetof( OtaFileContext_t, protocolMaxSize ), ModelParamTypeArrayCopy},
+    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_STORE_NESTED_JSON,      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeArray       },
+    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pFilePath ),                     ( void * ) offsetof( OtaFileContext_t, filePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, fileSize ),                      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, serverFileID ),                  ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pCertFilepath ),                 ( void * ) offsetof( OtaFileContext_t, certFilePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pUpdateUrlPath ),                ( void * ) offsetof( OtaFileContext_t, updateUrlMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pAuthScheme ),                   ( void * ) offsetof( OtaFileContext_t, authSchemeMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pSignature ),                    ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeSigBase64},
+    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileAttributes ),                ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileType ),                      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32}
 };
 
 /* Parse the OTA job document and validate. Return the populated
@@ -2672,15 +2709,42 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
-        /*
-         * Initialize filecontext.
-         */
-        otaAgent.fileContext.pFilePath = pOtaBuffer->pUpdateFilePath;
-        otaAgent.fileContext.pRxBlockBitmap = pOtaBuffer->pFileBitmap;
-        otaAgent.fileContext.pUpdateUrlPath = pOtaBuffer->pUrl;
-        otaAgent.fileContext.pAuthScheme = pOtaBuffer->pAuthScheme;
-        otaAgent.fileContext.pCertFilepath = pOtaBuffer->pCertFilePath;
+        /* Initialize update file path buffer from application buffer.*/
+        if( pOtaBuffer->pUpdateFilePath != NULL )
+        {
+            otaAgent.fileContext.pFilePath = pOtaBuffer->pUpdateFilePath;
+            otaAgent.fileContext.filePathMaxSize = pOtaBuffer->updateFilePathsize;
+        }
 
+        /* Initialize certificate file path buffer from application buffer.*/
+        if( pOtaBuffer->pCertFilePath != NULL )
+        {
+            otaAgent.fileContext.pCertFilepath = pOtaBuffer->pCertFilePath;
+            otaAgent.fileContext.certFilePathMaxSize = pOtaBuffer->certFilePathSize;
+        }
+
+        /* Initialize file bitmap buffer from application buffer.*/
+        if( pOtaBuffer->pFileBitmap != NULL )
+        {
+            otaAgent.fileContext.pRxBlockBitmap = pOtaBuffer->pFileBitmap;
+            otaAgent.fileContext.blockBitmapMaxSize = pOtaBuffer->fileBitmapSize;
+        }
+
+        /* Initialize url buffer from application buffer.*/
+        if( pOtaBuffer->pUrl != NULL )
+        {
+            otaAgent.fileContext.pUpdateUrlPath = pOtaBuffer->pUrl;
+            otaAgent.fileContext.updateUrlMaxSize = pOtaBuffer->urlSize;
+        }
+
+        /* Initialize file bitmap from application buffer.*/
+        if( pOtaBuffer->pAuthScheme != NULL )
+        {
+            otaAgent.fileContext.pAuthScheme = pOtaBuffer->pAuthScheme;
+            otaAgent.fileContext.authSchemeMaxSize = pOtaBuffer->authSchemeSize;
+        }
+
+        /* Initialize ota complete callback.*/
         otaAgent.palCallbacks.completeCallback = completeCallback;
 
         /*
