@@ -81,6 +81,7 @@ eevent
 encodedlen
 encodedsize
 endcode
+endian
 endif
 enum
 enums
