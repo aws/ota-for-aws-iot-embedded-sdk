@@ -194,21 +194,19 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              int32_t reason,
                                              int32_t subReason );
-/* Subscribe to the OTA job notification topics. */
 
-static char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];    /*!< Buffer to store the topic generated for requesting next topic. */
-
-static char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for notifying next topic. */
-
-static char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for requesting data stream. */
-
+/*
+ * Subscribe to the OTA job notification topics.
+ */
 static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
     uint16_t topicLen = 0;
+    char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];    /*!< Buffer to store the topic generated for requesting next topic. */
+    char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for notifying next topic. */
 
-    /* Build the first topic. */
+    /* Build and subscribe to the first topic. */
     topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
                                       sizeof( pJobTopicGetNext ),
                                       pOtaJobsGetNextAcceptedTopicTemplate,
@@ -234,33 +232,32 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                     sizeof( pJobTopicGetNext ) ) );
     }
 
-    if( result == OTA_ERR_NONE )
+    /* Build and subscribe to the second topic. */
+    topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
+                                      sizeof( pJobTopicNotifyNext ),
+                                      pOtaJobsNotifyNextTopicTemplate,
+                                      pAgentCtx->pThingName );
+
+    if( ( result == OTA_ERR_NONE )
+          && ( topicLen > 0U )
+          && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
     {
-        /* Build the second topic. */
-        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
-                                          sizeof( pJobTopicNotifyNext ),
-                                          pOtaJobsNotifyNextTopicTemplate,
-                                          pAgentCtx->pThingName );
+        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
+                                                            topicLen,
+                                                            1,
+                                                            pAgentCtx->pOtaInterface->mqtt.jobCallback );
 
-        if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
-        {
-            result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
-                                                               topicLen,
-                                                               1,
-                                                               pAgentCtx->pOtaInterface->mqtt.jobCallback );
-
-            LogInfo( ( "Subscribed to MQTT topic: "
-                       "%s",
-                       pJobTopicGetNext ) );
-        }
-        else
-        {
-            LogError( ( "Failed to subscribe to MQTT topic: "
-                        "Topic length is %d: "
-                        "Topic length should be > 0 and < %d.",
-                        topicLen,
-                        sizeof( pJobTopicGetNext ) ) );
-        }
+        LogInfo( ( "Subscribed to MQTT topic: "
+                    "%s",
+                    pJobTopicGetNext ) );
+    }
+    else
+    {
+        LogError( ( "Failed to subscribe to MQTT topic: "
+                    "Topic length is %d: "
+                    "Topic length should be > 0 and < %d.",
+                    topicLen,
+                    sizeof( pJobTopicGetNext ) ) );
     }
 
     if( result != OTA_ERR_NONE )
@@ -297,8 +294,8 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
         if( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) )
         {
             result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
-                                                                topicLen,
-                                                                1 );
+                                                                 topicLen,
+                                                                 1 );
         }
         else
         {
@@ -683,6 +680,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
 
+    char pcOTA_RxStreamTopic[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t usTopicLen = 0;
     const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
