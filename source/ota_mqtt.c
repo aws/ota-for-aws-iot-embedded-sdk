@@ -32,6 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 /* OTA includes. */
 #include "ota.h"
@@ -204,6 +205,8 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];    /*!< Buffer to store the topic generated for requesting next topic. */
     char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for notifying next topic. */
 
+    assert( pAgentCtx != NULL );
+
     /* Build and subscribe to the first topic. */
     topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
                                       sizeof( pJobTopicGetNext ),
@@ -279,6 +282,8 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 
     const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
+    assert( pAgentCtx != NULL );
+
     if( ( pFileContext != NULL ) && ( pFileContext->pStreamName != NULL ) )
     {
         /* Try to build the dynamic data stream topic and unsubscribe from it. */
@@ -323,6 +328,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     char pJobTopic[ OTA_MAX_TOPIC_LEN ];
     uint16_t topicLen = 0;
+
+    assert( pAgentCtx != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
 
@@ -371,6 +378,9 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
     char pTopicBuffer[ OTA_MAX_TOPIC_LEN ];
+
+    assert( pAgentCtx != NULL );
+    assert( pMsg != NULL );
 
     /* Try to build the dynamic job status topic . */
     topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
@@ -427,6 +437,8 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     uint32_t received = 0;
     uint32_t msgSize = 0;
 
+    assert( pMsgBuffer != NULL );
+
     if( pOTAFileCtx != NULL )
     {
         numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
@@ -461,6 +473,8 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 {
     uint32_t msgSize = 0;
 
+    assert( pMsgBuffer != NULL );
+
     msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
@@ -482,6 +496,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              int32_t subReason )
 {
     uint32_t msgSize = 0;
+
+    assert( pMsgBuffer != NULL );
 
     msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
                                      msgBufferSize,
@@ -553,6 +569,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
      * It contains a client token that is used to track how many requests have been made. */
     char pMsg[ CONST_STRLEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_PLACES + otaconfigMAX_THINGNAME_LEN ];
 
+    assert( pAgentCtx != NULL );
+
     /* Subscribe to the OTA job notification topic. */
     if( subscribeToJobNotificationTopics( pAgentCtx ) == OTA_ERR_NONE )
     {
@@ -620,6 +638,8 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     /* Get the current file context. */
     const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
+    assert( pAgentCtx != NULL );
+
     if( status == JobStatusInProgress )
     {
         if( reason == ( int32_t ) JobReasonReceiving )
@@ -678,6 +698,8 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint16_t usTopicLen = 0;
     const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
 
+    assert( pAgentCtx != NULL );
+
     usTopicLen = ( uint16_t ) snprintf( pcOTA_RxStreamTopic,
                                         sizeof( pcOTA_RxStreamTopic ),
                                         pOtaStreamDataTopicTemplate,
@@ -723,6 +745,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
      * Get the current file context.
      */
     const OtaFileContext_t * pFileContext = &( pAgentCtx->fileContext );
+
+    assert( pAgentCtx != NULL );
 
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
@@ -859,6 +883,8 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
 
+    assert( pAgentCtx != NULL );
+
     /* Unsubscribe from job notification topics. */
     err = unsubscribeFromJobNotificationTopic( pAgentCtx );
 
@@ -879,6 +905,8 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
+
+    assert( pAgentCtx != NULL );
 
     /* Unsubscribe from data stream topics. */
     err = unsubscribeFromDataStream( pAgentCtx );
