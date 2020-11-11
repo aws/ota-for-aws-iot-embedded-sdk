@@ -249,6 +249,7 @@ otapalimagestateinvalid
 otapalimagestatependingcommit
 otapalimagestateunknown
 otapalimagestatevalid
+otatimer
 pacdata
 pactopic
 paddrinfo

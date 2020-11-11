@@ -114,5 +114,3 @@ create_test(ota_os_posix_utest
 )
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
-
-target_link_libraries(ota_os_posix_utest ${LIBRT})

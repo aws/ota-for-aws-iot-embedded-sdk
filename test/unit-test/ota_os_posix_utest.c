@@ -56,15 +56,18 @@ static OtaEventContext_t * pEventContext = NULL;
 /**
  * @brief Get the Time elapsed from the timer.
  *
- * This is used to ensure that the timer has started successfully.
+ * This is used to ensure that the timer has started successfully, 
+ * by using the timer id otaTimer to get the time elapsed and 
+ * store it into timer structure.
  *
  * @return long time elapsed in nano seconds.
  */
-static long getTime_Posix()
+static long getTimeElapsed()
 {
     struct itimerspec timerAttr;
     long retVal = 0;
 
+    /* On error, -1 is returned else 0. */
     if( timer_gettime( otaTimer, &timerAttr ) == 0 )
     {
         retVal = timerAttr.it_value.tv_nsec;
@@ -130,23 +133,10 @@ void test_OTA_posix_InvalidEventQueue( void )
     OtaEventMsg_t otaEventToRecv = { 0 };
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
-    otaEventToSend.eventId = OtaAgentEventStart;
-
-    /* Try to perform recv on non-existing queue.
-     * result = Posix_OtaReceiveEvent(pEventCtx, &otaEventToRecv, 0);
-     * TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_RECEIVE_FAILED, result );
-     */
+    otaEventToSend.eventId = OtaAgentEventRequestJobDocument;
 
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
-
-    /* Publish more than allowed messages to the event queue.
-     * for ( uint8_t counter = 0; counter <= MAX_MESSAGES; counter++)
-     * {
-     *  result = Posix_OtaSendEvent(pEventCtx, &otaEventToSend, 0);
-     * }
-     * TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, result );
-     */
 
     result = event.deinit( event.pEventContext );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
@@ -166,7 +156,7 @@ void test_OTA_posix_TimerCreateAndStop( void )
     result = timer.start( timer.PTimerCtx, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    TEST_ASSERT_NOT_EQUAL( 0, getTime_Posix() );
+    TEST_ASSERT_NOT_EQUAL( 0, getTimeElapsed() );
 
     result = timer.stop( timer.PTimerCtx );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
@@ -211,8 +201,8 @@ void test_OTA_posix_MemoryAllocAndFree( void )
     TEST_ASSERT_NOT_NULL( buffer );
 
     /* Test that we can access and assign a value in the buffer. */
-    buffer[ 0 ] = MAX_MESSAGES;
-    TEST_ASSERT_EQUAL( MAX_MESSAGES, buffer[ 0 ] );
+    memset( buffer, 1, MAX_MESSAGES);
+    TEST_ASSERT_EQUAL( 1, buffer[ 0 ] );
 
     /* Free the buffer and check if the contents are cleared. */
     STDC_Free( buffer );
