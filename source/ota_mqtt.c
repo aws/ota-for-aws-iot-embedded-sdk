@@ -382,7 +382,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     /* If the topic name was built, try to publish the status message to it. */
     if( ( topicLen > 0UL ) && ( topicLen < sizeof( pTopicBuffer ) ) )
     {
-        LogDebug( ( "MQTT status message to publish: %s", pcMsg ) );
+        LogDebug( ( "MQTT status message to publish: %s", pMsg ) );
         err = pAgentCtx->pOtaInterface->mqtt.publish(
             pTopicBuffer,
             ( uint16_t ) topicLen,
