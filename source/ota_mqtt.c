@@ -48,6 +48,7 @@
 /* General constants. */
 #define U32_MAX_PLACES                 10U                                      /*!< Maximum number of output digits of an unsigned long value. */
 #define OTA_MAX_TOPIC_LEN              256U                                     /*!< Max length of a dynamically generated topic string (usually on the stack). */
+#define MAX_TOPIC_TEMPLATE_LEN         100U                                     /*!< Max length of the topic templates. */
 
 /* Stream GET message constants. */
 #define OTA_CLIENT_TOKEN               "rdy"                /*!< Arbitrary client token sent in the stream "GET" message. */
@@ -80,6 +81,10 @@ static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.
 static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";                                     /*!< Tail template to report job failure error code. */
 static const char pOtaStringReceive[] = "receive";                                                                          /*!< Used to build the job receive template. */
 /** @}*/
+
+#if ( ( otaconfigMAX_THINGNAME_LEN + MAX_TOPIC_TEMPLATE_LEN ) >= OTA_MAX_TOPIC_LEN )
+    #error "otaconfigMAX_THINGNAME_LEN is too long: otaconfigMAX_THINGNAME_LEN + MAX_TOPIC_TEMPLATE_LEN must be < OTA_MAX_TOPIC_LEN."
+#endif
 
 /** We map all of the above status cases to one of these 4 status strings.
  * These are the only strings that are supported by the Job Service. You
@@ -213,59 +218,62 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                       pOtaJobsGetNextAcceptedTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    if( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) )
-    {
-        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
-                                                          topicLen,
-                                                          1,
-                                                          pAgentCtx->pOtaInterface->mqtt.jobCallback);
+    /* The buffer used by snprintf is checked at compile time to see if it's
+     * large enough. */
+    assert( topicLen > 0 );
 
+    result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
+                                                       topicLen,
+                                                       1,
+                                                       pAgentCtx->pOtaInterface->mqtt.jobCallback);
+    if ( result == OTA_ERR_NONE )
+    {
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
                    pJobTopicGetNext ) );
     }
     else
     {
-        LogError( ( "Failed to subscribe to MQTT topic: "
-                    "Topic length is %d: "
-                    "Topic length should be > 0 and < %d.",
-                    topicLen,
-                    sizeof( pJobTopicGetNext ) ) );
-    }
-
-    /* Build and subscribe to the second topic. */
-    topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
-                                      sizeof( pJobTopicNotifyNext ),
-                                      pOtaJobsNotifyNextTopicTemplate,
-                                      pAgentCtx->pThingName );
-
-    if( ( result == OTA_ERR_NONE )
-          && ( topicLen > 0U )
-          && ( topicLen < sizeof( pJobTopicNotifyNext ) ) )
-    {
-        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
-                                                            topicLen,
-                                                            1,
-                                                            pAgentCtx->pOtaInterface->mqtt.jobCallback );
-
-        LogInfo( ( "Subscribed to MQTT topic: "
-                    "%s",
+        LogError( ( "Failed to subscribe to MQTT notification topic: "
+                    "subscribe returned error: "
+                    "OtaErr_t=%u"
+                    "topic=%s",
+                    result,
                     pJobTopicGetNext ) );
     }
-    else
-    {
-        LogError( ( "Failed to subscribe to MQTT topic: "
-                    "Topic length is %d: "
-                    "Topic length should be > 0 and < %d.",
-                    topicLen,
-                    sizeof( pJobTopicGetNext ) ) );
-    }
 
-    if( result != OTA_ERR_NONE )
+    if( result == OTA_ERR_NONE )
     {
-        LogError( ( "Failed to subscribe to MQTT notification topics: "
-                    "OtaErr_t=%u",
-                    result ) );
+        /* Build and subscribe to the second topic. */
+        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
+                                          sizeof( pJobTopicNotifyNext ),
+                                          pOtaJobsNotifyNextTopicTemplate,
+                                          pAgentCtx->pThingName );
+
+        /* The buffer used by snprintf is checked at compile time to see if it's
+        * large enough. */
+        assert( topicLen > 0 );
+
+        result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
+                                                           topicLen,
+                                                           1,
+                                                           pAgentCtx->pOtaInterface->mqtt.jobCallback );
+
+        if ( result == OTA_ERR_NONE )
+        {
+            LogInfo( ( "Subscribed to MQTT topic: "
+                       "%s",
+                       pJobTopicNotifyNext ) );
+        }
+        else
+        {
+            LogError( ( "Failed to subscribe to MQTT notification topic: "
+                        "subscribe returned error: "
+                        "OtaErr_t=%u"
+                        "topic=%s",
+                        result,
+                        pJobTopicNotifyNext ) );
+        }
     }
 
     return result;
