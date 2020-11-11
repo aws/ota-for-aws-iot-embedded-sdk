@@ -45,14 +45,6 @@
 #include "ota_appversion32.h"
 
 /* General constants. */
-#define OTA_SUBSCRIBE_WAIT_MS          30000UL                                  /*!< Timeout in seconds for a subscribe. */
-#define OTA_UNSUBSCRIBE_WAIT_MS        1000UL                                   /*!< Timeout in seconds for a unsubscribe. */
-#define OTA_PUBLISH_WAIT_MS            10000UL                                  /*!< Timeout in seconds for publish operation. */
-#define OTA_SUBSCRIBE_WAIT_TICKS       pdMS_TO_TICKS( OTA_SUBSCRIBE_WAIT_MS )   /*!< Timeout in ticks for a subscribe. */
-#define OTA_UNSUBSCRIBE_WAIT_TICKS     pdMS_TO_TICKS( OTA_UNSUBSCRIBE_WAIT_MS ) /*!< Timeout in ticks for a unsubscribe. */
-#define OTA_PUBLISH_WAIT_TICKS         pdMS_TO_TICKS( OTA_PUBLISH_WAIT_MS )     /*!< Timeout in ticks for publish operation. */
-#define OTA_MAX_PUBLISH_RETRIES        3                                        /*!< Max number of publish retries */
-#define OTA_RETRY_DELAY_MS             1000UL                                   /*!< Delay between publish retries */
 #define U32_MAX_PLACES                 10U                                      /*!< Maximum number of output digits of an unsigned long value. */
 #define OTA_MAX_TOPIC_LEN              256U                                     /*!< Max length of a dynamically generated topic string (usually on the stack). */
 
