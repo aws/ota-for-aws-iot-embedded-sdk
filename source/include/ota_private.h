@@ -32,6 +32,12 @@
 #ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
 #define _AWS_IOT_OTA_AGENT_INTERNAL_H_
 
+/* Standard includes. */
+/* For FILE type in OtaFileContext_t.*/
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 /* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
  * without a custom config. If a custom config is provided, the
  * OTA_DO_NOT_USE_CUSTOM_CONFIG macro should not be defined. */
@@ -69,25 +75,24 @@
 #define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
 #define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< Used to denote a required document model parameter. */
 #define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffffffffUL                                                                /*!< If destOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_DONT_STORE_PARAM        0xffffUL                                                                    /*!< If destOffset in the model is 0xffffffff, do not store the value. */
 #define OTA_STORE_NESTED_JSON       0x1fffffffUL                                                                /*!< Store the reference to a nested JSON in a separate pointer */
 #define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
 
 
 /* OTA Agent task event flags. */
-#define OTA_EVT_MASK_JOB_MSG_READY     0x00000001UL                                                                                                                              /*!< Event flag for OTA Job message ready. */
-#define OTA_EVT_MASK_DATA_MSG_READY    0x00000002UL                                                                                                                              /*!< Event flag for OTA Data message ready. */
-#define OTA_EVT_MASK_SHUTDOWN          0x00000004UL                                                                                                                              /*!< Event flag to request OTA shutdown. */
-#define OTA_EVT_MASK_REQ_TIMEOUT       0x00000008UL                                                                                                                              /*!< Event flag indicating the request timer has timed out. */
-#define OTA_EVT_MASK_USER_ABORT        0x000000016UL                                                                                                                             /*!< Event flag to indicate user initiated OTA abort. */
-#define OTA_EVT_MASK_ALL_EVENTS        ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT ) /*!< Event flag to mask indicate all events.*/
+#define OTA_EVT_MASK_JOB_MSG_READY      0x00000001UL                                                                                                                              /*!< Event flag for OTA Job message ready. */
+#define OTA_EVT_MASK_DATA_MSG_READY     0x00000002UL                                                                                                                              /*!< Event flag for OTA Data message ready. */
+#define OTA_EVT_MASK_SHUTDOWN           0x00000004UL                                                                                                                              /*!< Event flag to request OTA shutdown. */
+#define OTA_EVT_MASK_REQ_TIMEOUT        0x00000008UL                                                                                                                              /*!< Event flag indicating the request timer has timed out. */
+#define OTA_EVT_MASK_USER_ABORT         0x000000016UL                                                                                                                             /*!< Event flag to indicate user initiated OTA abort. */
+#define OTA_EVT_MASK_ALL_EVENTS         ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT ) /*!< Event flag to mask indicate all events.*/
 
 /**
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS             ( 20 )
-
+#define OTA_NUM_JOB_PARAMS              ( 20 )
 
 /**
  * @brief Keys in OTA job doc.
@@ -97,7 +102,7 @@
  * size, attributes, etc. The following value specifies the number of parameters
  * that are included in the job document model although some may be optional.
  */
-#define OTA_JSON_SEPARATOR              "."                                                        /*!< Separater used to define nested keys. */
+#define OTA_JSON_SEPARATOR              "."                                                        /*!< Separator used to define nested keys. */
 #define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"                                              /*!< Client token. */
 #define OTA_JSON_TIMESTAMP_KEY          "timestamp"                                                /*!< Used to calculate timeout and time spent on the operation. */
 #define OTA_JSON_EXECUTION_KEY          "execution"                                                /*!< Contains job execution parameters . */
@@ -112,14 +117,14 @@
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"       /*!< Protocols over which the download can take place. */
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"           /*!< Parameters for specifying file configurations. */
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"      /*!< Name of the stream used for download. */
-#define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< Path to store the image on the device. */
+#define OTA_JSON_FILE_PATH_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "filepath"        /*!< Path to store the image on the device. */
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< Size of the file to be downloaded. */
 #define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< Used to identify the file in case of multiple file downloads. */
-#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Addtitional file attributes. */
+#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Additional file attributes. */
 #define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"                                                 /*!< Location of the certificate on the device to find code signing. */
 #define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"                                          /*!< S3 bucket presigned url to fetch the image from . */
 #define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"                                              /*!< Authentication scheme for downloading a the image over HTTP. */
-
+#define OTA_JSON_FILETYPE_KEY           "fileType"                                                 /*!< Used to identify the file in case of multi file type support. */
 
 /**
  * @ingroup ota_private_datatypes_enums
@@ -152,7 +157,8 @@ typedef enum
 {
     DocParseErrUnknown = -1,          /*!< The error code has not yet been set by a logic path. */
     DocParseErrNone = 0,              /*!< No error in parsing the document. */
-    DocParseErrOutOfMemory,           /*!< We failed to allocate enough memory for a field. */
+    DocParseErrOutOfMemory,           /*!< We failed to allocate enough dynamic memory for a field. */
+    DocParseErrUserBufferInsuffcient, /*!< The supplied user buffer is insufficient for a field. */
     DocParseErrFieldTypeMismatch,     /*!< The field type parsed does not match the document model. */
     DocParseErrBase64Decode,          /*!< There was an error decoding the base64 data. */
     DocParseErrInvalidNumChar,        /*!< There was an invalid character in a numeric value field. */
@@ -233,7 +239,8 @@ typedef struct
 {
     const char * pSrcKey;                  /*!< Expected key name. */
     const bool required;                   /*!< If true, this parameter must exist in the document. */
-    void * const pDestOffset;              /*!< Pointer or offset to where we will store the value, if not ~0. */
+    uint16_t pDestOffset;                  /*!< Pointer or offset to where we will store the value, if not ~0. */
+    uint16_t pDestSizeOffset;              /*!< Pointer or offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /*!< We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 
@@ -253,7 +260,7 @@ typedef struct
 typedef struct
 {
     void * contextBase;              /*!< The base address of the destination OTA context structure. */
-    uint64_t contextSize;            /*!< The size, in bytes, of the destination context structure. */
+    uint32_t contextSize;            /*!< The size, in bytes, of the destination context structure. */
     const JsonDocParam_t * pBodyDef; /*!< Pointer to the document model body definition. */
     uint16_t numModelParams;         /*!< The number of entries in the document model (limited to 32). */
     uint32_t paramsReceivedBitmap;   /*!< Bitmap of the parameters received based on the model. */
@@ -282,8 +289,7 @@ typedef struct OtaAgentContext
 {
     OtaState_t state;                                      /*!< State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /*!< Thing name + zero terminator. */
-    void * pConnectionContext;                             /*!< Connection context for control and data plane. */
-    OtaFileContext_t pOtaFiles[ OTA_MAX_FILES ];           /*!< Static array of OTA file structures. */
+    OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
     uint32_t fileIndex;                                    /*!< Index of current file in the array. */
     uint32_t serverFileID;                                 /*!< Variable to store current file ID passed down */
     uint8_t * pOtaSingletonActiveJobName;                  /*!< The currently active job name. We only allow one at a time. */
@@ -294,9 +300,7 @@ typedef struct OtaAgentContext
     uint32_t numOfBlocksToReceive;                         /*!< Number of data blocks to receive per data request. */
     OtaAgentStatistics_t statistics;                       /*!< The OTA agent statistics block. */
     uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
-    OtaOSInterface_t * pOTAOSCtx;                          /*!< Pointer to OS interface context. */
-    OtaMqttInterface_t * pOTAMqttInterface;                /*!< Pointer to MQTT interface context.*/
-    OtaHttpInterface_t * pOTAHttpInterface;                /*!< Pointer to HTTP interface context.*/
+    OtaInterfaces_t * pOtaInterface;
 } OtaAgentContext_t;
 
 /**

@@ -401,7 +401,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       const char * pMsg,
-                                      uint32_t msgSize );
+                                      uint32_t msgSize )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
