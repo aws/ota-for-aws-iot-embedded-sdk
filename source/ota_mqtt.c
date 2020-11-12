@@ -707,7 +707,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 
     if( result == OTA_ERR_NONE )
     {
-        LogDebug( ( "Published update to the job status." );
+        LogDebug( ( "Published update to the job status." ) );
     }
     else
     {
