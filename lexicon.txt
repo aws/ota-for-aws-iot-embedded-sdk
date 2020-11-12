@@ -124,6 +124,7 @@ getpacketsprocessed
 getpacketsqueued
 getpacketsreceived
 getplatformimagestate
+github
 hostnamelength
 html
 http
@@ -157,6 +158,7 @@ iot
 ip
 ip
 isinselftest
+iso
 jobreasonaborted
 jobreasonaccepted
 jobreasonreceiving
