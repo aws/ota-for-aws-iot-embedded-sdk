@@ -109,8 +109,12 @@ create_test(ota_cbor_utest
 create_test(ota_os_posix_utest
     "ota_os_posix_utest.c"
     "${utest_link_list}"
+    "${utest_mem_ops_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
+
+# Use Address sanitizer to check memory operations
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -g")

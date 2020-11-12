@@ -40,9 +40,9 @@
 
 
 /* Testing constants. */
-#define MAX_MESSAGES           10
+#define MAX_MESSAGES           10 /*!< Maximum number of messages in the event queue. */
 #define TIMER_NAME             "dummy_name"
-#define OTA_DEFAULT_TIMEOUT    10000
+#define OTA_DEFAULT_TIMEOUT    10 /*!< Timeout in seconds. */
 
 /* Timer used in os_posix.c */
 extern timer_t otaTimer;
@@ -56,8 +56,8 @@ static OtaEventContext_t * pEventContext = NULL;
 /**
  * @brief Get the Time elapsed from the timer.
  *
- * This is used to ensure that the timer has started successfully, 
- * by using the timer id otaTimer to get the time elapsed and 
+ * This is used to ensure that the timer has started successfully,
+ * by using the timer id otaTimer to get the time elapsed and
  * store it into timer structure.
  *
  * @return long time elapsed in nano seconds.
@@ -201,7 +201,7 @@ void test_OTA_posix_MemoryAllocAndFree( void )
     TEST_ASSERT_NOT_NULL( buffer );
 
     /* Test that we can access and assign a value in the buffer. */
-    memset( buffer, 1, MAX_MESSAGES);
+    memset( buffer, 1, MAX_MESSAGES );
     TEST_ASSERT_EQUAL( 1, buffer[ 0 ] );
 
     /* Free the buffer and check if the contents are cleared. */
