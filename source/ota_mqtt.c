@@ -228,8 +228,9 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
                                                        topicLen,
                                                        1,
-                                                       pAgentCtx->pOtaInterface->mqtt.jobCallback);
-    if ( result == OTA_ERR_NONE )
+                                                       pAgentCtx->pOtaInterface->mqtt.jobCallback );
+
+    if( result == OTA_ERR_NONE )
     {
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
@@ -261,7 +262,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                                            1,
                                                            pAgentCtx->pOtaInterface->mqtt.jobCallback );
 
-        if ( result == OTA_ERR_NONE )
+        if( result == OTA_ERR_NONE )
         {
             LogInfo( ( "Subscribed to MQTT topic: %s", pJobTopicNotifyNext ) );
         }
@@ -310,7 +311,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
                                                          topicLen,
                                                          1 );
 
-    if ( result == OTA_ERR_NONE )
+    if( result == OTA_ERR_NONE )
     {
         LogInfo( ( "Unsubscribed to MQTT topic: %s", pOtaRxStreamTopic ) );
     }
@@ -351,7 +352,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                                          topicLen,
                                                          0 );
 
-    if ( result == OTA_ERR_NONE )
+    if( result == OTA_ERR_NONE )
     {
         LogInfo( ( "Unsubscribed to MQTT topic: %s", pJobTopic ) );
     }
@@ -365,7 +366,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                     pJobTopic ) );
     }
 
-    if ( result == OTA_ERR_NONE )
+    if( result == OTA_ERR_NONE )
     {
         /* Try to unsubscribe from the second of two job topics. */
         topicLen = ( uint16_t ) snprintf( pJobTopic, /*lint -e586 Intentionally using snprintf. */
@@ -380,7 +381,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                                              topicLen,
                                                              0 );
 
-        if ( result == OTA_ERR_NONE )
+        if( result == OTA_ERR_NONE )
         {
             LogInfo( ( "Unsubscribed to MQTT topic: %s", pJobTopic ) );
         }
@@ -509,11 +510,11 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     assert( msgSize > 0 );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
-                                      msgBufferSize - msgSize,
-                                      pOtaJobStatusSelfTestDetailsTemplate,
-                                      OTA_JSON_SELF_TEST_KEY_ONLY,
-                                      pOtaJobReasonStrings[ reason ],
-                                      appFirmwareVersion.u.unsignedVersion32 );
+                                         msgBufferSize - msgSize,
+                                         pOtaJobStatusSelfTestDetailsTemplate,
+                                         OTA_JSON_SELF_TEST_KEY_ONLY,
+                                         pOtaJobReasonStrings[ reason ],
+                                         appFirmwareVersion.u.unsignedVersion32 );
     assert( msgTailSize > 0 );
     msgSize += msgTailSize;
 
@@ -619,10 +620,10 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
         /*lint -e586 Intentionally using snprintf. */
         msgSize = ( uint32_t ) snprintf( pMsg,
-                                        sizeof( pMsg ),
-                                        pOtaGetNextJobMsgTemplate,
-                                        reqCounter,
-                                        pAgentCtx->pThingName );
+                                         sizeof( pMsg ),
+                                         pOtaGetNextJobMsgTemplate,
+                                         reqCounter,
+                                         pAgentCtx->pThingName );
         assert( msgSize > 0 );
 
         reqCounter++;
@@ -739,10 +740,10 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     assert( pFileContext != NULL );
 
     topicLen = ( uint16_t ) snprintf( pRxStreamTopic,
-                                        sizeof( pRxStreamTopic ),
-                                        pOtaStreamDataTopicTemplate,
-                                        pAgentCtx->pThingName,
-                                        ( const char * ) pFileContext->pStreamName );
+                                      sizeof( pRxStreamTopic ),
+                                      pOtaStreamDataTopicTemplate,
+                                      pAgentCtx->pThingName,
+                                      ( const char * ) pFileContext->pStreamName );
 
     /* Buffer size is validated during compile time. */
     assert( topicLen > 0U );
@@ -835,8 +836,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         if( result == OTA_ERR_NONE )
         {
             LogInfo( ( "Published to MQTT topic to request the next block: "
-                        "topic=%s",
-                        pTopicBuffer ) );
+                       "topic=%s",
+                       pTopicBuffer ) );
         }
         else
         {
@@ -871,7 +872,6 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
                                                        pBlockSize, /*lint !e9087 CBOR requires pointer to int and our block sizes never exceed 31 bits. */
                                                        pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
                                                        pPayloadSize );
-
 
     if( result == OTA_ERR_NONE )
     {
