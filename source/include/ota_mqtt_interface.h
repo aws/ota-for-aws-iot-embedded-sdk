@@ -110,11 +110,11 @@ typedef OtaErr_t ( * OtaMqttPublish_t )( const char * const pacTopic,
  */
 typedef struct OtaMqttInterface
 {
-    OtaMqttSubscribe_t subscribe;       /*!< Interface for subscribing to Mqtt topics. */
-    OtaMqttUnsubscribe_t unsubscribe;   /*!< interface for unsubscribing to MQTT topics. */
-    OtaMqttPublish_t publish;           /*!< Interface for publishing MQTT messages. */
-    OtaMqttCallback_t jobCallback;      /*!< Interface for a callback that notifies the OTA library when a job document is received. */
-    OtaMqttCallback_t dataCallback;     /*!< Interface for a callback that notifies the OTA library when a data block is received. */
+    OtaMqttSubscribe_t subscribe;     /*!< Interface for subscribing to Mqtt topics. */
+    OtaMqttUnsubscribe_t unsubscribe; /*!< interface for unsubscribing to MQTT topics. */
+    OtaMqttPublish_t publish;         /*!< Interface for publishing MQTT messages. */
+    OtaMqttCallback_t jobCallback;    /*!< Interface for a callback that notifies the OTA library when a job document is received. */
+    OtaMqttCallback_t dataCallback;   /*!< Interface for a callback that notifies the OTA library when a data block is received. */
 } OtaMqttInterface_t;
 
 #endif /* ifndef _OTA_MQTT_INTERFACE_H_ */

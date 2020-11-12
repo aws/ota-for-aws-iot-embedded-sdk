@@ -52,6 +52,7 @@ cr
 createfileforrx
 customjobcallback
 cwd
+datacallback
 deduplicate
 deinitialize
 destlen
@@ -151,6 +152,7 @@ iot
 ip
 ip
 isinselftest
+jobcallback
 jobreasonaborted
 jobreasonaccepted
 jobreasonreceiving
