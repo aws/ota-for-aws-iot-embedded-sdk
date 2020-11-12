@@ -294,9 +294,6 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 
     pFileContext = &( pAgentCtx->fileContext );
 
-    /* This function is only called when there is a valid file context. */
-    assert( pFileContext != NULL );
-
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
     topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic, /*lint -e586 Intentionally using snprintf. */
                                       sizeof( pOtaRxStreamTopic ),
@@ -678,9 +675,6 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
 
-    /* This function is only called when there is a valid file context. */
-    assert( pFileContext != NULL );
-
     if( status == JobStatusInProgress )
     {
         if( reason == ( int32_t ) JobReasonReceiving )
@@ -736,9 +730,6 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     pFileContext = &( pAgentCtx->fileContext );
 
-    /* This function is only called when there is a valid file context. */
-    assert( pFileContext != NULL );
-
     topicLen = ( uint16_t ) snprintf( pRxStreamTopic,
                                       sizeof( pRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
@@ -791,9 +782,6 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
-
-    /* This function is only called when there is a valid file context. */
-    assert( pFileContext != NULL );
 
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
