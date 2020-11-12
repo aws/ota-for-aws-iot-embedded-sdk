@@ -75,9 +75,11 @@ const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sh
 /* OTA client name. */
 static const char * pOtaDefaultClientId = "ota_utest";
 
-/* OTA OS and MQTT interface. */
-static OtaOSInterface_t otaOSInterface;
-static OtaMqttInterface_t otaMqttInterface;
+/* OTA interface. */
+static OtaInterfaces_t otaInterfaces;
+
+/* OTA application buffer. */
+static OtaAppBuffer_t pOtaAppBuffer;
 
 /* OTA Event. */
 static OtaEventMsg_t otaEvent;
@@ -251,24 +253,23 @@ static void stubCompleteCallback( OtaJobEvent_t event )
  * state machine transition by blocking any event in OTA internal handlers. */
 static void otaInterfaceDefault()
 {
-    otaOSInterface.event.init = mockOSEventReset;
-    otaOSInterface.event.send = mockOSEventSendThenStop;
-    otaOSInterface.event.recv = mockOSEventReceive;
-    otaOSInterface.event.deinit = mockOSEventReset;
+    otaInterfaces.os.event.init = mockOSEventReset;
+    otaInterfaces.os.event.send = mockOSEventSendThenStop;
+    otaInterfaces.os.event.recv = mockOSEventReceive;
+    otaInterfaces.os.event.deinit = mockOSEventReset;
 
-    otaMqttInterface.subscribe = stubMqttSubscribe;
-    otaMqttInterface.publish = stubMqttPublish;
-    otaMqttInterface.unsubscribe = stubMqttUnsubscribe;
-    otaMqttInterface.jobCallback = stubMqttJobCallback;
-    otaMqttInterface.dataCallback = stubMqttDataCallback;
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublish;
+    otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribe;
+    otaInterfaces.mqtt.jobCallback = stubMqttJobCallback;
+    otaInterfaces.mqtt.dataCallback = stubMqttDataCallback;
 }
 
 static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
-    OTA_AgentInit( &otaOSInterface,
-                   &otaMqttInterface,
-                   NULL,
+    OTA_AgentInit( &pOtaAppBuffer,
+                   &otaInterfaces,
                    ( const uint8_t * ) pClientID,
                    completeCallback );
 }
@@ -478,7 +479,7 @@ void test_OTA_ShutdownFailToSendEvent()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that always fail. */
-    otaOSInterface.event.send = mockOSEventSendAlwaysFail;
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
     OTA_AgentShutdown( otaDefaultWait );
@@ -506,7 +507,7 @@ void test_OTA_StartFailedWhenReady()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that fails after first event sent. */
-    otaOSInterface.event.send = mockOSEventSendThenFail;
+    otaInterfaces.os.event.send = mockOSEventSendThenFail;
 
     /* The event handler should fail, so OTA agent should remain in OtaAgentStateReady state. */
     otaEvent.eventId = OtaAgentEventStart;
@@ -541,7 +542,7 @@ void test_OTA_SuspendFailedWhenReady()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that always fail. */
-    otaOSInterface.event.send = mockOSEventSendAlwaysFail;
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Suspend should fail and OTA agent should remain in ready state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Suspend() );
@@ -586,7 +587,7 @@ void test_OTA_ResumeFailedWhenSuspended()
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that always fail. */
-    otaOSInterface.event.send = mockOSEventSendAlwaysFail;
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Resume should fail and OTA agent should remain in suspend state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Resume( NULL ) );
@@ -620,7 +621,7 @@ void test_OTA_CheckForUpdateFailToSendEvent()
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that always fail. */
-    otaOSInterface.event.send = mockOSEventSendAlwaysFail;
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Check for update should fail and OTA agent should remain in requesting job state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_CheckForUpdate() );
@@ -660,7 +661,7 @@ void test_OTA_ImageStateAbortWithNoJob()
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * since setting image state to abort would send an user abort event in the handler. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Calling abort without an active job would fail. OTA agent should remain in ready state. */
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_SetImageState( OtaImageStateAborted ) );
@@ -674,7 +675,7 @@ void test_OTA_ImageStateAbortFailToSendEvent()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Set the event send interface to a mock function that always fail. */
-    otaOSInterface.event.send = mockOSEventSendAlwaysFail;
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_SetImageState( OtaImageStateAborted ) );
     otaWaitForEmptyEvent();
@@ -796,7 +797,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * This is required because decode failure would cause OtaAgentEventCloseFile event to be sent
      * within the OTA event handler and we want it to be processed. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Decode failure would reject this the update. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
@@ -824,7 +825,7 @@ void test_OTA_ReceiveFileBlockComplete()
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * because we're receiving multiple blocks in this test. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Set up mock to write file block to our buffer. */
     prvPAL_WriteBlock_Stub( mockOtaPalWriteFileBlock );
@@ -890,7 +891,7 @@ void test_OTA_SelfTest()
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * This is to complete the self test process. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
     /* Use default complete callback. */
     otaInit( pOtaDefaultClientId, NULL );
 
@@ -948,7 +949,7 @@ void test_OTA_RefreshWithSameJobDoc()
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * We need this to go through the process of refreshing job doc. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
 
     /* First send request job doc event while we're in progress, this should make OTA agent to
      * to request job doc again and transit to waiting for job state. */
@@ -977,7 +978,7 @@ void test_OTA_RefreshWithDifferentJobDoc()
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * We need this to go through the process of refreshing job doc. */
-    otaOSInterface.event.send = mockOSEventSend;
+    otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Let abort pass. */
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
