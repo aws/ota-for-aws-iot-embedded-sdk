@@ -223,7 +223,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                       pAgentCtx->pThingName );
 
     /* Buffer size is validated during compile time. */
-    assert( topicLen > 0 );
+    assert( topicLen > 0U );
 
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
                                                        topicLen,
@@ -255,7 +255,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                           pAgentCtx->pThingName );
 
         /* Buffer size is validated during compile time. */
-        assert( topicLen > 0 );
+        assert( topicLen > 0U );
 
         result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                            topicLen,
@@ -305,7 +305,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
                                       ( const char * ) pFileContext->pStreamName );
 
     /* Buffer size is validated during compile time. */
-    assert( topicLen > 0 );
+    assert( topicLen > 0U );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
                                                          topicLen,
@@ -346,7 +346,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                       pAgentCtx->pThingName );
 
     /* Buffer size is validated during compile time. */
-    assert( topicLen > 0 );
+    assert( topicLen > 0U );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                          topicLen,
@@ -375,7 +375,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                           pAgentCtx->pThingName );
 
         /* Buffer size is validated during compile time. */
-        assert( topicLen > 0 );
+        assert( topicLen > 0U );
 
         result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                              topicLen,
@@ -422,7 +422,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       pAgentCtx->pOtaSingletonActiveJobName );
 
     /* Buffer size is validated during compile time. */
-    assert( topicLen > 0 );
+    assert( topicLen > 0U );
 
     /* Publish the status message. */
     LogDebug( ( "Attempting to publish MQTT status message: "
@@ -478,7 +478,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* Buffer size is validated during compile time. */
-        assert( msgSize > 0 );
+        assert( msgSize > 0U );
 
         msgSize += ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                           msgBufferSize - msgSize,
@@ -486,7 +486,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                           pOtaStringReceive,
                                           received,
                                           numBlocks );
-        assert( msgSize > 0 );
+        assert( msgSize > 0U );
     }
 
     return msgSize;
@@ -507,7 +507,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* Buffer size is validated during compile time. */
-    assert( msgSize > 0 );
+    assert( msgSize > 0U );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                          msgBufferSize - msgSize,
@@ -515,7 +515,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                          OTA_JSON_SELF_TEST_KEY_ONLY,
                                          pOtaJobReasonStrings[ reason ],
                                          appFirmwareVersion.u.unsignedVersion32 );
-    assert( msgTailSize > 0 );
+    assert( msgTailSize > 0U );
     msgSize += msgTailSize;
 
     return msgSize;
@@ -537,7 +537,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* Buffer size is validated during compile time. */
-    assert( msgSize > 0 );
+    assert( msgSize > 0U );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -550,7 +550,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              pOtaJobStatusReasonValTemplate,
                                              reason,
                                              subReason );
-        assert( msgTailSize > 0 );
+        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
     }
 
@@ -572,7 +572,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              newVersion.u.x.major,
                                              newVersion.u.x.minor,
                                              newVersion.u.x.build );
-        assert( msgTailSize > 0 );
+        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
     }
 
@@ -586,7 +586,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              pOtaJobStatusReasonStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
                                              subReason );
-        assert( msgTailSize > 0 );
+        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
     }
 
@@ -624,7 +624,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
                                          pOtaGetNextJobMsgTemplate,
                                          reqCounter,
                                          pAgentCtx->pThingName );
-        assert( msgSize > 0 );
+        assert( msgSize > 0U );
 
         reqCounter++;
         topicLen = ( uint16_t ) snprintf( pJobTopic,
@@ -633,7 +633,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
                                           pAgentCtx->pThingName );
 
         /* Buffer size is validated during compile time. */
-        assert( topicLen > 0 );
+        assert( topicLen > 0U );
 
         result = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgSize, 1 );
 
