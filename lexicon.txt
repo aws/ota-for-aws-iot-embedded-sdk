@@ -183,6 +183,7 @@ mqtt
 msec
 msgbuffersize
 msgsize
+msgtailsize
 mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
@@ -340,6 +341,7 @@ pretryparams
 prootcapath
 prvpal
 prxblockbitmap
+prxstreamtopic
 pserverinfo
 psignature
 psrckey

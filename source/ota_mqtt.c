@@ -699,7 +699,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     }
     else
     {
-        /* The status is hardcoded and constant at compile time. */
+        /* The potential values for status are constant at compile time. */
         assert( status < NumJobStatusMappings );
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
