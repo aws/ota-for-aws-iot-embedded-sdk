@@ -1,4 +1,4 @@
-0123456789
+123456789
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
@@ -13,6 +13,8 @@ appfirmwareversion
 ascii
 attemptsdone
 attr
+auth
+authschememaxsize
 aws
 aws-iot-device-sdk-embedded-c
 backoff
@@ -20,6 +22,7 @@ backoffdelay
 basedefs
 bitmaplen
 bitmask
+blockbitmapmaxsize
 blocksremaining
 bool
 bootloader
@@ -36,6 +39,7 @@ ca
 cbor
 cborwork
 certfile
+certfilepathmaxsize
 checkforupdate
 cli
 clienttoken
@@ -46,6 +50,7 @@ completecallback
 cond
 config
 configassert
+configs
 connectsuccessindex
 const
 constantspage
@@ -67,13 +72,13 @@ destoffset
 didn
 dns
 docmodel
-docparseerrnone
 docparseerrduplicatesnotallowed
 docparseerrfieldtypemismatch
 docparseerrinvalidmodelparamtype
 docparseerrinvalidnumchar
 docparseerrinvalidtoken
 docparseerrmalformeddoc
+docparseerrnone
 docparseerrnullbodypointer
 docparseerrnulldocpointer
 docparseerrnullmodelpointer
@@ -81,6 +86,7 @@ docparseerroutofmemory
 docparseerrparamkeynotinmodel
 docparseerrtoomanyparams
 docparseerrunknown
+docparseerruserbufferinsuffcient
 doesn't
 doxygen
 eagain
@@ -103,12 +109,13 @@ fd
 fileattributes
 fileblock
 filecontext
-fileid
 filehandle
+fileid
 fileindex
 filelabel
 fileparameters
 filepath
+filepathmaxsize
 filepaths
 filesize
 filetype
@@ -147,13 +154,13 @@ ingestresultbadfilehandle
 ingestresultblockoutofrange
 ingestresultfileclosefail
 ingestresultfilecomplete
+ingestresultfilecomplete
 ingestresultnullcontext
 ingestresultnullresultpointer
 ingestresultsigcheckfail
 ingestresultunexpectedblock
 ingestresultuninitialized
 ingestresultwriteblockfailed
-ingestresultfilecomplete
 ingroup
 init
 initdocmodel
@@ -167,6 +174,7 @@ isinselftest
 iso
 jobdocument
 jobid
+jobnamemaxsize
 jobreasonaborted
 jobreasonaccepted
 jobreasonreceiving
@@ -185,6 +193,7 @@ malloc
 maxattempts
 maxfragmentlength
 mcu
+mem
 memcpy
 messagelength
 messagelevel
@@ -202,9 +211,9 @@ mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
 mytcpsocketcontext
+mythreadsleepfunction
 mytime
 mytimefunction
-mythreadsleepfunction
 mytlscontext
 nanosleep
 networkcontext
@@ -257,6 +266,7 @@ otapalimagestateinvalid
 otapalimagestatependingcommit
 otapalimagestateunknown
 otapalimagestatevalid
+otatimercallback
 pacdata
 pactopic
 paddrinfo
@@ -280,8 +290,8 @@ pcallbacks
 pcertfilepath
 pcjobtopic
 pcjson
-pclienttokenfromjob
 pclientcertpath
+pclienttokenfromjob
 pcloseresult
 pcmsg
 pcmsgbuffer
@@ -291,6 +301,7 @@ pctimername
 pctopicbuffer
 pdest
 pdestoffset
+pdestsizeoffset
 pem
 pencodeddata
 peventctx
@@ -321,6 +332,7 @@ popensslcredentials
 posix
 potafiles
 potahttpinterface
+potainterface
 potamqttinterface
 potaosctx
 potarxstreamtopic
@@ -338,6 +350,7 @@ presigned
 presultlen
 pretryparams
 prootcapath
+protocolmaxsize
 prvpal
 prxblockbitmap
 pserverinfo
@@ -406,6 +419,7 @@ statusdetails
 stddef
 str
 streamname
+streamnamemaxsize
 strlength
 struct
 structs
@@ -431,13 +445,13 @@ topicfilter
 topicfilterlength
 topiclen
 tq
-ttimer
 transportcallback
 transportinterface
 transportpage
 transportsectionimplementation
 transportsectionoverview
 transportstruct
+ttimer
 twe
 ublockindex
 ucqos
@@ -454,6 +468,7 @@ unsignedversion32
 updatedby
 updatejobstatus
 updaterversion
+updateurlmaxsize
 url
 ustopiclen
 utils

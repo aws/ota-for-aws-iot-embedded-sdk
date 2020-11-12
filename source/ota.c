@@ -1907,7 +1907,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             err = OtaJobParseErrNone;
         }
         else
-        {   /* The same job is being reported so update the url. */
+        { /* The same job is being reported so update the url. */
             LogInfo( ( "New job document ID is identical to the current job: "
                        "Updating the URL based on the new job document." ) );
 
@@ -1960,7 +1960,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
-    {   /* Assume control of the job name from the context. */
+    { /* Assume control of the job name from the context. */
         otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
         pFileContext->pJobName = NULL;
     }
@@ -2018,7 +2018,6 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         }
         else
         {
-            /**pFinalFile = getFreeContext(); */
             *pFinalFile = pFileContext;
 
             if( *pFinalFile == NULL )
@@ -2496,7 +2495,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
             otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
                                                     "OtaRequestTimer",
                                                     otaconfigFILE_REQUEST_WAIT_MS,
-                                                    otaTimerCallback );    /*ToDo */
+                                                    otaTimerCallback ); /*ToDo */
 
             /* Decode the file block received. */
             if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
@@ -2750,7 +2749,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
          * do anything and just use the defaults in the OTA structure.
          */
-        /*setPALCallbacks( &(pOtaInterfaces->pal )); */
 
         /*
          * Initialize the OTA control interface based on the application protocol
@@ -2767,7 +2765,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.statistics.otaPacketsProcessed = 0;
 
         /*
-         * Initialize the OTA inerfaces.
+         * Initialize the OTA interfaces.
          */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
@@ -2853,7 +2851,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         if( pThingName == NULL )
         {
             LogError( ( "Error: Thing name is NULL.\r\n" ) );
-            /*returnStatus = OTA_ERR_THING_NAME_NULL; //ToDo */
         }
         else
         {
@@ -2871,7 +2868,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             else
             {
                 LogError( ( "Error: Thing name is too long.\r\n" ) );
-                /*returnStatus = OTA_ERR_THING_NAME_TOO_LONG;  //ToDo */
             }
         }
 
