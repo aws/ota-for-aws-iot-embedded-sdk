@@ -123,7 +123,7 @@ typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
  *
  * @param[pTimerName]       Timer name.
  *
- * @param[timeout]          Timeout for the timer in mili seconds.
+ * @param[timeout]          Timeout for the timer in milliseconds.
  *
  * @param[callback]         Callback to be called when timer expires.
  *
