@@ -49,12 +49,12 @@
  */
 typedef struct
 {
-    OtaErr_t ( * requestJob )( OtaAgentContext_t * pAgentCtx );
-    OtaErr_t ( * updateJobStatus )( OtaAgentContext_t * pxAgentCtx,
-                                    OtaJobStatus_t eStatus,
-                                    int32_t lReason,
-                                    int32_t lSubReason );
-    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * requestJob )( OtaAgentContext_t * pAgentCtx ); /*!< Request for the next available OTA job from the job service. */
+    OtaErr_t ( * updateJobStatus )( OtaAgentContext_t * pAgentCtx,
+                                    OtaJobStatus_t status,
+                                    int32_t reason,
+                                    int32_t subReason );           /*!< Updates the OTA job status with information like in progress, completion, or failure. */
+    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx ); /*!< Cleanup related to OTA control plane. */
 } OtaControlInterface_t;
 
 /**
@@ -65,16 +65,16 @@ typedef struct
  */
 typedef struct
 {
-    OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx );
-    OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx );
-    OtaErr_t ( * decodeFileBlock )( uint8_t * pucMessageBuffer,
-                                    size_t xMessageSize,
-                                    int32_t * plFileId,
-                                    int32_t * plBlockId,
-                                    int32_t * plBlockSize,
-                                    uint8_t ** ppucPayload,
-                                    size_t * pxPayloadSize );
-    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx );
+    OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx ); /*!< Initialize file transfer. */
+    OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx ); /*!< Request File block. */
+    OtaErr_t ( * decodeFileBlock )( uint8_t * pMessageBuffer,
+                                    size_t messageSize,
+                                    int32_t * pFileId,
+                                    int32_t * pBlockId,
+                                    int32_t * pBlockSize,
+                                    uint8_t ** pPayload,
+                                    size_t * pPayloadSize );       /*!< Decode a cbor encoded fileblock. */
+    OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx ); /*!< Cleanup related to OTA data plane. */
 } OtaDataInterface_t;
 
 /**
@@ -83,10 +83,10 @@ typedef struct
  * This function updates the OTA control operation functions as per the config
  * options selected.
  *
- * @param[out] pxControlInterface OTA Control interface.
+ * @param[out] pControlInterface OTA Control interface.
  *
  */
-void setControlInterface( OtaControlInterface_t * pxControlInterface );
+void setControlInterface( OtaControlInterface_t * pControlInterface );
 
 /**
  * @brief Set data interface for OTA operations.
@@ -94,11 +94,13 @@ void setControlInterface( OtaControlInterface_t * pxControlInterface );
  * This function updates the OTA data operation functions as per the config
  * options selected.
  *
- * @param[out] pxDataInterface OTA data interface.
+ * @param[out] pDataInterface OTA data interface.
+ *
+ * @param[in] pProtocol Protocols used for the download.
  *
  */
 
-OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
-                           const uint8_t * pucProtocol );
+OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
+                           const uint8_t * pProtocol );
 
 #endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */

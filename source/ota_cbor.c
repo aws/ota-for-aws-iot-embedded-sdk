@@ -33,14 +33,24 @@
 #include "ota_cbor_private.h"
 
 /**
- * @brief Message field definitions, per the server specification.
+ * @brief Number of keys in cbor get stream request message.
  */
-
 #define OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT    6
 
+/* ========================================================================== */
 
 /**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
+ *
+ * @param[in] pMessageBuffer message to decode.
+ * @param[in] messageSize size of the message to decode.
+ * @param[out] pFileId Decoded file id value.
+ * @param[out] pBlockId Decoded block id value.
+ * @param[out] pBlockSize Decoded block size value.
+ * @param[out] pPayload Buffer for the decoded payload.
+ * @param[out] pPayloadSize Size of the buffer for the decoded payload.
+ *
+ * @return TRUE when success, otherwise FALSE.
  */
 bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
                                                size_t messageSize,
@@ -54,12 +64,24 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     CborParser cborParser;
     CborValue cborValue, cborMap;
 
+    if( ( pFileId == NULL ) ||
+        ( pBlockId == NULL ) ||
+        ( pBlockSize == NULL ) ||
+        ( pPayload == NULL ) ||
+        ( pPayloadSize == NULL ) )
+    {
+        cborResult = CborUnknownError;
+    }
+
     /* Initialize the parser. */
-    cborResult = cbor_parser_init( pMessageBuffer,
-                                   messageSize,
-                                   0,
-                                   &cborParser,
-                                   &cborMap );
+    if( CborNoError == cborResult )
+    {
+        cborResult = cbor_parser_init( pMessageBuffer,
+                                       messageSize,
+                                       0,
+                                       &cborParser,
+                                       &cborMap );
+    }
 
     /* Get the outer element and confirm that it's a "map," i.e., a set of
      * CBOR key/value pairs. */
@@ -90,7 +112,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         pFileId );
+                                         ( int * ) pFileId );
     }
 
     /* Find the block ID. */
@@ -112,7 +134,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         pBlockId );
+                                         ( int * ) pBlockId );
     }
 
     /* Find the block size. */
@@ -134,7 +156,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         pBlockSize );
+                                         ( int * ) pBlockSize );
     }
 
     /* Find the payload bytes. */
@@ -153,6 +175,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
         }
     }
 
+    /* Calculate the size we need to malloc for the payload. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_calculate_string_length( &cborValue,
@@ -180,12 +203,23 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     return CborNoError == cborResult;
 }
 
-
-
 /**
  * @brief Create an encoded Get Stream Request message for the AWS IoT OTA
  * service. The service allows block count or block bitmap to be requested,
  * but not both.
+ *
+ * @param[in,out] pMessageBuffer Buffer to store the encoded message.
+ * @param[in] messageBufferSize Size of the buffer to store the encoded message.
+ * @param[out] pEncodedMessageSize Size of the final encoded message.
+ * @param[in] pClientToken Client token in the encoded message.
+ * @param[in] fileId Value of file id in the encoded message.
+ * @param[in] blockSize Value of block size in the encoded message.
+ * @param[in] blockOffset Value of block offset in the encoded message.
+ * @param[in] pBlockBitmap bitmap in the encoded message.
+ * @param[in] blockBitmapSize Size of the provided bitmap buffer.
+ * @param[in] numOfBlocksRequested number of blocks to request in the encoded message.
+ *
+ * @return TRUE when success, otherwise FALSE.
  */
 bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t messageBufferSize,
@@ -194,21 +228,32 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              const uint8_t * pBlockBitmap,
+                                              uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested )
 {
     CborError cborResult = CborNoError;
     CborEncoder cborEncoder, cborMapEncoder;
 
+    if( ( pMessageBuffer == NULL ) ||
+        ( pEncodedMessageSize == NULL ) ||
+        ( pClientToken == NULL ) ||
+        ( pBlockBitmap == NULL ) )
+    {
+        cborResult = CborUnknownError;
+    }
+
     /* Initialize the CBOR encoder. */
-    cbor_encoder_init( &cborEncoder,
-                       pMessageBuffer,
-                       messageBufferSize,
-                       0 );
-    cborResult = cbor_encoder_create_map( &cborEncoder,
-                                          &cborMapEncoder,
-                                          OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
+    if( CborNoError == cborResult )
+    {
+        cbor_encoder_init( &cborEncoder,
+                           pMessageBuffer,
+                           messageBufferSize,
+                           0 );
+        cborResult = cbor_encoder_create_map( &cborEncoder,
+                                              &cborMapEncoder,
+                                              OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT );
+    }
 
     /* Encode the client token key and value. */
     if( CborNoError == cborResult )
@@ -289,7 +334,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                       numOfBlocksRequested );
     }
 
-    /* Done with the encoder. */
+    /* Close the encoder. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_encoder_close_container_checked( &cborEncoder,

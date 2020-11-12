@@ -34,71 +34,51 @@
 #include "ota.h"
 
 /**
- * @brief Subscribe to the Mqtt topics.
+ * @brief Init OTA Http interface.
  *
- * This function subscribes to the Mqtt topics with the Quality of service
- * received as parameter. This function also registers a callback for the
- * topicfilter.
+ * This function parses the pre-signed url and initializes connection.
  *
- * @param[pTopicFilter]         Mqtt topic filter.
+ * @param[in] pUrl         Pointer to the pre-signed url for downloading update file.
  *
- * @param[topicFilterLength]    Length of the topic filter.
- *
- * @param[ucQoS]                Quality of Service
- *
- * @param[pvCallback]           Callback to be registered.
- *
- * @return                      OTA_OS_ERR_OK if success , other error code on failure.
+ * @return              OTA_ERR_NONE if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
 
 /**
- * @brief Unsubscribe to the Mqtt topics.
+ * @brief Request file block over Http.
  *
- * This function unsubscribes to the Mqtt topics with the Quality of service
- * received as parameter.
+ * This function requests file block over Http from the rangeStart and rangeEnd.
  *
- * @param[pTopicFilter]         Mqtt topic filter.
+ * @param[in] rangeStart  Starting index of the file data to be requested.
  *
- * @param[topicFilterLength]    Length of the topic filter.
+ * @param[in] rangeEnd    End index of the file data to be requested.
  *
- * @param[ucQoS]                Quality of Service
- *
- * @return                      OTA_OS_ERR_OK if success , other error code on failure.
+ * @return             OTA_ERR_NONE if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
                                             uint32_t rangeEnd );
 
 /**
- * @brief Publish message to a topic.
+ * @brief Deinit OTA Http interface.
  *
- * This function publishes a message to a given topic & QoS.
+ * This function cleanups Http connection and other data used for
+ * requesting file blocks using the pre-signed url.
  *
- * @param[pacTopic]             Mqtt topic filter.
- *
- * @param[usTopicLen]           Length of the topic filter.
- *
- * @param[pcMsg]                Message to publish.
- *
- * @param[ulMsgSize]            Message size.
- *
- * @param[ucQoS]                Quality of Service
- *
- * @return                      OTA_OS_ERR_OK if success , other error code on failure.
+ * @return        OTA_ERR_NONE if success , other error code on failure.
  */
 typedef OtaErr_t ( * ota_HttpDeinit )( void );
 
-
 /**
- *  OTA Event Interface structure.
+ * @brief OTA Event Interface structure.
+ *
  */
 typedef struct OtaHttpInterface
 {
-    ota_HttpInit_t init;
-    ota_HttpRequest_t request;
-    ota_HttpDeinit deinit;
+    ota_HttpInit_t init;       /*!< Reference to HTTP initialization. */
+    ota_HttpRequest_t request; /*!< Reference to HTTP data request. */
+    ota_HttpDeinit deinit;     /*!< Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
 #endif /* ifndef _OTA_HTTP_INTERFACE_H_ */

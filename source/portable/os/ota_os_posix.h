@@ -27,10 +27,17 @@
 #define _OTA_OS_POSIX_H_
 
 /* Standard library include. */
-#include <stddef.h>
+#include <stdint.h>
+#include <time.h>
 
 /* OTA library interface include. */
 #include "ota_os_interface.h"
+
+struct OtaTimerContext
+{
+    timer_t timer;
+    OtaTimerId_t timerId;
+};
 
 /**
  * @brief Initialize the OTA events.
@@ -46,7 +53,7 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx );
 /**
  * @brief Sends an OTA event.
  *
- * This function sends an event to OTA library event hanler for POSIX platforms.
+ * This function sends an event to OTA library event handler for POSIX platforms.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
@@ -95,7 +102,7 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  *
  * This function starts the timer or resets it if it is already started for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @param[pTimerName]       Timer name.
  *
@@ -105,31 +112,59 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
                               const char * const pTimerName,
                               const uint32_t timeout,
-                              void ( * callback )( void * ) );
+                              OtaTimerCallback_t callback );
 
 /**
  * @brief Stop timer.
  *
  * This function stops the timer fro POSIX platforms.
  *
- * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
+ * @param[otaTimerId]     Timer ID of type otaTimerId_t.
  *
  * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx );
+OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Delete a timer.
  *
  * This function deletes a timer for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer object to delete.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaDeleteTimer( OtaTimerContext_t * pTimerCtx );
+OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId );
+
+/**
+ * @brief Allocate memory.
+ *
+ * This function allocates the requested memory and returns a pointer to it using standard
+ * C library malloc.
+ *
+ * @param[size]        This is the size of the memory block, in bytes..
+ *
+ * @return             This function returns a pointer to the allocated memory, or NULL if
+ *                     the request fails.
+ */
+
+void * STDC_Malloc( size_t size );
+
+/**
+ * @brief Free memory.
+ *
+ * This function deallocates the memory previously allocated by a call to allocation
+ * function of type OtaMalloc_t and uses standard C library free.
+ *
+ * @param[ptr]         This is the pointer to a memory block previously allocated with function
+ *                     of type OtaMalloc_t. If a null pointer is passed as argument, no action occurs.
+ *
+ * @return             None.
+ */
+
+void STDC_Free( void * ptr );
 
 #endif /* ifndef _OTA_OS_POSIX_H_ */

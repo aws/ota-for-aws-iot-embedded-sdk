@@ -26,10 +26,13 @@
 /* Standard Includes.*/
 #include <stdlib.h>
 #include <string.h>
-#include <mqueue.h>
 #include <time.h>
+#include <signal.h>
+#include <errno.h>
+
+/* Posix includes. */
 #include <sys/types.h>
-#include "signal.h"
+#include <mqueue.h>
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
@@ -43,11 +46,19 @@
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
+static void requestTimerCallback( union sigval arg );
+static void selfTestTimerCallback( union sigval arg );
+
+static OtaTimerCallback_t otaTimerCallback;
+
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
 
-/* OTA Timer.*/
-timer_t otaTimer;
+/* OTA Timer handles.*/
+static timer_t otaTimer[ OtaNumOfTimers ];
+
+/* OTA Timer callbacks.*/
+void ( *timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
@@ -70,13 +81,18 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 
     if( otaEventQueue == -1 )
     {
-        LogError( ( "OTA Event Queue create failed." ) );
-
         otaErrRet = OTA_ERR_EVENT_Q_CREATE_FAILED;
+
+        LogError( ( "Failed to create OTA Event Queue: "
+                    "mq_open returned error: "
+                    "otaErrRet=%i "
+                    ",errno=%s",
+                    otaErrRet,
+                    strerror( errno ) ) );
     }
     else
     {
-        LogInfo( ( "OTA Event Queue created." ) );
+        LogDebug( ( "OTA Event Queue created." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -96,13 +112,18 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     /* Send the event to OTA event queue.*/
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
     {
-        LogError( ( "OTA Event Send failed." ) );
-
         otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
+
+        LogError( ( "Failed to send event to OTA Event Queue: "
+                    "mq_send returned error: "
+                    "otaErrRet=%i "
+                    ",errno=%s",
+                    otaErrRet,
+                    strerror( errno ) ) );
     }
     else
     {
-        LogInfo( ( "OTA Event Sent." ) );
+        LogDebug( ( "OTA Event Sent." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -125,13 +146,18 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     /* Receive the next event from OTA event queue.*/
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
     {
-        LogError( ( "OTA Event receive fatal error." ) );
-
         otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
+
+        LogError( ( "Failed to receive OTA Event: "
+                    "mq_reqeive returned error: "
+                    "otaErrRet=%i "
+                    ",errno=%s",
+                    otaErrRet,
+                    strerror( errno ) ) );
     }
     else
     {
-        LogInfo( ( "OTA Event received" ) );
+        LogDebug( ( "OTA Event received." ) );
 
         /* copy the data from local buffer.*/
         memcpy( pDst, buff, MAX_MSG_SIZE );
@@ -151,13 +177,18 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
     /* Remove the event queue.*/
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
     {
-        LogError( ( "OTA Event queue delete failed." ) );
-
         otaErrRet = OTA_ERR_EVENT_Q_DELETE_FAILED;
+
+        LogError( ( "Failed to delete OTA Event queue: "
+                    "mq_unlink returned error: "
+                    "otaErrRet=%i "
+                    ",errno=%s",
+                    otaErrRet,
+                    strerror( errno ) ) );
     }
     else
     {
-        LogInfo( ( "OTA Event queue deleted." ) );
+        LogDebug( ( "OTA Event queue deleted." ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -165,23 +196,41 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
     return otaErrRet;
 }
 
-static void timerCallback( union sigval arg )
+static void selfTestTimerCallback( union sigval arg )
 {
-    OtaEventMsg_t xEventMsg = { 0 };
+    LogDebug( ( "Self-test expired within %ums\r\n",
+                otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-    xEventMsg.eventId = OtaAgentEventRequestTimer;
-
-    /* Send job document received event. */
-    OTA_SignalEvent( &xEventMsg );
+    if( otaTimerCallback != NULL )
+    {
+        otaTimerCallback( OtaSelfTestTimer );
+    }
+    else
+    {
+        LogWarn( ( "Self-test timer event unhandled.\r\n" ) );
+    }
 }
 
-OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+static void requestTimerCallback( union sigval arg )
+{
+    LogDebug( ( "Request timer expired in %ums \r\n",
+                otaconfigFILE_REQUEST_WAIT_MS ) );
+
+    if( otaTimerCallback != NULL )
+    {
+        otaTimerCallback( OtaRequestTimer );
+    }
+    else
+    {
+        LogWarn( ( "Request timer event unhandled.\r\n" ) );
+    }
+}
+
+OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
                               const char * const pTimerName,
                               const uint32_t timeout,
-                              void ( * callback )( void * ) )
+                              OtaTimerCallback_t callback )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     /* Create the timer structures. */
@@ -194,33 +243,48 @@ OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
 
     /* Set attributes. */
     sgEvent.sigev_notify = SIGEV_THREAD;
-    sgEvent.sigev_value.sival_ptr = &otaTimer;
-    sgEvent.sigev_notify_function = timerCallback;
+    sgEvent.sigev_value.sival_ptr = otaTimer[ otaTimerId ];
+    sgEvent.sigev_notify_function = timerCallback[ otaTimerId ];
+
+    /* Set OTA lib callback. */
+    otaTimerCallback = callback;
 
     /* Set timeout attributes.*/
-    timerAttr.it_value.tv_sec = timeout;
-    timerAttr.it_interval.tv_sec = timerAttr.it_value.tv_sec;
+    timerAttr.it_value.tv_sec = timeout / 1000;
 
-    /* Create timer.*/
-    if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimer ) == -1 )
+    /* Create timer if required.*/
+    if( otaTimer[ otaTimerId ] == NULL )
     {
-        otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
-
-        LogError( ( "OTA Timer create failed." ) );
-    }
-    else
-    {
-        /* Set timeout.*/
-        if( timer_settime( otaTimer, 0, &timerAttr, NULL ) == -1 )
+        if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimer[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
 
-            LogError( ( "OTA Timer settig timeout failed." ) );
+            LogError( ( "Failed to create OTA timer: "
+                        "timer_create returned error: "
+                        "otaErrRet=%i "
+                        ",errno=%s",
+                        otaErrRet,
+                        strerror( errno ) ) );
+        }
+    }
+
+    /* Set timeout.*/
+    if( otaTimer[ otaTimerId ] != NULL )
+    {
+        if( timer_settime( otaTimer[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
+        {
+            otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+
+            LogError( ( "Failed to set OTA timer timeout: "
+                        "timer_settime returned error: "
+                        "otaErrRet=%i "
+                        ",errno=%s",
+                        otaErrRet,
+                        strerror( errno ) ) );
         }
         else
         {
             LogInfo( ( "OTA Timer started." ) );
-
             otaErrRet = OTA_ERR_NONE;
         }
     }
@@ -228,26 +292,43 @@ OtaErr_t Posxi_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
     return otaErrRet;
 }
 
-OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx )
+OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    struct itimerspec trigger;
+    /* Create the timer structures. */
+    struct itimerspec timerAttr;
 
-    trigger.it_value.tv_sec = 0;
+    /* clear everything in the structures. */
+    memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
-    /* Stop the timer*/
-    if( timer_settime( otaTimer, 0, &trigger, NULL ) == -1 )
+    /* Clear the timeout. */
+    timerAttr.it_value.tv_sec = 0;
+
+    if( otaTimer[ otaTimerId ] != NULL )
     {
-        LogError( ( "OTA Timer settig timeout failed." ) );
+        /* Stop the timer*/
+        if( timer_settime( otaTimer[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
+        {
+            otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
 
-        otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+            LogError( ( "Failed to stop OTA timer: "
+                        "timer_settime returned error: "
+                        "otaErrRet=%i "
+                        ",errno=%s",
+                        otaErrRet,
+                        strerror( errno ) ) );
+        }
+        else
+        {
+            LogInfo( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
+
+            otaErrRet = OTA_ERR_NONE;
+        }
     }
     else
     {
-        LogInfo( ( "OTA Timer stopped." ) );
+        LogInfo( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -255,25 +336,49 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx )
     return otaErrRet;
 }
 
-OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
+OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    /* Delete the timer*/
-    if( timer_delete( otaTimer ) == -1 )
+    if( otaTimer[ otaTimerId ] != NULL )
     {
-        LogError( ( "OTA Timer delete failed." ) );
+        /* Delete the timer*/
+        if( timer_delete( otaTimer[ otaTimerId ] ) == -1 )
+        {
+            otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
 
-        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+            LogError( ( "Failed to delete OTA timer: "
+                        "timer_delete returned error: "
+                        "otaErrRet=%i "
+                        ",errno=%s",
+                        otaErrRet,
+                        strerror( errno ) ) );
+        }
+        else
+        {
+            LogInfo( ( "OTA Timer deleted." ) );
+
+            otaErrRet = OTA_ERR_NONE;
+        }
     }
     else
     {
-        LogInfo( ( "OTA Timer deleted." ) );
+        LogInfo( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
 
     return otaErrRet;
+}
+
+void * STDC_Malloc( size_t size )
+{
+    /* Use standard C malloc.*/
+    return malloc( size );
+}
+
+void STDC_Free( void * ptr )
+{
+    /* Use standard C free.*/
+    free( ptr );
 }

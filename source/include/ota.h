@@ -36,6 +36,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/* OTA Library Interface include. */
+#include "ota_os_interface.h"
+#include "ota_mqtt_interface.h"
+#include "ota_http_interface.h"
+
 /**
  * @cond DOXYGEN_IGNORE
  * Doxygen should ignore this section.
@@ -154,7 +159,7 @@ typedef enum OtaJobParseErr
  * @brief OTA Job callback events.
  *
  * After an OTA update image is received and authenticated, the agent calls the user
- * callback (set with the @ref ota_function_init API) with the value OtaJobEventActivate to
+ * callback (set with the @ref OTA_AgentInit API) with the value OtaJobEventActivate to
  * signal that the device must be rebooted to activate the new image. When the device
  * boots, if the OTA job status is in self test mode, the agent calls the user callback
  * with the value OtaJobEventStartTest, signaling that any additional self tests
@@ -182,13 +187,13 @@ typedef enum OtaJobEvent
  * After an OTA update image is received and authenticated, it is logically moved to
  * the Self Test state by the OTA agent pending final acceptance. After the image is
  * activated and tested by your user code, you should put it into either the Accepted
- * or Rejected state by calling @ref ota_function_setimagestate ( OtaImageStateAccepted ) or
- * @ref ota_function_setimagestate ( OtaImageStateRejected ). If the image is accepted, it becomes
+ * or Rejected state by calling @ref OTA_SetImageState ( OtaImageStateAccepted ) or
+ * @ref OTA_SetImageState ( OtaImageStateRejected ). If the image is accepted, it becomes
  * the main firmware image to be booted from then on. If it is rejected, the image is
  * no longer valid and shall not be used, reverting to the last known good image.
  *
  * If you want to abort an active OTA transfer, you may do so by calling the API
- * @ref ota_function_setimagestate ( OtaImageStateAborted ).
+ * @ref OTA_SetImageState ( OtaImageStateAborted ).
  */
 typedef enum OtaImageState
 {
@@ -223,9 +228,9 @@ typedef uint32_t                OtaErr_t;
  * The user may register a callback function when initializing the OTA Agent. This
  * callback is used to notify the main application when the OTA update job is complete.
  * Typically, it is used to reset the device after a successful update by calling
- * @ref ota_function_activatenewimage and may also be used to kick off user specified self tests
+ * @ref OTA_ActivateNewImage and may also be used to kick off user specified self tests
  * during the Self Test phase. If the user does not supply a custom callback function,
- * a default callback handler is used that automatically calls @ref ota_function_activatenewimage
+ * a default callback handler is used that automatically calls @ref OTA_ActivateNewImage
  * after a successful update.
  *
  * The callback function is called with one of the following arguments:
@@ -364,56 +369,6 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  */
 
 /**
- * @ingroup ota_datatypes_struct_constants
- * @brief A composite cryptographic signature structure able to hold our largest supported signature.
- */
-
-#define kOTA_MaxSignatureSize    256        /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
-
-/**
- * @ingroup ota_datatypes_structs
- * @brief OTA File Signature info.
- *
- * File key signature information to verify the authenticity of the incomming file
- */
-typedef struct
-{
-    uint16_t size;                         /*!< Size, in bytes, of the signature. */
-    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
-} Sig256_t;
-
-/**
- * @ingroup ota_datatypes_structs
- * @brief OTA File Context Information.
- *
- * Information about an OTA Update file that is to be streamed. This structure is filled in from a
- * job notification MQTT message. Currently only one file context can be streamed at time.
- */
-struct OtaFileContext
-{
-    uint8_t * pFilePath;      /*!< Local file pathname. */
-    #if defined( WIN32 ) || defined( __linux__ )
-        FILE * pFile;         /*!< File type is stdio FILE structure after file is open for write. */
-    #else
-        uint8_t * pFile;      /*!< File type is RAM/Flash image pointer after file is open for write. */
-    #endif
-    uint32_t fileSize;        /*!< The size of the file in bytes. */
-    uint32_t blocksRemaining; /*!< How many blocks remain to be received (a code optimization). */
-    uint32_t fileAttributes;  /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
-    uint32_t serverFileID;    /*!< The file is referenced by this numeric ID in the OTA job. */
-    uint8_t * pJobName;       /*!< The job name associated with this file from the job service. */
-    uint8_t * pStreamName;    /*!< The stream associated with this file from the OTA service. */
-    uint8_t * pRxBlockBitmap; /*!< Bitmap of blocks received (for deduplicating and missing block request). */
-    uint8_t * pCertFilepath;  /*!< Pathname of the certificate file used to validate the receive file. */
-    uint8_t * pUpdateUrlPath; /*!< Url for the file. */
-    uint8_t * pAuthScheme;    /*!< Authorization scheme. */
-    uint32_t updaterVersion;  /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
-    bool isInSelfTest;        /*!< True if the job is in self test mode. */
-    uint8_t * pProtocols;     /*!< Authorization scheme. */
-    Sig256_t * pSignature;    /*!< Pointer to the file's signature structure. */
-};
-
-/**
  * @ingroup ota_datatypes_structs
  * @brief OTA PAL callback structure
  */
@@ -431,6 +386,90 @@ typedef struct
     OtaCustomJobCallback_t customJobCallback;                    /*!< OTA Custom Job callback pointer */
 } OtaPalCallbacks_t;
 
+/**
+ * @ingroup ota_datatypes_struct_constants
+ * @brief A composite cryptographic signature structure able to hold our largest supported signature.
+ */
+
+#define kOTA_MaxSignatureSize    256        /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
+
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA File Signature info.
+ *
+ * File key signature information to verify the authenticity of the incoming file
+ */
+typedef struct
+{
+    uint16_t size;                         /*!< Size, in bytes, of the signature. */
+    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
+} Sig256_t;
+
+typedef struct OtaInterface
+{
+    OtaOSInterface_t os;
+    OtaMqttInterface_t mqtt;
+    OtaHttpInterface_t http;
+    OtaPalCallbacks_t pal;
+} OtaInterfaces_t;
+
+typedef struct OtaAppBuffer
+{
+    uint8_t * pUpdateFilePath;
+    uint16_t updateFilePathsize;
+    uint8_t * pCertFilePath;
+    uint16_t certFilePathSize;
+    uint8_t * pStreamName;
+    uint16_t streamNameSize;
+    uint8_t * pDecodeMemory;
+    uint32_t decodeMemorySize;
+    uint8_t * pFileBitmap;
+    uint16_t fileBitmapSize;
+    uint8_t * pUrl;
+    uint16_t urlSize;
+    uint8_t * pAuthScheme;
+    uint16_t authSchemeSize;
+} OtaAppBuffer_t;
+
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA File Context Information.
+ *
+ * Information about an OTA Update file that is to be streamed. This structure is filled in from a
+ * job notification MQTT message. Currently only one file context can be streamed at time.
+ */
+struct OtaFileContext
+{
+    uint8_t * pFilePath;         /*!< Update file pathname. */
+    int16_t filePathMaxSize;     /*!< Maximum size of the update file path */
+    #if defined( WIN32 ) || defined( __linux__ )
+        FILE * pFile;            /*!< File type is stdio FILE structure after file is open for write. */
+    #else
+        uint8_t * pFile;         /*!< File type is RAM/Flash image pointer after file is open for write. */
+    #endif
+    uint32_t fileSize;           /*!< The size of the file in bytes. */
+    uint32_t blocksRemaining;    /*!< How many blocks remain to be received (a code optimization). */
+    uint32_t fileAttributes;     /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
+    uint32_t serverFileID;       /*!< The file is referenced by this numeric ID in the OTA job. */
+    uint8_t * pJobName;          /*!< The job name associated with this file from the job service. */
+    int16_t jobNameMaxSize;      /*!< Maximum size of the job name. */
+    uint8_t * pStreamName;       /*!< The stream associated with this file from the OTA service. */
+    int16_t streamNameMaxSize;   /*!< Maximum size of the stream name. */
+    uint8_t * pRxBlockBitmap;    /*!< Bitmap of blocks received (for deduplicating and missing block request). */
+    int16_t blockBitmapMaxSize;  /*!< Maximum size of the block bitmap. */
+    uint8_t * pCertFilepath;     /*!< Pathname of the certificate file used to validate the receive file. */
+    int16_t certFilePathMaxSize; /*!< Maximum certificate path size. */
+    uint8_t * pUpdateUrlPath;    /*!< Url for the file. */
+    int8_t updateUrlMaxSize;     /*!< Maximum size of the url. */
+    uint8_t * pAuthScheme;       /*!< Authorization scheme. */
+    int8_t authSchemeMaxSize;    /*!< Maximum size of the auth scheme. */
+    uint32_t updaterVersion;     /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
+    bool isInSelfTest;           /*!< True if the job is in self test mode. */
+    uint8_t * pProtocols;        /*!< Authorization scheme. */
+    int16_t protocolMaxSize;     /*!< Maximum size of the  supported protocols string. */
+    uint32_t fileType;           /*!< The file type id set when creating the OTA job. */
+    Sig256_t * pSignature;       /*!< Pointer to the file's signature structure. */
+};
 
 /*------------------------- OTA defined constants --------------------------*/
 
@@ -457,7 +496,7 @@ typedef struct
 /* @[define_ota_err_codes] */
 #define OTA_ERR_PANIC                        0xfe000000U /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
 #define OTA_ERR_UNINITIALIZED                0xff000000U /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                         0x00000000U /*!< No error occured during the operation. */
+#define OTA_ERR_NONE                         0x00000000U /*!< No error occurred during the operation. */
 #define OTA_ERR_SIGNATURE_CHECK_FAILED       0x01000000U /*!< The signature check failed for the specified file. */
 #define OTA_ERR_BAD_SIGNER_CERT              0x02000000U /*!< The signer certificate was not readable or zero length. */
 #define OTA_ERR_OUT_OF_MEMORY                0x03000000U /*!< General out of memory error. */
@@ -509,44 +548,12 @@ typedef struct
 
 /*------------------------- OTA Public API --------------------------*/
 
-/**
- * @functionspage{ota,OTA library}
- * - @functionname{ota_function_init}
- * - @functionname{ota_function_shutdown}
- * - @functionname{ota_function_getagentstate}
- * - @functionname{ota_function_activatenewimage}
- * - @functionname{ota_function_setimagestate}
- * - @functionname{ota_function_getimagestate}
- * - @functionname{ota_function_checkforupdate}
- * - @functionname{ota_function_suspend}
- * - @functionname{ota_function_resume}
- * - @functionname{ota_function_getpacketsreceived}
- * - @functionname{ota_function_getpacketsqueued}
- * - @functionname{ota_function_getpacketsprocessed}
- * - @functionname{ota_function_getpacketsdropped}
- */
-
-/**
- * @functionpage{OTA_AgentInit,ota,init}
- * @functionpage{OTA_AgentShutdown,ota,shutdown}
- * @functionpage{OTA_GetAgentState,ota,getagentstate}
- * @functionpage{OTA_ActivateNewImage,ota,activatenewimage}
- * @functionpage{OTA_SetImageState,ota,setimagestate}
- * @functionpage{OTA_GetImageState,ota,getimagestate}
- * @functionpage{OTA_CheckForUpdate,ota,checkforupdate}
- * @functionpage{OTA_Suspend,ota,suspend}
- * @functionpage{OTA_Resume,ota,resume}
- * @functionpage{OTA_GetPacketsReceived,ota,getpacketsreceived}
- * @functionpage{OTA_GetPacketsQueued,ota,getpacketsqueued}
- * @functionpage{OTA_GetPacketsProcessed,ota,getpacketsprocessed}
- * @functionpage{OTA_GetPacketsDropped,ota,getpacketsdropped}
- */
 
 /**
  * @brief OTA Agent initialization function.
  *
  * Initialize the OTA engine by starting the OTA Agent ("OTA Task") in the system. This function must
- * be called with the connection client context before calling @ref ota_function_checkforupdate. Only one
+ * be called with the connection client context before calling @ref OTA_CheckForUpdate. Only one
  * OTA Agent may exist.
  *
  * @param[in]  pOtaOSCtx A pointer to the OS context
@@ -560,35 +567,10 @@ typedef struct
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
-OtaState_t OTA_AgentInit( void * pOtaOSCtx,
-                          void * pOtaMqttInterface,
-                          void * pOtaHttpInterface,
-                          const uint8_t * pThingName,
-                          OtaCompleteCallback_t completeCallback );
-
-/**
- * @brief Internal OTA Agent initialization function.
- *
- * Initialize the OTA engine by starting the OTA Agent ("OTA Task") in the system. This function must
- * be called with the MQTT messaging client context before calling @ref ota_function_checkforupdate. Only one
- * OTA Agent may exist.
- *
- * @param[in] pOtaOSCtx A pointer to the OS context
- * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
- * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
- * @param[in] pThingName A pointer to a C string holding the Thing name.
- * @param[in] pCallbacks Static callback structure for various OTA events. This function will have
- * input of the state of the OTA image after download and during self-test.
- *
- * @return The state of the OTA Agent upon return from the OtaState_t enum.
- * If the agent was successfully initialized and ready to operate, the state will be
- * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
- */
-OtaState_t OTA_AgentInit_internal( void * pOtaOSCtx,
-                                   void * pOtaMqttInterface,
-                                   void * pOtaHttpInterface,
-                                   const uint8_t * pThingName,
-                                   const OtaPalCallbacks_t * pCallbacks );
+OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
+                        OtaInterfaces_t * pOtaInterfaces,
+                        const uint8_t * pThingName,
+                        OtaCompleteCallback_t completeCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.
@@ -618,7 +600,7 @@ OtaState_t OTA_GetAgentState( void );
  * This function should reset the MCU and cause a reboot of the system to execute the newly updated
  * firmware. It should be called by the user code sometime after the OtaJobEventActivate event
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
- * @ref ota_function_init function for more information about configuring the callback.
+ * @ref OTA_AgentInit function for more information about configuring the callback.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
@@ -689,7 +671,7 @@ void otaAgentTask( const void * pUnused );
 /**
  * @brief Get the number of OTA message packets received by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return The number of OTA packets that have been received but not
  * necessarily queued for processing by the OTA agent.
@@ -699,7 +681,7 @@ uint32_t OTA_GetPacketsReceived( void );
 /**
  * @brief Get the number of OTA message packets queued by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return The number of OTA packets that have been queued for processing.
  * This implies there was a free message queue entry so it can be passed
@@ -710,7 +692,7 @@ uint32_t OTA_GetPacketsQueued( void );
 /**
  * @brief Get the number of OTA message packets processed by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return the number of OTA packets that have actually been processed.
  *
@@ -720,7 +702,7 @@ uint32_t OTA_GetPacketsProcessed( void );
 /**
  * @brief Get the number of OTA message packets dropped by the OTA agent.
  *
- * @note Calling @ref ota_function_init will reset this statistic.
+ * @note Calling @ref OTA_AgentInit will reset this statistic.
  *
  * @return the number of OTA packets that have been dropped because
  * of either no queue or at shutdown cleanup.

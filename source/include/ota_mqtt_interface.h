@@ -30,9 +30,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* OTA library interface include. */
-#include "ota.h"
-
 /**
  * @brief Subscribe to the Mqtt topics.
  *
@@ -51,7 +48,7 @@
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
+typedef int32_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
                                              uint16_t topicFilterLength,
                                              uint8_t ucQoS,
                                              void * pvCallback );
@@ -71,7 +68,7 @@ typedef OtaErr_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
+typedef int32_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
                                                 uint16_t topicFilterLength,
                                                 uint8_t ucQoS );
 
@@ -92,7 +89,7 @@ typedef OtaErr_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
  *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_MqttPublish_t )( const char * const pacTopic,
+typedef int32_t ( * ota_MqttPublish_t )( const char * const pacTopic,
                                           uint16_t usTopicLen,
                                           const char * pcMsg,
                                           uint32_t ulMsgSize,

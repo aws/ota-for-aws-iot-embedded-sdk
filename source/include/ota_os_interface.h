@@ -26,14 +26,20 @@
 #ifndef _OTA_OS_INTERFACE_H_
 #define _OTA_OS_INTERFACE_H_
 
-/* OTA library interface include. */
-#include "ota.h"
+typedef uint32_t                 OtaErr_t;
 
 struct OtaEventContext;
 typedef struct OtaEventContext   OtaEventContext_t;
 
 struct OtaTimerContext;
 typedef struct OtaTimerContext   OtaTimerContext_t;
+
+typedef enum
+{
+    OtaRequestTimer = 0,
+    OtaSelfTestTimer,
+    OtaNumOfTimers
+} OtaTimerId_t;
 
 /**
  * @brief Initialize the OTA events.
@@ -50,7 +56,7 @@ typedef OtaErr_t ( * OtaInitEvent_t ) ( OtaEventContext_t * pEventCtx );
 /**
  * @brief Sends an OTA event.
  *
- * This function sends an event to OTA library event hanler.
+ * This function sends an event to OTA library event handler.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
@@ -66,7 +72,6 @@ typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
                                        unsigned int timeout );
 
 /**
- * /**
  * @brief Receive an OTA event.
  *
  * This function receives next event from the pending OTA events.
@@ -98,60 +103,99 @@ typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
 typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
 
 /**
+ * @brief Timer callback.
+ *
+ * Type definition for timer callback.
+ *
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
+ *
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+
+typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
+
+/**
  * @brief Start timer.
  *
  * This function starts the timer or resets it if it is already started.
  *
- * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
  * @param[pTimerName]       Timer name.
  *
- * @param[timeout]          Timeout for the timer.
+ * @param[timeout]          Timeout for the timer in mili seconds.
  *
  * @param[callback]         Callback to be called when timer expires.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerContext_t * pTimerCtx,
+typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerId_t otaTimerId,
                                          const char * const pTimerName,
                                          const uint32_t timeout,
-                                         void ( * callback )( void * pParam ) );
+                                         OtaTimerCallback_t callback );
 
 /**
  * @brief Stop timer.
  *
  * This function stops the time.
  *
- * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
+ * @param[otaTimerId]     Timer ID of type otaTimerId_t
  *
  * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerContext_t * pTimerCtx );
+typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Delete a timer.
  *
  * This function deletes a timer for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer object to delete.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerContext_t * pTimerCtx );
+typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerId_t otaTimerId );
+
+/**
+ * @brief Allocate memory.
+ *
+ * This function allocates the requested memory and returns a pointer to it.
+ *
+ * @param[size]        This is the size of the memory block, in bytes..
+ *
+ * @return             This function returns a pointer to the allocated memory, or NULL if
+ *                     the request fails.
+ */
+
+typedef void * ( * OtaMalloc_t ) ( size_t size );
+
+/**
+ * @brief Free memory.
+ *
+ * This function deallocates the memory previously allocated by a call to allocation
+ * function of type OtaMalloc_t.
+ *
+ * @param[ptr]         This is the pointer to a memory block previously allocated with function
+ *                     of type OtaMalloc_t. If a null pointer is passed as argument, no action occurs.
+ *
+ * @return             None.
+ */
+
+typedef void ( * OtaFree_t ) ( void * ptr );
 
 /**
  *  OTA Event Interface structure.
  */
 typedef struct OtaEventInterface
 {
-    OtaInitEvent_t init;
-    OtaSendEvent_t send;
-    OtaReceiveEvent_t recv;
-    OtaDeinitEvent_t deinit;
-    OtaEventContext_t * pEventContext;
+    OtaInitEvent_t init;               /*!< Initialization event. */
+    OtaSendEvent_t send;               /*!< Send data. */
+    OtaReceiveEvent_t recv;            /*!< Receive data. */
+    OtaDeinitEvent_t deinit;           /*!< Deinitialize event. */
+    OtaEventContext_t * pEventContext; /*!< Event context to store event information. */
 } OtaEventInterface_t;
 
 /**
@@ -159,19 +203,28 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;
-    OtaStopTimer_t stop;
-    OtaDeleteTimer_t delete;
-    OtaTimerContext_t * PTimerCtx; /**< Implementation-defined ota timer context. */
+    OtaStartTimer_t start;   /*!< Timer start state. */
+    OtaStopTimer_t stop;     /*!< Timer stop state. */
+    OtaDeleteTimer_t delete; /*!< Delete timer. */
 } OtaTimerInterface_t;
+
+/**
+ *  OTA memory allocation interface.
+ */
+typedef struct OtaMallocInterface
+{
+    OtaMalloc_t malloc; /*!< OTA memory allocate interface. */
+    OtaFree_t free;     /*!< OTA memory deallocate interface. */
+} OtaMallocInterface_t;
 
 /**
  * @brief  OTA OS Interface.
  */
 typedef struct OtaOSInterface
 {
-    OtaEventInterface_t event; /**< OTA Event interface. */
-    OtaTimerInterface_t timer; /**< OTA Timer interface. */
+    OtaEventInterface_t event; /*!< OTA Event interface. */
+    OtaTimerInterface_t timer; /*!< OTA Timer interface. */
+    OtaMallocInterface_t mem;  /*!< OTA memory interface. */
 } OtaOSInterface_t;
 
 #endif /* ifndef _OTA_OS_INTERFACE_H_ */

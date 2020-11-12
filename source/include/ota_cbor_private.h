@@ -55,7 +55,8 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
 /**
  * @brief Create an encoded Get Stream Request message for the AWS IoT OTA
- * service.
+ * service. The service allows block count or block bitmap to be requested,
+ * but not both.
  */
 bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t messageBufferSize,
@@ -64,7 +65,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              const uint8_t * pBlockBitmap,
+                                              uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested );
 

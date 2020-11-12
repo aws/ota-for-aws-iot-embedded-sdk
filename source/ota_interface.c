@@ -25,7 +25,7 @@
 
 /**
  * @file ota_interface.c
- * @brief .
+ * @brief Internal interface for setting the data and control planes.
  */
 
 /* Standard library includes. */
@@ -50,20 +50,25 @@
     #error "Primary data protocol must be enabled in aws_iot_ota_agent_config.h"
 #endif
 
-void setControlInterface( OtaControlInterface_t * pxControlInterface )
+void setControlInterface( OtaControlInterface_t * pControlInterface )
 {
+    assert( pControlInterface != NULL );
+
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
-        pxControlInterface->requestJob = requestJob_Mqtt;
-        pxControlInterface->updateJobStatus = updateJobStatus_Mqtt;
-        pxControlInterface->cleanup = cleanupControl_Mqtt;
+        pControlInterface->requestJob = requestJob_Mqtt;
+        pControlInterface->updateJobStatus = updateJobStatus_Mqtt;
+        pControlInterface->cleanup = cleanupControl_Mqtt;
     #else
     #error "Enable MQTT control as control operations are only supported over MQTT."
     #endif
 }
 
-OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
-                           const uint8_t * pucProtocol )
+OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
+                           const uint8_t * pProtocol )
 {
+    assert( pDataInterface != NULL );
+    assert( pProtocol != NULL );
+
     OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
@@ -72,13 +77,13 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
      * than one protocol is selected while creating OTA job.
      */
     #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
-        const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
+        const char * pProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
         {
             "MQTT",
             "HTTP"
         };
     #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
-        const char * pcProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
+        const char * pProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
         {
             "HTTP",
             "MQTT"
@@ -87,15 +92,15 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
 
     for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
     {
-        if( NULL != strstr( ( const char * ) pucProtocol, pcProtocolPriority[ i ] ) )
+        if( NULL != strstr( ( const char * ) pProtocol, pProtocolPriority[ i ] ) )
         {
             #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT )
-                if( strcmp( pcProtocolPriority[ i ], "MQTT" ) == 0 )
+                if( strcmp( pProtocolPriority[ i ], "MQTT" ) == 0 )
                 {
-                    pxDataInterface->initFileTransfer = initFileTransfer_Mqtt;
-                    pxDataInterface->requestFileBlock = requestFileBlock_Mqtt;
-                    pxDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
-                    pxDataInterface->cleanup = cleanupData_Mqtt;
+                    pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+                    pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+                    pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+                    pDataInterface->cleanup = cleanupData_Mqtt;
 
                     LogInfo( ( "Data interface is set to MQTT.\r\n" ) );
 
@@ -105,12 +110,12 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pxDataInterface,
             #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) */
 
             #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP )
-                if( strcmp( pcProtocolPriority[ i ], "HTTP" ) == 0 )
+                if( strcmp( pProtocolPriority[ i ], "HTTP" ) == 0 )
                 {
-                    pxDataInterface->initFileTransfer = _AwsIotOTA_InitFileTransfer_HTTP;
-                    pxDataInterface->requestFileBlock = _AwsIotOTA_RequestDataBlock_HTTP;
-                    pxDataInterface->decodeFileBlock = _AwsIotOTA_DecodeFileBlock_HTTP;
-                    pxDataInterface->cleanup = _AwsIotOTA_Cleanup_HTTP;
+                    pDataInterface->initFileTransfer = initFileTransfer_Http;
+                    pDataInterface->requestFileBlock = requestDataBlock_Http;
+                    pDataInterface->decodeFileBlock = decodeFileBlock_Http;
+                    pDataInterface->cleanup = cleanupData_Http;
 
                     LogInfo( ( "Data interface is set to HTTP.\r\n" ) );
 

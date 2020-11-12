@@ -31,18 +31,69 @@
 #include "ota_private.h"
 
 
-OtaErr_t _AwsIotOTA_InitFileTransfer_HTTP( OtaAgentContext_t * pxAgentCtx );
+/**
+ * @brief Initialize file transfer over HTTP.
+ *
+ * This function initializes the file transfer after the OTA job is parsed and accepted
+ * by initializing the http component with pre-signed url.
+ *
+ * @param[in] pAgentCtx The OTA agent context.
+ *
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
+ */
+OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx );
 
-OtaErr_t _AwsIotOTA_RequestDataBlock_HTTP( OtaAgentContext_t * pxAgentCtx );
 
-OtaErr_t _AwsIotOTA_DecodeFileBlock_HTTP( uint8_t * pMessageBuffer,
-                                          size_t messageSize,
-                                          int32_t * pFileId,
-                                          int32_t * pBlockId,
-                                          int32_t * pBlockSize,
-                                          uint8_t ** pPayload,
-                                          size_t * pPayloadSize );
+/**
+ * @brief Request File block over HTTP.
+ *
+ * This function is used for requesting a file block over HTTP using the
+ * file context.
+ *
+ * @param[in] pAgentCtx The OTA agent context.
+ *
+ * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
+ * error codes information in ota.h.
+ */
+OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx );
 
-OtaErr_t _AwsIotOTA_CleanupData_HTTP( OtaAgentContext_t * pxAgentCtx );
+
+/**
+ * @brief Stub for decoding the file block.
+ *
+ * File block received over HTTP does not require decoding, only increment the number
+ * of blocks received.
+ *
+ * @param[in] pMessageBuffer The message to be decoded.
+ * @param[in] messageSize     The size of the message in bytes.
+ * @param[out] pFileId        The server file ID.
+ * @param[out] pBlockId       The file block ID.
+ * @param[out] pBlockSize     The file block size.
+ * @param[out] pPayload     The payload.
+ * @param[out] pPayloadSize   The payload size.
+ *
+ * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
+ * error codes information in ota.h.
+ */
+OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
+                               size_t messageSize,
+                               int32_t * pFileId,
+                               int32_t * pBlockId,
+                               int32_t * pBlockSize,
+                               uint8_t ** pPayload,
+                               size_t * pPayloadSize );
+
+/**
+ * @brief Cleanup related to OTA data plane over HTTP.
+ *
+ * This function performs cleanup by resetting the number of blocks received
+ * and deinit the http component.
+ *
+ * @param[in] pAgentCtx The OTA agent context.
+ *
+ * @return The OTA error code. See OTA Agent error codes information in ota.h.
+ */
+
+OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx );
 
 #endif /* ifndef __OTA_HTTP__H__ */
