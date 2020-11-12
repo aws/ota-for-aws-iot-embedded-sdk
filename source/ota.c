@@ -75,10 +75,6 @@ typedef struct OtaStateTableEntry
     OtaState_t nextState;      /**< New state to be triggered*/
 } OtaStateTableEntry_t;
 
-/* Buffers used to push event data. */
-
-static OtaEventData_t pEventBuffer[ otaconfigMAX_NUM_OTA_DATA_BUFFERS ];
-
 /* OTA control interface. */
 
 static OtaControlInterface_t otaControlInterface;
@@ -351,7 +347,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
         OtaEventMsg_t xEventMsg = { 0 };
 
         LogDebug( ( "Self-test expired within %ums\r\n",
-                     otaconfigFILE_REQUEST_WAIT_MS ) );
+                    otaconfigFILE_REQUEST_WAIT_MS ) );
 
         xEventMsg.eventId = OtaAgentEventRequestTimer;
 
@@ -360,9 +356,8 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
     }
     else if( otaTimerId == OtaSelfTestTimer )
     {
-
-        LogError( ( "Self test failed to complete within %ums\r\n", 
-                     otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
+        LogError( ( "Self test failed to complete within %ums\r\n",
+                    otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
         ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
     }
@@ -370,9 +365,10 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
     {
         LogWarn( ( "Invalid ota timer id: "
                    "otaTimerId=%u",
-                    otaTimerId ) );
+                   otaTimerId ) );
     }
 }
+
 /*
  * This is a private function which checks if the platform is in self-test.
  */
@@ -400,7 +396,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
     if( state == OtaImageStateTesting )
     {
         /* We discovered we're ready for test mode, put job status in self_test active. */
-        err = otaControlInterface.updateJobStatus( &otaAgent, 
+        err = otaControlInterface.updateJobStatus( &otaAgent,
                                                    JobStatusInProgress,
                                                    JobReasonSelfTestActive,
                                                    0 );
@@ -410,10 +406,10 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
         if( state == OtaImageStateAccepted )
         {
             /* Now that we have accepted the firmware update, we can complete the job. */
-            err = otaControlInterface.updateJobStatus( &otaAgent, 
-                                                        JobStatusSucceeded, 
-                                                        JobReasonAccepted, 
-                                                        appFirmwareVersion.u.signedVersion32 );
+            err = otaControlInterface.updateJobStatus( &otaAgent,
+                                                       JobStatusSucceeded,
+                                                       JobReasonAccepted,
+                                                       appFirmwareVersion.u.signedVersion32 );
         }
         else
         {
@@ -422,7 +418,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
              * will not allow us to set REJECTED after the job has been started already).
              */
             reason = ( state == OtaImageStateRejected ) ? JobReasonRejected : JobReasonAborted;
-            err = otaControlInterface.updateJobStatus( &otaAgent, 
+            err = otaControlInterface.updateJobStatus( &otaAgent,
                                                        JobStatusFailed,
                                                        reason,
                                                        subReason );
@@ -703,10 +699,10 @@ static OtaErr_t startHandler( const OtaEventData_t * pEventData )
     /* Start self-test timer, if platform is in self-test. */
     if( inSelftest() == true )
     {
-        otaAgent.pOtaInterface->os.timer.start(  OtaSelfTestTimer, 
-                                                 "OtaSelfTestTimer", 
-                                                  otaconfigSELF_TEST_RESPONSE_WAIT_MS,
-                                                  otaTimerCallback );
+        otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
+                                                "OtaSelfTestTimer",
+                                                otaconfigSELF_TEST_RESPONSE_WAIT_MS,
+                                                otaTimerCallback );
     }
 
     /* Send event to OTA task to get job document. */
@@ -773,13 +769,14 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
         if( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM )
         {
             /* Start the request timer. */
-            retVal = otaAgent.pOtaInterface->os.timer.start(  OtaRequestTimer, 
-                                                              "OtaRequestTimer", 
-                                                              otaconfigFILE_REQUEST_WAIT_MS,
-                                                              otaTimerCallback );
+            retVal = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                             "OtaRequestTimer",
+                                                             otaconfigFILE_REQUEST_WAIT_MS,
+                                                             otaTimerCallback );
+
             if( retVal != OTA_ERR_NONE )
             {
-                LogError( ( "Failed to start request timer: " //ToDo
+                LogError( ( "Failed to start request timer: "
                             "OtaErr_t=%d",
                             retVal ) );
             }
@@ -787,13 +784,13 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
             {
                 otaAgent.requestMomentum++;
             }
-            
+
             retVal = OTA_ERR_PUBLISH_FAILED;
         }
         else
         {
             /* Stop the request timer. */
-            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
             /* Send shutdown event to the OTA Agent task. */
             eventMsg.eventId = OtaAgentEventShutdown;
@@ -815,7 +812,7 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
     else
     {
         /* Stop the request timer. */
-        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
         /* Reset the request momentum. */
         otaAgent.requestMomentum = 0;
@@ -919,9 +916,6 @@ static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
         }
     }
 
-    /*Free the OTA event buffer. */
-    otaEventBufferFree( pEventData );
-
     if( err != OTA_ERR_NONE )
     {
         LogDebug( ( "Failed to process job document: "
@@ -945,13 +939,14 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         if( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM )
         {
             /* Start the request timer. */
-            err = otaAgent.pOtaInterface->os.timer.start(  OtaRequestTimer, 
-                                                           "OtaRequestTimer", 
-                                                           otaconfigFILE_REQUEST_WAIT_MS,
-                                                           otaTimerCallback );
+            err = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                          "OtaRequestTimer",
+                                                          otaconfigFILE_REQUEST_WAIT_MS,
+                                                          otaTimerCallback );
+
             if( err != OTA_ERR_NONE )
             {
-                LogError( ( "Failed to start request timer: " //ToDo
+                LogError( ( "Failed to start request timer: "
                             "OtaErr_t=%d",
                             err ) );
             }
@@ -965,7 +960,7 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         else
         {
             /* Stop the request timer. */
-            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
             /* Send shutdown event. */
             eventMsg.eventId = OtaAgentEventShutdown;
@@ -1008,10 +1003,10 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     if( otaAgent.fileContext.blocksRemaining > 0U )
     {
         /* Start the request timer. */
-        err = otaAgent.pOtaInterface->os.timer.start(  OtaRequestTimer, 
-                                                       "OtaRequestTimer", 
-                                                       otaconfigFILE_REQUEST_WAIT_MS,
-                                                       otaTimerCallback );
+        err = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                      "OtaRequestTimer",
+                                                      otaconfigFILE_REQUEST_WAIT_MS,
+                                                      otaTimerCallback );
 
         if( ( err == OTA_ERR_NONE ) && ( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM ) )
         {
@@ -1025,7 +1020,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
         else
         {
             /* Stop the request timer. */
-            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+            otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
             /* Failed to send data request abort and close file. */
             reason = err;
@@ -1082,7 +1077,7 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
     if( result < IngestResultAccepted_Continue )
     {
         /* Stop the request timer. */
-        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
         /* Negative result codes mean we should stop the OTA process
          * because we are either done or in an unrecoverable error state.
@@ -1169,8 +1164,8 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
         else
         {
             /* Start the request timer. */
-           otaAgent.pOtaInterface->os.timer.start(  OtaRequestTimer, 
-                                                    "OtaRequestTimer", 
+            otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                    "OtaRequestTimer",
                                                     otaconfigFILE_REQUEST_WAIT_MS,
                                                     otaTimerCallback );
 
@@ -1185,9 +1180,6 @@ static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
             }
         }
     }
-
-    /* Release the data buffer. */
-    otaEventBufferFree( pEventData );
 
     return OTA_ERR_NONE;
 }
@@ -1275,7 +1267,7 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Stop the request timer. */
-    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
     /* Abort the current job. */
     ( void ) otaAgent.palCallbacks.setPlatformImageState( otaAgent.serverFileID, OtaImageStateAborted );
@@ -1294,30 +1286,6 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
     eventMsg.eventId = OtaAgentEventRequestJobDocument;
 
     return ( OTA_SignalEvent( &eventMsg ) == true ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
-}
-
-void otaEventBufferFree( OtaEventData_t * const pBuffer )
-{
-    /* Release the buffer */
-    pBuffer->bufferUsed = false;
-}
-
-OtaEventData_t * otaEventBufferGet( void )
-{
-    uint32_t index = 0;
-    OtaEventData_t * pOtaFreeMsg = NULL;
-
-    for( index = 0; index < otaconfigMAX_NUM_OTA_DATA_BUFFERS; index++ )
-    {
-        if( pEventBuffer[ index ].bufferUsed == false )
-        {
-            pEventBuffer[ index ].bufferUsed = true;
-            pOtaFreeMsg = &pEventBuffer[ index ];
-            break;
-        }
-    }
-
-    return pOtaFreeMsg;
 }
 
 /* Close an existing OTA file context and free its resources. */
@@ -2221,12 +2189,12 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
     {
-        /* if( pUpdateFile->pRxBlockBitmap != NULL ) */
-        /* { */
-        /*     free( pUpdateFile->pRxBlockBitmap ); / * Free any previously allocated bitmap. * / */
-        /*     pUpdateFile->pRxBlockBitmap = NULL; */
-        /* } */
-        /*todo */
+        if( pUpdateFile->pRxBlockBitmap != NULL )
+        {
+            /* Free any previously allocated bitmap. */
+            free( pUpdateFile->pRxBlockBitmap );
+            pUpdateFile->pRxBlockBitmap = NULL;
+        }
 
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
@@ -2362,14 +2330,14 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                     uBlockSize ) );
         eIngestResult = IngestResultBlockOutOfRange;
     }
- 
+
     /* Process the received data block. */
     if( eIngestResult == IngestResultUninitialized )
     {
         if( pFileContext->pFile != NULL )
         {
-            int32_t iBytesWritten = otaAgent.palCallbacks.writeBlock( pFileContext, 
-                                                                    ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
+            int32_t iBytesWritten = otaAgent.palCallbacks.writeBlock( pFileContext,
+                                                                      ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
                                                                       pPayload,
                                                                       uBlockSize );
 
@@ -2383,7 +2351,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             else
             {
                 /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= ~bitMask; 
+                pFileContext->pRxBlockBitmap[ byte ] &= ~bitMask;
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
                 *pCloseResult = OTA_ERR_NONE;
@@ -2409,13 +2377,13 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
 
     if( pFileContext->blocksRemaining == 0U )
     {
-        LogInfo( ( "Received final block of the update." ) );\
+        LogInfo( ( "Received final block of the update." ) ); \
 
         /* Stop the request timer. */
-        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
         /* Free the bitmap now that we're done with the download. */
-        otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap ); 
+        otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
         pFileContext->pRxBlockBitmap = NULL;
 
         if( pFileContext->pFile != NULL )
@@ -2447,7 +2415,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             }
 
             /* File is now closed so clear the file handle in the context. */
-            pFileContext->pFile = NULL; 
+            pFileContext->pFile = NULL;
         }
         else
         {
@@ -2515,10 +2483,10 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
         /* If we have a block bitmap available then process the message. */
         if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blocksRemaining > 0U ) )
         {
-            otaAgent.pOtaInterface->os.timer.start(  OtaRequestTimer, 
-                                                       "OtaRequestTimer", 
-                                                       otaconfigFILE_REQUEST_WAIT_MS,
-                                                       otaTimerCallback ); //ToDo
+            otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                    "OtaRequestTimer",
+                                                    otaconfigFILE_REQUEST_WAIT_MS,
+                                                    otaTimerCallback );    /*ToDo */
 
             /* Decode the file block received. */
             if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
@@ -2596,14 +2564,6 @@ static void agentShutdownCleanup( void )
         otaAgent.pOtaInterface->os.mem.free( otaAgent.pOtaSingletonActiveJobName );
         otaAgent.pOtaSingletonActiveJobName = NULL;
     }
-
-    /*
-     * Free OTA event buffers.
-     */
-    for( index = 0; index < otaconfigMAX_NUM_OTA_DATA_BUFFERS; index++ )
-    {
-        pEventBuffer[ index ].bufferUsed = false;
-    }
 }
 
 /*
@@ -2611,36 +2571,11 @@ static void agentShutdownCleanup( void )
  */
 static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
 {
-    /*configASSERT( pEventMsg ); */
-
     LogError( ( "Received unexpected event: "
                 "Current state=[%s]"
                 ", Event received=[%s]",
                 pOtaAgentStateStrings[ otaAgent.state ],
                 pOtaEventStrings[ pEventMsg->eventId ] ) );
-
-    /* Perform any cleanup operations required for specific unhandled events.*/
-    switch( pEventMsg->eventId )
-    {
-        case OtaAgentEventReceivedJobDocument:
-
-            /* Received job event is not handled , release the buffer.*/
-            otaEventBufferFree( pEventMsg->pEventData );
-
-            break;
-
-        case OtaAgentEventReceivedFileBlock:
-
-            /* Received file data event is not handled , release the buffer.*/
-            otaEventBufferFree( pEventMsg->pEventData );
-
-            break;
-
-        default:
-
-            /* Nothing to do here.*/
-            break;
-    }
 }
 
 /*
@@ -2762,11 +2697,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     /*
      * Send event to back of the queue.
      */
-    {
-        err = otaAgent.pOtaInterface->os.event.send( NULL,
-                                                     pEventMsg,
-                                                     0 );
-    }
+    err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
 
     if( err == OTA_ERR_NONE )
     {
@@ -2826,7 +2757,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.statistics.otaPacketsProcessed = 0;
 
         /*
-         * Initialize the OTA inerface.
+         * Initialize the OTA inerfaces.
          */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
@@ -2836,12 +2767,31 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             otaAgent.fileContext.pFilePath = pOtaBuffer->pUpdateFilePath;
             otaAgent.fileContext.filePathMaxSize = pOtaBuffer->updateFilePathsize;
         }
+        else
+        {
+            otaAgent.fileContext.filePathMaxSize = -1;
+        }
 
         /* Initialize certificate file path buffer from application buffer.*/
         if( pOtaBuffer->pCertFilePath != NULL )
         {
             otaAgent.fileContext.pCertFilepath = pOtaBuffer->pCertFilePath;
             otaAgent.fileContext.certFilePathMaxSize = pOtaBuffer->certFilePathSize;
+        }
+        else
+        {
+            otaAgent.fileContext.certFilePathMaxSize = -1;
+        }
+
+        /* Initialize stream name buffer from application buffer.*/
+        if( pOtaBuffer->pStreamName != NULL )
+        {
+            otaAgent.fileContext.pStreamName = pOtaBuffer->pStreamName;
+            otaAgent.fileContext.streamNameMaxSize = pOtaBuffer->streamNameSize;
+        }
+        else
+        {
+            otaAgent.fileContext.streamNameMaxSize = -1;
         }
 
         /* Initialize file bitmap buffer from application buffer.*/
@@ -2850,6 +2800,10 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             otaAgent.fileContext.pRxBlockBitmap = pOtaBuffer->pFileBitmap;
             otaAgent.fileContext.blockBitmapMaxSize = pOtaBuffer->fileBitmapSize;
         }
+        else
+        {
+            otaAgent.fileContext.blockBitmapMaxSize = -1;
+        }
 
         /* Initialize url buffer from application buffer.*/
         if( pOtaBuffer->pUrl != NULL )
@@ -2857,12 +2811,20 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             otaAgent.fileContext.pUpdateUrlPath = pOtaBuffer->pUrl;
             otaAgent.fileContext.updateUrlMaxSize = pOtaBuffer->urlSize;
         }
+        else
+        {
+            otaAgent.fileContext.updateUrlMaxSize = -1;
+        }
 
-        /* Initialize file bitmap from application buffer.*/
+        /* Initialize auth scheme buffer from application buffer.*/
         if( pOtaBuffer->pAuthScheme != NULL )
         {
             otaAgent.fileContext.pAuthScheme = pOtaBuffer->pAuthScheme;
             otaAgent.fileContext.authSchemeMaxSize = pOtaBuffer->authSchemeSize;
+        }
+        else
+        {
+            otaAgent.fileContext.authSchemeMaxSize = -1;
         }
 
         /* Initialize ota complete callback.*/
@@ -2874,7 +2836,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.imageState = OtaImageStateUnknown;
 
         /*
-         * .
+         * Initialize OTA event interface.
          */
         otaAgent.pOtaInterface->os.event.init( NULL );
 
@@ -3154,7 +3116,7 @@ OtaErr_t OTA_Suspend( void )
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Stop the request timer. */
-    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer ); //ToDo
+    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
@@ -3185,8 +3147,6 @@ OtaErr_t OTA_Resume( void * pConnection )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
-
-    eventMsg.pEventData = pConnection;
 
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )

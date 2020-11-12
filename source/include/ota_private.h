@@ -66,7 +66,7 @@
 #define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
 #define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< Used to denote a required document model parameter. */
 #define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffffffffUL                                                                /*!< If destOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_DONT_STORE_PARAM        0xffffUL                                                                    /*!< If destOffset in the model is 0xffffffff, do not store the value. */
 #define OTA_STORE_NESTED_JSON       0x1fffffffUL                                                                /*!< Store the reference to a nested JSON in a separate pointer */
 #define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
 
@@ -108,7 +108,7 @@
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"       /*!< Protocols over which the download can take place. */
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"           /*!< Parameters for specifying file configurations. */
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"      /*!< Name of the stream used for download. */
-#define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< Path to store the image on the device. */
+#define OTA_JSON_FILE_PATH_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "filepath"        /*!< Path to store the image on the device. */
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< Size of the file to be downloaded. */
 #define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< Used to identify the file in case of multiple file downloads. */
 #define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Additional file attributes. */
