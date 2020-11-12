@@ -29,6 +29,7 @@
  */
 
 /* Standard library includes. */
+#include <assert.h>
 #include <string.h>
 
 /* OTA interface includes. */

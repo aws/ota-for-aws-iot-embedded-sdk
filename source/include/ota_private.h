@@ -49,6 +49,7 @@
  * in ota_config.h file. */
 #include "ota_config_defaults.h"
 
+#include "ota.h"
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
 #include "ota_http_interface.h"
