@@ -75,8 +75,8 @@
 #define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
 #define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< Used to denote a required document model parameter. */
 #define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffffUL                                                                    /*!< If destOffset in the model is 0xffffffff, do not store the value. */
-#define OTA_STORE_NESTED_JSON       0x1fffffffUL                                                                /*!< Store the reference to a nested JSON in a separate pointer */
+#define OTA_DONT_STORE_PARAM        0xffff                                                                      /*!< If destOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_STORE_NESTED_JSON       0x1fff                                                                      /*!< Store the reference to a nested JSON in a separate pointer */
 #define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
 
 
