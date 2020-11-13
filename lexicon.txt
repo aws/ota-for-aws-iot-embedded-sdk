@@ -427,6 +427,7 @@ retvalue
 rsa
 rtos
 rx
+rxstreamtopicbuffersize
 sdk
 selftest
 selftesttimercallback
