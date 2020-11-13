@@ -82,7 +82,7 @@
  * connects to the broker. Likewise, the OTA agent requires the developer to
  * construct and pass in the Thing name when initializing the OTA agent. The
  * agent uses this size to allocate static storage for the Thing name used in
- * all OTA base topics. Namely $aws/things/<thingName>
+ * all OTA base topics. Namely $aws/things/thingName
  *
  * <b>Possible values:</b> Any unsigned 32 integer. <br>
  * <b>Default value:</b> '64'

@@ -62,8 +62,14 @@
  */
 #define CONST_STRLEN( s )    ( ( ( uint32_t ) sizeof( s ) ) - 1UL )
 
-/* The OTA signature algorithm string is specified by the PAL. */
-#define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32
+
+#define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32 /*!< Maximum length of the file signature key. */
+
+/**
+ * @ingroup ota_helpers
+ * @brief The OTA signature algorithm string is specified by the PAL.
+ *
+ */
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
 /*-------------------------- OTA enumerated types --------------------------*/
@@ -405,30 +411,43 @@ typedef struct
     uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
 } Sig256_t;
 
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA Interface for referencing different components.
+ *
+ * Information about the different interfaces used to initialize
+ * the OTA agent with references to components.
+ */
 typedef struct OtaInterface
 {
-    OtaOSInterface_t os;
-    OtaMqttInterface_t mqtt;
-    OtaHttpInterface_t http;
-    OtaPalCallbacks_t pal;
+    OtaOSInterface_t os;     /*!< OS interface to store event, timers and memory operations. */
+    OtaMqttInterface_t mqtt; /*!< MQTT interface that references the publish subscribe methods and callbacks. */
+    OtaHttpInterface_t http; /*!< HTTP interface to request data. */
+    OtaPalCallbacks_t pal;   /*!< OTA PAL callback structure. */
 } OtaInterfaces_t;
 
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA Application Buffer size information.
+ *
+ * File key signature information to verify the authenticity of the incoming file
+ */
 typedef struct OtaAppBuffer
 {
-    uint8_t * pUpdateFilePath;
-    uint16_t updateFilePathsize;
-    uint8_t * pCertFilePath;
-    uint16_t certFilePathSize;
-    uint8_t * pStreamName;
-    uint16_t streamNameSize;
-    uint8_t * pDecodeMemory;
-    uint32_t decodeMemorySize;
-    uint8_t * pFileBitmap;
-    uint16_t fileBitmapSize;
-    uint8_t * pUrl;
-    uint16_t urlSize;
-    uint8_t * pAuthScheme;
-    uint16_t authSchemeSize;
+    uint8_t * pUpdateFilePath;   /*!< Path to store the files. */
+    uint16_t updateFilePathsize; /*!< Maximum size of the file path. */
+    uint8_t * pCertFilePath;     /*!< Path to certificate file. */
+    uint16_t certFilePathSize;   /*!< Maximum size of the certificate file path. */
+    uint8_t * pStreamName;       /*!< Name of stream to download the files. */
+    uint16_t streamNameSize;     /*!< Maximum size of the stream name. */
+    uint8_t * pDecodeMemory;     /*!< Place to store the decoded files. */
+    uint32_t decodeMemorySize;   /*!< Maximum size of the decoded files buffer. */
+    uint8_t * pFileBitmap;       /*!< Bitmap of the parameters received. */
+    uint16_t fileBitmapSize;     /*!< Maximum size of the bitmap. */
+    uint8_t * pUrl;              /*!< Presigned url to download files from S3. */
+    uint16_t urlSize;            /*!< Maximum size of the URL. */
+    uint8_t * pAuthScheme;       /*!< Authentication scheme used to validate download. */
+    uint16_t authSchemeSize;     /*!< Maximum size of the auth scheme. */
 } OtaAppBuffer_t;
 
 /**
@@ -536,6 +555,8 @@ struct OtaFileContext
 #define OTA_ERR_EVENT_TIMER_CREATE_FAILED    0x32000000U /*!< Failed to create the timer. */
 #define OTA_ERR_EVENT_TIMER_STOP_FAILED      0x33000000U /*!< Failed to stop the timer. */
 #define OTA_ERR_EVENT_TIMER_DELETE_FAILED    0x34000000U /*!< Failed to delete the timer. */
+#define OTA_ERR_SUBSCRIBE_FAILED             0x40000000U /*!< Failed to subscribe to a topic. */
+#define OTA_ERR_UNSUBSCRIBE_FAILED           0x41000000U /*!< Failed to unsubscribe from a topic. */
 
 /* @[define_ota_err_codes] */
 
@@ -548,7 +569,6 @@ struct OtaFileContext
 
 /*------------------------- OTA Public API --------------------------*/
 
-
 /**
  * @brief OTA Agent initialization function.
  *
@@ -556,14 +576,12 @@ struct OtaFileContext
  * be called with the connection client context before calling @ref OTA_CheckForUpdate. Only one
  * OTA Agent may exist.
  *
- * @param[in]  pOtaOSCtx A pointer to the OS context
- * @param[in]  pOtaMqttInterface A pointer to the MQTT interface
- * @param[in]  pOtaHttpInterface A pointer to the HTTP interface
+ * @param[in] pOtaBuffer Buffers used by the agent to store different params.
+ * @param[in] pOtaInterfaces A pointer to the OS context.
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.
- *
- * @return The state of the OTA Agent upon return from the OtaState_t enum.
+ * @return OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */

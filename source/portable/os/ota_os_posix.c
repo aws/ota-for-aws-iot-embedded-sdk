@@ -46,6 +46,9 @@
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
+/* Linkage for error reporting. */
+extern int errno;
+
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
 
@@ -58,7 +61,7 @@ static mqd_t otaEventQueue;
 static timer_t otaTimer[ OtaNumOfTimers ];
 
 /* OTA Timer callbacks.*/
-void ( *timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
+void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
@@ -284,7 +287,7 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
         }
         else
         {
-            LogInfo( ( "OTA Timer started." ) );
+            LogDebug( ( "OTA Timer started." ) );
             otaErrRet = OTA_ERR_NONE;
         }
     }
@@ -321,14 +324,14 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
         }
         else
         {
-            LogInfo( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
+            LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
 
             otaErrRet = OTA_ERR_NONE;
         }
     }
     else
     {
-        LogInfo( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -356,14 +359,14 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
         }
         else
         {
-            LogInfo( ( "OTA Timer deleted." ) );
+            LogDebug( ( "OTA Timer deleted." ) );
 
             otaErrRet = OTA_ERR_NONE;
         }
     }
     else
     {
-        LogInfo( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
 
         otaErrRet = OTA_ERR_NONE;
     }

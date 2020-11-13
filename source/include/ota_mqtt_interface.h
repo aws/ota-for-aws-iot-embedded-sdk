@@ -31,6 +31,16 @@
 #include <stdint.h>
 
 /**
+ * @brief OTA Error type.
+ */
+typedef uint32_t OtaErr_t;
+
+/**
+ * @brief OTA Mqtt callback.
+ */
+typedef void ( * OtaMqttCallback_t )( void * pvParam );
+
+/**
  * @brief Subscribe to the Mqtt topics.
  *
  * This function subscribes to the Mqtt topics with the Quality of service
@@ -48,10 +58,10 @@
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef int32_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
-                                             uint16_t topicFilterLength,
-                                             uint8_t ucQoS,
-                                             void * pvCallback );
+typedef OtaErr_t ( * OtaMqttSubscribe_t ) ( const char * pTopicFilter,
+                                            uint16_t topicFilterLength,
+                                            uint8_t ucQoS,
+                                            OtaMqttCallback_t callback );
 
 /**
  * @brief Unsubscribe to the Mqtt topics.
@@ -68,9 +78,9 @@ typedef int32_t ( * ota_MqttSubscribe_t ) ( const char * pTopicFilter,
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
 
-typedef int32_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
-                                                uint16_t topicFilterLength,
-                                                uint8_t ucQoS );
+typedef OtaErr_t ( * OtaMqttUnsubscribe_t )  ( const char * pTopicFilter,
+                                               uint16_t topicFilterLength,
+                                               uint8_t ucQoS );
 
 /**
  * @brief Publish message to a topic.
@@ -89,27 +99,22 @@ typedef int32_t ( * ota_MqttUnsubscribe_t )  ( const char * pTopicFilter,
  *
  * @return                      OTA_OS_ERR_OK if success , other error code on failure.
  */
-typedef int32_t ( * ota_MqttPublish_t )( const char * const pacTopic,
-                                          uint16_t usTopicLen,
-                                          const char * pcMsg,
-                                          uint32_t ulMsgSize,
-                                          uint8_t ucQos );
-
-/**
- * @brief OTA Mqtt callback.
- */
-typedef void ( * ota_MqttCallback_t )( void * pvParam );
+typedef OtaErr_t ( * OtaMqttPublish_t )( const char * const pacTopic,
+                                         uint16_t usTopicLen,
+                                         const char * pcMsg,
+                                         uint32_t ulMsgSize,
+                                         uint8_t ucQos );
 
 /**
  *  OTA Event Interface structure.
  */
 typedef struct OtaMqttInterface
 {
-    ota_MqttSubscribe_t subscribe;
-    ota_MqttUnsubscribe_t unsubscribe;
-    ota_MqttPublish_t publish;
-    ota_MqttCallback_t jobCallback;
-    ota_MqttCallback_t dataCallback;
+    OtaMqttSubscribe_t subscribe;     /*!< Interface for subscribing to Mqtt topics. */
+    OtaMqttUnsubscribe_t unsubscribe; /*!< interface for unsubscribing to MQTT topics. */
+    OtaMqttPublish_t publish;         /*!< Interface for publishing MQTT messages. */
+    OtaMqttCallback_t jobCallback;    /*!< Interface for a callback that notifies the OTA library when a job document is received. */
+    OtaMqttCallback_t dataCallback;   /*!< Interface for a callback that notifies the OTA library when a data block is received. */
 } OtaMqttInterface_t;
 
 #endif /* ifndef _OTA_MQTT_INTERFACE_H_ */

@@ -32,7 +32,17 @@
 
 /* OTA agent includes. */
 #include "ota.h"
-#include "ota_config.h"
+
+/* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
+ * without a custom config. If a custom config is provided, the
+ * OTA_DO_NOT_USE_CUSTOM_CONFIG macro should not be defined. */
+#ifndef OTA_DO_NOT_USE_CUSTOM_CONFIG
+    #include "ota_config.h"
+#endif
+
+/* Include config defaults header to get default values of configs not defined
+ * in ota_config.h file. */
+#include "ota_config_defaults.h"
 
 /* OTA Base64 includes */
 #include "ota_base64_private.h"
@@ -2008,7 +2018,6 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         }
         else
         {
-            /**pFinalFile = getFreeContext(); */
             *pFinalFile = pFileContext;
 
             if( *pFinalFile == NULL )
@@ -2486,7 +2495,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
             otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
                                                     "OtaRequestTimer",
                                                     otaconfigFILE_REQUEST_WAIT_MS,
-                                                    otaTimerCallback );    /*ToDo */
+                                                    otaTimerCallback ); /*ToDo */
 
             /* Decode the file block received. */
             if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
@@ -2740,7 +2749,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
          * do anything and just use the defaults in the OTA structure.
          */
-        /*setPALCallbacks( &(pOtaInterfaces->pal )); */
 
         /*
          * Initialize the OTA control interface based on the application protocol
@@ -2757,7 +2765,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         otaAgent.statistics.otaPacketsProcessed = 0;
 
         /*
-         * Initialize the OTA inerfaces.
+         * Initialize the OTA interfaces.
          */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
@@ -2843,7 +2851,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
         if( pThingName == NULL )
         {
             LogError( ( "Error: Thing name is NULL.\r\n" ) );
-            /*returnStatus = OTA_ERR_THING_NAME_NULL; //ToDo */
         }
         else
         {
@@ -2861,7 +2868,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             else
             {
                 LogError( ( "Error: Thing name is too long.\r\n" ) );
-                /*returnStatus = OTA_ERR_THING_NAME_TOO_LONG;  //ToDo */
             }
         }
 

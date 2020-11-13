@@ -227,14 +227,6 @@ QT_AUTOBRIEF           = NO
 
 MULTILINE_CPP_IS_BRIEF = NO
 
-# By default Python docstrings are displayed as preformatted text and doxygen's
-# special commands cannot be used. By setting PYTHON_DOCSTRING to NO the
-# doxygen's special commands can be used and the contents of the docstring
-# documentation blocks is shown as doxygen documentation.
-# The default value is: YES.
-
-PYTHON_DOCSTRING       = YES
-
 # If the INHERIT_DOCS tag is set to YES then an undocumented member inherits the
 # documentation from any documented member that it re-implements.
 # The default value is: YES.
@@ -847,7 +839,6 @@ WARN_LOGFILE           =
 INPUT                  = ./docs/doxygen \
                          ./source \
                          ./source/include \
-                         ./source/portable \
                          ./source/portable/os
 
 # This tag can be used to specify the character encoding of the source files
