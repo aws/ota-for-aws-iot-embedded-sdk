@@ -109,7 +109,6 @@ create_test(ota_cbor_utest
 create_test(ota_os_posix_utest
     "ota_os_posix_utest.c"
     "${utest_link_list}"
-    "${utest_mem_ops_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
