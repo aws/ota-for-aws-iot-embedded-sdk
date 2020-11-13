@@ -26,14 +26,20 @@
 #ifndef _OTA_OS_INTERFACE_H_
 #define _OTA_OS_INTERFACE_H_
 
-/* OTA library interface include. */
-#include "ota.h"
+typedef uint32_t                 OtaErr_t;
 
 struct OtaEventContext;
 typedef struct OtaEventContext   OtaEventContext_t;
 
 struct OtaTimerContext;
 typedef struct OtaTimerContext   OtaTimerContext_t;
+
+typedef enum
+{
+    OtaRequestTimer = 0,
+    OtaSelfTestTimer,
+    OtaNumOfTimers
+} OtaTimerId_t;
 
 /**
  * @brief Initialize the OTA events.
@@ -97,49 +103,61 @@ typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
 typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
 
 /**
+ * @brief Timer callback.
+ *
+ * Type definition for timer callback.
+ *
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
+ *
+ * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ */
+
+typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
+
+/**
  * @brief Start timer.
  *
  * This function starts the timer or resets it if it is already started.
  *
- * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
  * @param[pTimerName]       Timer name.
  *
- * @param[timeout]          Timeout for the timer.
+ * @param[timeout]          Timeout for the timer in milliseconds.
  *
  * @param[callback]         Callback to be called when timer expires.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerContext_t * pTimerCtx,
+typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerId_t otaTimerId,
                                          const char * const pTimerName,
                                          const uint32_t timeout,
-                                         void ( * callback )( void * pParam ) );
+                                         OtaTimerCallback_t callback );
 
 /**
  * @brief Stop timer.
  *
  * This function stops the time.
  *
- * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
+ * @param[otaTimerId]     Timer ID of type otaTimerId_t
  *
  * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerContext_t * pTimerCtx );
+typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Delete a timer.
  *
  * This function deletes a timer for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer object to delete.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerContext_t * pTimerCtx );
+typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Allocate memory.
@@ -185,10 +203,9 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;         /*!< Timer start state. */
-    OtaStopTimer_t stop;           /*!< Timer stop state. */
-    OtaDeleteTimer_t delete;       /*!< Delete timer. */
-    OtaTimerContext_t * PTimerCtx; /*!< Implementation-defined ota timer context. */
+    OtaStartTimer_t start;   /*!< Timer start state. */
+    OtaStopTimer_t stop;     /*!< Timer stop state. */
+    OtaDeleteTimer_t delete; /*!< Delete timer. */
 } OtaTimerInterface_t;
 
 /**

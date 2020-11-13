@@ -28,9 +28,16 @@
 
 /* Standard library include. */
 #include <stdint.h>
+#include <time.h>
 
 /* OTA library interface include. */
 #include "ota_os_interface.h"
+
+struct OtaTimerContext
+{
+    timer_t timer;
+    OtaTimerId_t timerId;
+};
 
 /**
  * @brief Initialize the OTA events.
@@ -95,7 +102,7 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  *
  * This function starts the timer or resets it if it is already started for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @param[pTimerName]       Timer name.
  *
@@ -105,32 +112,32 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaStartTimer( OtaTimerContext_t * pTimerCtx,
+OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
                               const char * const pTimerName,
                               const uint32_t timeout,
-                              void ( * callback )( void * ) );
+                              OtaTimerCallback_t callback );
 
 /**
  * @brief Stop timer.
  *
  * This function stops the timer fro POSIX platforms.
  *
- * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
+ * @param[otaTimerId]     Timer ID of type otaTimerId_t.
  *
  * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaStopTimer( OtaTimerContext_t * pTimerCtx );
+OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Delete a timer.
  *
  * This function deletes a timer for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer object to delete.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t Posix_OtaDeleteTimer( OtaTimerContext_t * pTimerCtx );
+OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Allocate memory.
