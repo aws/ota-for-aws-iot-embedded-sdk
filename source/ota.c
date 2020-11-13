@@ -1907,7 +1907,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             err = OtaJobParseErrNone;
         }
         else
-        { /* The same job is being reported so update the url. */
+        {   /* The same job is being reported so update the url. */
             LogInfo( ( "New job document ID is identical to the current job: "
                        "Updating the URL based on the new job document." ) );
 
@@ -1960,7 +1960,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
-    { /* Assume control of the job name from the context. */
+    {   /* Assume control of the job name from the context. */
         otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
         pFileContext->pJobName = NULL;
     }

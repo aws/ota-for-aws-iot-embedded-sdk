@@ -15,6 +15,7 @@ attemptsdone
 attr
 auth
 authschememaxsize
+authschemesize
 aws
 aws-iot-device-sdk-embedded-c
 backoff
@@ -40,6 +41,7 @@ cbor
 cborwork
 certfile
 certfilepathmaxsize
+certfilepathsize
 checkforupdate
 cli
 clienttoken
@@ -65,6 +67,7 @@ currentstate
 customjobcallback
 cwd
 datalength
+decodememorysize
 deduplicate
 deinitialize
 destlen
@@ -107,6 +110,7 @@ failedwithval
 fclose
 fd
 fileattributes
+filebitmapsize
 fileblock
 filecontext
 filehandle
@@ -299,6 +303,7 @@ pconnection
 pconnectioncontext
 pctimername
 pctopicbuffer
+pdecodememory
 pdest
 pdestoffset
 pdestsizeoffset
@@ -308,6 +313,7 @@ peventctx
 peventdata
 peventmsg
 pfile
+pfilebitmap
 pfilecontext
 pfileid
 pfilepath
@@ -330,9 +336,11 @@ pnumpadding
 pnumwhitespace
 popensslcredentials
 posix
+potabuffer
 potafiles
 potahttpinterface
 potainterface
+potainterfaces
 potamqttinterface
 potaosctx
 potarxstreamtopic
@@ -368,6 +376,7 @@ ptopicbuffer
 ptopicfilter
 punused
 pupdatefile
+pupdatefilepath
 pupdateurlpath
 pvalueinjson
 pvcallback
@@ -420,6 +429,7 @@ stddef
 str
 streamname
 streamnamemaxsize
+streamnamesize
 strlength
 struct
 structs
@@ -466,10 +476,12 @@ unhandled
 unistd
 unsignedversion32
 updatedby
+updatefilepathsize
 updatejobstatus
 updaterversion
 updateurlmaxsize
 url
+urlsize
 ustopiclen
 utils
 validatedatablock

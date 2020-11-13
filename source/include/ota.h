@@ -444,7 +444,7 @@ typedef struct OtaAppBuffer
     uint32_t decodeMemorySize;   /*!< Maximum size of the decoded files buffer. */
     uint8_t * pFileBitmap;       /*!< Bitmap of the parameters received. */
     uint16_t fileBitmapSize;     /*!< Maximum size of the bitmap. */
-    uint8_t * pUrl;              /*!< Pre-signed url to download files from S3. */
+    uint8_t * pUrl;              /*!< Presigned url to download files from S3. */
     uint16_t urlSize;            /*!< Maximum size of the URL. */
     uint8_t * pAuthScheme;       /*!< Authentication scheme used to validate download. */
     uint16_t authSchemeSize;     /*!< Maximum size of the auth scheme. */
