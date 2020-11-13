@@ -1,8 +1,9 @@
-0123456789
+123456789
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
 addrinfo
+addtogroup
 afr
 allocateaddrinfolinkedlist
 alpn
@@ -55,6 +56,7 @@ createfileforrx
 customjobcallback
 currblock
 cwd
+datacallback
 deduplicate
 deinit
 deinitialize
@@ -159,6 +161,7 @@ ip
 ip
 isinselftest
 iso
+jobcallback
 jobreasonaborted
 jobreasonaccepted
 jobreasonreceiving
@@ -191,7 +194,9 @@ modelparamtype
 modelparamtypestringindoc
 mqtt
 msec
+msgbuffersize
 msgsize
+msgtailsize
 mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
@@ -280,6 +285,7 @@ pcertfilepath
 pcjobtopic
 pcjson
 pclientcertpath
+ota_mqtt_component
 pclienttoken
 pclienttokenfromjob
 pcloseresult
@@ -306,6 +312,8 @@ pformat
 phostname
 pjobname
 pjobtopic
+pjobtopicgetnext
+pjobtopicnotifynext
 pjson
 plaintext
 platfrom
@@ -313,6 +321,7 @@ plblockid
 plblocksize
 plisthead
 pmessagebuffer
+pmsg
 pmsgbuffer
 pnetworkcontext
 png
@@ -321,11 +330,29 @@ pnumpadding
 pnumwhitespace
 popensslcredentials
 posix
+potafilectx
 potafiles
+potagetnextjobmsgtemplate
+potagetstreamtopictemplate
+potajobsgetnextacceptedtopictemplate
+potajobsgetnexttopictemplate
+potajobsnotifynexttopictemplate
+potajobstatusreasonstrtemplate
+potajobstatusreasonvaltemplate
+potajobstatusreceivedetailstemplate
+potajobstatusselftestdetailstemplate
+potajobstatusstatustemplate
+potajobstatussucceededstrtemplate
+potajobstatustopictemplate
 potaosctx
 potarxstreamtopic
 potasingletonactivejobname
+potastreamdatatopictemplate
 potastringfailed
+potastringinprogress
+potastringreceive
+potastringrejected
+potastringsucceeded
 poutputlen
 pparam
 ppayload
@@ -341,6 +368,7 @@ pretryparams
 prootcapath
 prvpal
 prxblockbitmap
+prxstreamtopic
 pserverinfo
 psignature
 psrckey
@@ -384,6 +412,7 @@ retvalue
 rsa
 rtos
 rx
+rxstreamtopicbuffersize
 sdk
 selftesttimercallback
 sendtimeout
