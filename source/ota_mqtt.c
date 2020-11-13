@@ -45,18 +45,12 @@
 /* Include firmware version struct definition. */
 #include "ota_appversion32.h"
 
-/* General constants. */
-#define U32_MAX_PLACES                 10U                                      /*!< Maximum number of output digits of an unsigned long value. */
-#define OTA_MAX_TOPIC_LEN              256U                                     /*!< Max length of a dynamically generated topic string (usually on the stack). */
-#define MAX_TOPIC_TEMPLATE_LEN         100U                                     /*!< Max length of the topic templates. */
-
 /* Stream GET message constants. */
 #define OTA_CLIENT_TOKEN               "rdy"                /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Agent to Job Service status message constants. */
 #define OTA_STATUS_MSG_MAX_SIZE        128U             /*!< Max length of a job status message to the service. */
 #define OTA_UPDATE_STATUS_FREQUENCY    64U              /*!< Update the job status every 64 unique blocks received. */
-
 
 /**
  *  @addtogroup ota_mqtt_topic_strings
@@ -81,14 +75,6 @@ static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.
 static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";                                     /*!< Tail template to report job failure error code. */
 static const char pOtaStringReceive[] = "receive";                                                                          /*!< Used to build the job receive template. */
 /** @}*/
-
-#if ( ( otaconfigMAX_THINGNAME_LEN + MAX_TOPIC_TEMPLATE_LEN ) >= OTA_MAX_TOPIC_LEN )
-    #error "otaconfigMAX_THINGNAME_LEN is too long: otaconfigMAX_THINGNAME_LEN + MAX_TOPIC_TEMPLATE_LEN must be < OTA_MAX_TOPIC_LEN."
-#endif
-
-#if OTA_STATUS_MSG_MAX_SIZE
-
-#endif
 
 /** We map all of the above status cases to one of these 4 status strings.
  * These are the only strings that are supported by the Job Service. You
@@ -120,6 +106,14 @@ static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
  *
  */
 static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "active", "accepted", "rejected", "aborted" };
+
+/* Maximum lengths for constants used in the ota_mqtt_topic_strings templates.
+ * These are used to calculate the static size of buffers used to store MQTT
+ * topic and message strings. Each length is in terms of bytes. */
+#define U32_MAX_LEN            10U                                              /*!< Maximum number of output digits of an unsigned long value. */
+#define JOB_NAME_MAX_LEN       128U                                             /*!< Maximum length of the name of job documents received from the server. */
+#define STREAM_NAME_MAX_LEN    44U                                              /*!< Maximum length for the name of MQTT streams. */
+#define NULL_CHAR_LEN          1U                                               /*!< Size of a single null character used to terminate topics and messages. */
 
 /**
  * @brief Subscribe to the jobs notification topic (i.e. New file version available).
@@ -211,8 +205,19 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
     uint16_t topicLen = 0;
-    char pJobTopicGetNext[ OTA_MAX_TOPIC_LEN ];    /*!< Buffer to store the topic generated for requesting next topic. */
-    char pJobTopicNotifyNext[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for notifying next topic. */
+
+    /* These buffers are used to store generated MQTT topics. The static sizes
+     * are calculated from the templates and the corresponding parameters. */
+    const uint32_t getNextBufferSize =
+        CONST_STRLEN( pOtaJobsGetNextAcceptedTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + NULL_CHAR_LEN;
+    char pJobTopicGetNext[ getNextBufferSize ];
+    const uint32_t notifyNextBufferSize =
+        CONST_STRLEN( pOtaJobsNotifyNextTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + NULL_CHAR_LEN;
+    char pJobTopicNotifyNext[ notifyNextBufferSize ];
 
     assert( pAgentCtx != NULL );
 
@@ -222,8 +227,8 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                       pOtaJobsGetNextAcceptedTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    /* Buffer size is validated during compile time. */
-    assert( topicLen > 0U );
+    /* Buffer size is pre-calculated to be large enough. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
                                                        topicLen,
@@ -254,8 +259,8 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                           pOtaJobsNotifyNextTopicTemplate,
                                           pAgentCtx->pThingName );
 
-        /* Buffer size is validated during compile time. */
-        assert( topicLen > 0U );
+        /* Buffer size is pre-calculated to be large enough. */
+        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                            topicLen,
@@ -286,7 +291,15 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
-    char pOtaRxStreamTopic[ OTA_MAX_TOPIC_LEN ];
+
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. */
+    const uint32_t rxStreamBufferSize =
+        CONST_STRLEN( pOtaStreamDataTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + STREAM_NAME_MAX_LEN
+        + NULL_CHAR_LEN;
+    char pOtaRxStreamTopic[ rxStreamBufferSize ];
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -301,8 +314,8 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
                                       pAgentCtx->pThingName,
                                       ( const char * ) pFileContext->pStreamName );
 
-    /* Buffer size is validated during compile time. */
-    assert( topicLen > 0U );
+    /* Buffer size is pre-calculated to be large enough. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
                                                          topicLen,
@@ -331,7 +344,16 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
-    char pJobTopic[ OTA_MAX_TOPIC_LEN ];
+
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. This
+     * buffer is used with two separate templates and its size is set fit the
+     * larger of the two. */
+    const uint32_t jobTopicBufferSize =
+        CONST_STRLEN( pOtaJobsGetNextAcceptedTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + NULL_CHAR_LEN;
+    char pJobTopic[ jobTopicBufferSize ];
     uint16_t topicLen = 0;
 
     assert( pAgentCtx != NULL );
@@ -342,8 +364,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                       pOtaJobsNotifyNextTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    /* Buffer size is validated during compile time. */
-    assert( topicLen > 0U );
+    /* Buffer size is pre-calculated to be large enough. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                          topicLen,
@@ -371,8 +393,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                           pOtaJobsGetNextAcceptedTopicTemplate,
                                           pAgentCtx->pThingName );
 
-        /* Buffer size is validated during compile time. */
-        assert( topicLen > 0U );
+        /* Buffer size is pre-calculated to be large enough. */
+        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                              topicLen,
@@ -405,7 +427,15 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
-    char pTopicBuffer[ OTA_MAX_TOPIC_LEN ];
+
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. */
+    const uint32_t topicBufferSize =
+        CONST_STRLEN( pOtaJobStatusTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + JOB_NAME_MAX_LEN
+        + NULL_CHAR_LEN;
+    char pTopicBuffer[ topicBufferSize ];
 
     assert( pAgentCtx != NULL );
     /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
@@ -418,8 +448,8 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       pAgentCtx->pThingName,
                                       pAgentCtx->pOtaSingletonActiveJobName );
 
-    /* Buffer size is validated during compile time. */
-    assert( topicLen > 0U );
+    /* Buffer size is pre-calculated to be large enough. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
     /* Publish the status message. */
     LogDebug( ( "Attempting to publish MQTT status message: "
@@ -459,11 +489,11 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
+    uint32_t msgTailSize = 0;
 
     assert( pMsgBuffer != NULL );
     /* This function is only called when a file is received, so it can't be NULL. */
     assert( pOTAFileCtx != NULL );
-
 
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
@@ -474,16 +504,18 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                          msgBufferSize,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
-        /* Buffer size is validated during compile time. */
-        assert( msgSize > 0U );
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
-        msgSize += ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
-                                          msgBufferSize - msgSize,
-                                          pOtaJobStatusReceiveDetailsTemplate,
-                                          pOtaStringReceive,
-                                          received,
-                                          numBlocks );
-        assert( msgSize > 0U );
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+                                             msgBufferSize - msgSize,
+                                             pOtaJobStatusReceiveDetailsTemplate,
+                                             pOtaStringReceive,
+                                             received,
+                                             numBlocks );
+        msgSize += msgTailSize;
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     return msgSize;
@@ -503,8 +535,8 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
-    /* Buffer size is validated during compile time. */
-    assert( msgSize > 0U );
+    /* The buffer is static and the size is calculated to fit. */
+    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                          msgBufferSize - msgSize,
@@ -512,8 +544,9 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                          OTA_JSON_SELF_TEST_KEY_ONLY,
                                          pOtaJobReasonStrings[ reason ],
                                          appFirmwareVersion.u.unsignedVersion32 );
-    assert( msgTailSize > 0U );
     msgSize += msgTailSize;
+    /* The buffer is static and the size is calculated to fit. */
+    assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
     return msgSize;
 }
@@ -533,8 +566,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
-    /* Buffer size is validated during compile time. */
-    assert( msgSize > 0U );
+    /* The buffer is static and the size is calculated to fit. */
+    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -547,8 +580,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              pOtaJobStatusReasonValTemplate,
                                              reason,
                                              subReason );
-        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
@@ -569,8 +603,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              newVersion.u.x.major,
                                              newVersion.u.x.minor,
                                              newVersion.u.x.build );
-        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     /* Status updates that are NOT "InProgress" or "Succeeded" or "FailedWithVal" map status and
@@ -583,8 +618,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              pOtaJobStatusReasonStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
                                              subReason );
-        assert( msgTailSize > 0U );
         msgSize += msgTailSize;
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     return msgSize;
@@ -597,15 +633,25 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
 OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
-    char pJobTopic[ OTA_MAX_TOPIC_LEN ];
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. */
+    const uint32_t jobTopicBufferSize =
+        CONST_STRLEN( pOtaJobsGetNextTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + NULL_CHAR_LEN;
+    char pJobTopic[ jobTopicBufferSize ];
     static uint32_t reqCounter = 0;
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
-    uint32_t msgSize;
-    uint16_t topicLen;
+    uint32_t msgSize = 0;
+    uint16_t topicLen = 0;
 
     /* The following buffer is big enough to hold a dynamically constructed $next/get job message.
      * It contains a client token that is used to track how many requests have been made. */
-    char pMsg[ CONST_STRLEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_PLACES + otaconfigMAX_THINGNAME_LEN ];
+    const uint32_t msgBufferSize =
+        CONST_STRLEN( pOtaGetNextJobMsgTemplate )
+        + U32_MAX_LEN
+        + otaconfigMAX_THINGNAME_LEN;
+    char pMsg[ msgBufferSize ];
 
     assert( pAgentCtx != NULL );
 
@@ -621,7 +667,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
                                          pOtaGetNextJobMsgTemplate,
                                          reqCounter,
                                          pAgentCtx->pThingName );
-        assert( msgSize > 0U );
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
 
         reqCounter++;
         topicLen = ( uint16_t ) snprintf( pJobTopic,
@@ -629,8 +676,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
                                           pOtaJobsGetNextTopicTemplate,
                                           pAgentCtx->pThingName );
 
-        /* Buffer size is validated during compile time. */
-        assert( topicLen > 0U );
+        /* The buffer is static and the size is calculated to fit. */
+        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgSize, 1 );
 
@@ -722,7 +769,14 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
 
-    char pRxStreamTopic[ OTA_MAX_TOPIC_LEN ]; /*!< Buffer to store the topic generated for requesting data stream. */
+    /* These buffers are used to store generated MQTT topics. The static sizes
+     * are calculated from the templates and the corresponding parameters. */
+    const uint32_t rxStreamTopicBufferSize =
+        CONST_STRLEN( pOtaStreamDataTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + STREAM_NAME_MAX_LEN
+        + NULL_CHAR_LEN;
+    char pRxStreamTopic[ rxStreamTopicBufferSize ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -736,8 +790,8 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
                                       pAgentCtx->pThingName,
                                       ( const char * ) pFileContext->pStreamName );
 
-    /* Buffer size is validated during compile time. */
-    assert( topicLen > 0U );
+    /* Buffer size is pre-calculated to be large enough. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
                                                        topicLen,
@@ -774,7 +828,15 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint32_t msgSizeToPublish = 0;
     uint32_t topicLen = 0;
     char pMsg[ OTA_REQUEST_MSG_MAX_SIZE ];
-    char pTopicBuffer[ OTA_MAX_TOPIC_LEN ];
+
+    /* These buffers are used to store generated MQTT topics. The static sizes
+     * are calculated from the templates and the corresponding parameters. */
+    const uint32_t topicBufferSize =
+        CONST_STRLEN( pOtaGetStreamTopicTemplate )
+        + otaconfigMAX_THINGNAME_LEN
+        + STREAM_NAME_MAX_LEN
+        + NULL_CHAR_LEN;
+    char pTopicBuffer[ topicBufferSize ];
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -812,8 +874,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                                           pAgentCtx->pThingName,
                                           ( const char * ) pFileContext->pStreamName );
 
-        /* Buffer size is validated during compile time. */
-        assert( topicLen > 0U );
+        /* Buffer size is pre-calculated to be large enough. */
+        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
                                                          ( uint16_t ) topicLen,
