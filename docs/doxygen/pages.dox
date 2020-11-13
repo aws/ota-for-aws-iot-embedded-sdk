@@ -121,7 +121,7 @@ More about OTA Demo configurations at @subpage ota_demo_config
 */
 
 /**
-configpage{ota_demo,OTA demo}
+@configpage{ota_demo,OTA demo}
 
 @section OTA_DEMO_CONNECTION_TIMEOUT_MS
 
