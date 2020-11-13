@@ -200,6 +200,7 @@ mythreadsleepfunction
 mytime
 mytimefunction
 mytlscontext
+nano
 nanosleep
 networkcontext
 nextjittermax
@@ -223,6 +224,8 @@ otaagentstatenotready
 otaagentstateready
 otaclose
 otacontrolinterface
+otaeventtosend
+otaeventtorecv
 otaimagestateaborted
 otaimagestateaccepted
 otaimagestaterejected
@@ -251,6 +254,7 @@ otapalimagestateinvalid
 otapalimagestatependingcommit
 otapalimagestateunknown
 otapalimagestatevalid
+otatimer
 pacdata
 pactopic
 paddrinfo
