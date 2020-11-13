@@ -225,7 +225,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                       pOtaJobsGetNextAcceptedTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    /* Buffer size is pre-calculated to be large enough. */
+    /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
@@ -257,7 +257,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
                                           pOtaJobsNotifyNextTopicTemplate,
                                           pAgentCtx->pThingName );
 
-        /* Buffer size is pre-calculated to be large enough. */
+        /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
@@ -312,7 +312,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
                                       pAgentCtx->pThingName,
                                       ( const char * ) pFileContext->pStreamName );
 
-    /* Buffer size is pre-calculated to be large enough. */
+    /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
@@ -362,7 +362,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                       pOtaJobsNotifyNextTopicTemplate,
                                       pAgentCtx->pThingName );
 
-    /* Buffer size is pre-calculated to be large enough. */
+    /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
@@ -391,7 +391,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
                                           pOtaJobsGetNextAcceptedTopicTemplate,
                                           pAgentCtx->pThingName );
 
-        /* Buffer size is pre-calculated to be large enough. */
+        /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
@@ -446,7 +446,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       pAgentCtx->pThingName,
                                       pAgentCtx->pOtaSingletonActiveJobName );
 
-    /* Buffer size is pre-calculated to be large enough. */
+    /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
     /* Publish the status message. */
@@ -643,8 +643,9 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
 
-    /* The following buffer is big enough to hold a dynamically constructed $next/get job message.
-     * It contains a client token that is used to track how many requests have been made. */
+    /* The following buffer is big enough to hold a dynamically constructed
+     * $next/get job message. It contains a client token that is used to track
+     * how many requests have been made. */
     const uint32_t msgBufferSize =
         CONST_STRLEN( pOtaGetNextJobMsgTemplate )
         + U32_MAX_LEN
@@ -767,8 +768,8 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
 
-    /* These buffers are used to store generated MQTT topics. The static sizes
-     * are calculated from the templates and the corresponding parameters. */
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. */
     const uint32_t rxStreamTopicBufferSize =
         CONST_STRLEN( pOtaStreamDataTopicTemplate )
         + otaconfigMAX_THINGNAME_LEN
@@ -788,7 +789,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
                                       pAgentCtx->pThingName,
                                       ( const char * ) pFileContext->pStreamName );
 
-    /* Buffer size is pre-calculated to be large enough. */
+    /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
 
     result = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
@@ -827,8 +828,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint32_t topicLen = 0;
     char pMsg[ OTA_REQUEST_MSG_MAX_SIZE ];
 
-    /* These buffers are used to store generated MQTT topics. The static sizes
-     * are calculated from the templates and the corresponding parameters. */
+    /* This buffer is used to store the generated MQTT topic. The static size
+     * is calculated from the template and the corresponding parameters. */
     const uint32_t topicBufferSize =
         CONST_STRLEN( pOtaGetStreamTopicTemplate )
         + otaconfigMAX_THINGNAME_LEN
@@ -872,7 +873,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                                           pAgentCtx->pThingName,
                                           ( const char * ) pFileContext->pStreamName );
 
-        /* Buffer size is pre-calculated to be large enough. */
+        /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
         result = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
