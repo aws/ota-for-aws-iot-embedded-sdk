@@ -2605,7 +2605,7 @@ void otaAgentTask( const void * pUnused )
                 LogDebug( ( "Found valid event handler for state transition: "
                             "State=[%s], "
                             "Event=[%s]",
-                            pOtaAgentStateStrings[ i ]
+                            pOtaAgentStateStrings[ i ],
                             pOtaEventStrings[ i ] ) );
 
                 /*
@@ -3033,7 +3033,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
     {
         LogDebug( ( "Failed to update the image state: "
                     "OtaErr_t=%d",
-                    err, ) );
+                    err ) );
     }
 
     return err;
