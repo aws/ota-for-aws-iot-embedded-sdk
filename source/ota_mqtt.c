@@ -778,15 +778,6 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OTA_ERR_PUBLISH_FAILED;
-
-    /* This buffer is used to store the generated MQTT topic. The static size
-     * is calculated from the template and the corresponding parameters. */
-    const uint32_t rxStreamTopicBufferSize =
-        CONST_STRLEN( pOtaStreamDataTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + STREAM_NAME_MAX_LEN
-        + NULL_CHAR_LEN;
-    char pRxStreamTopic[ rxStreamTopicBufferSize ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = 0;
 
