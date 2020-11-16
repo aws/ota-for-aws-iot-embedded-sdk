@@ -502,13 +502,13 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 static OtaErr_t palDefaultResetDevice( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_ResetDevice();
+    return prvPAL_ResetDevice( &(otaAgent.fileContext) );
 }
 
 static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_GetPlatformImageState();
+    return prvPAL_GetPlatformImageState( &(otaAgent.fileContext) );
 }
 
 static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
@@ -516,13 +516,13 @@ static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
 {
     ( void ) serverFileID;
     ( void ) state;
-    return prvPAL_SetPlatformImageState( state );
+    return prvPAL_SetPlatformImageState( &(otaAgent.fileContext) , state );
 }
 
 static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_ActivateNewImage();
+    return prvPAL_ActivateNewImage( &(otaAgent.fileContext) );
 }
 
 /* This is the default OTA callback handler if the user does not provide
@@ -2099,6 +2099,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
                                ( uint32_t ) sizeof( OtaFileContext_t ),
                                OTA_NUM_JOB_PARAMS );
+    printf("%s\n",pJson);
 
     if( parseError != DocParseErrNone )
     {

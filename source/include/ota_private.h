@@ -93,7 +93,7 @@
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS              ( 20 )
+#define OTA_NUM_JOB_PARAMS              ( 21 )
 
 /**
  * @brief Keys in OTA job doc.
@@ -118,7 +118,7 @@
 #define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"       /*!< Protocols over which the download can take place. */
 #define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"           /*!< Parameters for specifying file configurations. */
 #define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"      /*!< Name of the stream used for download. */
-#define OTA_JSON_FILE_PATH_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "filepath"        /*!< Path to store the image on the device. */
+#define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< Path to store the image on the device. */
 #define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< Size of the file to be downloaded. */
 #define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< Used to identify the file in case of multiple file downloads. */
 #define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Additional file attributes. */

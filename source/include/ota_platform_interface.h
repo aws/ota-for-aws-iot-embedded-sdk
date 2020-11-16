@@ -136,7 +136,7 @@ int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-OtaErr_t prvPAL_ActivateNewImage( void );
+OtaErr_t prvPAL_ActivateNewImage( OtaFileContext_t * const C );
 
 /**
  * @brief Reset the device.
@@ -150,7 +150,7 @@ OtaErr_t prvPAL_ActivateNewImage( void );
  * error codes information in ota.h.
  */
 
-OtaErr_t prvPAL_ResetDevice( void );
+OtaErr_t prvPAL_ResetDevice( OtaFileContext_t * const C );
 
 /**
  * @brief Attempt to set the state of the OTA update image.
@@ -171,7 +171,8 @@ OtaErr_t prvPAL_ResetDevice( void );
  *   OTA_ERR_REJECT_FAILED: failed to roll back the update image as requested by OtaImageStateRejected.
  *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
-OtaErr_t prvPAL_SetPlatformImageState( OtaImageState_t eState );
+OtaErr_t prvPAL_SetPlatformImageState( OtaFileContext_t * const C,
+                                       OtaImageState_t eState );
 
 /**
  * @brief Get the state of the OTA update image.
@@ -194,6 +195,6 @@ OtaErr_t prvPAL_SetPlatformImageState( OtaImageState_t eState );
  *
  *   NOTE: OtaPalImageStateUnknown should NEVER be returned and indicates an implementation error.
  */
-OtaPalImageState_t prvPAL_GetPlatformImageState( void );
+OtaPalImageState_t prvPAL_GetPlatformImageState( OtaFileContext_t * const C );
 
 #endif /* ifndef _OTA_PLATFORM_INTERFACE_ */
