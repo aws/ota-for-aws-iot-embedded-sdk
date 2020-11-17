@@ -834,7 +834,7 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
 static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
 {
     OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
-    OtaErr_t err = OTA_ERR_UNINITIALIZED;
+    OtaErr_t err = OTA_ERR_NONE;
     OtaFileContext_t * pOtaFileContext = NULL;
     OtaEventMsg_t eventMsg = { 0 };
 
@@ -1942,7 +1942,6 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              bool * pUpdateJob )
 {
     OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
-    OtaErr_t setError = OTA_ERR_UNINITIALIZED;
     OtaJobParseErr_t err = OtaJobParseErrNone;
 
     /* Validate the job document parameters. */
@@ -2002,7 +2001,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                            "File ID=%d",
                            otaAgent.serverFileID ) );
 
-                setError = setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
+                ( void ) setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
             }
             else
             {
@@ -2010,7 +2009,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                            "Application version of the new image is invalid: "
                            "OtaErr_t=%u",
                            errVersionCheck ) );
-                setError = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
+                ( void ) setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
                 /* All reject cases must reset the device. */
                 ( void ) otaAgent.palCallbacks.resetDevice( otaAgent.serverFileID );
@@ -2038,13 +2037,6 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         LogError( ( "Failed to validate and start the job: "
                     "OtaJobParseErr_t=%d",
                     err ) );
-    }
-
-    if( setError != OTA_ERR_NONE )
-    {
-        LogError( ( "Failed to update the state with the appropriate error: "
-                    "OtaErr_t=%d",
-                    setError ) );
     }
 
     return err;
@@ -2679,7 +2671,7 @@ void otaAgentTask( const void * pUnused )
                 LogDebug( ( "Found valid event handler for state transition: "
                             "State=[%s], "
                             "Event=[%s]",
-                            pOtaAgentStateStrings[ i ]
+                            pOtaAgentStateStrings[ i ],
                             pOtaEventStrings[ i ] ) );
 
                 /*
@@ -3100,7 +3092,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
     {
         LogDebug( ( "Failed to update the image state: "
                     "OtaErr_t=%d",
-                    err, ) );
+                    err ) );
     }
 
     return err;
