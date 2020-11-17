@@ -2099,7 +2099,6 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
                                ( uint32_t ) sizeof( OtaFileContext_t ),
                                OTA_NUM_JOB_PARAMS );
-    printf("%s\n",pJson);
 
     if( parseError != DocParseErrNone )
     {
@@ -2746,12 +2745,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
     if( otaAgent.state == OtaAgentStateStopped )
     {
         /*
-         * Check all the callbacks for null values and initialize the values in the ota agent context.
-         * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
-         * do anything and just use the defaults in the OTA structure.
-         */
-
-        /*
          * Initialize the OTA control interface based on the application protocol
          * selected.
          */
@@ -2836,8 +2829,17 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
             otaAgent.fileContext.authSchemeMaxSize = -1;
         }
 
-        /* Initialize ota complete callback.*/
+        /* Initialize ota pal callback.*/
+        OtaPalCallbacks_t palCallbacks = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER;
+        otaAgent.palCallbacks = palCallbacks;
         otaAgent.palCallbacks.completeCallback = completeCallback;
+
+        /*
+         * Check all the callbacks for null values and initialize the values in the ota agent context.
+         * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
+         * do anything and just use the defaults in the OTA structure.
+         */
+        setPALCallbacks( &(pOtaInterfaces->pal ));
 
         /*
          * The current OTA image state as set by the OTA agent.
@@ -3122,12 +3124,13 @@ OtaErr_t OTA_Suspend( void )
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
 
-    /* Stop the request timer. */
-    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
     {
+        /* Stop the request timer. */
+        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
+
         /*
          * Send event to OTA agent task.
          */
