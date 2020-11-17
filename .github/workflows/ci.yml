@@ -3,8 +3,10 @@ name: CI Checks
 on:
   push:
     branches: ["**"]
-  pull_request:
-    branches: [master]
+  pull_request_target:
+    branches:
+      - main
+      - development
   workflow_dispatch:
 
 jobs:
