@@ -15,7 +15,7 @@ list(APPEND mock_list
 list(APPEND mock_include_list
     .
     "${MODULE_ROOT_DIR}/source/include"
-    "${MODULE_ROOT_DIR}/source/portable/os"
+    "${MODULE_ROOT_DIR}/source/portable"
 )
 #list the definitions of your mocks to control what to be included
 list(APPEND mock_define_list
@@ -30,8 +30,8 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/ota_interface.c"
     "${MODULE_ROOT_DIR}/source/ota_base64.c"
     "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
+    "${MODULE_ROOT_DIR}/source/ota_http.c"
     "${MODULE_ROOT_DIR}/source/ota_cbor.c"
-    "${MODULE_ROOT_DIR}/source/portable/os/ota_os_posix.c"
     ${TINYCBOR_SOURCES}
     ${JSON_SOURCES}
     "utest_helpers.c"
@@ -39,6 +39,13 @@ list(APPEND real_source_files
 # list the directories the module under test includes
 list(APPEND real_include_directories
     "."
+    ${OTA_INCLUDE_PUBLIC_DIRS}
+    ${OTA_INCLUDE_PRIVATE_DIRS}
+    ${OTA_INCLUDE_OS_POSIX_DIRS}
+)
+
+list(APPEND real_include_directories_http
+    "../http_configs"
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_PRIVATE_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
@@ -53,6 +60,7 @@ list(APPEND test_include_directories ".")
 
 set(mock_name "${project_name}_mock")
 set(real_name "${project_name}_real")
+set(real_name_http "${project_name}_real_http")
 
 create_mock_list(${mock_name}
     "${mock_list}"
@@ -67,15 +75,30 @@ create_real_library(${real_name}
     "${mock_name}"
 )
 
+create_real_library(${real_name_http}
+    "${real_source_files}"
+    "${real_include_directories_http}"
+    "${mock_name}"
+)
+
 list(APPEND utest_link_list
     -lpthread
     -l${mock_name}
     lib${real_name}.a
-    -lrt
+)
+
+list(APPEND utest_link_list_http
+    -lpthread
+    -l${mock_name}
+    lib${real_name_http}.a
 )
 
 list(APPEND utest_dep_list
     ${real_name}
+)
+
+list(APPEND utest_dep_list_http
+    ${real_name_http}
 )
 
 create_test(ota_utest
@@ -106,15 +129,13 @@ create_test(ota_cbor_utest
     "${test_include_directories}"
 )
 
-create_test(ota_os_posix_utest
-    "ota_os_posix_utest.c"
-    "${utest_link_list}"
-    "${utest_mem_ops_list}"
-    "${utest_dep_list}"
+create_test(ota_http_utest
+    "ota_http_utest.c"
+    "${utest_link_list_http}"
+    "${utest_dep_list_http}"
     "${test_include_directories}"
+    "../http_configs"
 )
+
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
-
-# Use Address sanitizer to check memory operations
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -g")

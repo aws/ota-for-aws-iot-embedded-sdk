@@ -48,7 +48,7 @@ target_include_directories( coverity_analysis PUBLIC
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
     ${CMAKE_CURRENT_LIST_DIR}/unit-test
-    ${CMAKE_CURRENT_LIST_DIR}/unit-test-http )
+    )
 target_include_directories( coverity_analysis PRIVATE
     ${OTA_INCLUDE_PRIVATE_DIRS} )
 
@@ -85,7 +85,6 @@ include( ${MODULE_ROOT_DIR}/tools/cmock/create_test.cmake )
 
 # Include build configuration for unit tests.
 add_subdirectory( unit-test )
-add_subdirectory( unit-test-http )
 
 #  ==================== Coverage Analysis configuration ========================
 
