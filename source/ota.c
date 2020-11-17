@@ -1871,7 +1871,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             err = OtaJobParseErrNone;
         }
         else
-        {   /* The same job is being reported so update the url. */
+        { /* The same job is being reported so update the url. */
             LogInfo( ( "New job document ID is identical to the current job: "
                        "Updating the URL based on the new job document." ) );
 
@@ -1922,7 +1922,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
-    {   /* Assume control of the job name from the context. */
+    { /* Assume control of the job name from the context. */
         otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
         pFileContext->pJobName = NULL;
     }
@@ -2005,27 +2005,27 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 
 static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 {
-    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeStringInDoc },
-    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32      },
-    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pJobName ),                      ( void * ) offsetof( OtaFileContext_t, jobNameMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, isInSelfTest ),                  ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeIdent},
-    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, updaterVersion ),                ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_DONT_STORE_PARAM,       ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pStreamName ),                   ( void * ) offsetof( OtaFileContext_t, streamNameMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pProtocols ),                    ( void * ) offsetof( OtaFileContext_t, protocolMaxSize ), ModelParamTypeArrayCopy},
-    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, ( void * ) OTA_STORE_NESTED_JSON,      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeArray       },
-    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pFilePath ),                     ( void * ) offsetof( OtaFileContext_t, filePathMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, fileSize ),                      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, serverFileID ),                  ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pCertFilepath ),                 ( void * ) offsetof( OtaFileContext_t, certFilePathMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pUpdateUrlPath ),                ( void * ) offsetof( OtaFileContext_t, updateUrlMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, pAuthScheme ),                   ( void * ) offsetof( OtaFileContext_t, authSchemeMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, ( void * ) offsetof( OtaFileContext_t, pSignature ),                    ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeSigBase64},
-    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileAttributes ),                ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, ( void * ) offsetof( OtaFileContext_t, fileType ),                      ( void * ) OTA_DONT_STORE_PARAM, ModelParamTypeUInt32}
+    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeStringInDoc },
+    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeUInt32      },
+    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, pJobName ),           offsetof( OtaFileContext_t, jobNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, isInSelfTest ),       OTA_DONT_STORE_PARAM, ModelParamTypeIdent},
+    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, updaterVersion ),     OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,       OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
+    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, pStreamName ),        offsetof( OtaFileContext_t, streamNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, pProtocols ),         offsetof( OtaFileContext_t, protocolMaxSize ), ModelParamTypeArrayCopy},
+    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, OTA_STORE_NESTED_JSON,      OTA_DONT_STORE_PARAM, ModelParamTypeArray       },
+    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, pFilePath ),          offsetof( OtaFileContext_t, filePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, fileSize ),           OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, serverFileID ),       OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, pCertFilepath ),      offsetof( OtaFileContext_t, certFilePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, pUpdateUrlPath ),     offsetof( OtaFileContext_t, updateUrlMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, pAuthScheme ),        offsetof( OtaFileContext_t, authSchemeMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, offsetof( OtaFileContext_t, pSignature ),         OTA_DONT_STORE_PARAM, ModelParamTypeSigBase64},
+    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, fileAttributes ),     OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, offsetof( OtaFileContext_t, fileType ),           OTA_DONT_STORE_PARAM, ModelParamTypeUInt32}
 };
 
 /* Parse the OTA job document and validate. Return the populated
