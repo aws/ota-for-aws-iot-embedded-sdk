@@ -29,6 +29,7 @@
  */
 
 /* Standard includes. */
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -80,9 +81,11 @@ static OtaInterfaces_t otaInterfaces;
 
 /* OTA application buffer. */
 static OtaAppBuffer_t pOtaAppBuffer;
+static uint8_t pUserBuffer[ 300 ];
 
 /* OTA Event. */
 static OtaEventMsg_t otaEvent;
+static OtaEventData_t eventBuffer;
 static pthread_mutex_t eventLock;
 static bool eventIgnore;
 
@@ -213,10 +216,28 @@ static OtaErr_t mockOSEventReceive( OtaEventContext_t * unused_1,
     return err;
 }
 
+static OtaErr_t stubOSTimerStart( OtaTimerId_t timerId,
+                                  const char * const pTimerName,
+                                  const uint32_t timeout,
+                                  OtaTimerCallback_t callback )
+{
+    return OTA_ERR_NONE;
+}
+
+static OtaErr_t stubOSTimerStop( OtaTimerId_t timerId )
+{
+    return OTA_ERR_NONE;
+}
+
+static OtaErr_t stubOSTimerDelete( OtaTimerId_t timerId )
+{
+    return OTA_ERR_NONE;
+}
+
 static OtaErr_t stubMqttSubscribe( const char * unused_1,
                                    uint16_t unused_2,
                                    uint8_t unused_3,
-                                   void * unused_4 )
+                                   OtaMqttCallback_t unused_4 )
 {
     return OTA_ERR_NONE;
 }
@@ -258,6 +279,13 @@ static void otaInterfaceDefault()
     otaInterfaces.os.event.recv = mockOSEventReceive;
     otaInterfaces.os.event.deinit = mockOSEventReset;
 
+    otaInterfaces.os.timer.start = stubOSTimerStart;
+    otaInterfaces.os.timer.stop = stubOSTimerStop;
+    otaInterfaces.os.timer.delete = stubOSTimerDelete;
+
+    otaInterfaces.os.mem.malloc = malloc;
+    otaInterfaces.os.mem.free = free;
+
     otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
     otaInterfaces.mqtt.publish = stubMqttPublish;
     otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribe;
@@ -268,6 +296,12 @@ static void otaInterfaceDefault()
 static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
+    pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
+    pOtaAppBuffer.updateFilePathsize = 100;
+    pOtaAppBuffer.pCertFilePath = pOtaAppBuffer.pUpdateFilePath + pOtaAppBuffer.updateFilePathsize;
+    pOtaAppBuffer.certFilePathSize = 100;
+    pOtaAppBuffer.pStreamName = pOtaAppBuffer.pCertFilePath + pOtaAppBuffer.certFilePathSize;
+    pOtaAppBuffer.streamNameSize = 50;
     OTA_AgentInit( &pOtaAppBuffer,
                    &otaInterfaces,
                    ( const uint8_t * ) pClientID,
@@ -354,6 +388,8 @@ static void otaGoToStateWithTimeout( OtaState_t state,
             break;
 
         case OtaAgentStateRequestingJob:
+            /* Let the PAL says it's not in self test.*/
+            prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
             otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
             otaEvent.eventId = OtaAgentEventStart;
             OTA_SignalEvent( &otaEvent );
@@ -372,7 +408,7 @@ static void otaGoToStateWithTimeout( OtaState_t state,
             /* Parse success would create the file, let it invoke our mock when creating file. */
             prvPAL_CreateFileForRx_Stub( mockOtaPalCreateFileForRx );
             otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-            otaEvent.pEventData = otaEventBufferGet();
+            otaEvent.pEventData = &eventBuffer;
             memcpy( otaEvent.pEventData->data, JOB_DOC_A, JOB_DOC_A_LENGTH );
             otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
             OTA_SignalEvent( &otaEvent );
@@ -490,6 +526,9 @@ void test_OTA_StartWhenReady()
 {
     OtaEventMsg_t otaEvent = { 0 };
 
+    /* Let the PAL says it's not in self test.*/
+    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
@@ -502,6 +541,9 @@ void test_OTA_StartWhenReady()
 void test_OTA_StartFailedWhenReady()
 {
     OtaEventMsg_t otaEvent = { 0 };
+
+    /* Let the PAL says it's not in self test.*/
+    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
 
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -730,7 +772,7 @@ void test_OTA_ProcessJobDocumentInvalidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_INVALID_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_INVALID_LENGTH;
     OTA_SignalEvent( &otaEvent );
@@ -753,7 +795,7 @@ void test_OTA_ProcessJobDocumentValidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_A_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
     OTA_SignalEvent( &otaEvent );
@@ -804,7 +846,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
     otaEvent.eventId = OtaAgentEventReceivedFileBlock;
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     otaEvent.pEventData->dataLength = 0;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
@@ -830,9 +872,10 @@ void test_OTA_ReceiveFileBlockComplete()
     /* Set up mock to write file block to our buffer. */
     prvPAL_WriteBlock_Stub( mockOtaPalWriteFileBlock );
 
-    /* By pass signature validation and ignore the final abort call. */
+    /* By pass signature validation and ignore the final activate and abort call. */
     prvPAL_CloseFile_IgnoreAndReturn( OTA_ERR_NONE );
     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+    prvPAL_ActivateNewImage_IgnoreAndReturn( OTA_ERR_NONE );
 
     /* Fill the file block. */
     for( idx = 0; idx < sizeof( pFileBlock ); idx++ )
@@ -853,7 +896,7 @@ void test_OTA_ReceiveFileBlockComplete()
             pFileBlock,
             OTA_FILE_BLOCK_SIZE,
             &streamingMessageSize );
-        otaEvent.pEventData = otaEventBufferGet();
+        otaEvent.pEventData = &eventBuffer;
         memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
         otaEvent.pEventData->dataLength = streamingMessageSize;
 
@@ -874,7 +917,7 @@ void test_OTA_ReceiveFileBlockComplete()
         pFileBlock,
         remainingBlocks,
         &streamingMessageSize );
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
     otaEvent.pEventData->dataLength = streamingMessageSize;
 
@@ -895,16 +938,16 @@ void test_OTA_SelfTest()
     /* Use default complete callback. */
     otaInit( pOtaDefaultClientId, NULL );
 
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+
     /* Let the PAL says it's in self test and bypass setting platform image state. */
     prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStatePendingCommit );
     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
-    otaGoToState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
-
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_SELF_TEST_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_SELF_TEST_LENGTH;
     OTA_SignalEvent( &otaEvent );
@@ -931,7 +974,7 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
 
     /* Sending another job document should cause OTA agent to abort current update. */
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
+    otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_B_LENGTH );
     otaEvent.pEventData->dataLength = JOB_DOC_B_LENGTH;
     OTA_SignalEvent( &otaEvent );

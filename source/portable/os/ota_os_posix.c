@@ -58,7 +58,7 @@ static OtaTimerCallback_t otaTimerCallback;
 static mqd_t otaEventQueue;
 
 /* OTA Timer handles.*/
-static timer_t otaTimer[ OtaNumOfTimers ];
+timer_t otaTimer[ OtaNumOfTimers ];
 
 /* OTA Timer callbacks.*/
 void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
