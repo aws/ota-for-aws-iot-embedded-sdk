@@ -862,7 +862,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                                                       bitmapLen,
                                                       ( int32_t ) otaconfigMAX_NUM_BLOCKS_REQUEST );
 
-    if( result == OTA_ERR_NONE )
+    if( result == true )
     {
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
@@ -922,7 +922,7 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
                                                        pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
                                                        pPayloadSize );
 
-    if( ( result == OTA_ERR_NONE ) && ( pPayload != NULL ) )
+    if( ( result == true ) && ( pPayload != NULL ) )
     {
         /* pPayloadSize is statically allocated by the caller. */
         assert( pPayloadSize != NULL );
