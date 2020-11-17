@@ -509,7 +509,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        //assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                              msgBufferSize - msgSize,
@@ -519,7 +519,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              numBlocks );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        //assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     return msgSize;
@@ -540,7 +540,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    //assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                          msgBufferSize - msgSize,
@@ -550,7 +550,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                          appFirmwareVersion.u.unsignedVersion32 );
     msgSize += msgTailSize;
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    //assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
 
     return msgSize;
 }
@@ -589,7 +589,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              subReason );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        //assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
