@@ -45,7 +45,7 @@
 #define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
 
 /* Timer used in os_posix.c */
-extern timer_t otaTimer[ OtaNumOfTimers ];
+extern timer_t otaTimers[ OtaNumOfTimers ];
 
 /* Interfaces for Timer and Event. */
 static OtaTimerId_t timer_id = 0;
@@ -57,7 +57,7 @@ static OtaEventContext_t * pEventContext = NULL;
  * @brief Get the Time elapsed from the timer.
  *
  * This is used to ensure that the timer has started successfully,
- * by using the timer id otaTimer to get the time elapsed and
+ * by using the timer id otaTimers to get the time elapsed and
  * store it into timer structure.
  *
  * @return long time elapsed in nano seconds.
@@ -68,7 +68,7 @@ static long getTimeElapsed()
     long retVal = 0;
 
     /* On error, -1 is returned else 0. */
-    if( timer_gettime( otaTimer[timer_id], &timerAttr ) == 0 )
+    if( timer_gettime( otaTimers[timer_id], &timerAttr ) == 0 )
     {
         retVal = timerAttr.it_value.tv_nsec;
     }
@@ -92,7 +92,6 @@ void setUp( void )
 
 void tearDown( void )
 {
-    otaTimer[timer_id] = NULL;
 }
 
 /* ========================================================================== */
@@ -180,7 +179,7 @@ void test_OTA_posix_InvalidTimerOperations( void )
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     result = timer.stop( timer_id );
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     result = timer.delete( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
