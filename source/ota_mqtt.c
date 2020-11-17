@@ -509,7 +509,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                              msgBufferSize - msgSize,
@@ -519,7 +519,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              numBlocks );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -540,7 +540,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                          msgBufferSize - msgSize,
@@ -550,7 +550,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                          appFirmwareVersion.u.unsignedVersion32 );
     msgSize += msgTailSize;
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     return msgSize;
 }
@@ -571,9 +571,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
 
-      printf("%ld",sizeof( pMsgBuffer ) );
     /* The buffer is static and the size is calculated to fit. */
-    //assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
@@ -589,7 +588,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              subReason );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
@@ -612,7 +611,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              newVersion.u.x.build );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        //assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     /* Status updates that are NOT "InProgress" or "Succeeded" or "FailedWithVal" map status and
@@ -627,7 +626,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              subReason );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        //assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
