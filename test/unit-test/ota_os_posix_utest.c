@@ -146,7 +146,7 @@ void test_OTA_posix_InvalidEventQueue( void )
 }
 
 /**
- * @brief Test invalid operations on timers.
+ * @brief Test timers are initialized, stopped and deleted successfully.
  */
 void test_OTA_posix_TimerCreateAndStop( void )
 {
@@ -165,7 +165,7 @@ void test_OTA_posix_TimerCreateAndStop( void )
 }
 
 /**
- * @brief Test timers are initialized, stopped and deleted successfully.
+ * @brief Test invalid operations on timers.
  */
 void test_OTA_posix_InvalidTimerOperations( void )
 {
