@@ -503,7 +503,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                              msgBufferSize - msgSize,
@@ -513,7 +513,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              numBlocks );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -534,7 +534,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
                                          msgBufferSize - msgSize,
@@ -544,7 +544,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                          appFirmwareVersion.u.unsignedVersion32 );
     msgSize += msgTailSize;
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     return msgSize;
 }
@@ -565,7 +565,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -580,7 +580,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              subReason );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
@@ -603,7 +603,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              newVersion.u.x.build );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     /* Status updates that are NOT "InProgress" or "Succeeded" or "FailedWithVal" map status and
@@ -618,7 +618,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              subReason );
         msgSize += msgTailSize;
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < sizeof( pMsgBuffer ) ) );
+        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -826,6 +826,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint32_t bitmapLen = 0;
     uint32_t msgSizeToPublish = 0;
     uint32_t topicLen = 0;
+    bool cborEncodeRet = false;
     char pMsg[ OTA_REQUEST_MSG_MAX_SIZE ];
 
     /* This buffer is used to store the generated MQTT topic. The static size
@@ -851,18 +852,18 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
-    result = OTA_CBOR_Encode_GetStreamRequestMessage( ( uint8_t * ) pMsg,
-                                                      sizeof( pMsg ),
-                                                      &msgSizeFromStream,
-                                                      OTA_CLIENT_TOKEN,
-                                                      ( int32_t ) pFileContext->serverFileID,
-                                                      ( int32_t ) blockSize,
-                                                      0,
-                                                      pFileContext->pRxBlockBitmap,
-                                                      bitmapLen,
-                                                      ( int32_t ) otaconfigMAX_NUM_BLOCKS_REQUEST );
+    cborEncodeRet = OTA_CBOR_Encode_GetStreamRequestMessage( ( uint8_t * ) pMsg,
+                                                             sizeof( pMsg ),
+                                                             &msgSizeFromStream,
+                                                             OTA_CLIENT_TOKEN,
+                                                             ( int32_t ) pFileContext->serverFileID,
+                                                             ( int32_t ) blockSize,
+                                                             0,
+                                                             pFileContext->pRxBlockBitmap,
+                                                             bitmapLen,
+                                                             ( int32_t ) otaconfigMAX_NUM_BLOCKS_REQUEST );
 
-    if( result == true )
+    if( cborEncodeRet == true )
     {
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
@@ -896,6 +897,13 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
                         result ) );
         }
     }
+    else
+    {
+        result = OTA_ERR_FAILED_TO_ENCODE_CBOR;
+
+        LogError( ( "Failed to CBOR encode stream request message: "
+                    "OTA_CBOR_Encode_GetStreamRequestMessage returned error." ) );
+    }
 
     return result;
 }
@@ -912,18 +920,21 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
                                size_t * pPayloadSize )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    bool cborDecodeRet = false;
 
     /* Decode the CBOR content. */
-    result = OTA_CBOR_Decode_GetStreamResponseMessage( pMessageBuffer,
-                                                       messageSize,
-                                                       pFileId,
-                                                       pBlockId,   /*lint !e9087 CBOR requires pointer to int and our block index's never exceed 31 bits. */
-                                                       pBlockSize, /*lint !e9087 CBOR requires pointer to int and our block sizes never exceed 31 bits. */
-                                                       pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
-                                                       pPayloadSize );
+    cborDecodeRet = OTA_CBOR_Decode_GetStreamResponseMessage( pMessageBuffer,
+                                                              messageSize,
+                                                              pFileId,
+                                                              pBlockId,   /*lint !e9087 CBOR requires pointer to int and our block index's never exceed 31 bits. */
+                                                              pBlockSize, /*lint !e9087 CBOR requires pointer to int and our block sizes never exceed 31 bits. */
+                                                              pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
+                                                              pPayloadSize );
 
-    if( ( result == true ) && ( pPayload != NULL ) )
+    if( ( cborDecodeRet == true ) && ( pPayload != NULL ) )
     {
+        result = OTA_ERR_NONE;
+
         /* pPayloadSize is statically allocated by the caller. */
         assert( pPayloadSize != NULL );
 
@@ -936,10 +947,10 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
     }
     else
     {
+        result = OTA_ERR_FAILED_TO_DECODE_CBOR;
+
         LogError( ( "Failed to decode MQTT file block: "
-                    "OTA_CBOR_Decode_GetStreamResponseMessage returned error: "
-                    "OtaErr_t=%d",
-                    result ) );
+                    "OTA_CBOR_Decode_GetStreamResponseMessage returned error." ) );
     }
 
     return result;
