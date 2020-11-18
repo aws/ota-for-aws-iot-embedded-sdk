@@ -38,24 +38,6 @@
 #include "ota.c"
 #include "core_json.h"
 
-/* Error defines based on ota_private.h */
-#define DocParseErrUnknown                  -1
-#define DocParseErrNone                     0
-#define DocParseErrOutOfMemory              1
-#define DocParseErrFieldTypeMismatch        2
-#define DocParseErrBase64Decode             3
-#define DocParseErrInvalidNumChar           4
-#define DocParseErrDuplicatesNotAllowed     5
-#define DocParseErrMalformedDoc             6
-#define DocParseErr_InvalidJSONBuffer       7
-#define DocParseErrNullModelPointer         8
-#define DocParseErrNullBodyPointer          9
-#define DocParseErrNullDocPointer           10
-#define DocParseErrTooManyParams            11
-#define DocParseErrParamKeyNotInModel       12
-#define DocParseErrInvalidModelParamType    13
-#define DocParseErrInvalidToken             14
-
 /* Testing Constants. */
 
 #define JOB_PARSING_VALID_JSON                               "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
@@ -88,33 +70,35 @@ const AppVersion32_t appFirmwareVersion =
 /* OTA code signing signature algorithm. */
 const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sha256-ecdsa";
 
+/* OTA interfaces. */
+static OtaInterfaces_t otaInterfaces;
+
+/* OTA application buffer. */
+static OtaAppBuffer_t otaAppBuffer;
+static uint8_t pUserBuffer[ 300 ];
+
 /* ============================   UNITY FIXTURES ============================ */
 
 void setUp( void )
 {
-    static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
-    {
-        { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM  }, ModelParamTypeStringInDoc },                         /*lint !e9078 !e923 Get address of token as value. */
-        { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM  }, ModelParamTypeUInt32      },
-        { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM  }, ModelParamTypeObject      },
-        { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pJobName )}, ModelParamTypeStringCopy  },
-        { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, { OTA_DONT_STORE_PARAM  }, ModelParamTypeObject      },
-        { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, isInSelfTest )}, ModelParamTypeIdent       },
-        { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, updaterVersion )}, ModelParamTypeUInt32      },
-        { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM  }, ModelParamTypeObject      },
-        { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, { OTA_DONT_STORE_PARAM  }, ModelParamTypeObject      },
-        { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pStreamName )}, ModelParamTypeStringCopy  },
-        { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pProtocols )}, ModelParamTypeArrayCopy   },
-        { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, { OTA_STORE_NESTED_JSON }, ModelParamTypeArray       },
-        { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pFilePath )}, ModelParamTypeStringCopy  },
-        { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, fileSize )}, ModelParamTypeUInt32      },
-        { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, serverFileID )}, ModelParamTypeUInt32      },
-        { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pCertFilepath )}, ModelParamTypeStringCopy  },
-        { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pUpdateUrlPath )}, ModelParamTypeStringCopy  },
-        { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, pAuthScheme )}, ModelParamTypeStringCopy  },
-        { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, { offsetof( OtaFileContext_t, pSignature )}, ModelParamTypeSigBase64   },
-        { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, { offsetof( OtaFileContext_t, fileAttributes )}, ModelParamTypeUInt32      },
-    };
+    otaAppBuffer.pUpdateFilePath = pUserBuffer;
+    otaAppBuffer.updateFilePathsize = 100;
+    otaAppBuffer.pCertFilePath = otaAppBuffer.pUpdateFilePath + otaAppBuffer.updateFilePathsize;
+    otaAppBuffer.certFilePathSize = 100;
+    otaAppBuffer.pStreamName = otaAppBuffer.pCertFilePath + otaAppBuffer.certFilePathSize;
+    otaAppBuffer.streamNameSize = 50;
+
+    otaAgent.fileContext.pFilePath = otaAppBuffer.pUpdateFilePath;
+    otaAgent.fileContext.filePathMaxSize = otaAppBuffer.updateFilePathsize;
+    otaAgent.fileContext.pCertFilepath = otaAppBuffer.pCertFilePath;
+    otaAgent.fileContext.certFilePathMaxSize = otaAppBuffer.certFilePathSize;
+    otaAgent.fileContext.pStreamName = otaAppBuffer.pStreamName;
+    otaAgent.fileContext.streamNameMaxSize = otaAppBuffer.streamNameSize;
+
+    otaInterfaces.os.mem.malloc = malloc;
+    otaInterfaces.os.mem.free = free;
+
+    otaAgent.pOtaInterface = &otaInterfaces;
 }
 
 void tearDown( void )
