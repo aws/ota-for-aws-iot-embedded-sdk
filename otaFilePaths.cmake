@@ -24,7 +24,6 @@ set(TINYCBOR_INCLUDE_DIRS
 # OTA library source files, including 3rdparties.
 set( OTA_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/source/include/ota.h"
-    "${CMAKE_CURRENT_LIST_DIR}/source/include/ota_types.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/ota_os_interface.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/ota_platform_interface.h"
     "${CMAKE_CURRENT_LIST_DIR}/source/include/ota_private.h"
