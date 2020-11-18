@@ -30,6 +30,7 @@
 
 /* Standard library includes. */
 #include <string.h>
+#include <assert.h>
 
 /* OTA interface includes. */
 #include "ota_interface_private.h"
