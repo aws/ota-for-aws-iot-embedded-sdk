@@ -48,7 +48,7 @@ static QueueHandle_t otaEventQueue;
 static OtaTimerCallback_t otaTimerCallback;
 
 /* OTA Timer handles.*/
-static timer_t otaTimer[ OtaNumOfTimers ];
+static TimerHandle_t otaTimer[ OtaNumOfTimers ];
 
 /* OTA Timer callbacks.*/
 static void requestTimerCallback( union sigval arg );
@@ -235,7 +235,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
             LogDebug( ( "OTA Timer created." ) );
 
             /* Start the timer. */
-            retVal = timerStart( otaTimer[ otaTimerId ], portMAX_DELAY );
+            retVal = xTimerStart( otaTimer[ otaTimerId ], portMAX_DELAY );
 
             if( retVal == pdTRUE )
             {
@@ -255,7 +255,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
     else
     {
         /* Reset the timer. */
-        retVal = timerReset( otaTimer[ otaTimerId ], portMAX_DELAY );
+        retVal = xTimerReset( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
@@ -284,7 +284,7 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
     if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
-        retVal = timerStop( otaTimer[ otaTimerId ], portMAX_DELAY );
+        retVal = xTimerStop( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
@@ -319,11 +319,13 @@ OtaErr_t ota_DeleteTimer( OtaTimerId_t otaTimerId  )
     if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
-        retVal = timerDelete( otaTimer[ otaTimerId ] , portMAX_DELAY );
+        retVal = xTimerDelete( otaTimer[ otaTimerId ] , portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
+
+            otaTimer[ otaTimerId ] == NULL; 
 
             LogDebug( ( "OTA Timer deleted." ) );
         }
