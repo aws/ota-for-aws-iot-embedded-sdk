@@ -226,21 +226,14 @@ enum
  * locally when it is extracted from the JSON document. It also contains the
  * expected Jasmine type of the value field for validation.
  *
- * @note The destOffset field may be either an offset into the models context structure
- *       or an absolute memory pointer, although it is usually an offset.
- *       If the value of destOffset is less than the size of the context structure,
- *       which is fairly small, it will add the offset of the active context structure
- *       to attain the effective address (somewhere in RAM). Otherwise, it is interpreted
- *       as an absolute memory address and used as is (useful for singleton parameters).
- *       This requires absolute memory pointers to be greater than the size of the
- *       context structure to avoid the address being misinterpreted as an offset.
+ * @note The destOffset field is an offset into the models context structure.
  */
 typedef struct
 {
     const char * pSrcKey;                  /*!< Expected key name. */
     const bool required;                   /*!< If true, this parameter must exist in the document. */
-    uint16_t pDestOffset;                  /*!< Pointer or offset to where we will store the value, if not ~0. */
-    uint16_t pDestSizeOffset;              /*!< Pointer or offset to where we will store the value, if not ~0. */
+    uint16_t pDestOffset;                  /*!< Offset to where we will store the value, if not ~0. */
+    uint16_t pDestSizeOffset;              /*!< Offset to where we will store the value, if not ~0. */
     const ModelParamType_t modelParamType; /*!< We extract the value, if found, based on this type. */
 } JsonDocParam_t;
 

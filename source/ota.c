@@ -120,10 +120,6 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                                                  uint32_t messageLength );
 
-/* Get an available OTA file context structure or NULL if none available. */
-
-static OtaFileContext_t * getFreeContext( void );
-
 /* Validate JSON document */
 
 static DocParseErr_t validateJSON( const char * pJson,
@@ -285,7 +281,8 @@ static OtaAgentContext_t otaAgent =
 {
     .state                      = OtaAgentStateStopped,
     .pThingName                 = { 0 },
-    .fileContext                = { 0 },  /*lint !e910 !e9080 Zero initialization of all members of the single file context structure.*/
+    .fileContext                = { 0 },
+    .fileIndex                  = 0,
     .serverFileID               = 0,
     .pOtaSingletonActiveJobName = NULL,
     .pClientTokenFromJob        = NULL,
@@ -294,7 +291,8 @@ static OtaAgentContext_t otaAgent =
     .palCallbacks               = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER,
     .numOfBlocksToReceive       = 1,
     .statistics                 = { 0 },
-    .requestMomentum            = 0
+    .requestMomentum            = 0,
+    .pOtaInterface              = NULL
 };
 
 static OtaStateTableEntry_t otaTransitionTable[] =
@@ -1296,32 +1294,6 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
     }
 
     return result;
-}
-
-/* Find an available OTA transfer context structure. */
-
-static OtaFileContext_t * getFreeContext( void )
-{
-    uint32_t index = 0U;
-    OtaFileContext_t * pFileContext = NULL;
-
-    while( ( index < OTA_MAX_FILES ) && ( otaAgent.fileContext.pFilePath != NULL ) )
-    {
-        index++;
-    }
-
-    if( index != OTA_MAX_FILES )
-    {
-        ( void ) memset( &( otaAgent.fileContext ), 0, sizeof( OtaFileContext_t ) );
-        pFileContext = &( otaAgent.fileContext );
-        otaAgent.fileIndex = index;
-    }
-    else
-    {
-        /* Not able to support this request so return NULL. */
-    }
-
-    return pFileContext;
 }
 
 /* Validate JSON document and the DocModel*/
