@@ -226,7 +226,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
             LogError( ( "Failed to create OTA timer: "
                         "timerCreate returned NULL "
                         "otaErrRet=%i "
-                         otaErrRet ) );
+                        otaErrRet ) );
         }
         else
         {
@@ -297,7 +297,7 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
             LogError( ( "Failed to stop OTA timer: "
                         "timer_settime returned error: "
                         "otaErrRet=%i ",
-                        otaErrRet );
+                        otaErrRet ) );
 
             otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
         }
@@ -312,20 +312,20 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
     return otaErrRet;
 }
 
-OtaErr_t ota_DeleteTimer( OtaTimerId_t otaTimerId  )
+OtaErr_t ota_DeleteTimer( OtaTimerId_t otaTimerId )
 {
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
-        retVal = xTimerDelete( otaTimer[ otaTimerId ] , portMAX_DELAY );
+        retVal = xTimerDelete( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
 
-            otaTimer[ otaTimerId ] == NULL; 
+            otaTimer[ otaTimerId ] == NULL;
 
             LogDebug( ( "OTA Timer deleted." ) );
         }
