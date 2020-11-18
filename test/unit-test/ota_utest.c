@@ -982,64 +982,64 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
 }
 
-void test_OTA_RefreshWithSameJobDoc()
-{
-    OtaEventMsg_t otaEvent = { 0 };
-    const char * pJobDoc = JOB_DOC_A;
+// void test_OTA_RefreshWithSameJobDoc()
+// {
+//     OtaEventMsg_t otaEvent = { 0 };
+//     const char * pJobDoc = JOB_DOC_A;
 
-    otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+//     otaGoToState( OtaAgentStateWaitingForFileBlock );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
 
-    /* Set the event send interface to a mock function that allows events to be sent continuously.
-     * We need this to go through the process of refreshing job doc. */
-    otaInterfaces.os.event.send = mockOSEventSend;
+//     /* Set the event send interface to a mock function that allows events to be sent continuously.
+//      * We need this to go through the process of refreshing job doc. */
+//     otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* First send request job doc event while we're in progress, this should make OTA agent to
-     * to request job doc again and transit to waiting for job state. */
-    otaEvent.eventId = OtaAgentEventRequestJobDocument;
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+//     /* First send request job doc event while we're in progress, this should make OTA agent to
+//      * to request job doc again and transit to waiting for job state. */
+//     otaEvent.eventId = OtaAgentEventRequestJobDocument;
+//     OTA_SignalEvent( &otaEvent );
+//     otaWaitForState( OtaAgentStateWaitingForJob );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 
-    /* Now send the same job doc, OTA agent should resume the download. */
-    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_A_LENGTH );
-    otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
-}
+//     /* Now send the same job doc, OTA agent should resume the download. */
+//     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+//     otaEvent.pEventData = &eventBuffer;
+//     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_A_LENGTH );
+//     otaEvent.pEventData->dataLength = JOB_DOC_A_LENGTH;
+//     OTA_SignalEvent( &otaEvent );
+//     otaWaitForState( OtaAgentStateWaitingForFileBlock );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+// }
 
-void test_OTA_RefreshWithDifferentJobDoc()
-{
-    OtaEventMsg_t otaEvent = { 0 };
-    const char * pJobDoc = JOB_DOC_B;
+// void test_OTA_RefreshWithDifferentJobDoc()
+// {
+//     OtaEventMsg_t otaEvent = { 0 };
+//     const char * pJobDoc = JOB_DOC_B;
 
-    otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+//     otaGoToState( OtaAgentStateWaitingForFileBlock );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
 
-    /* Set the event send interface to a mock function that allows events to be sent continuously.
-     * We need this to go through the process of refreshing job doc. */
-    otaInterfaces.os.event.send = mockOSEventSend;
+//     /* Set the event send interface to a mock function that allows events to be sent continuously.
+//      * We need this to go through the process of refreshing job doc. */
+//     otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* Let abort pass. */
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+//     /* Let abort pass. */
+//     prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
+//     prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
-    /* First send request job doc event while we're in progress, this should make OTA agent to
-     * to request job doc again and transit to waiting for job state. */
-    otaEvent.eventId = OtaAgentEventRequestJobDocument;
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+//     /* First send request job doc event while we're in progress, this should make OTA agent to
+//      * to request job doc again and transit to waiting for job state. */
+//     otaEvent.eventId = OtaAgentEventRequestJobDocument;
+//     OTA_SignalEvent( &otaEvent );
+//     otaWaitForState( OtaAgentStateWaitingForJob );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 
-    /* Now send a different job doc, OTA agent should abort current and job and start the new job. */
-    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
-    otaEvent.pEventData = otaEventBufferGet();
-    memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_B_LENGTH );
-    otaEvent.pEventData->dataLength = JOB_DOC_B_LENGTH;
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
-}
+//     /* Now send a different job doc, OTA agent should abort current and job and start the new job. */
+//     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+//     otaEvent.pEventData = &eventBuffer;
+//     memcpy( otaEvent.pEventData->data, pJobDoc, JOB_DOC_B_LENGTH );
+//     otaEvent.pEventData->dataLength = JOB_DOC_B_LENGTH;
+//     OTA_SignalEvent( &otaEvent );
+//     otaWaitForState( OtaAgentStateWaitingForFileBlock );
+//     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+// }
