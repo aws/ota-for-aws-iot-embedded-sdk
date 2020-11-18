@@ -669,8 +669,6 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @param[in] None.
- *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
