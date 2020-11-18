@@ -557,6 +557,7 @@ struct OtaFileContext
 #define OTA_ERR_EVENT_TIMER_DELETE_FAILED    0x34000000U /*!< Failed to delete the timer. */
 #define OTA_ERR_SUBSCRIBE_FAILED             0x40000000U /*!< Failed to subscribe to a topic. */
 #define OTA_ERR_UNSUBSCRIBE_FAILED           0x41000000U /*!< Failed to unsubscribe from a topic. */
+#define OTA_ERR_FAILED_TO_DECODE_CBOR        0x42000000U /*!< Failed to decode CBOR object. */
 
 /* @[define_ota_err_codes] */
 
