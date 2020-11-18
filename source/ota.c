@@ -70,7 +70,7 @@
 
 /* OTA event handler definition. */
 
-typedef OtaErr_t ( * OtaEventHandler_t )( OtaEventData_t * pEventMsg );
+typedef OtaErr_t ( * OtaEventHandler_t )( const OtaEventData_t * pEventMsg );
 
 /**
  * @ingroup ota_datatypes_structs
@@ -251,16 +251,16 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );
 static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
-static OtaErr_t processJobHandler( OtaEventData_t * pEventData );
+static OtaErr_t processJobHandler( const OtaEventData_t * pEventData );
 static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData );
 static OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
-static OtaErr_t processDataHandler( OtaEventData_t * pEventData );
+static OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
 static OtaErr_t closeFileHandler( const OtaEventData_t * pEventData );
 static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData );
 static OtaErr_t suspendHandler( const OtaEventData_t * pEventData );
-static OtaErr_t resumeHandler( OtaEventData_t * pEventData );
+static OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 
 /* OTA default callback initializer. */
@@ -505,13 +505,13 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 static OtaErr_t palDefaultResetDevice( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_ResetDevice();
+    return prvPAL_ResetDevice( &( otaAgent.fileContext ) );
 }
 
 static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_GetPlatformImageState();
+    return prvPAL_GetPlatformImageState( &( otaAgent.fileContext ) );
 }
 
 static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
@@ -519,13 +519,13 @@ static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
 {
     ( void ) serverFileID;
     ( void ) state;
-    return prvPAL_SetPlatformImageState( state );
+    return prvPAL_SetPlatformImageState( &( otaAgent.fileContext ), state );
 }
 
 static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID )
 {
     ( void ) serverFileID;
-    return prvPAL_ActivateNewImage();
+    return prvPAL_ActivateNewImage( &( otaAgent.fileContext ) );
 }
 
 /* This is the default OTA callback handler if the user does not provide
@@ -834,7 +834,7 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
     return retVal;
 }
 
-static OtaErr_t processJobHandler( OtaEventData_t * pEventData )
+static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
     OtaFileContext_t * pOtaFileContext = NULL;
@@ -1086,7 +1086,7 @@ static void dataHandlerCleanup( IngestResult_t result )
     }
 }
 
-static OtaErr_t processDataHandler( OtaEventData_t * pEventData )
+static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaErr_t closeResult = OTA_ERR_UNINITIALIZED;
@@ -1225,7 +1225,7 @@ static OtaErr_t suspendHandler( const OtaEventData_t * pEventData )
     return err;
 }
 
-static OtaErr_t resumeHandler( OtaEventData_t * pEventData )
+static OtaErr_t resumeHandler( const OtaEventData_t * pEventData )
 {
     ( void ) pEventData;
 
@@ -2232,7 +2232,7 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
     if( ret )
     {
         LogInfo( ( "Received valid file block: Block index=%u, Size=%u",
-                   uBlockIndex, uBlockSize ) );
+                   blockIndex, blockSize ) );
     }
 
     return ret;
@@ -2984,22 +2984,12 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
     {
         case OtaImageStateAborted:
 
-            if( 1 /*otaAgent.xOTA_EventQueue != NULL*/ )
-            {
-                eventMsg.eventId = OtaAgentEventUserAbort;
+            eventMsg.eventId = OtaAgentEventUserAbort;
 
-                /*
-                 * Send the event, otaAgent.imageState will be set later when the event is processed.
-                 */
-                err = ( OTA_SignalEvent( &eventMsg ) == true ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
-            }
-            else
-            {
-                err = OTA_ERR_PANIC;
-
-                LogError( ( "Failed to send OTA event: "
-                            "OTA event queue is not initialized." ) );
-            }
+            /*
+             * Send the event, otaAgent.imageState will be set later when the event is processed.
+             */
+            err = ( OTA_SignalEvent( &eventMsg ) == true ) ? OTA_ERR_NONE : OTA_ERR_EVENT_Q_SEND_FAILED;
 
             break;
 
@@ -3083,7 +3073,7 @@ OtaErr_t OTA_Suspend( void )
 /*
  * Resume OTA Agent task.
  */
-OtaErr_t OTA_Resume( void * pConnection )
+OtaErr_t OTA_Resume( void )
 {
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };

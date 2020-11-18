@@ -669,12 +669,12 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @param[in] pConnection Update connection context.
+ * @param[in] None.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
-OtaErr_t OTA_Resume( void * pConnection );
+OtaErr_t OTA_Resume( void );
 
 /**
  * @brief OTA agent task function.
