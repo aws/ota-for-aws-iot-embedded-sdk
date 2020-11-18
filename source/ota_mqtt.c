@@ -564,10 +564,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
-
     /* The buffer is static and the size is calculated to fit. */
     assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
-
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
