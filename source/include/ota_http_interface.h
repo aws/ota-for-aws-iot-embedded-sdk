@@ -30,8 +30,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* OTA library interface include. */
-#include "ota.h"
+/**
+ * @brief OTA Error type.
+ */
+typedef uint32_t OtaErr_t;
 
 /**
  * @brief Init OTA Http interface.

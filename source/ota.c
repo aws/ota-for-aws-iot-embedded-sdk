@@ -611,6 +611,11 @@ static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
 
 static void setPALCallbacks( const OtaPalCallbacks_t * pCallbacks )
 {
+    /* Initialize ota pal callback.*/
+    OtaPalCallbacks_t palCallbacks = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER;
+
+    otaAgent.palCallbacks = palCallbacks;
+
     if( pCallbacks->abortUpdate != NULL )
     {
         otaAgent.palCallbacks.abortUpdate = pCallbacks->abortUpdate;
@@ -1457,7 +1462,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     pParamAdd = ( uint8_t * ) pContextBase + docParam.pDestOffset;
 
     /* Get destination buffer size to parameter storage location. */
-    pParamSizeAdd = pContextBase + docParam.pDestSizeOffset;
+    pParamSizeAdd = ( uint32_t * ) ( ( uint8_t * ) pContextBase + docParam.pDestSizeOffset );
 
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
