@@ -40,7 +40,7 @@
 
 
 /* Testing constants. */
-#define MAX_MESSAGES           10 /*!< Maximum number of messages in the event queue. */
+#define MAX_MESSAGES           10    /*!< Maximum number of messages in the event queue. */
 #define TIMER_NAME             "dummy_name"
 #define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
 
@@ -68,7 +68,7 @@ static long getTimeElapsed()
     long retVal = 0;
 
     /* On error, -1 is returned else 0. */
-    if( timer_gettime( otaTimers[timer_id], &timerAttr ) == 0 )
+    if( timer_gettime( otaTimers[ timer_id ], &timerAttr ) == 0 )
     {
         retVal = timerAttr.it_value.tv_nsec;
     }
