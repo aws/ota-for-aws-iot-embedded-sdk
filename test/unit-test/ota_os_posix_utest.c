@@ -42,22 +42,22 @@
 /* Testing constants. */
 #define MAX_MESSAGES           10 /*!< Maximum number of messages in the event queue. */
 #define TIMER_NAME             "dummy_name"
-#define OTA_DEFAULT_TIMEOUT    10 /*!< Timeout in seconds. */
+#define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
 
 /* Timer used in os_posix.c */
-extern timer_t otaTimer;
+extern timer_t otaTimers[ OtaNumOfTimers ];
 
 /* Interfaces for Timer and Event. */
+static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
-static OtaTimerContext_t * pTimerContext = NULL;
 static OtaEventContext_t * pEventContext = NULL;
 
 /**
  * @brief Get the Time elapsed from the timer.
  *
  * This is used to ensure that the timer has started successfully,
- * by using the timer id otaTimer to get the time elapsed and
+ * by using the timer id otaTimers to get the time elapsed and
  * store it into timer structure.
  *
  * @return long time elapsed in nano seconds.
@@ -68,7 +68,7 @@ static long getTimeElapsed()
     long retVal = 0;
 
     /* On error, -1 is returned else 0. */
-    if( timer_gettime( otaTimer, &timerAttr ) == 0 )
+    if( timer_gettime( otaTimers[timer_id], &timerAttr ) == 0 )
     {
         retVal = timerAttr.it_value.tv_nsec;
     }
@@ -82,7 +82,6 @@ void setUp( void )
     timer.start = Posix_OtaStartTimer;
     timer.delete = Posix_OtaDeleteTimer;
     timer.stop = Posix_OtaStopTimer;
-    timer.PTimerCtx = pTimerContext;
 
     event.init = Posix_OtaInitEvent;
     event.send = Posix_OtaSendEvent;
@@ -147,46 +146,46 @@ void test_OTA_posix_InvalidEventQueue( void )
 }
 
 /**
- * @brief Test invalid operations on timers.
+ * @brief Test timers are initialized, stopped and deleted successfully.
  */
 void test_OTA_posix_TimerCreateAndStop( void )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
-    result = timer.start( timer.PTimerCtx, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     TEST_ASSERT_NOT_EQUAL( 0, getTimeElapsed() );
 
-    result = timer.stop( timer.PTimerCtx );
+    result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    result = timer.delete( timer.PTimerCtx );
+    result = timer.delete( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 }
 
 /**
- * @brief Test timers are initialized, stopped and deleted successfully.
+ * @brief Test invalid operations on timers.
  */
 void test_OTA_posix_InvalidTimerOperations( void )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
-    result = timer.start( timer.PTimerCtx, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     /* Set the timeout to 0 and stop the timer*/
-    result = timer.start( timer.PTimerCtx, TIMER_NAME, 0, NULL );
+    result = timer.start( timer_id, TIMER_NAME, 0, NULL );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    result = timer.stop( timer.PTimerCtx );
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, result );
+    result = timer.stop( timer_id );
+    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    result = timer.delete( timer.PTimerCtx );
+    result = timer.delete( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     /* Delete a timer that has been deleted. */
-    result = timer.delete( timer.PTimerCtx );
+    result = timer.delete( timer_id );
     TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, result );
 }
 

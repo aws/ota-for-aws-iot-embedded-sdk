@@ -92,6 +92,6 @@ add_subdirectory( unit-test )
 add_custom_target( coverage
     COMMAND ${CMAKE_COMMAND} -DCMOCK_DIR=${CMOCK_DIR}
     -P ${MODULE_ROOT_DIR}/tools/cmock/coverage.cmake
-    DEPENDS cmock unity ota_utest ota_base64_utest ota_job_parsing_utest ota_cbor_utest ota_http_utest ota_os_posix_utest
+    DEPENDS cmock unity ota_utest ota_base64_utest ota_job_parsing_utest ota_cbor_utest ota_os_posix_utest
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
