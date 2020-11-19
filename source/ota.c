@@ -2736,6 +2736,8 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          * The OTA agent context is initialized with the prvPAL values. So, if null is passed in, don't
          * do anything and just use the defaults in the OTA structure.
          */
+        setPALCallbacks( &( pOtaInterfaces->pal ) );
+        otaAgent.palCallbacks.completeCallback = completeCallback;
 
         /*
          * Initialize the OTA control interface based on the application protocol
@@ -3035,12 +3037,13 @@ OtaErr_t OTA_Suspend( void )
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
 
-    /* Stop the request timer. */
-    otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
     {
+        /* Stop the request timer. */
+        otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
+
         /*
          * Send event to OTA agent task.
          */
