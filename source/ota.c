@@ -2737,7 +2737,11 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
          * do anything and just use the defaults in the OTA structure.
          */
         setPALCallbacks( &( pOtaInterfaces->pal ) );
-        otaAgent.palCallbacks.completeCallback = completeCallback;
+
+        if( completeCallback != NULL )
+        {
+            otaAgent.palCallbacks.completeCallback = completeCallback;
+        }
 
         /*
          * Initialize the OTA control interface based on the application protocol
@@ -2760,9 +2764,6 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
 
         /* Initialize the buffers used by OTA. */
         initializeBuffers( pOtaBuffer );
-
-        /* Initialize ota complete callback.*/
-        otaAgent.palCallbacks.completeCallback = completeCallback;
 
         /*
          * The current OTA image state as set by the OTA agent.
