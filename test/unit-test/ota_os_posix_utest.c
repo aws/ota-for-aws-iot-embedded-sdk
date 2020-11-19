@@ -57,8 +57,8 @@ static OtaEventContext_t * pEventContext = NULL;
  * @brief Get the Time elapsed from the timer.
  *
  * This is used to ensure that the timer has started successfully,
- * by using the timer id otaTimers to get the time elapsed and
- * store it into timer structure.
+ * by using the timer id to get the time elapsed and store it into
+ * timer structure.
  *
  * @return long time elapsed in nano seconds.
  */
