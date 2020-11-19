@@ -147,7 +147,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
 static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
                                         size_t valueLength,
-                                        void ** ppvParamAdd );
+                                        void * pParamAdd );
 
 /* Check if all the required parameters for the job are present in the JSON. */
 
@@ -1330,7 +1330,7 @@ static DocParseErr_t validateJSON( const char * pJson,
 
 static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
                                         size_t valueLength,
-                                        void ** ppvParamAdd )
+                                        void * pParamAdd )
 {
     DocParseErr_t err = DocParseErrNone;
 
@@ -1341,12 +1341,12 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
     {
         size_t actualLen = 0;
         int base64Status = 0;
+        Sig256_t ** pSig256 = pParamAdd;
 
-        *ppvParamAdd = pSignature;
-        Sig256_t * pSig256 = *ppvParamAdd;
+        *pSig256 = pSignature;
 
-        base64Status = base64Decode( pSig256->data,
-                                     sizeof( pSig256->data ),
+        base64Status = base64Decode( ( *pSig256 )->data,
+                                     sizeof( ( *pSig256 )->data ),
                                      &actualLen,
                                      ( const uint8_t * ) pValueInJson,
                                      valueLength );
@@ -1362,7 +1362,7 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
         }
         else
         {
-            pSig256->size = ( uint16_t ) actualLen;
+            ( *pSig256 )->size = ( uint16_t ) actualLen;
             LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
                        OTA_JsonFileSignatureKey,
                        pValueInJson ) );
@@ -1380,28 +1380,33 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
 static DocParseErr_t extractAndStoreArray( char * pKey,
                                            char * pValueInJson,
                                            size_t valueLength,
-                                           void ** ppvParamAdd,
+                                           void * pParamAdd,
                                            uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err = DocParseErrNone;
     char * pStringCopy = NULL;
 
-    if( *ppvParamAdd == NULL )
+    /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
+    char ** pCharPtr = pParamAdd;
+
+    if( *pCharPtr == NULL )
     {
         /* Malloc memory for a copy of the value string plus a zero terminator. */
         pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
 
         if( pStringCopy != NULL )
         {
-            *ppvParamAdd = pStringCopy;
+            *pCharPtr = pStringCopy;
         }
         else
         {
             /* Stop processing on error. */
             err = DocParseErrOutOfMemory;
 
-            LogError( ( "Memory allocation failed [key: valueLength]=[%s: %s]",
-                        pKey, valueLength ) );
+            LogError( ( "Memory allocation failed "
+                        "[key: valueLength]=[%s: %s]",
+                        docParam.pSrcKey,
+                        valueLength ) );
         }
     }
     else
@@ -1410,12 +1415,14 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
         {
             err = DocParseErrUserBufferInsuffcient;
 
-            LogError( ( "Insufficient user memory: [key: valueLength]=[%s: %s]",
-                        pKey, valueLength ) );
+            LogError( ( "Insufficient user memory: "
+                        "[key: valueLength]=[%s: %s]",
+                        docParam.pSrcKey,
+                        valueLength ) );
         }
         else
         {
-            pStringCopy = *ppvParamAdd;
+            pStringCopy = *pCharPtr;
             err = DocParseErrNone;
         }
     }
@@ -1423,13 +1430,15 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
     if( err == DocParseErrNone )
     {
         /* Copy parameter string into newly allocated memory. */
-        ( void ) memcpy( ( *ppvParamAdd ), pValueInJson, valueLength );
+        ( void ) memcpy( *pCharPtr, pValueInJson, valueLength );
 
         /* Zero terminate the new string. */
         pStringCopy[ valueLength ] = '\0';
 
-        LogInfo( ( "Extracted parameter:[key: value]=[%s: %s]",
-                   pKey, pStringCopy ) );
+        LogInfo( ( "Extracted parameter: "
+                   "[key: value]=[%s: %s]",
+                   docParam.pSrcKey,
+                   pStringCopy ) );
     }
 }
 
@@ -1440,42 +1449,42 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        char * pValueInJson,
                                        size_t valueLength )
 {
-    void ** ppvParamAdd;
-    uint32_t * pParamSizeAdd;
     DocParseErr_t err = DocParseErrNone;
+    void * pParamAdd;
+    uint32_t * pParamSizeAdd;
 
     /* Get destination offset to parameter storage location.*/
-    ppvParamAdd = pContextBase + docParam.pDestOffset;
+    pParamAdd = ( uint8_t * ) pContextBase + docParam.pDestOffset;
 
     /* Get destination buffer size to parameter storage location. */
     pParamSizeAdd = pContextBase + docParam.pDestSizeOffset;
 
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
-        extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, ppvParamAdd, pParamSizeAdd );
+        extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
     }
     else if( ModelParamTypeStringInDoc == docParam.modelParamType )
     {
         /* Copy pointer to source string instead of duplicating the string. */
         char * pStringInDoc = pValueInJson;
-        *ppvParamAdd = pStringInDoc;
+        *( char ** ) pParamAdd = pStringInDoc;
 
         LogInfo( ( "Extracted parameter: [key: value]=[%s: %.*s]",
                    docParam.pSrcKey, ( int16_t ) valueLength, pStringInDoc ) );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
+        uint32_t * pUint32 = pParamAdd;
         char * pEnd;
         const char * pStart = pValueInJson;
         errno = 0;
-        uint32_t * puint32 = ( uint32_t * ) ppvParamAdd;
 
-        *puint32 = ( uint32_t ) strtoul( pStart, &pEnd, 0 );
+        *pUint32 = ( uint32_t ) strtoul( pStart, &pEnd, 0 );
 
         if( ( errno == 0 ) && ( pEnd == &pValueInJson[ valueLength ] ) )
         {
             LogInfo( ( "Extracted parameter: [key: value]=[%s: %u]",
-                       docParam.pSrcKey, *puint32 ) );
+                       docParam.pSrcKey, *pUint32 ) );
         }
         else
         {
@@ -1484,18 +1493,18 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     }
     else if( ModelParamTypeSigBase64 == docParam.modelParamType )
     {
-        err = decodeAndStoreKey( pValueInJson, valueLength, ppvParamAdd );
+        err = decodeAndStoreKey( pValueInJson, valueLength, pParamAdd );
     }
     else if( ModelParamTypeIdent == docParam.modelParamType )
     {
-        bool * pIdentifier = ( bool * ) ppvParamAdd;
-        *pIdentifier = true;
         LogDebug( ( "Identified parameter: [ %s ]",
                     docParam.pSrcKey ) );
+
+        *( bool * ) pParamAdd = true;
     }
     else
     {
-        /* Ignore if invalid type */
+        LogWarn( ( "Invalid parameter type: %d", docParam.modelParamType ) );
     }
 
     if( err != DocParseErrNone )
@@ -1846,7 +1855,8 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             err = OtaJobParseErrNone;
         }
         else
-        {   /* The same job is being reported so update the url. */
+        {
+            /* The same job is being reported so update the url. */
             LogInfo( ( "New job document ID is identical to the current job: "
                        "Updating the URL based on the new job document." ) );
 
@@ -1896,7 +1906,8 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
-    {   /* Assume control of the job name from the context. */
+    {
+        /* Assume control of the job name from the context. */
         otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
         pFileContext->pJobName = NULL;
     }
