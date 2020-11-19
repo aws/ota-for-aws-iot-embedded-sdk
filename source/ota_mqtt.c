@@ -118,14 +118,14 @@ static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "acti
 /* Pre-calculate max buffer size for mqtt topics and messages. We make sure the buffer size is large
  * enough to hold a dynamically constructed topic and message string.
  */
-#define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )
-#define TOPIC_GET_NEXT_BUFFER_SIZE             ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )
-#define TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextAcceptedTopicTemplate ) )
-#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )
-#define TOPIC_JOB_STATUS_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )
-#define TOPIC_STREAM_DATA_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN )
-#define TOPIC_GET_STREAM_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )
-#define MSG_GET_NEXT_BUFFER_SIZE               ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )
+#define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )              /*!< Calculate max buffer size based on topic template and thing name length. */
+#define TOPIC_GET_NEXT_BUFFER_SIZE             ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                      /*!< Max buffer size for `jobs/$next/get` topic. */
+#define TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextAcceptedTopicTemplate ) )              /*!< Max buffer size for `jobs/$next/get/accepted` topic. */
+#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                   /*!< Max buffer size for `jobs/notify-next` topic. */
+#define TOPIC_JOB_STATUS_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )     /*!< Max buffer size for `jobs/<job_name>/update` topic. */
+#define TOPIC_STREAM_DATA_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN ) /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
+#define TOPIC_GET_STREAM_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )  /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
+#define MSG_GET_NEXT_BUFFER_SIZE               ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )           /*!< Max buffer size for message of `jobs/$next/get topic`. */
 
 /**
  * @brief Subscribe to the jobs notification topic (i.e. New file version available).
