@@ -32,6 +32,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 /* OTA includes. */
 #include "ota.h"
