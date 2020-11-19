@@ -161,7 +161,8 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
 static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        uint32_t messageLength,
-                                                       OtaFileContext_t * pFileContext );
+                                                       OtaFileContext_t * pFileContext,
+                                                       OtaFileContext_t ** pFinalFile );
 
 /* Check if the incoming job document is not conflicting with current job status. */
 
@@ -1206,9 +1207,6 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
 
     otaAgent.state = OtaAgentStateStopped;
 
-    /* Terminate the OTA Agent Thread. */
-    pthread_exit( NULL );
-
     return OTA_ERR_NONE;
 }
 
@@ -1490,10 +1488,10 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     }
     else if( ModelParamTypeIdent == docParam.modelParamType )
     {
+        bool * pIdentifier = ( bool * ) ppvParamAdd;
+        *pIdentifier = true;
         LogDebug( ( "Identified parameter: [ %s ]",
                     docParam.pSrcKey ) );
-
-        *ppvParamAdd = true;
     }
     else
     {
@@ -1755,7 +1753,8 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
 
 static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        uint32_t messageLength,
-                                                       OtaFileContext_t * pFileContext )
+                                                       OtaFileContext_t * pFileContext,
+                                                       OtaFileContext_t ** pFinalFile )
 {
     OtaErr_t otaErr = OTA_ERR_NONE;
 
@@ -1782,6 +1781,10 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                             "OtaErr_t=%d",
                             otaErr ) );
             }
+
+            /* Everything looks OK. Set final context structure to start OTA. */
+            **pFinalFile = *pFileContext;
+            LogInfo( ( "Job document parsed from external callback" ) );
 
             /* We don't need the job name memory anymore since we're done with this job. */
             free( otaAgent.pOtaSingletonActiveJobName );
@@ -2034,7 +2037,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
         else
         {
-            err = parseJobDocFromCustomCallback( pJson, messageLength, pFileContext );
+            err = parseJobDocFromCustomCallback( pJson, messageLength, pFileContext, &pFinalFile );
         }
     }
 
