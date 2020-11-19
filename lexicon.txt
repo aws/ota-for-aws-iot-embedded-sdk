@@ -348,6 +348,7 @@ potasingletonactivejobname
 potastringfailed
 poutputlen
 pparam
+pparamadd
 ppayload
 ppayloadsize
 pprivatekeypath
