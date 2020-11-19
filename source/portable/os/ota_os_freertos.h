@@ -95,7 +95,7 @@ OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
  *
  * This function starts the timer or resets it if it is already started on FreeRTOS platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer context to start/reset.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @param[pTimerName]       Timer name.
  *
@@ -105,32 +105,32 @@ OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
+OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
                                  const char * const pTimerName,
                                  const uint32_t timeout,
-                                 void ( * callback )( void * ) );
+                                 OtaTimerCallback_t callback );
 
 /**
  * @brief Stop timer.
  *
  * This function stops the timer on FreeRTOS platforms.
  *
- * @param[pTimerCtx]      Pointer to the timer context to start/reset. to stop.
+ * @param[otaTimerId]     Timer ID of type otaTimerId_t.
  *
  * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx );
+OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Delete a timer.
  *
  * This function deletes a timer for POSIX platforms.
  *
- * @param[pTimerCtx]        Pointer to the timer object to delete.
+ * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
  * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
  */
-OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx );
+OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Allocate memory.

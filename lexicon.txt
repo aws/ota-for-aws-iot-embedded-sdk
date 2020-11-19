@@ -10,6 +10,7 @@ alpn
 alpnprotoslen
 api
 apis
+app
 appfirmwareversion
 ascii
 attemptsdone

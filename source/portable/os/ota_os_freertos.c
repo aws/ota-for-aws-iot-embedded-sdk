@@ -44,8 +44,16 @@ static StaticQueue_t staticQueue;
 /* The queue control handle.  .*/
 static QueueHandle_t otaEventQueue;
 
-/* The timer handle.  .*/
-static TimerHandle_t timer;
+/* OTA App Timer callback.*/
+static OtaTimerCallback_t otaTimerCallback;
+
+/* OTA Timer handles.*/
+static TimerHandle_t otaTimer[ OtaNumOfTimers ];
+
+/* OTA Timer callbacks.*/
+static void requestTimerCallback( union sigval arg );
+static void selfTestTimerCallback( union sigval arg );
+void ( * timerCallback[ OtaNumOfTimers ] )( TimerHandle_t T ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
@@ -160,38 +168,58 @@ void OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
     }
 }
 
-static void timerCallback( TimerHandle_t timer )
+static void selfTestTimerCallback( TimerHandle_t T )
 {
-    OtaEventMsg_t xEventMsg = { 0 };
+    LogDebug( ( "Self-test expired within %ums\r\n",
+                otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-    xEventMsg.eventId = OtaAgentEventRequestTimer;
-
-    /* Send timer event. */
-    OTA_SignalEvent( &xEventMsg );
+    if( otaTimerCallback != NULL )
+    {
+        otaTimerCallback( OtaSelfTestTimer );
+    }
+    else
+    {
+        LogWarn( ( "Self-test timer event unhandled.\r\n" ) );
+    }
 }
 
-OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
+static void requestTimerCallback( TimerHandle_t T )
+{
+    LogDebug( ( "Request timer expired in %ums \r\n",
+                otaconfigFILE_REQUEST_WAIT_MS ) );
+
+    if( otaTimerCallback != NULL )
+    {
+        otaTimerCallback( OtaRequestTimer );
+    }
+    else
+    {
+        LogWarn( ( "Request timer event unhandled.\r\n" ) );
+    }
+}
+
+OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
                                  const char * const pTimerName,
                                  const uint32_t timeout,
-                                 void ( * callback )( void * ) )
+                                 OtaTimerCallback_t callback )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     BaseType_t retVal = pdFALSE;
 
+    assert( callback != NULL );
+
     /* If timer is not created.*/
-    if( timer == NULL )
+    if( otaTimer[ otaTimerId ] == NULL )
     {
         /* Create the timer. */
-        timer = timerCreate( pTimerName,
-                             pdMS_TO_TICKS( timeout ),
-                             pdFALSE,
-                             NULL,
-                             timerCallback );
+        otaTimer[ otaTimerId ] = xTimerCreate( pTimerName,
+                                               pdMS_TO_TICKS( timeout ),
+                                               pdFALSE,
+                                               NULL,
+                                               timerCallback[ otaTimerId ] );
 
-        if( timer == NULL )
+        if( otaTimer[ otaTimerId ] == NULL )
         {
             otaErrRet = OTA_ERR_TIMER_CREATE_FAILED;
 
@@ -207,7 +235,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
             LogDebug( ( "OTA Timer created." ) );
 
             /* Start the timer. */
-            retVal = timerStart( timer, portMAX_DELAY );
+            retVal = xTimerStart( otaTimer[ otaTimerId ], portMAX_DELAY );
 
             if( retVal == pdTRUE )
             {
@@ -227,7 +255,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
     else
     {
         /* Reset the timer. */
-        retVal = timerReset( timer, portMAX_DELAY );
+        retVal = xTimerReset( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
@@ -237,64 +265,67 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx,
         }
         else
         {
-            otaErrRet = OTA_ERR_TIMER_START_FAILED;
+            otaErrRet = OTA_ERR_TIMER_RESTART_FAILED;
 
-            LogError( ( "Failed to restart OTA timer: "
-                        "timerReset returned error." ) );
+            LogError( ( "Failed to set OTA timer timeout: "
+                        "timer_settime returned error: "
+                        "otaErrRet=%i ",
+                        otaErrRet ) );
         }
     }
 
     return otaErrRet;
 }
 
-OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerContext_t * pTimerCtx )
+OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    if( timer != NULL )
+    if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
-        retVal = timerStop( timer, portMAX_DELAY );
+        retVal = xTimerStop( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
-            otaErrRet = OTA_ERR_NONE;
+            LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
 
-            LogDebug( ( "OTA Timer restarted." ) );
+            otaErrRet = OTA_ERR_NONE;
         }
         else
         {
-            otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
-
             LogError( ( "Failed to stop OTA timer: "
-                        "timerStop returned error." ) );
+                        "timer_settime returned error: "
+                        "otaErrRet=%i ",
+                        otaErrRet ) );
+
+            otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
         }
     }
     else
     {
-        LogError( ( "Failed to stop OTA timer: "
-                    "Timer does not exist." ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
+
+        otaErrRet = OTA_ERR_NONE;
     }
 
     return otaErrRet;
 }
 
-OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
+OtaErr_t ota_DeleteTimer( OtaTimerId_t otaTimerId )
 {
-    ( void ) pTimerCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    if( timer != NULL )
+    if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
-        retVal = timerDelete( timer, portMAX_DELAY );
+        retVal = xTimerDelete( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
         {
             otaErrRet = OTA_ERR_NONE;
+
+            otaTimer[ otaTimerId ] == NULL;
 
             LogDebug( ( "OTA Timer deleted." ) );
         }
@@ -303,15 +334,16 @@ OtaErr_t ota_DeleteTimer( OtaTimerContext_t * pTimerCtx )
             otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
 
             LogError( ( "Failed to delete OTA timer: "
-                        "timerDelete returned error." ) );
+                        "timer_delete returned error: "
+                        "otaErrRet=%i ",
+                        otaErrRet ) );
         }
     }
     else
     {
         otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
 
-        LogError( ( "Failed to delete OTA timer: "
-                    "Timer does not exist." ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
     }
 
     return otaErrRet;

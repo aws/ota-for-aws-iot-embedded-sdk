@@ -3038,7 +3038,6 @@ OtaErr_t OTA_Suspend( void )
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
 
-
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
     {
