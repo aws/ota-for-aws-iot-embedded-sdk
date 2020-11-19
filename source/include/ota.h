@@ -138,7 +138,7 @@ typedef enum OtaPalImageState
     OtaPalImageStateUnknown = 0,
     OtaPalImageStatePendingCommit,
     OtaPalImageStateValid,
-    OtaPalImageStateInvalid,
+    OtaPalImageStateInvalid
 } OtaPalImageState_t;
 
 /**
@@ -156,7 +156,7 @@ typedef enum OtaJobParseErr
     OtaJobParseErrNonConformingJobDoc, /* The job document failed to fulfill the model requirements. */
     OtaJobParseErrBadModelInitParams,  /* There was an invalid initialization parameter used in the document model. */
     OtaJobParseErrNoContextAvailable,  /* There was not an OTA context available. */
-    OtaJobParseErrNoActiveJobs,        /* No active jobs are available in the service. */
+    OtaJobParseErrNoActiveJobs         /* No active jobs are available in the service. */
 } OtaJobParseErr_t;
 
 

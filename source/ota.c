@@ -262,38 +262,38 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 
 /* OTA default callback initializer. */
 
-#define OTA_JOB_CALLBACK_DEFAULT_INITIALIZER                      \
-    {                                                             \
-        .abortUpdate = prvPAL_Abort,                              \
-        .activateNewImage = palDefaultActivateNewImage,           \
-        .closeFile = prvPAL_CloseFile,                            \
-        .createFileForRx = prvPAL_CreateFileForRx,                \
-        .getPlatformImageState = palDefaultGetPlatformImageState, \
-        .resetDevice = palDefaultResetDevice,                     \
-        .setPlatformImageState = palDefaultSetPlatformImageState, \
-        .writeBlock = prvPAL_WriteBlock,                          \
-        .completeCallback = defaultOTACompleteCallback,           \
-        .customJobCallback = defaultCustomJobCallback             \
+#define OTA_JOB_CALLBACK_DEFAULT_INITIALIZER                         \
+    {                                                                \
+        prvPAL_Abort,                    /* abortUpdate */           \
+        palDefaultActivateNewImage,      /* activateNewImage */      \
+        prvPAL_CloseFile,                /* closeFile */             \
+        prvPAL_CreateFileForRx,          /* createFileForRx */       \
+        palDefaultGetPlatformImageState, /* getPlatformImageState */ \
+        palDefaultResetDevice,           /* resetDevice */           \
+        palDefaultSetPlatformImageState, /* setPlatformImageState */ \
+        prvPAL_WriteBlock,               /* writeBlock */            \
+        defaultOTACompleteCallback,      /* completeCallback */      \
+        defaultCustomJobCallback         /* customJobCallback */     \
     }
 
 /* This is THE OTA agent context and initialization state. */
 
 static OtaAgentContext_t otaAgent =
 {
-    .state                      = OtaAgentStateStopped,
-    .pThingName                 = { 0 },
-    .fileContext                = { 0 },
-    .fileIndex                  = 0,
-    .serverFileID               = 0,
-    .pOtaSingletonActiveJobName = NULL,
-    .pClientTokenFromJob        = NULL,
-    .timestampFromJob           = 0,
-    .imageState                 = OtaImageStateUnknown,
-    .palCallbacks               = OTA_JOB_CALLBACK_DEFAULT_INITIALIZER,
-    .numOfBlocksToReceive       = 1,
-    .statistics                 = { 0 },
-    .requestMomentum            = 0,
-    .pOtaInterface              = NULL
+    OtaAgentStateStopped,                 /* state */
+    { 0 },                                /* pThingName */
+    { 0 },                                /* fileContext */
+    0,                                    /* fileIndex */
+    0,                                    /* serverFileID */
+    NULL,                                 /* pOtaSingletonActiveJobName */
+    NULL,                                 /* pClientTokenFromJob */
+    0,                                    /* timestampFromJob */
+    OtaImageStateUnknown,                 /* imageState */
+    OTA_JOB_CALLBACK_DEFAULT_INITIALIZER, /* palCallbacks */
+    1,                                    /* numOfBlocksToReceive */
+    { 0 },                                /* statistics */
+    0,                                    /* requestMomentum */
+    NULL                                  /* pOtaInterface */
 };
 
 static OtaStateTableEntry_t otaTransitionTable[] =
@@ -1611,12 +1611,12 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         {
             err = checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex );
 
-            if( ( void * ) OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
+            if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
             {
                 /* Do nothing if we don't need to store the parameter */
                 continue;
             }
-            else if( ( void * ) OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
+            else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
             {
                 pFileParams = pValueInJson + 1;
                 fileParamsLength = ( uint32_t ) valueLength - 2U;
@@ -1624,7 +1624,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
             else
             {
                 err = extractParameter( pModelParam[ paramIndex ],
-                                        ( void * ) pDocModel->contextBase,
+                                        pDocModel->contextBase,
                                         pValueInJson,
                                         valueLength );
             }

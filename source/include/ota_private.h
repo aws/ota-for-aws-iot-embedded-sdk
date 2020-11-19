@@ -146,7 +146,7 @@ typedef enum
     IngestResultNullResultPointer = -10, /*!< The pointer to the close result pointer was null. */
     IngestResultUninitialized = -127,    /*!< Software BUG: We forgot to set the result code. */
     IngestResultAccepted_Continue = 0,   /*!< The block was accepted and we're expecting more. */
-    IngestResultDuplicate_Continue = 1,  /*!< The block was a duplicate but that's OK. Continue. */
+    IngestResultDuplicate_Continue = 1   /*!< The block was a duplicate but that's OK. Continue. */
 } IngestResult_t;
 
 /**
