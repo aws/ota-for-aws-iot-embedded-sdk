@@ -328,6 +328,7 @@ pcontrolinterface
 pctimername
 pctopicbuffer
 pdecodememory
+pdata
 pdatainterface
 pdest
 pdestoffset

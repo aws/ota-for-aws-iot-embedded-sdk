@@ -103,7 +103,7 @@ typedef OtaErr_t ( * otaPalCloseFile_t )( OtaFileContext_t * const pFileContext 
 /**
  * @brief Write a block of data to the specified file at the given offset.
  *
- * @note The input OtaFileContext_t pFileContextis checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called.
  * The file pointer/handle pFileContext->pFile, is checked for NULL by the OTA agent before this
  * function is called.
