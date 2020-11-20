@@ -799,7 +799,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     size_t msgSizeFromStream = 0;
-    uint32_t blockSize;
+    uint32_t blockSize = OTA_FILE_BLOCK_SIZE;
     uint32_t numBlocks = 0;
     uint32_t bitmapLen = 0;
     uint32_t msgSizeToPublish = 0;
@@ -821,7 +821,6 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
 
-    blockSize = OTA_FILE_BLOCK_SIZE & 0x7fffffffU;
     numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
