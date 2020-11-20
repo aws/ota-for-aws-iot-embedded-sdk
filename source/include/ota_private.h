@@ -36,7 +36,6 @@
 /* For FILE type in OtaFileContext_t.*/
 #include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 /* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
  * without a custom config. If a custom config is provided, the

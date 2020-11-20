@@ -29,7 +29,6 @@
  */
 
 /* Standard library include. */
-#include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
