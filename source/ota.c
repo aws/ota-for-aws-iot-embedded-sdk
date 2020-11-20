@@ -2578,7 +2578,7 @@ void otaAgentTask( const void * pUnused )
      */
     otaAgent.state = OtaAgentStateReady;
 
-    for( ; ; )
+    while( otaAgent.state != OtaAgentStateStopped )
     {
         /*
          * Receive the next event form the OTA event queue to process.
@@ -2710,7 +2710,6 @@ void initializeBuffers( OtaAppBuffer_t * pOtaBuffer )
         otaAgent.fileContext.authSchemeMaxSize = -1;
     }
 }
-
 
 /*
  * Public API to initialize the OTA Agent.
