@@ -31,12 +31,12 @@
 /**
  * @brief Abort an OTA transfer.
  *
- * Aborts access to an existing open file represented by the OTA file context pFileContext. This is 
+ * Aborts access to an existing open file represented by the OTA file context pFileContext. This is
  * only valid for jobs that started successfully.
  *
  * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called.
- * This function may be called before the file is opened, so the file pointer pFileContext->fileHandle 
+ * This function may be called before the file is opened, so the file pointer pFileContext->fileHandle
  * may be NULL when this function is called.
  *
  * @param[in] pFileContext OTA file context information.
@@ -55,7 +55,7 @@ typedef OtaErr_t ( * otaPalAbort_t )( OtaFileContext_t * const pFileContext );
  *
  * @note Opens the file indicated in the OTA file context in the MCU file system.
  *
- * @note The previous image may be present in the designated image download partition or file, so the 
+ * @note The previous image may be present in the designated image download partition or file, so the
  * partition or file must be completely erased or overwritten in this routine.
  *
  * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
@@ -116,13 +116,13 @@ typedef OtaErr_t ( * otaPalCloseFile_t )( OtaFileContext_t * const pFileContext 
  * @param[in] pData Pointer to the byte array of data to write.
  * @param[in] blockSize The number of bytes to write.
  *
- * @return The number of bytes written on a success, or a negative error code from the platform 
+ * @return The number of bytes written on a success, or a negative error code from the platform
  * abstraction layer.
  */
 typedef int16_t ( * otaPalWriteBlock) ( OtaFileContext_t * const pFileContext,
-                           uint32_t offset,
-                           uint8_t * const pData,
-                           uint32_t blockSize );
+                                        uint32_t offset,
+                                        uint8_t * const pData,
+                                        uint32_t blockSize );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -157,7 +157,7 @@ typedef OtaErr_t ( * otaPalResetDevice_t ) ( OtaFileContext_t * const pFileConte
  *
  * Do whatever is required by the platform to Accept/Reject the OTA update image (or bundle).
  * Refer to the PAL implementation to determine what happens on your platform.
- * 
+ *
  * @param[in] pFileContext File context of type OtaFileContext_t.
  *
  * @param[in] eState The desired state of the OTA update image.
@@ -174,14 +174,14 @@ typedef OtaErr_t ( * otaPalResetDevice_t ) ( OtaFileContext_t * const pFileConte
  *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
 typedef OtaErr_t ( * otaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
-                                       OtaImageState_t eState );
+                                                      OtaImageState_t eState );
 
 /**
  * @brief Get the state of the OTA update image.
  *
  * We read this at OTA_Init time and when the latest OTA job reports itself in self
  * test. If the update image is in the "pending commit" state, we start a self test
- * timer to assure that we can successfully connect to the OTA services and accept 
+ * timer to assure that we can successfully connect to the OTA services and accept
  * the OTA update image within a reasonable amount of time (user configurable). If
  * we don't satisfy that requirement, we assume there is something wrong with the
  * firmware and automatically reset the device, causing it to roll back to the
@@ -189,7 +189,7 @@ typedef OtaErr_t ( * otaPalSetPlatformImageState_t )( OtaFileContext_t * const p
  *
  * If the update image state is not in "pending commit," the self test timer is
  * not started.
- * 
+ *
  * @param[in] pFileContext File context of type OtaFileContext_t.
  *
  * @return An OtaPalImageState_t. One of the following:
