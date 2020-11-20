@@ -151,7 +151,7 @@ function(create_real_library target
             ${real_include_list}
         )
     set_target_properties(${target} PROPERTIES
-                COMPILE_FLAGS "-Wextra -Wpedantic \
+                COMPILE_FLAGS "-Wall -Wextra -Wpedantic -Wconversion \
                     -fprofile-arcs -ftest-coverage -fprofile-generate \
                     -Wno-unused-but-set-variable"
                 LINK_FLAGS "-fprofile-arcs -ftest-coverage \

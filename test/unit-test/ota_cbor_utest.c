@@ -31,7 +31,6 @@
 #include "ota.h"
 #include "ota_private.h"
 #include "ota_cbor_private.h"
-#include "cbor.h"
 
 /* Unity framework includes. */
 #include "unity_fixture.h"

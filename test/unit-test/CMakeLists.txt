@@ -66,6 +66,18 @@ create_real_library(${real_name}
     "${real_include_directories}"
     "${mock_name}"
 )
+# Suppress warnings in dependency folder
+set_source_files_properties(
+    ${JSON_SOURCES}
+    ${TINYCBOR_SOURCES}
+    PROPERTIES COMPILE_FLAGS
+    "-w"
+)
+target_include_directories(${real_name}
+    SYSTEM PRIVATE
+    ${TINYCBOR_INCLUDE_DIRS}
+    ${JSON_INCLUDE_PUBLIC_DIRS}
+)
 
 list(APPEND utest_link_list
     -lpthread
