@@ -317,7 +317,7 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateSuspended,           OtaAgentEventResume,              resumeHandler,          OtaAgentStateRequestingJob       },
     { OtaAgentStateAll,                 OtaAgentEventSuspend,             suspendHandler,         OtaAgentStateSuspended           },
     { OtaAgentStateAll,                 OtaAgentEventUserAbort,           userAbortHandler,       OtaAgentStateWaitingForJob       },
-    { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateShuttingDown        },
+    { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll ] =
@@ -1209,8 +1209,6 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
 
     /* Clear the entire agent context. This includes the OTA agent state. */
     ( void ) memset( &otaAgent, 0, sizeof( otaAgent ) );
-
-    otaAgent.state = OtaAgentStateStopped;
 
     return OTA_ERR_NONE;
 }
