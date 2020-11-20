@@ -51,16 +51,22 @@
 #include "utest_helpers.h"
 
 /* Job document for testing. */
-#define OTA_TEST_FILE_SIZE          10240
-#define OTA_TEST_FILE_SIZE_STR      "10240"
-#define JOB_DOC_A                   "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
-#define JOB_DOC_A_LENGTH            ( sizeof( JOB_DOC_A ) - 1 )
-#define JOB_DOC_B                   "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob21\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
-#define JOB_DOC_B_LENGTH            ( sizeof( JOB_DOC_B ) - 1 )
-#define JOB_DOC_SELF_TEST           "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
-#define JOB_DOC_SELF_TEST_LENGTH    ( sizeof( JOB_DOC_SELF_TEST ) - 1 )
-#define JOB_DOC_INVALID             "not a json"
-#define JOB_DOC_INVALID_LENGTH      ( sizeof( JOB_DOC_INVALID ) - 1 )
+#define OTA_TEST_FILE_SIZE           10240
+#define OTA_TEST_FILE_SIZE_STR       "10240"
+#define JOB_DOC_A                    "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_A_LENGTH             ( sizeof( JOB_DOC_A ) - 1 )
+#define JOB_DOC_B                    "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob21\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_B_LENGTH             ( sizeof( JOB_DOC_B ) - 1 )
+#define JOB_DOC_SELF_TEST            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_SELF_TEST_LENGTH     ( sizeof( JOB_DOC_SELF_TEST ) - 1 )
+#define JOB_DOC_INVALID              "not a json"
+#define JOB_DOC_INVALID_LENGTH       ( sizeof( JOB_DOC_INVALID ) - 1 )
+
+/* OTA application buffer size. */
+#define OTA_UPDATE_FILE_PATH_SIZE    100
+#define OTA_CERT_FILE_PATH_SIZE      100
+#define OTA_STREAM_NAME_SIZE         50
+#define OTA_APP_BUFFER_SIZE          ( OTA_UPDATE_FILE_PATH_SIZE + OTA_CERT_FILE_PATH_SIZE + OTA_STREAM_NAME_SIZE )
 
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
@@ -81,7 +87,7 @@ static OtaInterfaces_t otaInterfaces;
 
 /* OTA application buffer. */
 static OtaAppBuffer_t pOtaAppBuffer;
-static uint8_t pUserBuffer[ 300 ];
+static uint8_t pUserBuffer[ OTA_APP_BUFFER_SIZE ];
 
 /* OTA Event. */
 static OtaEventMsg_t otaEvent;
@@ -297,11 +303,11 @@ static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
     pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
-    pOtaAppBuffer.updateFilePathsize = 100;
+    pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
     pOtaAppBuffer.pCertFilePath = pOtaAppBuffer.pUpdateFilePath + pOtaAppBuffer.updateFilePathsize;
-    pOtaAppBuffer.certFilePathSize = 100;
+    pOtaAppBuffer.certFilePathSize = OTA_CERT_FILE_PATH_SIZE;
     pOtaAppBuffer.pStreamName = pOtaAppBuffer.pCertFilePath + pOtaAppBuffer.certFilePathSize;
-    pOtaAppBuffer.streamNameSize = 50;
+    pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
     OTA_AgentInit( &pOtaAppBuffer,
                    &otaInterfaces,
                    ( const uint8_t * ) pClientID,
