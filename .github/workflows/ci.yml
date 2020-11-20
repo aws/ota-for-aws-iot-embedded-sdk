@@ -20,7 +20,6 @@ jobs:
         run: |
           find source/ -iname '*.c' |\
           xargs complexity --scores --threshold=0 --horrid-threshold=8
-
   unittest:
     runs-on: ubuntu-latest
     steps:
@@ -64,14 +63,13 @@ jobs:
         run: |
           doxygen docs/doxygen/config.doxyfile 2>&1 | tee doxyoutput.txt
           if [[ "$(wc -c < doxyoutput.txt | bc)" = "0" ]]; then exit 0; else exit 1; fi
-
   spell-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Parent Repo
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
           repository: aws/aws-iot-device-sdk-embedded-C
 
       - run: rm -rf libraries/aws/ota
