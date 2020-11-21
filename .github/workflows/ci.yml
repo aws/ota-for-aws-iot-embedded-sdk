@@ -87,7 +87,7 @@ jobs:
       - name: Check spelling
         run: |
           PATH=$PATH:$PWD/tools/spell
-          for lexfile in `find libraries/aws/ota -name lexicon.txt`
+          for lexfile in `find libraries/aws/ota/tools -name lexicon.txt`
           do dir=${lexfile%/lexicon.txt}
             echo $dir
             find-unknown-comment-words --directory $dir
