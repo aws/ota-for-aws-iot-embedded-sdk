@@ -66,10 +66,10 @@ void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerC
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
-    ( void ) pEventCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
     struct mq_attr attr;
+
+    ( void ) pEventCtx;
 
     /* Unlink the event queue.*/
     mq_unlink( OTA_QUEUE_NAME );
@@ -108,10 +108,10 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                              const void * pEventMsg,
                              unsigned int timeout )
 {
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
     ( void ) pEventCtx;
     ( void ) timeout;
-
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     /* Send the event to OTA event queue.*/
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
@@ -139,13 +139,12 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
                                 void * pEventMsg,
                                 uint32_t timeout )
 {
-    ( void ) pContext;
-    ( void ) timeout;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
+
+    ( void ) pContext;
+    ( void ) timeout;
 
     /* Receive the next event from OTA event queue.*/
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
@@ -174,9 +173,9 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
 
 OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
 {
-    ( void ) pContext;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    ( void ) pContext;
 
     /* Remove the event queue.*/
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )

@@ -709,9 +709,10 @@ static void setPALCallbacks( const OtaPalCallbacks_t * pCallbacks )
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t retVal = OTA_ERR_NONE;
     OtaEventMsg_t eventMsg = { 0 };
+
+    ( void ) pEventData;
 
     /* Start self-test timer, if platform is in self-test. */
     if( inSelftest() == true )
@@ -772,9 +773,10 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
+
+    ( void ) pEventData;
 
     /*
      * Check if any pending jobs are available from job service.
@@ -937,9 +939,10 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
+
+    ( void ) pEventData;
 
     err = otaDataInterface.initFileTransfer( &otaAgent );
 
@@ -1004,10 +1007,11 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t reason = 0;
+
+    ( void ) pEventData;
 
     if( otaAgent.fileContext.blocksRemaining > 0U )
     {
@@ -1181,8 +1185,9 @@ static OtaErr_t closeFileHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t err = OTA_ERR_UNINITIALIZED;
+
+    ( void ) pEventData;
 
     /* If we have active Job abort it and close the file. */
     if( otaAgent.pOtaSingletonActiveJobName != NULL )
@@ -1215,8 +1220,9 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t suspendHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaErr_t err = OTA_ERR_NONE;
+
+    ( void ) pEventData;
 
     /* Log the state change to suspended state.*/
     LogInfo( ( "OTA Agent is suspended." ) );
@@ -1226,9 +1232,9 @@ static OtaErr_t suspendHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t resumeHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
-
     OtaEventMsg_t eventMsg = { 0 };
+
+    ( void ) pEventData;
 
     /*
      * Send signal to request job document.
@@ -1240,8 +1246,9 @@ static OtaErr_t resumeHandler( const OtaEventData_t * pEventData )
 
 static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
 {
-    ( void ) pEventData;
     OtaEventMsg_t eventMsg = { 0 };
+
+    ( void ) pEventData;
 
     /* Stop the request timer. */
     otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
@@ -1408,7 +1415,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
             LogError( ( "Memory allocation failed "
                         "[key: valueLength]=[%s: %s]",
-                        docParam.pSrcKey,
+                        pKey,
                         valueLength ) );
         }
     }
@@ -1420,7 +1427,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
             LogError( ( "Insufficient user memory: "
                         "[key: valueLength]=[%s: %s]",
-                        docParam.pSrcKey,
+                        pKey,
                         valueLength ) );
         }
         else
@@ -1440,9 +1447,11 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
         LogInfo( ( "Extracted parameter: "
                    "[key: value]=[%s: %s]",
-                   docParam.pSrcKey,
+                   pKey,
                    pStringCopy ) );
     }
+
+    return err;
 }
 
 /* Store the parameter from the json to the offset specified by the document model. */
@@ -2146,9 +2155,6 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
-            /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
-
             /* Mark as used any pages in the bitmap that are out of range, based on the file size.
              * This keeps us from requesting those pages during retry processing or if using a windowed
              * block request. It also avoids erroneously accepting an out of range data block should it
@@ -2159,9 +2165,12 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
             uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
 
+            /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
+            ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
+
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ~bit;
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ~bit;
                 bit >>= 1U;
             }
 
@@ -2240,8 +2249,8 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 
     if( validateDataBlock( pFileContext, uBlockIndex, uBlockSize ) == true )
     {
-        /* Create bit mask for use in our bitmap. */
-        bitMask = 1U << ( uBlockIndex % BITS_PER_BYTE ); /*lint !e9031 The composite expression will never be greater than BITS_PER_BYTE(8). */
+        /* Create bit mask for use in our bitmap. BITS_PER_BYTE is 8 so it will never overflow. */
+        bitMask = ( uint8_t ) ( 1U << ( uBlockIndex % BITS_PER_BYTE ) );
 
         /* Calculate byte offset into bitmap. */
         byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
@@ -2285,7 +2294,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             else
             {
                 /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= ~bitMask;
+                pFileContext->pRxBlockBitmap[ byte ] &= (uint8_t) ~bitMask;
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
                 *pCloseResult = OTA_ERR_NONE;
@@ -2565,11 +2574,11 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
 
 void otaAgentTask( const void * pUnused )
 {
-    ( void ) pUnused;
-
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;
     uint32_t transitionTableLen = ( uint32_t ) ( sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] ) );
+
+    ( void ) pUnused;
 
     /*
      * OTA Agent is ready to receive and process events so update the state to ready.

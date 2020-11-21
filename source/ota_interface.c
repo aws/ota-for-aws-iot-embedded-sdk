@@ -67,9 +67,6 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
-    assert( pDataInterface != NULL );
-    assert( pProtocol != NULL );
-
     OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
     uint32_t i;
 
@@ -90,6 +87,9 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             "MQTT"
         };
     #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+
+    assert( pDataInterface != NULL );
+    assert( pProtocol != NULL );
 
     for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
     {
