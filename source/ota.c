@@ -134,7 +134,7 @@ static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        void * modelContextBase,
-                                       char * pValueInJson,
+                                       const char * pValueInJson,
                                        size_t valueLength );
 
 /* Parse a JSON document using the specified document model. */
@@ -145,7 +145,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
 /* Decode the signature key from the job document and store it.*/
 
-static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
+static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd );
 
@@ -1280,7 +1280,7 @@ static bool otaClose( OtaFileContext_t * const pFileContext )
 
     LogDebug( ( "Attempting to close OTA file context: "
                 "file context address=0x%p",
-                pFileContext ) );
+                ( void * ) pFileContext ) );
 
     /* Cleanup related to selected protocol. */
     if( otaDataInterface.cleanup != NULL )
@@ -1338,7 +1338,7 @@ static DocParseErr_t validateJSON( const char * pJson,
 
 /* Decode the base64 encoded file signature key from the job document and store it in file context*/
 
-static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
+static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd )
 {
@@ -1387,8 +1387,8 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
     return err;
 }
 
-static DocParseErr_t extractAndStoreArray( char * pKey,
-                                           char * pValueInJson,
+static DocParseErr_t extractAndStoreArray( const char * pKey,
+                                           const char * pValueInJson,
                                            size_t valueLength,
                                            void * pParamAdd,
                                            uint32_t * pParamSizeAdd )
@@ -1414,7 +1414,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
             err = DocParseErrOutOfMemory;
 
             LogError( ( "Memory allocation failed "
-                        "[key: valueLength]=[%s: %s]",
+                        "[key: valueLength]=[%s: %lu]",
                         pKey,
                         valueLength ) );
         }
@@ -1426,7 +1426,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
             err = DocParseErrUserBufferInsuffcient;
 
             LogError( ( "Insufficient user memory: "
-                        "[key: valueLength]=[%s: %s]",
+                        "[key: valueLength]=[%s: %lu]",
                         pKey,
                         valueLength ) );
         }
@@ -1458,7 +1458,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        void * pContextBase,
-                                       char * pValueInJson,
+                                       const char * pValueInJson,
                                        size_t valueLength )
 {
     DocParseErr_t err = DocParseErrNone;
@@ -1478,11 +1478,10 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     else if( ModelParamTypeStringInDoc == docParam.modelParamType )
     {
         /* Copy pointer to source string instead of duplicating the string. */
-        char * pStringInDoc = pValueInJson;
-        *( char ** ) pParamAdd = pStringInDoc;
+        *( const char ** ) pParamAdd = pValueInJson;
 
         LogInfo( ( "Extracted parameter: [key: value]=[%s: %.*s]",
-                   docParam.pSrcKey, ( int16_t ) valueLength, pStringInDoc ) );
+                   docParam.pSrcKey, ( int16_t ) valueLength, pValueInJson ) );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
@@ -1590,7 +1589,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     DocParseErr_t err;
     JSONStatus_t result;
     uint16_t paramIndex;
-    char * pFileParams = NULL;
+    const char * pFileParams = NULL;
     uint32_t fileParamsLength;
 
     /* Fetch the model parameters from the DocModel*/
@@ -1604,7 +1603,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     {
         const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
         size_t queryKeyLength = strlen( pQueryKey );
-        char * pValueInJson;
+        const char * pValueInJson;
         size_t valueLength;
         result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength );
 
@@ -2071,8 +2070,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         if( pFileContext->pJobName != NULL )
         {
             LogError( ( "Failed to parse the job document after parsing the job name: "
-                        "OtaJobParseErr_t=%d, Job name=",
-                        err, ( char * ) pFileContext->pJobName ) );
+                        "OtaJobParseErr_t=%d, Job name=%s",
+                        err, ( const char * ) pFileContext->pJobName ) );
 
             /* Assume control of the job name from the context. */
             otaAgent.pOtaSingletonActiveJobName = pFileContext->pJobName;
@@ -2294,7 +2293,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             else
             {
                 /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= (uint8_t) ~bitMask;
+                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ~bitMask;
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
                 *pCloseResult = OTA_ERR_NONE;

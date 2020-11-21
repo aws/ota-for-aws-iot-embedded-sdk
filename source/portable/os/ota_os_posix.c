@@ -201,6 +201,8 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
 
 static void selfTestTimerCallback( union sigval arg )
 {
+    ( void ) arg;
+
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
@@ -216,6 +218,8 @@ static void selfTestTimerCallback( union sigval arg )
 
 static void requestTimerCallback( union sigval arg )
 {
+    ( void ) arg;
+
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
@@ -239,6 +243,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     /* Create the timer structures. */
     struct sigevent sgEvent;
     struct itimerspec timerAttr;
+
+    ( void ) pTimerName;
 
     /* clear everything in the structures. */
     memset( &sgEvent, 0, sizeof( struct sigevent ) );
