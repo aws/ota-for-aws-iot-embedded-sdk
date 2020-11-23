@@ -268,7 +268,7 @@ static void otaInterfaceDefault()
 static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
-    OTA_AgentInit( &pOtaAppBuffer,
+    OTA_Init( &pOtaAppBuffer,
                    &otaInterfaces,
                    ( const uint8_t * ) pClientID,
                    completeCallback );
@@ -602,7 +602,7 @@ void test_OTA_Statistics()
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsDropped() );
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsQueued() );
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsProcessed() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsReceived() );
+    TEST_ASSERT_EQUAL( 0, OTA_GetStatistics() );
 }
 
 void test_OTA_CheckForUpdate()
@@ -861,7 +861,7 @@ void test_OTA_ReceiveFileBlockComplete()
         otaWaitForEmptyEvent();
         TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
 
-        /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
+        /* TODO, statistics is now broken. Need to fix it to test OTA_GetStatistics
          * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
         remainingBlocks -= OTA_FILE_BLOCK_SIZE;
     }
