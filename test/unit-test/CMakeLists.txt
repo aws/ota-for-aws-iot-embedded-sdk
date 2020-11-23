@@ -56,7 +56,7 @@ set(real_name "${project_name}_real")
 
 create_mock_list(${mock_name}
     "${mock_list}"
-    "${MODULE_ROOT_DIR}/tools/unity/project.yml"
+    "${MODULE_ROOT_DIR}/tools/cmock/project.yml"
     "${mock_include_list}"
     "${mock_define_list}"
 )
