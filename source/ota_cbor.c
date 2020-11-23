@@ -48,7 +48,8 @@
  * @param[out] pBlockId Decoded block id value.
  * @param[out] pBlockSize Decoded block size value.
  * @param[out] pPayload Buffer for the decoded payload.
- * @param[out] pPayloadSize Size of the buffer for the decoded payload.
+ * @param[in,out] maximum pPayloadSize Size of the buffer as in and actual
+ * payload size for the decoded payload as out.
  *
  * @return TRUE when success, otherwise FALSE.
  */
@@ -63,6 +64,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     CborError cborResult = CborNoError;
     CborParser cborParser;
     CborValue cborValue, cborMap;
+    size_t payloadSizeReceived = 0;
 
     if( ( pFileId == NULL ) ||
         ( pBlockId == NULL ) ||
@@ -179,14 +181,17 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_calculate_string_length( &cborValue,
-                                                         pPayloadSize );
+                                                         &payloadSizeReceived );
     }
 
     if( CborNoError == cborResult )
     {
-        *pPayload = malloc( *pPayloadSize );
-
-        if( NULL == *pPayload )
+        /* Check if the received payload size is less than or equal to buffer size. */
+        if( payloadSizeReceived <= ( *pPayloadSize ) )
+        {
+            *pPayloadSize = payloadSizeReceived;
+        }
+        else
         {
             cborResult = CborErrorOutOfMemory;
         }
