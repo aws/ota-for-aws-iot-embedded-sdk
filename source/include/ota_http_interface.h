@@ -42,7 +42,7 @@ typedef uint32_t OtaErr_t;
  *
  * @param[in] pUrl         Pointer to the pre-signed url for downloading update file.
  *
- * @return              OTA_ERR_NONE if success , other error code on failure.
+ * @return              OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
@@ -56,7 +56,7 @@ typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
  *
  * @param[in] rangeEnd    End index of the file data to be requested.
  *
- * @return             OTA_ERR_NONE if success , other error code on failure.
+ * @return             OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
@@ -68,7 +68,7 @@ typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  * This function cleanups Http connection and other data used for
  * requesting file blocks using the pre-signed url.
  *
- * @return        OTA_ERR_NONE if success , other error code on failure.
+ * @return        OtaErrorNone if success , other error code on failure.
  */
 typedef OtaErr_t ( * ota_HttpDeinit )( void );
 

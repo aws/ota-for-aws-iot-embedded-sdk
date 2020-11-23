@@ -46,7 +46,7 @@ struct OtaTimerContext
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx );
 
@@ -61,7 +61,7 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx );
  *
  * @param[timeout]       The maximum amount of time (msec) the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                              const void * pEventMsg,
@@ -78,7 +78,7 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
  *
  * @param[timeout]       The maximum amount of time the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
                                 void * pEventMsg,
@@ -92,7 +92,7 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
 
@@ -110,7 +110,7 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx );
  *
  * @param[callback]         Callback to be called when timer expires.
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
                               const char * const pTimerName,
@@ -124,7 +124,7 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
  *
  * @param[otaTimerId]     Timer ID of type otaTimerId_t.
  *
- * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId );
 
@@ -135,7 +135,7 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId );
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId );
 

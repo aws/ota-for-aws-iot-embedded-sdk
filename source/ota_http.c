@@ -55,7 +55,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
 
     /* Return status. */
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    OtaErr_t status = OtaErrorUnInitialized;
 
     /* Pre-signed URL. */
     char * pURL = NULL;
@@ -82,7 +82,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
 
     /* Return status. */
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    OtaErr_t status = OtaErrorUnInitialized;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
@@ -136,7 +136,7 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
     /* Current block is processed, set the file block to next. */
     currBlock += 1;
 
-    return OTA_ERR_NONE;
+    return OtaErrorNone;
 }
 
 /*

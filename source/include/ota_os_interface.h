@@ -48,7 +48,7 @@ typedef enum
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaInitEvent_t ) ( OtaEventContext_t * pEventCtx );
@@ -64,7 +64,7 @@ typedef OtaErr_t ( * OtaInitEvent_t ) ( OtaEventContext_t * pEventCtx );
  *
  * @param[timeout]       The maximum amount of time (msec) the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
@@ -82,7 +82,7 @@ typedef OtaErr_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
  *
  * @param[timeout]       The maximum amount of time the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
@@ -97,7 +97,7 @@ typedef OtaErr_t ( * OtaReceiveEvent_t )( OtaEventContext_t * pEventCtx,
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
@@ -109,7 +109,7 @@ typedef OtaErr_t ( * OtaDeinitEvent_t )( OtaEventContext_t * pEventCtx );
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
@@ -127,7 +127,7 @@ typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
  *
  * @param[callback]         Callback to be called when timer expires.
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerId_t otaTimerId,
@@ -142,7 +142,7 @@ typedef OtaErr_t ( * OtaStartTimer_t ) ( OtaTimerId_t otaTimerId,
  *
  * @param[otaTimerId]     Timer ID of type otaTimerId_t
  *
- * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerId_t otaTimerId );
@@ -154,7 +154,7 @@ typedef OtaErr_t ( * OtaStopTimer_t ) ( OtaTimerId_t otaTimerId );
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 
 typedef OtaErr_t ( * OtaDeleteTimer_t ) ( OtaTimerId_t otaTimerId );

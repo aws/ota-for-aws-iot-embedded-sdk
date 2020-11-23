@@ -39,7 +39,7 @@
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
 
@@ -54,7 +54,7 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
  *
  * @param[timeout]       The maximum amount of time (msec) the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
                                 const void * pEventMsg,
@@ -71,7 +71,7 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
  *
  * @param[timeout]       The maximum amount of time the task should block.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
                                    void * pEventMsg,
@@ -85,7 +85,7 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
  *
- * @return               OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return               OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
 
@@ -103,7 +103,7 @@ OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx );
  *
  * @param[callback]         Callback to be called when timer expires.
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
                                  const char * const pTimerName,
@@ -117,7 +117,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
  *
  * @param[otaTimerId]     Timer ID of type otaTimerId_t.
  *
- * @return                OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId );
 
@@ -128,7 +128,7 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId );
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t.
  *
- * @return                  OtaErr_t, OTA_ERR_NONE if success , other error code on failure.
+ * @return                  OtaErr_t, OtaErrorNone if success , other error code on failure.
  */
 OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId );
 
