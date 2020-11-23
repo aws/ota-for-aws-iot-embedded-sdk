@@ -38,22 +38,25 @@
 #define OTA_CBOR_GETSTREAMREQUEST_ITEM_COUNT    6
 
 /* ========================================================================== */
+
 /**
  * @brief Helper function to verify the data type of the value in map.
- * 
- * @param[in] expectedType Data type expected. 
+ *
+ * @param[in] expectedType Data type expected.
  * @param[in] cborValue Value to check.
- * @return CborError 
+ * @return CborError
  */
-static CborError checkDataType(CborType expectedType, CborValue * cborValue)
+static CborError checkDataType( CborType expectedType,
+                                CborValue * cborValue )
 {
     CborError cborResult = CborNoError;
     CborType actualType = cbor_value_get_type( cborValue );
 
-    if(actualType != expectedType)
+    if( actualType != expectedType )
     {
         cborResult = CborErrorIllegalType;
     }
+
     return cborResult;
 }
 
@@ -123,7 +126,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = checkDataType(CborIntegerType, &cborValue);
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -142,7 +145,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = checkDataType(CborIntegerType, &cborValue);
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -161,7 +164,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = checkDataType(CborIntegerType, &cborValue);
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -180,7 +183,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = checkDataType(CborByteStringType, &cborValue);
+        cborResult = checkDataType( CborByteStringType, &cborValue );
     }
 
     /* Calculate the size we need to malloc for the payload. */
