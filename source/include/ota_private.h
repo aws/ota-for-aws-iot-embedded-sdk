@@ -320,23 +320,6 @@ typedef struct OtaEventMsg
 } OtaEventMsg_t;
 
 /**
- * @brief Get buffer available from static pool of OTA buffers.
- *
- * @return OtaEventData_t* Location of the buffer
- */
-OtaEventData_t * otaEventBufferGet( void );
-
-
-
-/**
- * @brief Free OTA buffer.
- *
- * @param[in] pBuffer The buffer space to free
- */
-void otaEventBufferFree( OtaEventData_t * const pBuffer );
-
-
-/**
  * @brief Signal event to the OTA Agent task.
  *
  * This function adds the event to the back of event queue and used

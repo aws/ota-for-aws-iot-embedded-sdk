@@ -161,7 +161,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       const char * pMsg,
-                                      uint32_t msgSize );
+                                      uint32_t msgSize,
+                                      uint8_t qos );
 
 /**
  * @brief Populate the message buffer with the job status message.
@@ -298,7 +299,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pOtaRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ];
     uint16_t topicLen = 0;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -416,7 +417,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       const char * pMsg,
-                                      uint32_t msgSize )
+                                      uint32_t msgSize,
+                                      uint8_t qos )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
@@ -448,7 +450,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                                      ( uint16_t ) topicLen,
                                                      &pMsg[ 0 ],
                                                      msgSize,
-                                                     1 );
+                                                     qos );
 
     if( result == OTA_ERR_NONE )
     {
@@ -696,7 +698,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
     char pMsg[ OTA_STATUS_MSG_MAX_SIZE ];
     uint8_t qos = 1;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -726,7 +728,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    result = publishStatusMessage( pAgentCtx, pMsg, msgSize );
+    result = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
     if( result == OTA_ERR_NONE )
     {
@@ -754,7 +756,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -811,7 +813,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -911,7 +913,7 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
         assert( pPayloadSize != NULL );
 
         /* Decode the CBOR content. */
-        memcpy( pMessageBuffer, *pPayload, *pPayloadSize );
+        ( void ) memcpy( pMessageBuffer, *pPayload, *pPayloadSize );
 
         /* Free the payload as it is copied in data buffer. */
         free( *pPayload ); /*ToDo */

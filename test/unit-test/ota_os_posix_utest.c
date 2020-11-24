@@ -35,8 +35,8 @@
 #include "unity.h"
 
 /* For accessing OTA private functions and error codes. */
-#include "ota_os_posix.h"
 #include "ota_private.h"
+#include "ota_os_posix.c"
 
 
 /* Testing constants. */
@@ -196,7 +196,7 @@ void test_OTA_posix_MemoryAllocAndFree( void )
 {
     uint8_t * buffer = NULL;
 
-    buffer = ( uint8_t * ) STDC_Malloc( sizeof( uint8_t ) );
+    buffer = ( uint8_t * ) STDC_Malloc( MAX_MESSAGES * sizeof( uint8_t ) );
     TEST_ASSERT_NOT_NULL( buffer );
 
     /* Test that we can access and assign a value in the buffer. */

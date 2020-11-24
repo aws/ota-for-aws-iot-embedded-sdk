@@ -58,11 +58,11 @@ static OtaTimerCallback_t otaTimerCallback;
 static mqd_t otaEventQueue;
 
 /* OTA Timer handles.*/
-timer_t otaTimers[ OtaNumOfTimers ];
-timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
+static timer_t otaTimers[ OtaNumOfTimers ];
+static timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
 
 /* OTA Timer callbacks.*/
-void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
+static void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
@@ -72,12 +72,12 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
     ( void ) pEventCtx;
 
     /* Unlink the event queue.*/
-    mq_unlink( OTA_QUEUE_NAME );
+    ( void ) mq_unlink( OTA_QUEUE_NAME );
 
     /* Initialize queue attributes.*/
     attr.mq_flags = 0;
     attr.mq_maxmsg = MAX_MESSAGES;
-    attr.mq_msgsize = MAX_MSG_SIZE;
+    attr.mq_msgsize = ( long ) MAX_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
     /* Open the event queue.*/
@@ -135,7 +135,7 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     return otaErrRet;
 }
 
-OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
+OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
                                 void * pEventMsg,
                                 uint32_t timeout )
 {
@@ -143,7 +143,7 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
 
-    ( void ) pContext;
+    ( void ) pEventCtx;
     ( void ) timeout;
 
     /* Receive the next event from OTA event queue.*/
@@ -163,7 +163,7 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
         LogDebug( ( "OTA Event received." ) );
 
         /* copy the data from local buffer.*/
-        memcpy( pDst, buff, MAX_MSG_SIZE );
+        ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -171,11 +171,11 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
+OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
 {
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    ( void ) pContext;
+    ( void ) pEventCtx;
 
     /* Remove the event queue.*/
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
@@ -247,8 +247,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     ( void ) pTimerName;
 
     /* clear everything in the structures. */
-    memset( &sgEvent, 0, sizeof( struct sigevent ) );
-    memset( &timerAttr, 0, sizeof( struct itimerspec ) );
+    ( void ) memset( &sgEvent, 0, sizeof( struct sigevent ) );
+    ( void ) memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
     /* Set attributes. */
     sgEvent.sigev_notify = SIGEV_THREAD;
@@ -259,7 +259,7 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     otaTimerCallback = callback;
 
     /* Set timeout attributes.*/
-    timerAttr.it_value.tv_sec = timeout / 1000;
+    timerAttr.it_value.tv_sec = ( time_t ) timeout / 1000;
 
     /* Create timer if required.*/
     if( pOtaTimers[ otaTimerId ] == NULL )
@@ -313,7 +313,7 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     struct itimerspec timerAttr;
 
     /* clear everything in the structures. */
-    memset( &timerAttr, 0, sizeof( struct itimerspec ) );
+    ( void ) memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
     /* Clear the timeout. */
     timerAttr.it_value.tv_sec = 0;
