@@ -1,0 +1,5 @@
+name : "ota-for-aws-iot-embedded-sdk"
+version: "v2.0.0"
+description: |
+  "Client library for using the AWS Over-The-Air update service on embedded devices.\n"
+license: "MIT"
