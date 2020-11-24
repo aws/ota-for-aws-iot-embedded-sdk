@@ -47,8 +47,7 @@
  */
 
 /* bool is defined in only C99+. */
-#if defined( __cplusplus ) || \
-    ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
+#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
     ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
     #include <stdbool.h>
 #elif !defined( bool )

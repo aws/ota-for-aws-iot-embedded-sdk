@@ -1605,12 +1605,12 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         size_t queryKeyLength = strlen( pQueryKey );
         const char * pValueInJson;
         size_t valueLength;
-        result = JSON_Search( pJson, messageLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength );
+        result = JSON_SearchConst( pJson, messageLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength, NULL );
 
         /* If not found in pJSon search for the key in FileParameters JSON*/
         if( ( result != JSONSuccess ) && ( pFileParams != NULL ) )
         {
-            result = JSON_Search( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength );
+            result = JSON_SearchConst( pFileParams, fileParamsLength, pQueryKey, queryKeyLength, &pValueInJson, &valueLength, NULL );
         }
 
         if( result == JSONSuccess )
