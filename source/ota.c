@@ -192,29 +192,29 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 
-/* The default OTA callback handler if not provided to OTA_AgentInit(). */
+/* The default OTA callback handler if not provided to OTA_Init(). */
 
 static void defaultOTACompleteCallback( OtaJobEvent_t event );
 
-/* Default Custom Callback handler if not provided to OTA_AgentInit() */
+/* Default Custom Callback handler if not provided to OTA_Init() */
 
 static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
                                                   uint32_t messageLength );
 
-/* Default Reset Device handler if not provided to OTA_AgentInit() */
+/* Default Reset Device handler if not provided to OTA_Init() */
 
 static OtaErr_t palDefaultResetDevice( uint32_t serverFileID );
 
-/* Default Get Platform Image State handler if not provided to OTA_AgentInit() */
+/* Default Get Platform Image State handler if not provided to OTA_Init() */
 
 static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID );
 
-/* Default Set Platform Image State handler if not provided to OTA_AgentInit() */
+/* Default Set Platform Image State handler if not provided to OTA_Init() */
 
 static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
                                                  OtaImageState_t state );
 
-/* Default Activate New Image handler if not provided to OTA_AgentInit() */
+/* Default Activate New Image handler if not provided to OTA_Init() */
 
 static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID );
 
@@ -2712,15 +2712,15 @@ void initializeBuffers( OtaAppBuffer_t * pOtaBuffer )
 /*
  * Public API to initialize the OTA Agent.
  *
- * If the Application calls OTA_AgentInit() after it is already initialized, we will
+ * If the Application calls OTA_Init() after it is already initialized, we will
  * only reset the statistics counters and set the job complete callback but will not
  * modify the existing OTA agent context. You must first call OTA_AgentShutdown()
  * successfully.
  */
-OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
-                        OtaInterfaces_t * pOtaInterfaces,
-                        const uint8_t * pThingName,
-                        OtaCompleteCallback_t completeCallback )
+OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+                   OtaInterfaces_t * pOtaInterfaces,
+                   const uint8_t * pThingName,
+                   OtaCompleteCallback_t completeCallback )
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OTA_ERR_UNINITIALIZED;
@@ -2893,7 +2893,7 @@ uint32_t OTA_GetPacketsProcessed( void )
 /*
  * Return the number of packets received.
  */
-uint32_t OTA_GetPacketsReceived( void )
+uint32_t OTA_GetStatistics( void )
 {
     return otaAgent.statistics.otaPacketsReceived;
 }
