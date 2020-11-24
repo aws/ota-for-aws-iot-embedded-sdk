@@ -73,13 +73,10 @@ jobs:
         with:
           ref: main
           repository: aws/aws-iot-device-sdk-embedded-C
-
-      - run: rm -rf libraries/aws/ota
-
       - name: Clone This Repo
         uses: actions/checkout@v2
         with:
-          path: libraries/aws/ota
+          path: tmp
       - name: Install spell
         run: |
           sudo apt-get install spell
@@ -87,15 +84,10 @@ jobs:
       - name: Check spelling
         run: |
           PATH=$PATH:$PWD/tools/spell
-          for lexfile in `find libraries/aws/ota -name lexicon.txt`
-          do dir=${lexfile%/lexicon.txt}
-            echo $dir
-            find-unknown-comment-words --directory $dir
-            if [ $? -ne "0" ]
-            then
-              exit 1
-            fi
-          done
+          find-unknown-comment-words --directory tmp/ --lexicon tmp/tools/lexicon.txt
+          if [ $? -ne "0" ]; then
+            exit 1
+          fi
   formatting:
     runs-on: ubuntu-20.04
     steps:
