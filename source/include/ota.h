@@ -587,9 +587,9 @@ struct OtaFileContext
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
-                        OtaInterfaces_t * pOtaInterfaces,
-                        const uint8_t * pThingName,
-                        OtaCompleteCallback_t completeCallback );
+                   OtaInterfaces_t * pOtaInterfaces,
+                   const uint8_t * pThingName,
+                   OtaCompleteCallback_t completeCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.

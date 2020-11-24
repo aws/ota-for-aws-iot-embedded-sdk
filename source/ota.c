@@ -2718,9 +2718,9 @@ void initializeBuffers( OtaAppBuffer_t * pOtaBuffer )
  * successfully.
  */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
-                        OtaInterfaces_t * pOtaInterfaces,
-                        const uint8_t * pThingName,
-                        OtaCompleteCallback_t completeCallback )
+                   OtaInterfaces_t * pOtaInterfaces,
+                   const uint8_t * pThingName,
+                   OtaCompleteCallback_t completeCallback )
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OTA_ERR_UNINITIALIZED;

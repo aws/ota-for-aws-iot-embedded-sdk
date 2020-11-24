@@ -269,9 +269,9 @@ static void otaInit( const char * pClientID,
                      OtaCompleteCallback_t completeCallback )
 {
     OTA_Init( &pOtaAppBuffer,
-                   &otaInterfaces,
-                   ( const uint8_t * ) pClientID,
-                   completeCallback );
+              &otaInterfaces,
+              ( const uint8_t * ) pClientID,
+              completeCallback );
 }
 
 static void otaInitDefault()
