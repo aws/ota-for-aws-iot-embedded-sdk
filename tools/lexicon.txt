@@ -43,6 +43,8 @@ c89
 c90
 ca
 cbor
+cborerror
+cborvalue
 cborwork
 certfile
 certfilepathmaxsize
@@ -116,6 +118,7 @@ errno
 errornumber
 eventid
 ewouldblock
+expectedtype
 expectedstatus
 failedwithval
 fclose
