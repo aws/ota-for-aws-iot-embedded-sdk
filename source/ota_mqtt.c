@@ -444,7 +444,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       sizeof( pTopicBuffer ),
                                       pOtaJobStatusTopicTemplate,
                                       pAgentCtx->pThingName,
-                                      pAgentCtx->pOtaSingletonActiveJobName );
+                                      pAgentCtx->pActiveJobName );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
