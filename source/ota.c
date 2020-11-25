@@ -2243,7 +2243,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     int32_t sBlockIndex = 0;
     size_t payloadSize = 0;
 
-
+    /* If we are expecting a data block, allocate space for it. */
     if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blocksRemaining > 0U ) )
     {
         otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
@@ -2266,41 +2266,46 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                 payloadSize = ( 1 << otaconfigLOG2_FILE_BLOCK_SIZE );
             }
         }
-
-        if( payloadSize > 0 )
-        {
-            /* Decode the file block received. */
-            if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
-                    pRawMsg,
-                    messageSize,
-                    &lFileId,
-                    &sBlockIndex,
-                    &sBlockSize,
-                    pPayload,
-                    &payloadSize ) )
-            {
-                eIngestResult = IngestResultBadData;
-            }
-            else
-            {
-                *uBlockIndex = ( uint32_t ) sBlockIndex;
-                *uBlockSize = ( uint32_t ) sBlockSize;
-            }
-        }
-        else
-        {
-            eIngestResult = IngestResultNoDecodeMemory;
-        }
-
-        if( ( otaAgent.fileContext.decodeMemMaxSize == 0 ) &&
-            ( *pPayload != NULL ) )
-        {
-            otaAgent.pOtaInterface->os.mem.free( *pPayload );
-        }
     }
     else
     {
         eIngestResult = IngestResultUnexpectedBlock;
+    }
+
+    /* Decode the file block if space is allocated. */
+    if( payloadSize > 0 )
+    {
+        /* Decode the file block received. */
+        if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
+                pRawMsg,
+                messageSize,
+                &lFileId,
+                &sBlockIndex,
+                &sBlockSize,
+                pPayload,
+                &payloadSize ) )
+        {
+            eIngestResult = IngestResultBadData;
+        }
+        else
+        {
+            *uBlockIndex = ( uint32_t ) sBlockIndex;
+            *uBlockSize = ( uint32_t ) sBlockSize;
+        }
+    }
+    else
+    {
+        /* If the block is expected, but we could not allocate space. */
+        if( eIngestResult == IngestResultUninitialized )
+        {
+            eIngestResult = IngestResultNoDecodeMemory;
+        }
+    }
+
+    if( ( otaAgent.fileContext.decodeMemMaxSize == 0 ) &&
+        ( *pPayload != NULL ) )
+    {
+        otaAgent.pOtaInterface->os.mem.free( *pPayload );
     }
 
     return eIngestResult;
