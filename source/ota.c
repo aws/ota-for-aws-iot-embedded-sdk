@@ -1408,7 +1408,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
             LogError( ( "Memory allocation failed "
                         "[key: valueLength]=[%s: %s]",
-                        docParam.pSrcKey,
+                        pKey,
                         valueLength ) );
         }
     }
@@ -1420,7 +1420,7 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
             LogError( ( "Insufficient user memory: "
                         "[key: valueLength]=[%s: %s]",
-                        docParam.pSrcKey,
+                        pKey,
                         valueLength ) );
         }
         else
@@ -1440,9 +1440,11 @@ static DocParseErr_t extractAndStoreArray( char * pKey,
 
         LogInfo( ( "Extracted parameter: "
                    "[key: value]=[%s: %s]",
-                   docParam.pSrcKey,
+                   pKey,
                    pStringCopy ) );
     }
+
+    return err;
 }
 
 /* Store the parameter from the json to the offset specified by the document model. */
@@ -1464,7 +1466,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
-        extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
+        err = extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
     }
     else if( ModelParamTypeStringInDoc == docParam.modelParamType )
     {
