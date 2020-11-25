@@ -2714,7 +2714,7 @@ void initializeBuffers( OtaAppBuffer_t * pOtaBuffer )
  *
  * If the Application calls OTA_Init() after it is already initialized, we will
  * only reset the statistics counters and set the job complete callback but will not
- * modify the existing OTA agent context. You must first call OTA_AgentShutdown()
+ * modify the existing OTA agent context. You must first call OTA_Shutdown()
  * successfully.
  */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
@@ -2811,7 +2811,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 /*
  * Public API to shutdown the OTA Agent.
  */
-OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
+OtaState_t OTA_Shutdown( uint32_t ticksToWait )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t ticks = ticksToWait;
@@ -2861,7 +2861,7 @@ OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
 /*
  * Return the current state of the OTA agent.
  */
-OtaState_t OTA_GetAgentState( void )
+OtaState_t OTA_GetState( void )
 {
     return otaAgent.state;
 }

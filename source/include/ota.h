@@ -604,14 +604,14 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
  */
-OtaState_t OTA_AgentShutdown( uint32_t ticksToWait );
+OtaState_t OTA_Shutdown( uint32_t ticksToWait );
 
 /**
  * @brief Get the current state of the OTA agent.
  *
  * @return The current state of the OTA agent.
  */
-OtaState_t OTA_GetAgentState( void );
+OtaState_t OTA_GetState( void );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
