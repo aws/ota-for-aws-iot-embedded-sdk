@@ -693,7 +693,7 @@ void otaAgentTask( const void * pUnused );
  * @return The number of OTA packets that have been received but not
  * necessarily queued for processing by the OTA agent.
  */
-uint32_t OTA_GetStatistics( void );
+OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
 
 /**
  * @brief Get the number of OTA message packets queued by the OTA agent.

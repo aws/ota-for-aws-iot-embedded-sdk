@@ -2891,11 +2891,12 @@ uint32_t OTA_GetPacketsProcessed( void )
 }
 
 /*
- * Return the number of packets received.
+ * Return the details of the packets received.
  */
-uint32_t OTA_GetStatistics( void )
+OtaError_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
 {
-    return otaAgent.statistics.otaPacketsReceived;
+    *pStatistics = otaAgent.statistics;
+    return OTA_ERR_NONE;
 }
 
 OtaErr_t OTA_CheckForUpdate( void )
