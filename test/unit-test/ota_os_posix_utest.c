@@ -44,9 +44,6 @@
 #define TIMER_NAME             "dummy_name"
 #define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
 
-/* Timer used in os_posix.c */
-extern timer_t otaTimers[ OtaNumOfTimers ];
-
 /* Interfaces for Timer and Event. */
 static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;

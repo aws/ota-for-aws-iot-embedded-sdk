@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+/* coverity[misra_c_2012_rule_21_5_violation] This is on linux. */
 #include <signal.h>
 #include <errno.h>
 
@@ -45,9 +46,6 @@
 #define OTA_QUEUE_NAME    "/otaqueue"
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
-
-/* Linkage for error reporting. */
-extern int errno;
 
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
@@ -81,6 +79,8 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
     attr.mq_curmsgs = 0;
 
     /* Open the event queue.*/
+    errno = 0;
+    /* coverity[misra_c_2012_rule_10_1_violation] silence warnings for linux message queue flags. */
     otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
 
     if( otaEventQueue == -1 )
@@ -114,6 +114,8 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     ( void ) timeout;
 
     /* Send the event to OTA event queue.*/
+    errno = 0;
+
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
@@ -147,6 +149,8 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     ( void ) timeout;
 
     /* Receive the next event from OTA event queue.*/
+    errno = 0;
+
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
@@ -178,6 +182,8 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
     ( void ) pEventCtx;
 
     /* Remove the event queue.*/
+    errno = 0;
+
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_DELETE_FAILED;
@@ -264,6 +270,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     /* Create timer if required.*/
     if( pOtaTimers[ otaTimerId ] == NULL )
     {
+        errno = 0;
+
         if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
@@ -284,6 +292,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     /* Set timeout.*/
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
+        errno = 0;
+
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
@@ -321,6 +331,8 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Stop the timer*/
+        errno = 0;
+
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
@@ -356,6 +368,8 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Delete the timer*/
+        errno = 0;
+
         if( timer_delete( otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
@@ -388,11 +402,13 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 void * STDC_Malloc( size_t size )
 {
     /* Use standard C malloc.*/
+    /* coverity[misra_c_2012_rule_21_3_violation] This is on linux. */
     return malloc( size );
 }
 
 void STDC_Free( void * ptr )
 {
     /* Use standard C free.*/
+    /* coverity[misra_c_2012_rule_21_3_violation] This is on linux. */
     free( ptr );
 }

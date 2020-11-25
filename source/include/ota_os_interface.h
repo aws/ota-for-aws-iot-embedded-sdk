@@ -213,7 +213,9 @@ typedef struct OtaTimerInterface
  */
 typedef struct OtaMallocInterface
 {
+    /* coverity[misra_c_2012_rule_21_3_violation] This is part of our interface . */
     OtaMalloc_t malloc; /*!< OTA memory allocate interface. */
+    /* coverity[misra_c_2012_rule_21_3_violation] This is part of our interface . */
     OtaFree_t free;     /*!< OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 

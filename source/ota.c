@@ -322,6 +322,7 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
+/* coverity[misra_c_2012_rule_2_2_violation] Used in logs. */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll ] =
 {
     "Init",
@@ -337,6 +338,7 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll ] =
     "Stopped"
 };
 
+/* coverity[misra_c_2012_rule_2_2_violation] Used in logs. */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
     "Start",
@@ -1972,6 +1974,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
             /* Validate version of the update received.*/
             errVersionCheck = validateUpdateVersion( pFileContext );
 
+            /* coverity[misra_c_2012_rule_14_3_violation] otaconfigAllowDowngrade is a user config. */
             if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OTA_ERR_NONE ) )
             {
                 /* The running firmware version is newer than the firmware that performed
