@@ -31,7 +31,7 @@
 /**
  * @brief OTA Error type.
  */
-typedef uint32_t                OtaErr_t;
+typedef uint32_t OtaErr_t;
 
 /**
  * @brief Abort an OTA transfer.
@@ -125,9 +125,9 @@ typedef OtaErr_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext 
  * abstraction layer.
  */
 typedef int16_t ( * OtaPalWriteBlock_t ) ( OtaFileContext_t * const pFileContext,
-                                        uint32_t offset,
-                                        uint8_t * const pData,
-                                        uint32_t blockSize );
+                                           uint32_t offset,
+                                           uint8_t * const pData,
+                                           uint32_t blockSize );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -211,12 +211,12 @@ typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_
  */
 typedef struct OtaPalInterface
 {
-    OtaPalAbort_t abort;                /*!< Abort an OTA transfer. */
-    OtaPalCreateFileForRx_t createFile; /*!< Create a new receive file. */
-    OtaPalCloseFile_t closeFile ;       /*!< Authenticate and close the receive file. */
-    OtaPalWriteBlock_t writeBlock;      /*!< Write a block of data to the specified file at the given offset. */
-    OtaPalActivateNewImage_t activate;  /*!< Activate the file received over-the-air. */
-    OtaPalResetDevice_t reset;          /*!< Reset the device. */
+    OtaPalAbort_t abort;                                 /*!< Abort an OTA transfer. */
+    OtaPalCreateFileForRx_t createFile;                  /*!< Create a new receive file. */
+    OtaPalCloseFile_t closeFile;                         /*!< Authenticate and close the receive file. */
+    OtaPalWriteBlock_t writeBlock;                       /*!< Write a block of data to the specified file at the given offset. */
+    OtaPalActivateNewImage_t activate;                   /*!< Activate the file received over-the-air. */
+    OtaPalResetDevice_t reset;                           /*!< Reset the device. */
     OtaPalSetPlatformImageState_t setPlatformImageState; /*!< Set the state of the OTA update image. */
     OtaPalGetPlatformImageState_t getPlatformImageState; /*!< Get the state of the OTA update image. */
 } OtaPalInterface_t;

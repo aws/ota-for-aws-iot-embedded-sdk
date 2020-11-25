@@ -67,12 +67,14 @@ coremqtt
 couldn
 coverity
 cr
+createfile
 createfileforrx
 currentstate
 customjobcallback
 currblock
 cwd
 datalength
+decodememmaxsize
 decodememorysize
 datacallback
 deduplicate
@@ -168,6 +170,7 @@ ingestresultblockoutofrange
 ingestresultfileclosefail
 ingestresultfilecomplete
 ingestresultfilecomplete
+ingestresultnodecodememory
 ingestresultnullcontext
 ingestresultnullresultpointer
 ingestresultsigcheckfail
@@ -256,6 +259,7 @@ otaagenteventclosefile
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
+otaappcallback
 otaclose
 otacontrolinterface
 otaeventtosend
@@ -293,6 +297,7 @@ otatimer
 otatimerid
 pacdata
 pactopic
+pactivejobname
 paddrinfo
 pagentctx
 palcallbacks
@@ -327,6 +332,7 @@ pconnectioncontext
 pcontrolinterface
 pctimername
 pctopicbuffer
+pdecodemem
 pdecodememory
 pdata
 pdatainterface

@@ -144,9 +144,10 @@ typedef enum
     IngestResultBadData = -8,            /*!< The data block from the server was malformed. */
     IngestResultWriteBlockFailed = -9,   /*!< The PAL layer failed to write the file block. */
     IngestResultNullResultPointer = -10, /*!< The pointer to the close result pointer was null. */
+    IngestResultNoDecodeMemory = -11,    /*!< Memory could not be allocated for decoding . */
     IngestResultUninitialized = -127,    /*!< Software BUG: We forgot to set the result code. */
     IngestResultAccepted_Continue = 0,   /*!< The block was accepted and we're expecting more. */
-    IngestResultDuplicate_Continue = 1,  /*!< The block was a duplicate but that's OK. Continue. */
+    IngestResultDuplicate_Continue = 1   /*!< The block was a duplicate but that's OK. Continue. */
 } IngestResult_t;
 
 /**

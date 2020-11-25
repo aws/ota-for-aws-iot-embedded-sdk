@@ -158,7 +158,7 @@ typedef enum OtaJobEvent
 /**
  * @brief OTA Error type.
  */
-typedef uint32_t                OtaErr_t;
+typedef uint32_t OtaErr_t;
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -257,7 +257,7 @@ typedef struct OtaAgentContext
     OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
     uint32_t fileIndex;                                    /*!< Index of current file in the array. */
     uint32_t serverFileID;                                 /*!< Variable to store current file ID passed down */
-    uint8_t pActiveJobName[ OTA_JOB_ID_MAX_SIZE ];           /*!< The currently active job name. We only allow one at a time. */
+    uint8_t pActiveJobName[ OTA_JOB_ID_MAX_SIZE ];         /*!< The currently active job name. We only allow one at a time. */
     uint8_t * pClientTokenFromJob;                         /*!< The clientToken field from the latest update job. */
     uint32_t timestampFromJob;                             /*!< Timestamp received from the latest job document. */
     OtaImageState_t imageState;                            /*!< The current application image state. */
@@ -359,7 +359,7 @@ typedef struct OtaAgentContext
  * @param[in] pOtaBuffer Buffers used by the agent to store different params.
  * @param[in] pOtaInterfaces A pointer to the OS context.
  * @param[in] pThingName A pointer to a C string holding the Thing name.
- * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
+ * @param[in] OtaAppCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.
  * @return OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
