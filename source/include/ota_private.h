@@ -49,6 +49,22 @@
  * in ota_config.h file. */
 #include "ota_config_defaults.h"
 
+/**
+ * @cond DOXYGEN_IGNORE
+ * Doxygen should ignore this section.
+ */
+
+/* bool is defined in only C99+. */
+#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
+    ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
+    #include <stdbool.h>
+#elif !defined( bool )
+    #define bool     int8_t
+    #define false    ( int8_t ) 0
+    #define true     ( int8_t ) 1
+#endif
+/** @endcond */
+
 /* General constants. */
 #define LOG2_BITS_PER_BYTE           3U                                                   /*!< Log base 2 of bits per byte. */
 #define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /*!< Number of bits in a byte. This is used by the block bitmap implementation. */
