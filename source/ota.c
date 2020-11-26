@@ -237,21 +237,21 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 
 static OtaAgentContext_t otaAgent =
 {
-    OtaAgentStateStopped, /*!< State of the OTA agent. */
-    { 0 },                /*!< Thing name + zero terminator. */
-    { 0 },                /*!< Static array of OTA file structures. */
-    0,                    /*!< Index of current file in the array. */
-    0,                    /*!< Variable to store current file ID passed down */
-    { 0 },                /*!< The currently active job name. We only allow one at a time. */
-    NULL,                 /*!< The clientToken field from the latest update job. */
-    0,                    /*!< Timestamp received from the latest job document. */
-    OtaImageStateUnknown, /*!< The current application image state. */
-    1,                    /*!< Number of data blocks to receive per data request. */
-    { 0 },                /*!< The OTA agent statistics block. */
-    0,                    /*!< The number of requests sent before a response was received. */
-    NULL,                 /*!< Collection of all interfaces used by the agent. */
-    NULL,                 /*!< OTA App callback. */
-    NULL                  /*!< Custom job callback. */
+    OtaAgentStateStopped, /* state */
+    { 0 },                /* pThingName */
+    { 0 },                /* fileContext */
+    0,                    /* fileIndex */
+    0,                    /* serverFileID */
+    { 0 },                /* pActiveJobName */
+    NULL,                 /* pClientTokenFromJob */
+    0,                    /* timestampFromJob */
+    OtaImageStateUnknown, /* imageState */
+    1,                    /* numOfBlocksToReceive */
+    { 0 },                /* statistics */
+    0,                    /* requestMomentum */
+    NULL,                 /* pOtaInterface */
+    NULL,                 /* OtaAppCallback */
+    NULL                  /* customJobCallback */
 };
 
 static OtaStateTableEntry_t otaTransitionTable[] =
@@ -439,7 +439,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     /* Now update the image state and job status on service side. */
     otaAgent.imageState = state;
 
-    if( strlen( otaAgent.pActiveJobName ) > 0 )
+    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
     {
         err = updateJobStatusFromImageState( state, ( int32_t ) reason );
     }
@@ -942,7 +942,7 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
     ( void ) pEventData;
 
     /* If we have active Job abort it and close the file. */
-    if( strlen( otaAgent.pActiveJobName ) > 0 )
+    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
     {
         err = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_USER_ABORT );
 
@@ -1597,7 +1597,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
         {
             /* Custom job was parsed by external callback successfully. Grab the job name from the file
              *  context and save that in the ota agent */
-            if( strlen( pFileContext->pJobName ) > 0 )
+            if( strlen( ( const char * ) pFileContext->pJobName ) > 0 )
             {
                 memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
@@ -1727,7 +1727,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     }
     /* If there's an active job, verify that it's the same as what's being reported now. */
     /* We already checked for missing parameters so we SHOULD have a job name in the context. */
-    else if( strlen( otaAgent.pActiveJobName ) > 0 )
+    else if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
     {
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
@@ -1881,7 +1881,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     {
         /* If job parsing failed AND there's a job ID, update the job state to FAILED with
          * a reason code.  Without a job ID, we can't update the status in the job service. */
-        if( strlen( pFileContext->pJobName ) > 0 )
+        if( strlen( ( const char * ) pFileContext->pJobName ) > 0 )
         {
             LogError( ( "Failed to parse the job document after parsing the job name: "
                         "OtaJobParseErr_t=%d, Job name=%s",
@@ -2435,7 +2435,7 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-void otaAgentTask( const void * pUnused )
+void otaAgentTask( void * pUnused )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;

@@ -444,7 +444,7 @@ OtaErr_t OTA_Resume( void );
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  */
-void otaAgentTask( const void * pUnused );
+void otaAgentTask( void * pUnused );
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */

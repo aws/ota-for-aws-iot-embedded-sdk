@@ -333,7 +333,7 @@ typedef enum OtaPalImageState
     OtaPalImageStateUnknown = 0,
     OtaPalImageStatePendingCommit,
     OtaPalImageStateValid,
-    OtaPalImageStateInvalid,
+    OtaPalImageStateInvalid
 } OtaPalImageState_t;
 
 /**
@@ -403,7 +403,7 @@ typedef struct OtaFileContext
     uint8_t * pUpdateUrlPath;     /*!< Url for the file. */
     uint16_t updateUrlMaxSize;    /*!< Maximum size of the url. */
     uint8_t * pAuthScheme;        /*!< Authorization scheme. */
-    uint8_t authSchemeMaxSize;    /*!< Maximum size of the auth scheme. */
+    uint16_t authSchemeMaxSize;   /*!< Maximum size of the auth scheme. */
     uint32_t updaterVersion;      /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
     bool isInSelfTest;            /*!< True if the job is in self test mode. */
     uint8_t * pProtocols;         /*!< Authorization scheme. */
