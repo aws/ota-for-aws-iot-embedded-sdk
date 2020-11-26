@@ -353,7 +353,7 @@ typedef struct OtaAgentContext
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
-                   OtaCompleteCallback_t completeCallback );
+                   OtaAppCallback_t OtaAppCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.

@@ -2652,7 +2652,7 @@ static void initializeLocalBuffers( void )
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
-                   OtaCompleteCallback_t completeCallback )
+                   OtaAppCallback_t OtaAppCallback )
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OTA_ERR_UNINITIALIZED;
@@ -2822,7 +2822,7 @@ uint32_t OTA_GetPacketsProcessed( void )
 /*
  * Return the details of the packets received.
  */
-OtaError_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
+OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
 {
     *pStatistics = otaAgent.statistics;
     return OTA_ERR_NONE;

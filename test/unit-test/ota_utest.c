@@ -245,7 +245,7 @@ static void stubMqttDataCallback( void * unused )
 {
 }
 
-static void stubCompleteCallback( OtaJobEvent_t event )
+static void stubOtaAppCallback( OtaJobEvent_t event )
 {
 }
 
@@ -266,17 +266,17 @@ static void otaInterfaceDefault()
 }
 
 static void otaInit( const char * pClientID,
-                     OtaCompleteCallback_t completeCallback )
+                     OtaAppCallback_t OtaAppCallback )
 {
     OTA_Init( &pOtaAppBuffer,
               &otaInterfaces,
               ( const uint8_t * ) pClientID,
-              completeCallback );
+              OtaAppCallback );
 }
 
 static void otaInitDefault()
 {
-    otaInit( pOtaDefaultClientId, stubCompleteCallback );
+    otaInit( pOtaDefaultClientId, stubOtaAppCallback );
 }
 
 static void otaDeinit()
@@ -452,7 +452,7 @@ void test_OTA_InitWhenReady()
 void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. OTA agent should remain in stopped state. */
-    otaInit( NULL, stubCompleteCallback );
+    otaInit( NULL, stubOtaAppCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -462,7 +462,7 @@ void test_OTA_InitWithNameTooLong()
     char long_name[ 100 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
-    otaInit( long_name, stubCompleteCallback );
+    otaInit( long_name, stubOtaAppCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -596,13 +596,15 @@ void test_OTA_ResumeFailedWhenSuspended()
 
 void test_OTA_Statistics()
 {
+    OtaAgentStatistics_t * pStatistics = { 0 };
+
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsDropped() );
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsQueued() );
     TEST_ASSERT_EQUAL( 0, OTA_GetPacketsProcessed() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetStatistics() );
+    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( pStatistics ) );
 }
 
 void test_OTA_CheckForUpdate()
