@@ -157,6 +157,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  * @param[in] pAgentCtx Agent context which provides the details for the thing, job and mqtt interface.
  * @param[in] pMsg Message to publish.
  * @param[in] msgSize Size of message to send.
+ * @param[in] qos Quality of service level for mqtt.
  * @return OtaErr_t OTA_ERR_NONE if the message is publish is successful.
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
