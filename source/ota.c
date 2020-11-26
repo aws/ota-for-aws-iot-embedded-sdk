@@ -410,7 +410,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
         /*
          * We don't need the job name memory anymore since we're done with this job.
          */
-        memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
 
     return err;
@@ -448,7 +448,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     /* Now update the image state and job status on service side. */
     otaAgent.imageState = state;
 
-    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
+    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
     {
         err = updateJobStatusFromImageState( state, ( int32_t ) reason );
     }
@@ -522,7 +522,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
                    "The job is in the self-test state while the platform is not." ) );
 
         err = setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
-        otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+        ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
     }
 
     if( err != OTA_ERR_NONE )
@@ -869,7 +869,7 @@ static void dataHandlerCleanup( IngestResult_t result )
     otaAgent.OtaAppCallback( ( result == IngestResultFileComplete ) ? OtaJobEventActivate : OtaJobEventFail );
 
     /* Clear any remaining string memory holding the job name since this job is done. */
-    memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+    ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 }
 
 static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
@@ -968,7 +968,7 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
     ( void ) pEventData;
 
     /* If we have active Job abort it and close the file. */
-    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
+    if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
     {
         err = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_USER_ABORT );
 
@@ -1036,7 +1036,7 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
     ( void ) otaClose( &( otaAgent.fileContext ) );
 
     /* Clear the active job name as its no longer required. */
-    memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+    ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 
     /*
      * Send signal to request next OTA job document from service.
@@ -1053,7 +1053,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Free or clear the filepath buffer.*/
         if( ( pFileContext->pFilePath != NULL ) && ( pFileContext->filePathMaxSize > 0 ) )
         {
-            memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
+            ( void ) memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
         }
         else
         {
@@ -1064,7 +1064,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Free or clear the certfile path buffer.*/
         if( ( pFileContext->pCertFilepath != NULL ) && ( pFileContext->certFilePathMaxSize > 0 ) )
         {
-            memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
+            ( void ) memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
         }
         else
         {
@@ -1075,7 +1075,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Free or clear the streamname buffer.*/
         if( ( pFileContext->pStreamName != NULL ) && ( pFileContext->streamNameMaxSize > 0 ) )
         {
-            memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
+            ( void ) memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
         }
         else
         {
@@ -1086,7 +1086,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Free or clear the bitmap buffer.*/
         if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blockBitmapMaxSize > 0 ) )
         {
-            memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
+            ( void ) memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
         }
         else
         {
@@ -1097,7 +1097,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Free or clear url buffer.*/
         if( ( pFileContext->pUpdateUrlPath != NULL ) && ( pFileContext->updateUrlMaxSize > 0 ) )
         {
-            memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
+            ( void ) memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
         }
         else
         {
@@ -1108,7 +1108,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
         /* Initialize auth scheme buffer from application buffer.*/
         if( ( pFileContext->pAuthScheme != NULL ) && ( pFileContext->authSchemeMaxSize > 0 ) )
         {
-            memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
+            ( void ) memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
         }
         else
         {
@@ -1433,7 +1433,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     err = validateJSON( pJson, messageLength );
 
     /* Traverse the docModel and search the JSON if it containing the Source Key specified*/
-    while( ( paramIndex < pDocModel->numModelParams ) && ( err == DocParseErrNone ) )
+    for( paramIndex = 0; paramIndex < pDocModel->numModelParams; paramIndex++ )
     {
         const char * pQueryKey = pDocModel->pBodyDef[ paramIndex ].pSrcKey;
         size_t queryKeyLength = strlen( pQueryKey );
@@ -1449,28 +1449,29 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
         if( result == JSONSuccess )
         {
-            err = checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex );
-
-            if( OTA_DONT_STORE_PARAM == ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
-            {
-                /* Do nothing if we don't need to store the parameter */
-                continue;
-            }
-            else if( OTA_STORE_NESTED_JSON == ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
+            if( OTA_STORE_NESTED_JSON == ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
             {
                 pFileParams = pValueInJson + 1;
                 fileParamsLength = ( uint32_t ) valueLength - 2U;
             }
-            else
+            else if( OTA_DONT_STORE_PARAM != ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
             {
                 err = extractParameter( pModelParam[ paramIndex ],
                                         pDocModel->contextBase,
                                         pValueInJson,
                                         valueLength );
             }
-        }
+            else
+            {
+                /* Do nothing if we don't need to store the parameter */
+            }
 
-        paramIndex++;
+            if( ( err != DocParseErrNone ) ||
+                ( checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex ) != DocParseErrNone ) )
+            {
+                break;
+            }
+        }
     }
 
     if( err == DocParseErrNone )
@@ -1625,9 +1626,9 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
         {
             /* Custom job was parsed by external callback successfully. Grab the job name from the file
              *  context and save that in the ota agent */
-            if( strlen( ( const char * ) pFileContext->pJobName ) > 0 )
+            if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
             {
-                memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+                ( void ) memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                               JobStatusSucceeded,
                                                               JobReasonAccepted,
@@ -1638,7 +1639,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                 LogInfo( ( "Job document parsed from external callback" ) );
 
                 /* We don't need the job name memory anymore since we're done with this job. */
-                memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+                ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
             }
             else
             {
@@ -1695,7 +1696,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             ( void ) otaClose( &( otaAgent.fileContext ) );
 
             /* Set new active job name. */
-            memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+            ( void ) memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
 
             err = OtaJobParseErrNone;
         }
@@ -1717,7 +1718,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                 else
                 {
                     /* The buffer is provided by user, directly copy the new url to it. */
-                    memcpy( otaAgent.fileContext.pUpdateUrlPath, pFileContext->pUpdateUrlPath, otaAgent.fileContext.updateUrlMaxSize );
+                    ( void ) memcpy( otaAgent.fileContext.pUpdateUrlPath, pFileContext->pUpdateUrlPath, otaAgent.fileContext.updateUrlMaxSize );
                 }
             }
 
@@ -1756,14 +1757,14 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     }
     /* If there's an active job, verify that it's the same as what's being reported now. */
     /* We already checked for missing parameters so we SHOULD have a job name in the context. */
-    else if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0 )
+    else if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
     {
         err = verifyActiveJobStatus( pFileContext, pFinalFile, pUpdateJob );
     }
     else
     {
         /* Assume control of the job name from the context. */
-        memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+        ( void ) memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
     }
 
     /* Store the File ID received in the job. */
@@ -1922,14 +1923,14 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     {
         /* If job parsing failed AND there's a job ID, update the job state to FAILED with
          * a reason code.  Without a job ID, we can't update the status in the job service. */
-        if( strlen( ( const char * ) pFileContext->pJobName ) > 0 )
+        if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
         {
             LogError( ( "Failed to parse the job document after parsing the job name: "
                         "OtaJobParseErr_t=%d, Job name=%s",
                         err, ( const char * ) pFileContext->pJobName ) );
 
             /* Assume control of the job name from the context. */
-            memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
+            ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
 
             otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                           JobStatusFailedWithVal,
@@ -1943,7 +1944,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
             }
 
             /* We don't need the job name memory anymore since we're done with this job. */
-            memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+            ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
         }
         else
         {
@@ -2402,7 +2403,7 @@ static void agentShutdownCleanup( void )
     /*
      * Clear active job name.
      */
-    memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+    ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 }
 
 /*
