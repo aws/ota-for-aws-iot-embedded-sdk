@@ -67,7 +67,7 @@ typedef struct
 {
     OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx ); /*!< Initialize file transfer. */
     OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx ); /*!< Request File block. */
-    OtaErr_t ( * decodeFileBlock )( uint8_t * pMessageBuffer,
+    OtaErr_t ( * decodeFileBlock )( const uint8_t * pMessageBuffer,
                                     size_t messageSize,
                                     int32_t * pFileId,
                                     int32_t * pBlockId,

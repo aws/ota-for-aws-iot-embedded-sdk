@@ -44,21 +44,6 @@
 #include "ota_platform_interface.h"
 
 /**
- * @cond DOXYGEN_IGNORE
- * Doxygen should ignore this section.
- */
-
-/* bool is defined in only C99+. */
-#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) )
-    #include <stdbool.h>
-#elif !defined( bool )
-    #define bool     int8_t
-    #define false    ( int8_t ) 0
-    #define true     ( int8_t ) 1
-#endif
-/** @endcond */
-
-/**
  * @ingroup ota_helpers
  * @brief Evaluates to the length of a constant string defined like 'static const char str[]= "xyz";
  */

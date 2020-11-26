@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <assert.h>
 
 /* OTA agent includes. */
 #include "ota.h"
@@ -95,7 +96,7 @@ static OtaDataInterface_t otaDataInterface;
 /* Called when the OTA agent receives a file data block message. */
 
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                       uint8_t * pRawMsg,
+                                       const uint8_t * pRawMsg,
                                        uint32_t messageSize,
                                        OtaErr_t * pCloseResult );
 
@@ -459,114 +460,6 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     }
 
     return err;
-}
-
-static OtaErr_t palDefaultResetDevice( uint32_t serverFileID )
-{
-    ( void ) serverFileID;
-    return prvPAL_ResetDevice( &( otaAgent.fileContext ) );
-}
-
-static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID )
-{
-    ( void ) serverFileID;
-    return prvPAL_GetPlatformImageState( &( otaAgent.fileContext ) );
-}
-
-static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
-                                                 OtaImageState_t state )
-{
-    ( void ) serverFileID;
-    ( void ) state;
-    return prvPAL_SetPlatformImageState( &( otaAgent.fileContext ), state );
-}
-
-static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID )
-{
-    ( void ) serverFileID;
-    return prvPAL_ActivateNewImage( &( otaAgent.fileContext ) );
-}
-
-/* This is the default OTA callback handler if the user does not provide
- * one. It will do the basic activation and commit of accepted images.
- *
- * The OTA agent has completed the update job or determined we're in self
- * test mode. If the update was accepted, we want to activate the new image
- * by resetting the device to boot the new firmware.  If now is not a good
- * time to reset the device, the user should have registered their own
- * callback function instead of this default callback to allow user level
- * self tests and a user scheduled reset.
- * If the update was rejected, just return without doing anything and agent will
- * wait for another job. If it reported that we're in self test mode, we have
- * already successfully connected to the AWS IoT broker and received the
- * latest job so go ahead and set the image as accepted since there is no
- * additional user level tests to run.
- */
-static void defaultOTACompleteCallback( OtaJobEvent_t event )
-{
-    OtaErr_t err = OTA_ERR_UNINITIALIZED;
-
-    if( event == OtaJobEventActivate )
-    {
-        LogInfo( ( "New image has been received and authenticated."
-                   " Activating image. " ) );
-
-        err = OTA_ActivateNewImage();
-
-        if( err != OTA_ERR_NONE )
-        {
-            LogError( ( "Failed to activate new image: "
-                        "OTA_ActivateNewImage returned error: "
-                        "OtaErr_t=%u",
-                        err ) );
-        }
-    }
-    else if( event == OtaJobEventFail )
-    {
-        LogWarn( ( "Unable to complete the OTA job: "
-                   "Received OTA job event OTAJobEventFail" ) );
-        /* Nothing special to do. The OTA agent handles it. */
-    }
-    else if( event == OtaJobEventStartTest )
-    {
-        /* Accept the image since it was a good transfer
-         * and networking and services are all working.
-         */
-        LogInfo( ( "New image has been activated. Beginning self test." ) );
-        err = OTA_SetImageState( OtaImageStateAccepted );
-
-        if( err != OTA_ERR_NONE )
-        {
-            LogError( ( "Failed to set image state: "
-                        "OtaErr_t=%u"
-                        ", state=%d",
-                        err,
-                        OtaImageStateAccepted ) );
-        }
-    }
-    else
-    {
-        LogWarn( ( "Received invalid job event: "
-                   "event=%d",
-                   event ) );
-    }
-}
-
-static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
-                                                  uint32_t messageLength )
-{
-    ( void ) messageLength;
-    ( void ) pJson;
-
-    /*
-     * The JOB document received is not conforming to AFR OTA job document and it could be a
-     * custom OTA job. No application callback for handling custom job document is registered so just
-     * return error code for non conforming job document from this default handler.
-     */
-    LogWarn( ( "Received unsupported custom job document: "
-               "Missing custom job callback for handling the job document." ) );
-
-    return OtaJobParseErrNonConformingJobDoc;
 }
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData )
@@ -1262,45 +1155,34 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
                                         void * pParamAdd )
 {
     DocParseErr_t err = DocParseErrNone;
+    size_t actualLen = 0;
+    Base64Status_t base64Status = 0;
+    Sig256_t ** pSig256 = pParamAdd;
 
-    /* Allocate space for and decode the base64 signature. */
-    void * pSignature = otaAgent.pOtaInterface->os.mem.malloc( sizeof( Sig256_t ) );
+    /* pSig256 should point to pSignature in OtaFileContext_t, which is statically allocated. */
+    assert( *pSig256 != NULL );
 
-    if( pSignature != NULL )
+    base64Status = base64Decode( ( *pSig256 )->data,
+                                    sizeof( ( *pSig256 )->data ),
+                                    &actualLen,
+                                    ( const uint8_t * ) pValueInJson,
+                                    valueLength );
+
+    if( base64Status != Base64Success )
     {
-        size_t actualLen = 0;
-        int base64Status = 0;
-        Sig256_t ** pSig256 = pParamAdd;
-
-        *pSig256 = pSignature;
-
-        base64Status = base64Decode( ( *pSig256 )->data,
-                                     sizeof( ( *pSig256 )->data ),
-                                     &actualLen,
-                                     ( const uint8_t * ) pValueInJson,
-                                     valueLength );
-
-        if( base64Status != 0 )
-        {
-            /* Stop processing on error. */
-            LogError( ( "Failed to decode Base64 data: "
-                        "base64Decode returned error: "
-                        "error=%d",
-                        base64Status ) );
-            err = DocParseErrBase64Decode;
-        }
-        else
-        {
-            ( *pSig256 )->size = ( uint16_t ) actualLen;
-            LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
-                       OTA_JsonFileSignatureKey,
-                       pValueInJson ) );
-        }
+        /* Stop processing on error. */
+        LogError( ( "Failed to decode Base64 data: "
+                    "base64Decode returned error: "
+                    "error=%d",
+                    base64Status ) );
+        err = DocParseErrBase64Decode;
     }
     else
     {
-        /* We failed to allocate needed memory. Everything will be freed below upon failure. */
-        err = DocParseErrOutOfMemory;
+        ( *pSig256 )->size = ( uint16_t ) actualLen;
+        LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
+                    OTA_JsonFileSignatureKey,
+                    pValueInJson ) );
     }
 
     return err;
@@ -1789,15 +1671,20 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             LogInfo( ( "New job document ID is identical to the current job: "
                        "Updating the URL based on the new job document." ) );
 
-            if( ( otaAgent.fileContext.pUpdateUrlPath != NULL ) && ( otaAgent.fileContext.updateUrlMaxSize == 0 ) )
+            if( otaAgent.fileContext.pUpdateUrlPath != NULL )
             {
-                otaAgent.pOtaInterface->os.mem.free( otaAgent.fileContext.pUpdateUrlPath );
-                otaAgent.fileContext.pUpdateUrlPath = pFileContext->pUpdateUrlPath;
-                pFileContext->pUpdateUrlPath = NULL;
-            }
-            else
-            {
-                memcpy( otaAgent.fileContext.pUpdateUrlPath, pFileContext->pUpdateUrlPath, otaAgent.fileContext.updateUrlMaxSize );
+                if( otaAgent.fileContext.updateUrlMaxSize == 0 )
+                {
+                    /* The buffer is allocated by us, free first then update. */
+                    otaAgent.pOtaInterface->os.mem.free( otaAgent.fileContext.pUpdateUrlPath );
+                    otaAgent.fileContext.pUpdateUrlPath = pFileContext->pUpdateUrlPath;
+                    pFileContext->pUpdateUrlPath = NULL;
+                }
+                else
+                {
+                    /* The buffer is provided by user, directly copy the new url to it. */
+                    memcpy( otaAgent.fileContext.pUpdateUrlPath, pFileContext->pUpdateUrlPath, otaAgent.fileContext.updateUrlMaxSize );
+                }
             }
 
             *pFinalFile = &( otaAgent.fileContext );
@@ -2231,7 +2118,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 
 /* Decode and store the incoming data block. */
 static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
-                                               uint8_t * pRawMsg,
+                                               const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
                                                uint32_t * uBlockSize,
@@ -2300,12 +2187,6 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
         {
             eIngestResult = IngestResultNoDecodeMemory;
         }
-    }
-
-    if( ( otaAgent.fileContext.decodeMemMaxSize == 0 ) &&
-        ( *pPayload != NULL ) )
-    {
-        otaAgent.pOtaInterface->os.mem.free( *pPayload );
     }
 
     return eIngestResult;
@@ -2388,7 +2269,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
  * the file transfer and return the result and any available details to the caller.
  */
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                       uint8_t * pRawMsg,
+                                       const uint8_t * pRawMsg,
                                        uint32_t messageSize,
                                        OtaErr_t * pCloseResult )
 {
@@ -2434,6 +2315,13 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         eIngestResult = ingestDataBlockCleanup( pFileContext, pCloseResult );
+    }
+
+    /* Free the payload if it's dynamically allocated by us. */
+    if( ( otaAgent.fileContext.decodeMemMaxSize == 0 ) &&
+        ( pPayload != NULL ) )
+    {
+        otaAgent.pOtaInterface->os.mem.free( pPayload );
     }
 
     return eIngestResult;
