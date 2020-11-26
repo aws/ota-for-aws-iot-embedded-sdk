@@ -267,9 +267,9 @@ OtaErr_t mockPalCloseFile( OtaFileContext_t * const pFileContext )
 }
 
 int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
-                             uint32_t offset,
-                             uint8_t * const pData,
-                             uint32_t blockSize )
+                           uint32_t offset,
+                           uint8_t * const pData,
+                           uint32_t blockSize )
 {
     if( offset >= OTA_TEST_FILE_SIZE )
     {
