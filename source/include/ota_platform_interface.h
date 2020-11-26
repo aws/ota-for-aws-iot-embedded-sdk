@@ -26,7 +26,12 @@
 #ifndef _OTA_PLATFORM_INTERFACE_
 #define _OTA_PLATFORM_INTERFACE_
 
-#include "ota.h"
+#include "ota_private.h"
+
+/**
+ * @brief OTA Error type.
+ */
+typedef uint32_t OtaErr_t;
 
 /**
  * @brief Abort an OTA transfer.
@@ -48,7 +53,7 @@
  * OTA_ERR_NONE is returned when aborting access to the open file was successful.
  * OTA_ERR_FILE_ABORT is returned when aborting access to the open file context was unsuccessful.
  */
-typedef OtaErr_t ( * otaPalAbort_t )( OtaFileContext_t * const pFileContext );
+typedef OtaErr_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Create a new receive file for the data chunks as they come in.
@@ -73,7 +78,7 @@ typedef OtaErr_t ( * otaPalAbort_t )( OtaFileContext_t * const pFileContext );
  * OTA_ERR_BOOT_INFO_CREATE_FAILED is returned if the bootloader information file creation fails.
  * OTA_ERR_RX_FILE_CREATE_FAILED is returned for other errors creating the file in the device's non-volatile memory.
  */
-typedef OtaErr_t (* otaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
+typedef OtaErr_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
 
 /* @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
@@ -98,7 +103,7 @@ typedef OtaErr_t (* otaPalCreateFileForRx_t)( OtaFileContext_t * const pFileCont
  * OTA_ERR_BAD_SIGNER_CERT is returned for errors in the certificate itself.
  * OTA_ERR_FILE_CLOSE is returned when closing the file fails.
  */
-typedef OtaErr_t ( * otaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
+typedef OtaErr_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Write a block of data to the specified file at the given offset.
@@ -119,10 +124,10 @@ typedef OtaErr_t ( * otaPalCloseFile_t )( OtaFileContext_t * const pFileContext 
  * @return The number of bytes written on a success, or a negative error code from the platform
  * abstraction layer.
  */
-typedef int16_t ( * otaPalWriteBlock) ( OtaFileContext_t * const pFileContext,
-                                        uint32_t offset,
-                                        uint8_t * const pData,
-                                        uint32_t blockSize );
+typedef int16_t ( * OtaPalWriteBlock_t ) ( OtaFileContext_t * const pFileContext,
+                                           uint32_t offset,
+                                           uint8_t * const pData,
+                                           uint32_t blockSize );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -136,7 +141,7 @@ typedef int16_t ( * otaPalWriteBlock) ( OtaFileContext_t * const pFileContext,
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-typedef OtaErr_t ( * otaPalActivateNewImage)( OtaFileContext_t * const pFileContext );
+typedef OtaErr_t ( * OtaPalActivateNewImage_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Reset the device.
@@ -150,7 +155,7 @@ typedef OtaErr_t ( * otaPalActivateNewImage)( OtaFileContext_t * const pFileCont
  * error codes information in ota.h.
  */
 
-typedef OtaErr_t ( * otaPalResetDevice_t ) ( OtaFileContext_t * const pFileContext );
+typedef OtaErr_t ( * OtaPalResetDevice_t ) ( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Attempt to set the state of the OTA update image.
@@ -173,7 +178,7 @@ typedef OtaErr_t ( * otaPalResetDevice_t ) ( OtaFileContext_t * const pFileConte
  *   OTA_ERR_REJECT_FAILED: failed to roll back the update image as requested by OtaImageStateRejected.
  *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
-typedef OtaErr_t ( * otaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
+typedef OtaErr_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
                                                       OtaImageState_t eState );
 
 /**
@@ -199,6 +204,21 @@ typedef OtaErr_t ( * otaPalSetPlatformImageState_t )( OtaFileContext_t * const p
  *
  *   NOTE: OtaPalImageStateUnknown should NEVER be returned and indicates an implementation error.
  */
-typedef OtaPalImageState_t ( * otaPalGetPlatformImageState_t ) ( OtaFileContext_t * const pFileContext );
+typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_t * const pFileContext );
+
+/**
+ *  OTA pal Interface structure.
+ */
+typedef struct OtaPalInterface
+{
+    OtaPalAbort_t abort;                                 /*!< Abort an OTA transfer. */
+    OtaPalCreateFileForRx_t createFile;                  /*!< Create a new receive file. */
+    OtaPalCloseFile_t closeFile;                         /*!< Authenticate and close the receive file. */
+    OtaPalWriteBlock_t writeBlock;                       /*!< Write a block of data to the specified file at the given offset. */
+    OtaPalActivateNewImage_t activate;                   /*!< Activate the file received over-the-air. */
+    OtaPalResetDevice_t reset;                           /*!< Reset the device. */
+    OtaPalSetPlatformImageState_t setPlatformImageState; /*!< Set the state of the OTA update image. */
+    OtaPalGetPlatformImageState_t getPlatformImageState; /*!< Get the state of the OTA update image. */
+} OtaPalInterface_t;
 
 #endif /* ifndef _OTA_PLATFORM_INTERFACE_ */
