@@ -342,7 +342,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
         LogError( ( "Self test failed to complete within %ums\r\n",
                     otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-        otaAgent.pOtaInterface->pal.reset( &otaAgent.fileContext );
+        ( void ) otaAgent.pOtaInterface->pal.reset( &otaAgent.fileContext );
     }
     else
     {
@@ -709,7 +709,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
             LogWarn( ( "Rejecting new image and rebooting:"
                        "The platform is in the self-test state while the job is not." ) );
 
-            otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+            ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
         }
     }
 
@@ -1053,7 +1053,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     /* Free or clear the filepath buffer.*/
     if( pFileContext->pFilePath != NULL )
     {
-        if( pFileContext->filePathMaxSize > 0 )
+        if( pFileContext->filePathMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
         }
@@ -1065,9 +1065,9 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     }
 
     /* Free or clear the certfile path buffer.*/
-    if( pFileContext->certFilePathMaxSize != NULL )
+    if( pFileContext->pCertFilepath != NULL )
     {
-        if( pFileContext->certFilePathMaxSize > 0 )
+        if( pFileContext->certFilePathMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
         }
@@ -1081,7 +1081,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     /* Free or clear the streamname buffer.*/
     if( pFileContext->pStreamName != NULL )
     {
-        if( pFileContext->streamNameMaxSize > 0 )
+        if( pFileContext->streamNameMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
         }
@@ -1095,7 +1095,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     /* Free or clear the bitmap buffer.*/
     if( pFileContext->pRxBlockBitmap != NULL )
     {
-        if( pFileContext->blockBitmapMaxSize > 0 )
+        if( pFileContext->blockBitmapMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
         }
@@ -1109,7 +1109,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     /* Free or clear url buffer.*/
     if( pFileContext->pUpdateUrlPath != NULL )
     {
-        if( pFileContext->updateUrlMaxSize > 0 )
+        if( pFileContext->updateUrlMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
         }
@@ -1123,7 +1123,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     /* Initialize auth scheme buffer from application buffer.*/
     if( pFileContext->pAuthScheme != NULL )
     {
-        if( pFileContext->authSchemeMaxSize > 0 )
+        if( pFileContext->authSchemeMaxSize > 0u )
         {
             ( void ) memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
         }
@@ -1483,8 +1483,12 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
                 /* Do nothing if we don't need to store the parameter */
             }
 
-            if( ( err != DocParseErrNone ) ||
-                ( checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex ) != DocParseErrNone ) )
+            if( err == DocParseErrNone )
+            {
+                err = checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex );
+            }
+
+            if( err != DocParseErrNone )
             {
                 break;
             }
@@ -1725,7 +1729,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 
             if( otaAgent.fileContext.pUpdateUrlPath != NULL )
             {
-                if( otaAgent.fileContext.updateUrlMaxSize == 0 )
+                if( otaAgent.fileContext.updateUrlMaxSize == 0u )
                 {
                     /* The buffer is allocated by us, free first then update. */
                     otaAgent.pOtaInterface->os.mem.free( otaAgent.fileContext.pUpdateUrlPath );
@@ -2010,7 +2014,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
     {
-        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0 ) )
+        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
         {
             /* Free any previously allocated bitmap. */
             otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
@@ -2194,24 +2198,24 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     /* If we are expecting a data block, allocate space for it. */
     if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blocksRemaining > 0U ) )
     {
-        otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
-                                                "OtaRequestTimer",
-                                                otaconfigFILE_REQUEST_WAIT_MS,
-                                                otaTimerCallback );
+        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                         "OtaRequestTimer",
+                                                         otaconfigFILE_REQUEST_WAIT_MS,
+                                                         otaTimerCallback );
 
         if( ( otaAgent.fileContext.pDecodeMem != NULL ) &&
-            ( otaAgent.fileContext.decodeMemMaxSize != 0 ) )
+            ( otaAgent.fileContext.decodeMemMaxSize != 0u ) )
         {
             *pPayload = otaAgent.fileContext.pDecodeMem;
             payloadSize = otaAgent.fileContext.decodeMemMaxSize;
         }
         else
         {
-            *pPayload = otaAgent.pOtaInterface->os.mem.malloc( 1 << otaconfigLOG2_FILE_BLOCK_SIZE );
+            *pPayload = otaAgent.pOtaInterface->os.mem.malloc( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
 
             if( *pPayload != NULL )
             {
-                payloadSize = ( 1 << otaconfigLOG2_FILE_BLOCK_SIZE );
+                payloadSize = ( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
             }
         }
     }
@@ -2221,7 +2225,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Decode the file block if space is allocated. */
-    if( payloadSize > 0 )
+    if( payloadSize > 0u )
     {
         /* Decode the file block received. */
         if( OTA_ERR_NONE != otaDataInterface.decodeFileBlock(
@@ -2268,7 +2272,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
         /* Free the bitmap now that we're done with the download. */
-        if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blockBitmapMaxSize == 0 ) )
+        if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blockBitmapMaxSize == 0u ) )
         {
             /* Free any previously allocated bitmap. */
             otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
@@ -2379,7 +2383,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Free the payload if it's dynamically allocated by us. */
-    if( ( otaAgent.fileContext.decodeMemMaxSize == 0 ) &&
+    if( ( otaAgent.fileContext.decodeMemMaxSize == 0u ) &&
         ( pPayload != NULL ) )
     {
         otaAgent.pOtaInterface->os.mem.free( pPayload );
@@ -2570,7 +2574,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
 {
     /* Initialize update file path buffer from application buffer.*/
-    if( ( pOtaBuffer->pUpdateFilePath != NULL ) && ( pOtaBuffer->updateFilePathsize > 0 ) )
+    if( ( pOtaBuffer->pUpdateFilePath != NULL ) && ( pOtaBuffer->updateFilePathsize > 0u ) )
     {
         otaAgent.fileContext.pFilePath = pOtaBuffer->pUpdateFilePath;
         otaAgent.fileContext.filePathMaxSize = pOtaBuffer->updateFilePathsize;
@@ -2581,7 +2585,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize certificate file path buffer from application buffer.*/
-    if( ( pOtaBuffer->pCertFilePath != NULL ) && ( pOtaBuffer->certFilePathSize > 0 ) )
+    if( ( pOtaBuffer->pCertFilePath != NULL ) && ( pOtaBuffer->certFilePathSize > 0u ) )
     {
         otaAgent.fileContext.pCertFilepath = pOtaBuffer->pCertFilePath;
         otaAgent.fileContext.certFilePathMaxSize = pOtaBuffer->certFilePathSize;
@@ -2592,7 +2596,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize stream name buffer from application buffer.*/
-    if( ( pOtaBuffer->pStreamName != NULL ) && ( pOtaBuffer->streamNameSize > 0 ) )
+    if( ( pOtaBuffer->pStreamName != NULL ) && ( pOtaBuffer->streamNameSize > 0u ) )
     {
         otaAgent.fileContext.pStreamName = pOtaBuffer->pStreamName;
         otaAgent.fileContext.streamNameMaxSize = pOtaBuffer->streamNameSize;
@@ -2603,7 +2607,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize file bitmap buffer from application buffer.*/
-    if( ( pOtaBuffer->pDecodeMemory != NULL ) && ( pOtaBuffer->decodeMemorySize > 0 ) )
+    if( ( pOtaBuffer->pDecodeMemory != NULL ) && ( pOtaBuffer->decodeMemorySize > 0u ) )
     {
         otaAgent.fileContext.pDecodeMem = pOtaBuffer->pDecodeMemory;
         otaAgent.fileContext.decodeMemMaxSize = pOtaBuffer->decodeMemorySize;
@@ -2614,7 +2618,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize file bitmap buffer from application buffer.*/
-    if( ( pOtaBuffer->pFileBitmap != NULL ) && ( pOtaBuffer->fileBitmapSize > 0 ) )
+    if( ( pOtaBuffer->pFileBitmap != NULL ) && ( pOtaBuffer->fileBitmapSize > 0u ) )
     {
         otaAgent.fileContext.pRxBlockBitmap = pOtaBuffer->pFileBitmap;
         otaAgent.fileContext.blockBitmapMaxSize = pOtaBuffer->fileBitmapSize;
@@ -2625,7 +2629,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize url buffer from application buffer.*/
-    if( ( pOtaBuffer->pUrl != NULL ) && ( pOtaBuffer->urlSize > 0 ) )
+    if( ( pOtaBuffer->pUrl != NULL ) && ( pOtaBuffer->urlSize > 0u ) )
     {
         otaAgent.fileContext.pUpdateUrlPath = pOtaBuffer->pUrl;
         otaAgent.fileContext.updateUrlMaxSize = pOtaBuffer->urlSize;
@@ -2636,7 +2640,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
 
     /* Initialize auth scheme buffer from application buffer.*/
-    if( ( pOtaBuffer->pAuthScheme != NULL ) && ( pOtaBuffer->authSchemeSize > 0 ) )
+    if( ( pOtaBuffer->pAuthScheme != NULL ) && ( pOtaBuffer->authSchemeSize > 0u ) )
     {
         otaAgent.fileContext.pAuthScheme = pOtaBuffer->pAuthScheme;
         otaAgent.fileContext.authSchemeMaxSize = pOtaBuffer->authSchemeSize;
@@ -2651,11 +2655,11 @@ static void initializeLocalBuffers( void )
 {
     /* Initialize JOB Id buffer .*/
     otaAgent.fileContext.pJobName = pJobNameBuffer;
-    otaAgent.fileContext.jobNameMaxSize = sizeof( pJobNameBuffer );
+    otaAgent.fileContext.jobNameMaxSize = ( uint16_t ) sizeof( pJobNameBuffer );
 
     /* Initialize protocol buffers .*/
     otaAgent.fileContext.pProtocols = pProtocolBuffer;
-    otaAgent.fileContext.protocolMaxSize = sizeof( pProtocolBuffer );
+    otaAgent.fileContext.protocolMaxSize = ( uint16_t ) sizeof( pProtocolBuffer );
 
     otaAgent.fileContext.pSignature = &sig256Buffer;
 }
