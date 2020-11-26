@@ -1015,90 +1015,89 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
 
 static void freeFileContextMem( OtaFileContext_t * const pFileContext )
 {
-    if( pFileContext != NULL )
+    assert( pFileContext != NULL );
+
+    /* Free or clear the filepath buffer.*/
+    if( pFileContext->pFilePath != NULL )
     {
-        /* Free or clear the filepath buffer.*/
-        if( pFileContext->pFilePath != NULL )
+        if( pFileContext->filePathMaxSize > 0 )
         {
-            if( pFileContext->filePathMaxSize > 0 )
-            {
-                memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pFilePath );
-                pFileContext->pFilePath = NULL;
-            }
+            memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
         }
-
-        /* Free or clear the certfile path buffer.*/
-        if( pFileContext->certFilePathMaxSize != NULL )
+        else
         {
-            if( pFileContext->certFilePathMaxSize > 0 )
-            {
-                memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pCertFilepath );
-                pFileContext->pCertFilepath = NULL;
-            }
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pFilePath );
+            pFileContext->pFilePath = NULL;
         }
+    }
 
-        /* Free or clear the streamname buffer.*/
-        if( pFileContext->pStreamName != NULL )
+    /* Free or clear the certfile path buffer.*/
+    if( pFileContext->certFilePathMaxSize != NULL )
+    {
+        if( pFileContext->certFilePathMaxSize > 0 )
         {
-            if( pFileContext->streamNameMaxSize > 0 )
-            {
-                memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pStreamName );
-                pFileContext->pStreamName = NULL;
-            }
+            memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
         }
-
-        /* Free or clear the bitmap buffer.*/
-        if( pFileContext->pRxBlockBitmap != NULL )
+        else
         {
-            if( pFileContext->blockBitmapMaxSize > 0 )
-            {
-                memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
-                pFileContext->pRxBlockBitmap = NULL;
-            }
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pCertFilepath );
+            pFileContext->pCertFilepath = NULL;
         }
+    }
 
-        /* Free or clear url buffer.*/
-        if( pFileContext->pUpdateUrlPath != NULL )
+    /* Free or clear the streamname buffer.*/
+    if( pFileContext->pStreamName != NULL )
+    {
+        if( pFileContext->streamNameMaxSize > 0 )
         {
-            if( pFileContext->updateUrlMaxSize > 0 )
-            {
-                memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pUpdateUrlPath );
-                pFileContext->pUpdateUrlPath = NULL;
-            }
+            memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
         }
-
-        /* Initialize auth scheme buffer from application buffer.*/
-        if( pFileContext->pAuthScheme != NULL )
+        else
         {
-            if( pFileContext->authSchemeMaxSize > 0 )
-            {
-                memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
-            }
-            else
-            {
-                otaAgent.pOtaInterface->os.mem.free( pFileContext->pAuthScheme );
-                pFileContext->pAuthScheme = NULL;
-            }
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pStreamName );
+            pFileContext->pStreamName = NULL;
+        }
+    }
+
+    /* Free or clear the bitmap buffer.*/
+    if( pFileContext->pRxBlockBitmap != NULL )
+    {
+        if( pFileContext->blockBitmapMaxSize > 0 )
+        {
+            memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
+        }
+        else
+        {
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
+            pFileContext->pRxBlockBitmap = NULL;
+        }
+    }
+
+    /* Free or clear url buffer.*/
+    if( pFileContext->pUpdateUrlPath != NULL )
+    {
+        if( pFileContext->updateUrlMaxSize > 0 )
+        {
+            memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
+        }
+        else
+        {
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pUpdateUrlPath );
+            pFileContext->pUpdateUrlPath = NULL;
+        }
+    }
+
+    /* Initialize auth scheme buffer from application buffer.*/
+    if( pFileContext->pAuthScheme != NULL )
+    {
+        if( pFileContext->authSchemeMaxSize > 0 )
+        {
+            memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
+        }
+        else
+        {
+            otaAgent.pOtaInterface->os.mem.free( pFileContext->pAuthScheme );
+            pFileContext->pAuthScheme = NULL;
         }
     }
 }
