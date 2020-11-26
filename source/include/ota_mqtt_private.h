@@ -87,7 +87,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx );
  * error codes information in ota.h.
  */
 
-OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
+OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,

@@ -49,11 +49,21 @@
  * in ota_config.h file. */
 #include "ota_config_defaults.h"
 
-#include "ota.h"
-#include "ota_os_interface.h"
-#include "ota_mqtt_interface.h"
-#include "ota_http_interface.h"
+/**
+ * @cond DOXYGEN_IGNORE
+ * Doxygen should ignore this section.
+ */
 
+/* bool is defined in only C99+. */
+#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
+    ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
+    #include <stdbool.h>
+#elif !defined( bool )
+    #define bool     int8_t
+    #define false    ( int8_t ) 0
+    #define true     ( int8_t ) 1
+#endif
+/** @endcond */
 
 /* General constants. */
 #define LOG2_BITS_PER_BYTE           3U                                                   /*!< Log base 2 of bits per byte. */
@@ -82,18 +92,31 @@
 
 
 /* OTA Agent task event flags. */
-#define OTA_EVT_MASK_JOB_MSG_READY      0x00000001UL                                                                                                                              /*!< Event flag for OTA Job message ready. */
-#define OTA_EVT_MASK_DATA_MSG_READY     0x00000002UL                                                                                                                              /*!< Event flag for OTA Data message ready. */
-#define OTA_EVT_MASK_SHUTDOWN           0x00000004UL                                                                                                                              /*!< Event flag to request OTA shutdown. */
-#define OTA_EVT_MASK_REQ_TIMEOUT        0x00000008UL                                                                                                                              /*!< Event flag indicating the request timer has timed out. */
-#define OTA_EVT_MASK_USER_ABORT         0x000000016UL                                                                                                                             /*!< Event flag to indicate user initiated OTA abort. */
-#define OTA_EVT_MASK_ALL_EVENTS         ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT ) /*!< Event flag to mask indicate all events.*/
+#define OTA_EVT_MASK_JOB_MSG_READY     0x00000001UL                                                                                                                               /*!< Event flag for OTA Job message ready. */
+#define OTA_EVT_MASK_DATA_MSG_READY    0x00000002UL                                                                                                                               /*!< Event flag for OTA Data message ready. */
+#define OTA_EVT_MASK_SHUTDOWN          0x00000004UL                                                                                                                               /*!< Event flag to request OTA shutdown. */
+#define OTA_EVT_MASK_REQ_TIMEOUT       0x00000008UL                                                                                                                               /*!< Event flag indicating the request timer has timed out. */
+#define OTA_EVT_MASK_USER_ABORT        0x000000016UL                                                                                                                              /*!< Event flag to indicate user initiated OTA abort. */
+#define OTA_EVT_MASK_ALL_EVENTS        ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT )  /*!< Event flag to mask indicate all events.*/
 
 /**
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS              ( 21 )
+#define OTA_NUM_JOB_PARAMS             ( 21 )
+
+/**
+ * @brief Maximum size of the Job ID.
+ *
+ */
+#define OTA_JOB_ID_MAX_SIZE            ( 72UL + 1UL )
+
+/**
+ * @ingroup ota_datatypes_struct_constants
+ * @brief A composite cryptographic signature structure able to hold our largest supported signature.
+ */
+
+#define kOTA_MaxSignatureSize           256 /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
 
 /**
  * @brief Keys in OTA job doc.
@@ -131,6 +154,8 @@
  * @ingroup ota_private_datatypes_enums
  * @brief Data ingest results.
  *
+ * The negative error codes represent actual error in ingesting the data block whereas the positive error codes
+ * represent success and other conditions that are not ingest errors like duplicate block is received.
  */
 typedef enum
 {
@@ -144,9 +169,10 @@ typedef enum
     IngestResultBadData = -8,            /*!< The data block from the server was malformed. */
     IngestResultWriteBlockFailed = -9,   /*!< The PAL layer failed to write the file block. */
     IngestResultNullResultPointer = -10, /*!< The pointer to the close result pointer was null. */
+    IngestResultNoDecodeMemory = -11,    /*!< Memory could not be allocated for decoding . */
     IngestResultUninitialized = -127,    /*!< Software BUG: We forgot to set the result code. */
     IngestResultAccepted_Continue = 0,   /*!< The block was accepted and we're expecting more. */
-    IngestResultDuplicate_Continue = 1,  /*!< The block was a duplicate but that's OK. Continue. */
+    IngestResultDuplicate_Continue = 1   /*!< The block was a duplicate but that's OK. Continue. */
 } IngestResult_t;
 
 /**
@@ -261,7 +287,6 @@ typedef struct
     uint32_t paramsRequiredBitmap;   /*!< Bitmap of the parameters required from the model. */
 } JsonDocModel_t;
 
-
 /**
  * @ingroup ota_private_datatypes_structs
  * @brief This is the OTA statistics structure to hold useful info.
@@ -275,27 +300,122 @@ typedef struct OtaAgentStatistics
 } OtaAgentStatistics_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
- * @brief  The OTA agent is a singleton today. The structure keeps it nice and organized.
+ * @ingroup ota_datatypes_enums
+ * @brief OTA Image states.
+ *
+ * After an OTA update image is received and authenticated, it is logically moved to
+ * the Self Test state by the OTA agent pending final acceptance. After the image is
+ * activated and tested by your user code, you should put it into either the Accepted
+ * or Rejected state by calling @ref OTA_SetImageState ( OtaImageStateAccepted ) or
+ * @ref OTA_SetImageState ( OtaImageStateRejected ). If the image is accepted, it becomes
+ * the main firmware image to be booted from then on. If it is rejected, the image is
+ * no longer valid and shall not be used, reverting to the last known good image.
+ *
+ * If you want to abort an active OTA transfer, you may do so by calling the API
+ * @ref OTA_SetImageState ( OtaImageStateAborted ).
  */
-
-typedef struct OtaAgentContext
+typedef enum OtaImageState
 {
-    OtaState_t state;                                      /*!< State of the OTA agent. */
-    uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /*!< Thing name + zero terminator. */
-    OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
-    uint32_t fileIndex;                                    /*!< Index of current file in the array. */
-    uint32_t serverFileID;                                 /*!< Variable to store current file ID passed down */
-    uint8_t * pOtaSingletonActiveJobName;                  /*!< The currently active job name. We only allow one at a time. */
-    uint8_t * pClientTokenFromJob;                         /*!< The clientToken field from the latest update job. */
-    uint32_t timestampFromJob;                             /*!< Timestamp received from the latest job document. */
-    OtaImageState_t imageState;                            /*!< The current application image state. */
-    OtaPalCallbacks_t palCallbacks;                        /*!< Variable to store PAL callbacks */
-    uint32_t numOfBlocksToReceive;                         /*!< Number of data blocks to receive per data request. */
-    OtaAgentStatistics_t statistics;                       /*!< The OTA agent statistics block. */
-    uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
-    OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
-} OtaAgentContext_t;
+    OtaImageStateUnknown = 0,  /*!< The initial state of the OTA MCU Image. */
+    OtaImageStateTesting = 1,  /*!< The state of the OTA MCU Image post successful download and reboot. */
+    OtaImageStateAccepted = 2, /*!< The state of the OTA MCU Image post successful download and successful self_test. */
+    OtaImageStateRejected = 3, /*!< The state of the OTA MCU Image when the job has been rejected. */
+    OtaImageStateAborted = 4,  /*!< The state of the OTA MCU Image after a timeout publish to the stream request fails.
+                                *   Also if the OTA MCU image is aborted in the middle of a stream. */
+    OtaLastImageState = OtaImageStateAborted
+} OtaImageState_t;
+
+/**
+ * @ingroup ota_datatypes_enums
+ * @brief OTA Platform Image State.
+ *
+ * The image state set by platform implementation.
+ */
+typedef enum OtaPalImageState
+{
+    OtaPalImageStateUnknown = 0,
+    OtaPalImageStatePendingCommit,
+    OtaPalImageStateValid,
+    OtaPalImageStateInvalid,
+} OtaPalImageState_t;
+
+/**
+ * @ingroup ota_datatypes_enums
+ * @brief OTA Agent Events.
+ *
+ * The events sent to OTA agent.
+ */
+typedef enum OtaEvent
+{
+    OtaAgentEventStart = 0,
+    OtaAgentEventStartSelfTest,
+    OtaAgentEventRequestJobDocument,
+    OtaAgentEventReceivedJobDocument,
+    OtaAgentEventCreateFile,
+    OtaAgentEventRequestFileBlock,
+    OtaAgentEventReceivedFileBlock,
+    OtaAgentEventRequestTimer,
+    OtaAgentEventCloseFile,
+    OtaAgentEventSuspend,
+    OtaAgentEventResume,
+    OtaAgentEventUserAbort,
+    OtaAgentEventShutdown,
+    OtaAgentEventMax
+} OtaEvent_t;
+
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA File Signature info.
+ *
+ * File key signature information to verify the authenticity of the incoming file
+ */
+typedef struct
+{
+    uint16_t size;                         /*!< Size, in bytes, of the signature. */
+    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
+} Sig256_t;
+
+/**
+ * @ingroup ota_datatypes_structs
+ * @brief OTA File Context Information.
+ *
+ * Information about an OTA Update file that is to be streamed. This structure is filled in from a
+ * job notification MQTT message. Currently only one file context can be streamed at time.
+ */
+typedef struct OtaFileContext
+{
+    uint8_t * pFilePath;          /*!< Update file pathname. */
+    uint16_t filePathMaxSize;     /*!< Maximum size of the update file path */
+    #if defined( WIN32 ) || defined( __linux__ )
+        FILE * pFile;             /*!< File type is stdio FILE structure after file is open for write. */
+    #else
+        uint8_t * pFile;          /*!< File type is RAM/Flash image pointer after file is open for write. */
+    #endif
+    uint32_t fileSize;            /*!< The size of the file in bytes. */
+    uint32_t blocksRemaining;     /*!< How many blocks remain to be received (a code optimization). */
+    uint32_t fileAttributes;      /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
+    uint32_t serverFileID;        /*!< The file is referenced by this numeric ID in the OTA job. */
+    uint8_t * pJobName;           /*!< The job name associated with this file from the job service. */
+    uint16_t jobNameMaxSize;      /*!< Maximum size of the job name. */
+    uint8_t * pStreamName;        /*!< The stream associated with this file from the OTA service. */
+    uint16_t streamNameMaxSize;   /*!< Maximum size of the stream name. */
+    uint8_t * pRxBlockBitmap;     /*!< Bitmap of blocks received (for deduplicating and missing block request). */
+    uint16_t blockBitmapMaxSize;  /*!< Maximum size of the block bitmap. */
+    uint8_t * pCertFilepath;      /*!< Pathname of the certificate file used to validate the receive file. */
+    uint16_t certFilePathMaxSize; /*!< Maximum certificate path size. */
+    uint8_t * pUpdateUrlPath;     /*!< Url for the file. */
+    uint16_t updateUrlMaxSize;    /*!< Maximum size of the url. */
+    uint8_t * pAuthScheme;        /*!< Authorization scheme. */
+    uint8_t authSchemeMaxSize;    /*!< Maximum size of the auth scheme. */
+    uint32_t updaterVersion;      /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
+    bool isInSelfTest;            /*!< True if the job is in self test mode. */
+    uint8_t * pProtocols;         /*!< Authorization scheme. */
+    uint16_t protocolMaxSize;     /*!< Maximum size of the  supported protocols string. */
+    uint8_t * pDecodeMem;         /*!< Decode memory. */
+    uint32_t decodeMemMaxSize;    /*!< Maximum size of the decode memory. */
+    uint32_t fileType;            /*!< The file type id set when creating the OTA job. */
+    Sig256_t * pSignature;        /*!< Pointer to the file's signature structure. */
+} OtaFileContext_t;
 
 /**
  * @ingroup ota_private_datatypes_structs
@@ -319,23 +439,6 @@ typedef struct OtaEventMsg
     OtaEventData_t * pEventData; /*!< Event status message. */
     OtaEvent_t eventId;          /*!< Identifier for the event. */
 } OtaEventMsg_t;
-
-/**
- * @brief Get buffer available from static pool of OTA buffers.
- *
- * @return OtaEventData_t* Location of the buffer
- */
-OtaEventData_t * otaEventBufferGet( void );
-
-
-
-/**
- * @brief Free OTA buffer.
- *
- * @param[in] pBuffer The buffer space to free
- */
-void otaEventBufferFree( OtaEventData_t * const pBuffer );
-
 
 /**
  * @brief Signal event to the OTA Agent task.
