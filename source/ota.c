@@ -278,7 +278,7 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-static const char * pOtaAgentStateStrings[ OtaAgentStateAll ] =
+static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
     "Init",
     "Ready",
@@ -290,7 +290,8 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll ] =
     "ClosingFile",
     "Suspended",
     "ShuttingDown",
-    "Stopped"
+    "Stopped",
+    "All"
 };
 
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
@@ -2465,8 +2466,8 @@ void otaAgentTask( void * pUnused )
                 LogDebug( ( "Found valid event handler for state transition: "
                             "State=[%s], "
                             "Event=[%s]",
-                            pOtaAgentStateStrings[ i ],
-                            pOtaEventStrings[ i ] ) );
+                            pOtaAgentStateStrings[ otaAgent.state ],
+                            pOtaEventStrings[ eventMsg.eventId ] ) );
 
                 /*
                  * Execute the handler function.
@@ -2828,7 +2829,7 @@ OtaErr_t OTA_ActivateNewImage( void )
      * and not return unless there is a problem within the PAL layer. If it does return,
      * output an error message. The device may need to be reset manually.
      */
-    if( otaAgent.pOtaInterface->pal.activate != NULL )
+    if( ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
     {
         err = otaAgent.pOtaInterface->pal.activate( &( otaAgent.fileContext ) );
     }

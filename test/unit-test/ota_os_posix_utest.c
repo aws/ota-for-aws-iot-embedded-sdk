@@ -35,12 +35,11 @@
 #include "unity.h"
 
 /* For accessing OTA private functions and error codes. */
+#include "ota.h"
 #include "ota_os_posix.h"
-#include "ota_private.h"
 
 
 /* Testing constants. */
-#define MAX_MESSAGES           10    /*!< Maximum number of messages in the event queue. */
 #define TIMER_NAME             "dummy_name"
 #define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
 
@@ -200,10 +199,8 @@ void test_OTA_posix_MemoryAllocAndFree( void )
     TEST_ASSERT_NOT_NULL( buffer );
 
     /* Test that we can access and assign a value in the buffer. */
-    memset( buffer, 1, MAX_MESSAGES );
-    TEST_ASSERT_EQUAL( 1, buffer[ 0 ] );
+    memset( buffer, 1, 1 );
+    TEST_ASSERT_EQUAL( 1, *buffer );
 
-    /* Free the buffer and check if the contents are cleared. */
     STDC_Free( buffer );
-    TEST_ASSERT_EQUAL( 0, buffer[ 0 ] );
 }

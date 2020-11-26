@@ -91,7 +91,8 @@ void test_OTA_CborDecodeStreamResponse()
     int fileId = -1;
     int blockIndex = -1;
     int blockSize = -1;
-    uint8_t * pPayload = NULL;
+    uint8_t decodedPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t * pDecodedPayload = decodedPayload;
     size_t payloadSize = -1;
     bool result = false;
     int i = 0;
@@ -119,7 +120,7 @@ void test_OTA_CborDecodeStreamResponse()
             &fileId,
             &blockIndex,
             &blockSize,
-            &pPayload,
+            &pDecodedPayload,
             &payloadSize );
         TEST_ASSERT_TRUE( result );
         TEST_ASSERT_EQUAL( CBOR_TEST_FILEIDENTITY_VALUE, fileId );
@@ -129,13 +130,7 @@ void test_OTA_CborDecodeStreamResponse()
 
         for( i = 0; i < sizeof( blockPayload ); i++ )
         {
-            TEST_ASSERT_EQUAL( blockPayload[ i ], pPayload[ i ] );
+            TEST_ASSERT_EQUAL( blockPayload[ i ], decodedPayload[ i ] );
         }
-    }
-
-    if( NULL != pPayload )
-    {
-        free( pPayload );
-        pPayload = NULL;
     }
 }

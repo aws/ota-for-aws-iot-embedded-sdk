@@ -44,9 +44,6 @@
 #include "ota.h"
 #include "ota_private.h"
 
-/* Mock OTA PAL. */
-#include "mock_ota_platform_interface.h"
-
 /* test includes. */
 #include "utest_helpers.h"
 
@@ -85,6 +82,9 @@ static const char * pOtaDefaultClientId = "ota_utest";
 /* OTA interface. */
 static OtaInterfaces_t otaInterfaces;
 
+/* OTA image state. */
+static OtaImageState_t imageState = OtaImageStateUnknown;
+
 /* OTA application buffer. */
 static OtaAppBuffer_t pOtaAppBuffer;
 static uint8_t pUserBuffer[ OTA_APP_BUFFER_SIZE ];
@@ -103,29 +103,6 @@ static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 static const int otaDefaultWait = 1000;
 
 /* ========================================================================== */
-
-OtaErr_t mockOtaPalCreateFileForRx( OtaFileContext_t * pOtaFileCtx,
-                                    int numCalls )
-{
-    pOtaFileHandle = ( FILE * ) pOtaFileBuffer;
-    pOtaFileCtx->pFile = pOtaFileHandle;
-    return OTA_ERR_NONE;
-}
-
-int16_t mockOtaPalWriteFileBlock( OtaFileContext_t * const pOtaFileCtx,
-                                  uint32_t offset,
-                                  uint8_t * const pData,
-                                  uint32_t blockSize,
-                                  int numCalls )
-{
-    if( offset >= OTA_TEST_FILE_SIZE )
-    {
-        TEST_ASSERT_TRUE_MESSAGE( false, "Offset is bigger than test file buffer." );
-    }
-
-    memcpy( pOtaFileBuffer + offset, pData, blockSize );
-    return blockSize;
-}
 
 static OtaErr_t mockOSEventReset( OtaEventContext_t * unused )
 {
@@ -272,8 +249,70 @@ static void stubMqttDataCallback( void * unused )
 {
 }
 
-static void stubCompleteCallback( OtaJobEvent_t event )
+OtaErr_t mockPalAbort( OtaFileContext_t * const pFileContext )
 {
+    return OTA_ERR_NONE;
+}
+
+OtaErr_t mockPalCreateFileForRx( OtaFileContext_t * const pFileContext )
+{
+    pOtaFileHandle = ( FILE * ) pOtaFileBuffer;
+    pFileContext->pFile = pOtaFileHandle;
+    return OTA_ERR_NONE;
+}
+
+OtaErr_t mockPalCloseFile( OtaFileContext_t * const pFileContext )
+{
+    return OTA_ERR_NONE;
+}
+
+int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
+                             uint32_t offset,
+                             uint8_t * const pData,
+                             uint32_t blockSize )
+{
+    if( offset >= OTA_TEST_FILE_SIZE )
+    {
+        TEST_ASSERT_TRUE_MESSAGE( false, "Offset is bigger than test file buffer." );
+    }
+
+    memcpy( pOtaFileBuffer + offset, pData, blockSize );
+    return blockSize;
+}
+
+OtaErr_t mockPalActivate( OtaFileContext_t * const pFileContext )
+{
+    return OTA_ERR_NONE;
+}
+
+OtaErr_t mockPalActivateReturnFail( OtaFileContext_t * const pFileContext )
+{
+    return OTA_ERR_ACTIVATE_FAILED;
+}
+
+OtaErr_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
+{
+    return OTA_ERR_NONE;
+}
+
+OtaErr_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileContext,
+                                       OtaImageState_t eState )
+{
+    imageState = eState;
+    return OTA_ERR_NONE;
+}
+
+OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileContext )
+{
+    return imageState;
+}
+
+static void mockAppleteCallback( OtaJobEvent_t event )
+{
+    if( event == OtaJobEventStartTest )
+    {
+        OTA_SetImageState( OtaImageStateAccepted );
+    }
 }
 
 /* Set default OTA OS interface to mockOSEventSendThenStop. This allows us to easily control the
@@ -297,10 +336,19 @@ static void otaInterfaceDefault()
     otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribe;
     otaInterfaces.mqtt.jobCallback = stubMqttJobCallback;
     otaInterfaces.mqtt.dataCallback = stubMqttDataCallback;
+
+    otaInterfaces.pal.abort = mockPalAbort;
+    otaInterfaces.pal.createFile = mockPalCreateFileForRx;
+    otaInterfaces.pal.closeFile = mockPalCloseFile;
+    otaInterfaces.pal.writeBlock = mockPalWriteBlock;
+    otaInterfaces.pal.activate = mockPalActivate;
+    otaInterfaces.pal.reset = mockPalResetDevice;
+    otaInterfaces.pal.setPlatformImageState = mockPalSetPlatformImageState;
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageState;
 }
 
 static void otaInit( const char * pClientID,
-                     OtaCompleteCallback_t completeCallback )
+                     OtaAppCallback_t appCallback )
 {
     pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
     pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
@@ -311,19 +359,24 @@ static void otaInit( const char * pClientID,
     OTA_AgentInit( &pOtaAppBuffer,
                    &otaInterfaces,
                    ( const uint8_t * ) pClientID,
-                   completeCallback );
+                   appCallback );
 }
 
 static void otaInitDefault()
 {
-    otaInit( pOtaDefaultClientId, stubCompleteCallback );
+    otaInit( pOtaDefaultClientId, mockAppleteCallback );
 }
 
 static void otaDeinit()
 {
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
     mockOSEventReset( NULL );
     OTA_AgentShutdown( 1 );
+}
+
+void * pthreadOtaAgentTask( void * params )
+{
+    otaAgentTask( params );
+    return NULL;
 }
 
 static void otaStartAgentTask()
@@ -332,7 +385,7 @@ static void otaStartAgentTask()
 
     if( OtaAgentStateInit == OTA_GetAgentState() )
     {
-        pthread_create( &otaThread, NULL, otaAgentTask, NULL );
+        pthread_create( &otaThread, NULL, pthreadOtaAgentTask, NULL );
     }
 }
 
@@ -395,7 +448,7 @@ static void otaGoToStateWithTimeout( OtaState_t state,
 
         case OtaAgentStateRequestingJob:
             /* Let the PAL says it's not in self test.*/
-            prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+            imageState = OtaPalImageStateValid;
             otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
             otaEvent.eventId = OtaAgentEventStart;
             OTA_SignalEvent( &otaEvent );
@@ -410,9 +463,8 @@ static void otaGoToStateWithTimeout( OtaState_t state,
         case OtaAgentStateCreatingFile:
             otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
             /* Let the PAL says it's not in self test.*/
-            prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+            imageState = OtaPalImageStateValid;
             /* Parse success would create the file, let it invoke our mock when creating file. */
-            prvPAL_CreateFileForRx_Stub( mockOtaPalCreateFileForRx );
             otaEvent.eventId = OtaAgentEventReceivedJobDocument;
             otaEvent.pEventData = &eventBuffer;
             memcpy( otaEvent.pEventData->data, JOB_DOC_A, JOB_DOC_A_LENGTH );
@@ -458,6 +510,7 @@ void setUp()
 
 void tearDown()
 {
+    imageState = OtaImageStateUnknown;
     pOtaFileHandle = NULL;
     memset( pOtaFileBuffer, 0, OTA_TEST_FILE_SIZE );
     otaInterfaceDefault();
@@ -494,7 +547,7 @@ void test_OTA_InitWhenReady()
 void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. OTA agent should remain in stopped state. */
-    otaInit( NULL, stubCompleteCallback );
+    otaInit( NULL, mockAppleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
 }
 
@@ -504,7 +557,7 @@ void test_OTA_InitWithNameTooLong()
     char long_name[ 100 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
-    otaInit( long_name, stubCompleteCallback );
+    otaInit( long_name, mockAppleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
 }
 
@@ -533,7 +586,7 @@ void test_OTA_StartWhenReady()
     OtaEventMsg_t otaEvent = { 0 };
 
     /* Let the PAL says it's not in self test.*/
-    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+    imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -549,7 +602,7 @@ void test_OTA_StartFailedWhenReady()
     OtaEventMsg_t otaEvent = { 0 };
 
     /* Let the PAL says it's not in self test.*/
-    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
+    imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
@@ -682,10 +735,9 @@ void test_OTA_ActivateNewImage()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
     /* Activate image simply calls the PAL implementation and return its return value. */
-    prvPAL_ActivateNewImage_IgnoreAndReturn( OTA_ERR_NONE );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_ActivateNewImage() );
 
-    prvPAL_ActivateNewImage_IgnoreAndReturn( OTA_ERR_ACTIVATE_FAILED );
+    otaInterfaces.pal.activate = mockPalActivateReturnFail;
     TEST_ASSERT_EQUAL( OTA_ERR_ACTIVATE_FAILED, OTA_ActivateNewImage() );
 }
 
@@ -693,7 +745,6 @@ void test_OTA_ActivateNewImage()
  * should fail. */
 void test_OTA_ActivateNewImageWhenStopped()
 {
-    prvPAL_ActivateNewImage_IgnoreAndReturn( OTA_ERR_NONE );
     TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, OTA_ActivateNewImage() );
 }
 
@@ -740,7 +791,6 @@ void test_OTA_ImageStateRjectWithNoJob()
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
     TEST_ASSERT_EQUAL( OTA_ERR_NO_ACTIVE_JOB, OTA_SetImageState( OtaImageStateRejected ) );
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
@@ -755,7 +805,6 @@ void test_OTA_ImageStateAcceptWithNoJob()
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
 
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
     TEST_ASSERT_EQUAL( OTA_ERR_NO_ACTIVE_JOB, OTA_SetImageState( OtaImageStateAccepted ) );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
@@ -769,10 +818,6 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 {
     OtaEventMsg_t otaEvent = { 0 };
     const char * pJobDoc = JOB_DOC_INVALID;
-
-    /* Parse failure would abort the update. */
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
@@ -792,10 +837,7 @@ void test_OTA_ProcessJobDocumentValidJson()
     const char * pJobDoc = JOB_DOC_A;
 
     /* Let the PAL says it's not in self test.*/
-    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStateValid );
-
-    /* Parse success would create the file, let PAL return success. */
-    prvPAL_CreateFileForRx_IgnoreAndReturn( OTA_ERR_NONE );
+    imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
@@ -847,10 +889,6 @@ void test_OTA_ReceiveFileBlockEmpty()
      * within the OTA event handler and we want it to be processed. */
     otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* Decode failure would reject this the update. */
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
-
     otaEvent.eventId = OtaAgentEventReceivedFileBlock;
     otaEvent.pEventData = &eventBuffer;
     otaEvent.pEventData->dataLength = 0;
@@ -874,14 +912,6 @@ void test_OTA_ReceiveFileBlockComplete()
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * because we're receiving multiple blocks in this test. */
     otaInterfaces.os.event.send = mockOSEventSend;
-
-    /* Set up mock to write file block to our buffer. */
-    prvPAL_WriteBlock_Stub( mockOtaPalWriteFileBlock );
-
-    /* By pass signature validation and ignore the final activate and abort call. */
-    prvPAL_CloseFile_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_ActivateNewImage_IgnoreAndReturn( OTA_ERR_NONE );
 
     /* Fill the file block. */
     for( idx = 0; idx < sizeof( pFileBlock ); idx++ )
@@ -941,16 +971,12 @@ void test_OTA_SelfTest()
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * This is to complete the self test process. */
     otaInterfaces.os.event.send = mockOSEventSend;
-    /* Use default complete callback. */
-    otaInit( pOtaDefaultClientId, NULL );
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
 
-    /* Let the PAL says it's in self test and bypass setting platform image state. */
-    prvPAL_GetPlatformImageState_IgnoreAndReturn( OtaPalImageStatePendingCommit );
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
+    /* Let the PAL says it's in self test. */
+    imageState = OtaPalImageStatePendingCommit;
 
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     otaEvent.pEventData = &eventBuffer;
@@ -973,10 +999,6 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
 
     /* Reset the event queue so that we can send the next event. */
     mockOSEventReset( NULL );
-
-    /* Let abort pass. */
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
     /* Sending another job document should cause OTA agent to abort current update. */
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
@@ -1028,10 +1050,6 @@ void test_OTA_RefreshWithDifferentJobDoc()
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * We need this to go through the process of refreshing job doc. */
     otaInterfaces.os.event.send = mockOSEventSend;
-
-    /* Let abort pass. */
-    prvPAL_SetPlatformImageState_IgnoreAndReturn( OTA_ERR_NONE );
-    prvPAL_Abort_IgnoreAndReturn( OTA_ERR_NONE );
 
     /* First send request job doc event while we're in progress, this should make OTA agent to
      * to request job doc again and transit to waiting for job state. */
