@@ -604,11 +604,108 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
     return retVal;
 }
 
+static OtaErr_t processNullFileContext()
+{
+    OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
+    OtaEventMsg_t eventMsg = { 0 };
+
+    /* If the OTA job is in the self_test state, alert the application layer. */
+    if( OTA_GetImageState() == OtaImageStateTesting )
+    {
+        /* Send event to OTA task to start self-test. */
+        eventMsg.eventId = OtaAgentEventStartSelfTest;
+
+        if( OTA_SignalEvent( &eventMsg ) == false )
+        {
+            retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
+        }
+        else
+        {
+            retVal = OTA_ERR_NONE;
+        }
+    }
+    else
+    {
+        /*
+         * If the job context returned NULL and the image state is not in the self_test state,
+         * then an error occurred parsing the OTA job message.  Abort the OTA job with a parse error.
+         *
+         * If there is a valid job id, then a job status update will be sent.
+         */
+        LogError( ( "OTA job doc parse failed: OtaErr_t=%d, aborting current update.", retVal ) );
+
+        retVal = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_JOB_PARSER_ERROR );
+
+        if( retVal != OTA_ERR_NONE )
+        {
+            LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
+        }
+
+        retVal = OTA_ERR_JOB_PARSER_ERROR;
+    }
+
+    return retVal;
+}
+
+static OtaErr_t processValidFileContext()
+{
+    OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
+    OtaEventMsg_t eventMsg = { 0 };
+
+    /* If the platform is not in the self_test state, initiate file download. */
+    if( inSelftest() == false )
+    {
+        /* Init data interface routines */
+        retVal = setDataInterface( &otaDataInterface, otaAgent.fileContext.pProtocols );
+
+        if( retVal == OTA_ERR_NONE )
+        {
+            LogInfo( ( "Setting OTA data interface." ) );
+
+            /* Received a valid context so send event to request file blocks. */
+            eventMsg.eventId = OtaAgentEventCreateFile;
+
+            /*Send the event to OTA Agent task. */
+            if( OTA_SignalEvent( &eventMsg ) == false )
+            {
+                retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
+            }
+        }
+        else
+        {
+            /*
+             * Failed to set the data interface so abort the OTA.If there is a valid job id,
+             * then a job status update will be sent.
+             */
+            LogError( ( "Failed to set OTA data interface: OtaErr_t=%d, aborting current update.", retVal ) );
+
+            retVal = setImageStateWithReason( OtaImageStateAborted, retVal );
+
+            if( retVal != OTA_ERR_NONE )
+            {
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
+            }
+        }
+    }
+    else
+    {
+        /*
+         * Received a job that is not in self-test but platform is, so reboot the device to allow
+         * roll back to previous image.
+         */
+        LogWarn( ( "Rejecting new image and rebooting:"
+                   "The platform is in the self-test state while the job is not." ) );
+
+        ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+    }
+
+    return retVal;
+}
+
 static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t retVal = OTA_ERR_UNINITIALIZED;
     OtaFileContext_t * pOtaFileContext = NULL;
-    OtaEventMsg_t eventMsg = { 0 };
 
     /*
      * Parse the job document and update file information in the file context.
@@ -624,93 +721,11 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
      */
     if( pOtaFileContext == NULL )
     {
-        /*
-         * If the OTA job is in the self_test state, alert the application layer.
-         */
-        if( OTA_GetImageState() == OtaImageStateTesting )
-        {
-            /* Send event to OTA task to start self-test. */
-            eventMsg.eventId = OtaAgentEventStartSelfTest;
-
-            if( OTA_SignalEvent( &eventMsg ) == false )
-            {
-                retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
-            }
-            else
-            {
-                retVal = OTA_ERR_NONE;
-            }
-        }
-        else
-        {
-            /*
-             * If the job context returned NULL and the image state is not in the self_test state,
-             * then an error occurred parsing the OTA job message.  Abort the OTA job with a parse error.
-             *
-             * If there is a valid job id, then a job status update will be sent.
-             */
-            LogError( ( "OTA job doc parse failed: OtaErr_t=%d, aborting current update.", retVal ) );
-
-            retVal = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_JOB_PARSER_ERROR );
-
-            if( retVal != OTA_ERR_NONE )
-            {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
-            }
-
-            retVal = OTA_ERR_JOB_PARSER_ERROR;
-        }
+        retVal = processNullFileContext();
     }
     else
     {
-        /*
-         * If the platform is not in the self_test state, initiate file download.
-         */
-        if( inSelftest() == false )
-        {
-            /* Init data interface routines */
-            retVal = setDataInterface( &otaDataInterface, otaAgent.fileContext.pProtocols );
-
-            if( retVal == OTA_ERR_NONE )
-            {
-                LogInfo( ( "Setting OTA data interface." ) );
-
-                /* Received a valid context so send event to request file blocks. */
-                eventMsg.eventId = OtaAgentEventCreateFile;
-
-                /*Send the event to OTA Agent task. */
-                if( OTA_SignalEvent( &eventMsg ) == false )
-                {
-                    retVal = OTA_ERR_EVENT_Q_SEND_FAILED;
-                }
-            }
-            else
-            {
-                /*
-                 * Failed to set the data interface so abort the OTA.If there is a valid job id,
-                 * then a job status update will be sent.
-                 */
-                LogError( ( "Failed to set OTA data interface: OtaErr_t=%d, aborting current update.", retVal ) );
-
-                retVal = setImageStateWithReason( OtaImageStateAborted, retVal );
-
-                if( retVal != OTA_ERR_NONE )
-                {
-                    LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
-                }
-            }
-        }
-        else
-        {
-            /*
-             * Received a job that is not in self-test but platform is, so reboot the device to allow
-             * roll back to previous image.
-             */
-            LogWarn( ( "Rejecting new image and rebooting:"
-                       "The platform is in the self-test state while the job is not." ) );
-
-            ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
-        }
+        retVal = processValidFileContext();
     }
 
     return retVal;
@@ -1764,14 +1779,59 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
     return err;
 }
 
+/* Validate update version when receiving job doc in self test state. */
+static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
+{
+    OtaErr_t otaErr = OTA_ERR_NONE;
+    OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
+
+    LogInfo( ( "In self test mode." ) );
+
+    /* Validate version of the update received.*/
+    errVersionCheck = validateUpdateVersion( pFileContext );
+
+    /* coverity[misra_c_2012_rule_14_3_violation] otaconfigAllowDowngrade is a user config. */
+    if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OTA_ERR_NONE ) )
+    {
+        /* The running firmware version is newer than the firmware that performed
+         * the update or downgrade is allowed so this means we're ready to start
+         * the self test phase.
+         *
+         * Set image state accordingly and update job status with self test identifier.
+         */
+        LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
+                   otaAgent.serverFileID ) );
+
+        otaErr = setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
+
+        if( otaErr != OTA_ERR_NONE )
+        {
+            LogError( ( "Failed to set image state to testing: OtaErr_t=%d", otaErr ) );
+        }
+    }
+    else
+    {
+        LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
+                   "OtaErr_t=%u", errVersionCheck ) );
+
+        otaErr = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
+
+        if( otaErr != OTA_ERR_NONE )
+        {
+            LogError( ( "Failed to set image state to rejected: OtaErr_t=%d", otaErr ) );
+        }
+
+        /* All reject cases must reset the device. */
+        ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+    }
+}
+
 /* Check if all the file context params are valid and initialize resources for the job transfer */
 
 static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              OtaFileContext_t ** pFinalFile,
                                              bool * pUpdateJob )
 {
-    OtaErr_t otaErr = OTA_ERR_NONE;
-    OtaErr_t errVersionCheck = OTA_ERR_UNINITIALIZED;
     OtaJobParseErr_t err = OtaJobParseErrNone;
 
     /* Validate the job document parameters. */
@@ -1797,59 +1857,17 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 
     if( err == OtaJobParseErrNone )
     {
-        /* If the job is in self test mode, don't start an
-         * OTA update but instead do the following:
+        /* If the job is in self test mode, don't start an OTA update but instead do the following:
          *
-         * If the firmware that performed the update was older
-         * than the currently running firmware, set the image
-         * state to "Testing." This is the success path.
+         * If the firmware that performed the update was older than the currently running firmware,
+         * set the image state to "Testing." This is the success path.
          *
-         * If it's the same or newer, reject the job since
-         * either the firmware was not accepted during self
-         * test or an incorrect image was sent by the OTA
-         * operator.
+         * If it's the same or newer, reject the job since either the firmware was not accepted
+         * during self test or an incorrect image was sent by the OTA operator.
          */
         if( pFileContext->isInSelfTest == true )
         {
-            LogInfo( ( "In self test mode." ) );
-
-            /* Validate version of the update received.*/
-            errVersionCheck = validateUpdateVersion( pFileContext );
-
-            /* coverity[misra_c_2012_rule_14_3_violation] otaconfigAllowDowngrade is a user config. */
-            if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OTA_ERR_NONE ) )
-            {
-                /* The running firmware version is newer than the firmware that performed
-                 * the update or downgrade is allowed so this means we're ready to start
-                 * the self test phase.
-                 *
-                 * Set image state accordingly and update job status with self test identifier.
-                 */
-                LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
-                           otaAgent.serverFileID ) );
-
-                otaErr = setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
-
-                if( otaErr != OTA_ERR_NONE )
-                {
-                    LogError( ( "Failed to set image state to testing: OtaErr_t=%d", otaErr ) );
-                }
-            }
-            else
-            {
-                LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
-                           "OtaErr_t=%u", errVersionCheck ) );
-
-                otaErr = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
-
-                if( otaErr != OTA_ERR_NONE )
-                {
-                    LogError( ( "Failed to set image state to rejected: OtaErr_t=%d", otaErr ) );
-                }
-
-                /* All reject cases must reset the device. */
-                ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
-            }
+            handleSelfTestJobDoc( pFileContext );
         }
         else
         {
