@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -67,7 +67,7 @@ typedef struct
 {
     OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx ); /*!< Initialize file transfer. */
     OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx ); /*!< Request File block. */
-    OtaErr_t ( * decodeFileBlock )( uint8_t * pMessageBuffer,
+    OtaErr_t ( * decodeFileBlock )( const uint8_t * pMessageBuffer,
                                     size_t messageSize,
                                     int32_t * pFileId,
                                     int32_t * pBlockId,

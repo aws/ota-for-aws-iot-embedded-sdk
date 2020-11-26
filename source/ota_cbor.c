@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -40,6 +40,27 @@
 /* ========================================================================== */
 
 /**
+ * @brief Helper function to verify the data type of the value in map.
+ *
+ * @param[in] expectedType Data type expected.
+ * @param[in] cborValue Value to check.
+ * @return CborError
+ */
+static CborError checkDataType( CborType expectedType,
+                                CborValue * cborValue )
+{
+    CborError cborResult = CborNoError;
+    CborType actualType = cbor_value_get_type( cborValue );
+
+    if( actualType != expectedType )
+    {
+        cborResult = CborErrorIllegalType;
+    }
+
+    return cborResult;
+}
+
+/**
  * @brief Decode a Get Stream response message from AWS IoT OTA.
  *
  * @param[in] pMessageBuffer message to decode.
@@ -48,7 +69,8 @@
  * @param[out] pBlockId Decoded block id value.
  * @param[out] pBlockSize Decoded block size value.
  * @param[out] pPayload Buffer for the decoded payload.
- * @param[out] pPayloadSize Size of the buffer for the decoded payload.
+ * @param[in,out] pPayloadSize maximum size of the buffer as in and actual
+ * payload size for the decoded payload as out.
  *
  * @return TRUE when success, otherwise FALSE.
  */
@@ -63,6 +85,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     CborError cborResult = CborNoError;
     CborParser cborParser;
     CborValue cborValue, cborMap;
+    size_t payloadSizeReceived = 0;
 
     if( ( pFileId == NULL ) ||
         ( pBlockId == NULL ) ||
@@ -103,10 +126,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
-        {
-            cborResult = CborErrorIllegalType;
-        }
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -125,10 +145,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
-        {
-            cborResult = CborErrorIllegalType;
-        }
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -147,10 +164,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        if( CborIntegerType != cbor_value_get_type( &cborValue ) )
-        {
-            cborResult = CborErrorIllegalType;
-        }
+        cborResult = checkDataType( CborIntegerType, &cborValue );
     }
 
     if( CborNoError == cborResult )
@@ -169,24 +183,24 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        if( CborByteStringType != cbor_value_get_type( &cborValue ) )
-        {
-            cborResult = CborErrorIllegalType;
-        }
+        cborResult = checkDataType( CborByteStringType, &cborValue );
     }
 
     /* Calculate the size we need to malloc for the payload. */
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_calculate_string_length( &cborValue,
-                                                         pPayloadSize );
+                                                         &payloadSizeReceived );
     }
 
     if( CborNoError == cborResult )
     {
-        *pPayload = malloc( *pPayloadSize );
-
-        if( NULL == *pPayload )
+        /* Check if the received payload size is less than or equal to buffer size. */
+        if( payloadSizeReceived <= ( *pPayloadSize ) )
+        {
+            *pPayloadSize = payloadSizeReceived;
+        }
+        else
         {
             cborResult = CborErrorOutOfMemory;
         }

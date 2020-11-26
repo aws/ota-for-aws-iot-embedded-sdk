@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -442,7 +442,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       sizeof( pTopicBuffer ),
                                       pOtaJobStatusTopicTemplate,
                                       pAgentCtx->pThingName,
-                                      pAgentCtx->pOtaSingletonActiveJobName );
+                                      pAgentCtx->pActiveJobName );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
@@ -902,7 +902,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 /*
  * Decode a cbor encoded fileblock received from streaming service.
  */
-OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
+OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,
@@ -926,15 +926,8 @@ OtaErr_t decodeFileBlock_Mqtt( uint8_t * pMessageBuffer,
     {
         result = OTA_ERR_NONE;
 
-        /* pPayloadSize is statically allocated by the caller. */
+        /* pPayloadSize is allocated by the caller. */
         assert( pPayloadSize != NULL );
-
-        /* Decode the CBOR content. */
-        ( void ) memcpy( pMessageBuffer, *pPayload, *pPayloadSize );
-
-        /* Free the payload as it is copied in data buffer. */
-        free( *pPayload ); /*ToDo */
-        *pPayload = pMessageBuffer;
     }
     else
     {

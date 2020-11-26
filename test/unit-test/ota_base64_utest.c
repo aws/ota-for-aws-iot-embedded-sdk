@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -174,7 +174,7 @@ void test_OTA_base64Decode_ValidTwoPaddingSymbols( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_TWO_PADDING_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_TWO_PADDING_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_TWO_PADDING_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -195,7 +195,7 @@ void test_OTA_base64Decode_ValidOnePaddingSymbol( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ONE_PADDING_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ONE_PADDING_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_ONE_PADDING_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -216,7 +216,7 @@ void test_OTA_base64Decode_ValidNoPaddingSymbols( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ZERO_PADDING_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ZERO_PADDING_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_ZERO_PADDING_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -238,7 +238,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_TWO_PADDING_REMOVED_DECODED, pDecodedResultBuffer, resultLen );
 
     /* Test having no padding symbols when there could be one valid padding symbol. */
     resultLen = 0;
@@ -251,7 +251,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_ONE_PADDING_REMOVED_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_ONE_PADDING_REMOVED_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_ONE_PADDING_REMOVED_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -272,7 +272,7 @@ void test_OTA_base64Decode_ValidDataContainsLF( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_LF_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_LF_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_LF_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -293,7 +293,7 @@ void test_OTA_base64Decode_ValidDataContainsCRLF( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_CRLF_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_CRLF_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_CRLF_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -315,7 +315,7 @@ void test_OTA_base64Decode_ValidDecodeBufferExactSize( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**
@@ -338,7 +338,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_WHITESPACE_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_WHITESPACE_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_WHITESPACE_DECODED, pDecodedResultBuffer, resultLen );
 
     /* Test for having a whitespace character at the end of a valid Base64
      * encoded data string with padding. */
@@ -352,7 +352,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
     TEST_ASSERT_EQUAL_INT( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED_LEN, resultLen );
-    TEST_ASSERT_EQUAL_STRING( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED, pDecodedResultBuffer );
+    TEST_ASSERT_EQUAL_STRING_LEN( BASE64_VALID_DATA_PADDING_WHITESPACE_DECODED, pDecodedResultBuffer, resultLen );
 }
 
 /**

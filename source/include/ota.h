@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -37,25 +37,11 @@
 #include <stdint.h>
 
 /* OTA Library Interface include. */
+#include "ota_private.h"
 #include "ota_os_interface.h"
 #include "ota_mqtt_interface.h"
 #include "ota_http_interface.h"
-
-/**
- * @cond DOXYGEN_IGNORE
- * Doxygen should ignore this section.
- */
-
-/* bool is defined in only C99+. */
-#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
-    ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
-    #include <stdbool.h>
-#elif !defined( bool )
-    #define bool     int8_t
-    #define false    ( int8_t ) 0
-    #define true     ( int8_t ) 1
-#endif
-/** @endcond */
+#include "ota_platform_interface.h"
 
 /**
  * @ingroup ota_helpers
@@ -65,6 +51,7 @@
 
 
 #define OTA_FILE_SIG_KEY_STR_MAX_LENGTH    32 /*!< Maximum length of the file signature key. */
+
 
 /**
  * @ingroup ota_helpers
@@ -107,44 +94,6 @@ typedef enum OtaState
 
 /**
  * @ingroup ota_datatypes_enums
- * @brief OTA Agent Events.
- *
- * The events sent to OTA agent.
- */
-typedef enum OtaEvent
-{
-    OtaAgentEventStart = 0,
-    OtaAgentEventStartSelfTest,
-    OtaAgentEventRequestJobDocument,
-    OtaAgentEventReceivedJobDocument,
-    OtaAgentEventCreateFile,
-    OtaAgentEventRequestFileBlock,
-    OtaAgentEventReceivedFileBlock,
-    OtaAgentEventRequestTimer,
-    OtaAgentEventCloseFile,
-    OtaAgentEventSuspend,
-    OtaAgentEventResume,
-    OtaAgentEventUserAbort,
-    OtaAgentEventShutdown,
-    OtaAgentEventMax
-} OtaEvent_t;
-
-/**
- * @ingroup ota_datatypes_enums
- * @brief OTA Platform Image State.
- *
- * The image state set by platform implementation.
- */
-typedef enum OtaPalImageState
-{
-    OtaPalImageStateUnknown = 0,
-    OtaPalImageStatePendingCommit,
-    OtaPalImageStateValid,
-    OtaPalImageStateInvalid
-} OtaPalImageState_t;
-
-/**
- * @ingroup ota_datatypes_enums
  * @brief OTA job document parser error codes.
  */
 typedef enum OtaJobParseErr
@@ -160,7 +109,6 @@ typedef enum OtaJobParseErr
     OtaJobParseErrNoContextAvailable,  /* There was not an OTA context available. */
     OtaJobParseErrNoActiveJobs         /* No active jobs are available in the service. */
 } OtaJobParseErr_t;
-
 
 /**
  * @ingroup ota_datatypes_enums
@@ -187,47 +135,16 @@ typedef enum OtaJobEvent
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
-
-/**
- * @ingroup ota_datatypes_enums
- * @brief OTA Image states.
- *
- * After an OTA update image is received and authenticated, it is logically moved to
- * the Self Test state by the OTA agent pending final acceptance. After the image is
- * activated and tested by your user code, you should put it into either the Accepted
- * or Rejected state by calling @ref OTA_SetImageState ( OtaImageStateAccepted ) or
- * @ref OTA_SetImageState ( OtaImageStateRejected ). If the image is accepted, it becomes
- * the main firmware image to be booted from then on. If it is rejected, the image is
- * no longer valid and shall not be used, reverting to the last known good image.
- *
- * If you want to abort an active OTA transfer, you may do so by calling the API
- * @ref OTA_SetImageState ( OtaImageStateAborted ).
- */
-typedef enum OtaImageState
-{
-    OtaImageStateUnknown = 0,  /*!< The initial state of the OTA MCU Image. */
-    OtaImageStateTesting = 1,  /*!< The state of the OTA MCU Image post successful download and reboot. */
-    OtaImageStateAccepted = 2, /*!< The state of the OTA MCU Image post successful download and successful self_test. */
-    OtaImageStateRejected = 3, /*!< The state of the OTA MCU Image when the job has been rejected. */
-    OtaImageStateAborted = 4,  /*!< The state of the OTA MCU Image after a timeout publish to the stream request fails.
-                                *   Also if the OTA MCU image is aborted in the middle of a stream. */
-    OtaLastImageState = OtaImageStateAborted
-} OtaImageState_t;
-
-
 /*------------------------- OTA callbacks --------------------------*/
 
 /**
  * @functionpointers{ota,OTA library}
  */
 
-/* Forward declaration of OtaFileContext_t. */
-typedef struct OtaFileContext   OtaFileContext_t;
-
 /**
  * @brief OTA Error type.
  */
-typedef uint32_t                OtaErr_t;
+typedef uint32_t OtaErr_t;
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -257,104 +174,7 @@ typedef uint32_t                OtaErr_t;
  *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
  */
-typedef void (* OtaCompleteCallback_t)( OtaJobEvent_t eEvent );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA abort callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of how a job is aborted.
- *
- * @param[in] C File context of the job being aborted
- */
-typedef OtaErr_t (* OtaPALAbortCallback_t)( OtaFileContext_t * const C );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA new image received callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of what happens when a new image is
- * activated.
- *
- * @param[in] serverFileID File ID of the image received
- */
-typedef OtaErr_t (* OtaPALActivateNewImageCallback_t)( uint32_t serverFileID );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA close file callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of what happens when a file is closed.
- *
- * @param[in] C File context of the job being aborted
- */
-typedef OtaErr_t (* OtaPALCloseFileCallback_t)( OtaFileContext_t * const C );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA create file to store received data callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of how a new file is created.
- *
- * @param[in] C File context of the job being aborted
- */
-typedef OtaErr_t (* OtaPALCreateFileForRxCallback_t)( OtaFileContext_t * const C );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA Get Platform Image State callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of returning the platform image state.
- *
- * @param[in] serverFileID File ID of the image received
- */
-typedef OtaPalImageState_t (* OtaPALGetPlatformImageStateCallback_t)( uint32_t serverFileID );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA Reset Device callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of what happens when the OTA agent resets the device.
- *
- * @param[in] serverFileID File ID of the image received
- */
-typedef OtaErr_t (* OtaPALResetDeviceCallback_t)( uint32_t serverFileID );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA Set Platform Image State callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of how a platform image state is stored.
- *
- * @param[in] serverFileID File ID of the image received
- * @param[in] eState Platform Image State to be state
- */
-typedef OtaErr_t (* OtaPALSetPlatformImageStateCallback_t)( uint32_t serverFileID,
-                                                            OtaImageState_t eState );
-
-/**
- * @ingroup ota_datatypes_functionpointers
- * @brief OTA Write Block callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback is used to override the behavior of how a block is written to a file.
- *
- * @param[in] C File context of the job being aborted
- * @param[in] iOffset Offset into the file to write the data
- * @param[in] pacData Data to be written at the offset
- * @param[in] iBlocksize Block size of the data to be written
- */
-typedef int16_t (* OtaPALWriteBlockCallback_t)( OtaFileContext_t * const C,
-                                                uint32_t iOffset,
-                                                uint8_t * const pacData,
-                                                uint32_t iBlockSize );
+typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent );
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -369,49 +189,8 @@ typedef int16_t (* OtaPALWriteBlockCallback_t)( OtaFileContext_t * const C,
 typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
                                                      uint32_t ulMsgLen );
 
-
 /*--------------------------- OTA structs ----------------------------*/
 
-/**
- * @structs{ota,OTA library}
- */
-
-/**
- * @ingroup ota_datatypes_structs
- * @brief OTA PAL callback structure
- */
-typedef struct
-{
-    OtaPALAbortCallback_t abortUpdate;                           /*!< OTA Abort callback pointer */
-    OtaPALActivateNewImageCallback_t activateNewImage;           /*!< OTA Activate New Image callback pointer */
-    OtaPALCloseFileCallback_t closeFile;                         /*!< OTA Close File callback pointer */
-    OtaPALCreateFileForRxCallback_t createFileForRx;             /*!< OTA Create File for Receive callback pointer */
-    OtaPALGetPlatformImageStateCallback_t getPlatformImageState; /*!< OTA Get Platform Image State callback pointer */
-    OtaPALResetDeviceCallback_t resetDevice;                     /*!< OTA Reset Device callback pointer */
-    OtaPALSetPlatformImageStateCallback_t setPlatformImageState; /*!< OTA Set Platform Image State callback pointer */
-    OtaPALWriteBlockCallback_t writeBlock;                       /*!< OTA Write Block callback pointer */
-    OtaCompleteCallback_t completeCallback;                      /*!< OTA Job Completed callback pointer */
-    OtaCustomJobCallback_t customJobCallback;                    /*!< OTA Custom Job callback pointer */
-} OtaPalCallbacks_t;
-
-/**
- * @ingroup ota_datatypes_struct_constants
- * @brief A composite cryptographic signature structure able to hold our largest supported signature.
- */
-
-#define kOTA_MaxSignatureSize    256        /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
-
-/**
- * @ingroup ota_datatypes_structs
- * @brief OTA File Signature info.
- *
- * File key signature information to verify the authenticity of the incoming file
- */
-typedef struct
-{
-    uint16_t size;                         /*!< Size, in bytes, of the signature. */
-    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
-} Sig256_t;
 
 /**
  * @ingroup ota_datatypes_structs
@@ -425,7 +204,7 @@ typedef struct OtaInterface
     OtaOSInterface_t os;     /*!< OS interface to store event, timers and memory operations. */
     OtaMqttInterface_t mqtt; /*!< MQTT interface that references the publish subscribe methods and callbacks. */
     OtaHttpInterface_t http; /*!< HTTP interface to request data. */
-    OtaPalCallbacks_t pal;   /*!< OTA PAL callback structure. */
+    OtaPalInterface_t pal;   /*!< OTA PAL callback structure. */
 } OtaInterfaces_t;
 
 /**
@@ -453,44 +232,28 @@ typedef struct OtaAppBuffer
 } OtaAppBuffer_t;
 
 /**
- * @ingroup ota_datatypes_structs
- * @brief OTA File Context Information.
- *
- * Information about an OTA Update file that is to be streamed. This structure is filled in from a
- * job notification MQTT message. Currently only one file context can be streamed at time.
+ * @ingroup ota_private_datatypes_structs
+ * @brief  The OTA agent is a singleton today. The structure keeps it nice and organized.
  */
-struct OtaFileContext
+
+typedef struct OtaAgentContext
 {
-    uint8_t * pFilePath;         /*!< Update file pathname. */
-    int16_t filePathMaxSize;     /*!< Maximum size of the update file path */
-    #if defined( WIN32 ) || defined( __linux__ )
-        FILE * pFile;            /*!< File type is stdio FILE structure after file is open for write. */
-    #else
-        uint8_t * pFile;         /*!< File type is RAM/Flash image pointer after file is open for write. */
-    #endif
-    uint32_t fileSize;           /*!< The size of the file in bytes. */
-    uint32_t blocksRemaining;    /*!< How many blocks remain to be received (a code optimization). */
-    uint32_t fileAttributes;     /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
-    uint32_t serverFileID;       /*!< The file is referenced by this numeric ID in the OTA job. */
-    uint8_t * pJobName;          /*!< The job name associated with this file from the job service. */
-    int16_t jobNameMaxSize;      /*!< Maximum size of the job name. */
-    uint8_t * pStreamName;       /*!< The stream associated with this file from the OTA service. */
-    int16_t streamNameMaxSize;   /*!< Maximum size of the stream name. */
-    uint8_t * pRxBlockBitmap;    /*!< Bitmap of blocks received (for deduplicating and missing block request). */
-    int16_t blockBitmapMaxSize;  /*!< Maximum size of the block bitmap. */
-    uint8_t * pCertFilepath;     /*!< Pathname of the certificate file used to validate the receive file. */
-    int16_t certFilePathMaxSize; /*!< Maximum certificate path size. */
-    uint8_t * pUpdateUrlPath;    /*!< Url for the file. */
-    int8_t updateUrlMaxSize;     /*!< Maximum size of the url. */
-    uint8_t * pAuthScheme;       /*!< Authorization scheme. */
-    int8_t authSchemeMaxSize;    /*!< Maximum size of the auth scheme. */
-    uint32_t updaterVersion;     /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
-    bool isInSelfTest;           /*!< True if the job is in self test mode. */
-    uint8_t * pProtocols;        /*!< Authorization scheme. */
-    int16_t protocolMaxSize;     /*!< Maximum size of the  supported protocols string. */
-    uint32_t fileType;           /*!< The file type id set when creating the OTA job. */
-    Sig256_t * pSignature;       /*!< Pointer to the file's signature structure. */
-};
+    OtaState_t state;                                      /*!< State of the OTA agent. */
+    uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /*!< Thing name + zero terminator. */
+    OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
+    uint32_t fileIndex;                                    /*!< Index of current file in the array. */
+    uint32_t serverFileID;                                 /*!< Variable to store current file ID passed down */
+    uint8_t pActiveJobName[ OTA_JOB_ID_MAX_SIZE ];         /*!< The currently active job name. We only allow one at a time. */
+    uint8_t * pClientTokenFromJob;                         /*!< The clientToken field from the latest update job. */
+    uint32_t timestampFromJob;                             /*!< Timestamp received from the latest job document. */
+    OtaImageState_t imageState;                            /*!< The current application image state. */
+    uint32_t numOfBlocksToReceive;                         /*!< Number of data blocks to receive per data request. */
+    OtaAgentStatistics_t statistics;                       /*!< The OTA agent statistics block. */
+    uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
+    OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
+    OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
+    OtaCustomJobCallback_t customJobCallback;              /*!< Custom job callback. */
+} OtaAgentContext_t;
 
 /*------------------------- OTA defined constants --------------------------*/
 
@@ -583,7 +346,7 @@ struct OtaFileContext
  * @param[in] pOtaBuffer Buffers used by the agent to store different params.
  * @param[in] pOtaInterfaces A pointer to the OS context.
  * @param[in] pThingName A pointer to a C string holding the Thing name.
- * @param[in] completeCallback Static callback function for when an OTA job is complete. This function will have
+ * @param[in] OtaAppCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.
  * @return OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
@@ -592,7 +355,7 @@ struct OtaFileContext
 OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
                         OtaInterfaces_t * pOtaInterfaces,
                         const uint8_t * pThingName,
-                        OtaCompleteCallback_t completeCallback );
+                        OtaAppCallback_t OtaAppCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.
@@ -682,7 +445,7 @@ OtaErr_t OTA_Resume( void );
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  */
-void otaAgentTask( const void * pUnused );
+void otaAgentTask( void * pUnused );
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */

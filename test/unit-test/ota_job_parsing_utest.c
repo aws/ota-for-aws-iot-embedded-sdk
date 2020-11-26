@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -99,6 +99,9 @@ void setUp( void )
     otaInterfaces.os.mem.free = free;
 
     otaAgent.pOtaInterface = &otaInterfaces;
+
+    /* Initialize OTA local static buffer. */
+    initializeLocalBuffers();
 }
 
 void tearDown( void )
@@ -124,14 +127,12 @@ void test_OTA_JobParsing_Valid_Parse_Job_Doc( void )
  */
 void test_OTA_JobParsing_Valid_JSON( void )
 {
-    static OtaFileContext_t fileContext = { 0 };
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
-    OtaFileContext_t * pFileContext = &fileContext;
     JsonDocModel_t otaJobDocModel;
 
     err = initDocModel( &otaJobDocModel,
                         otaJobDocModelParamStructure,
-                        ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                        &otaAgent.fileContext,
                         sizeof( OtaFileContext_t ),
                         OTA_NUM_JOB_PARAMS );
     err = parseJSONbyModel( JOB_PARSING_VALID_JSON, JOB_PARSING_VALID_JSON_LENGTH, &otaJobDocModel );
@@ -144,15 +145,13 @@ void test_OTA_JobParsing_Valid_JSON( void )
  */
 void test_OTA_JobParsing_Invalid_JSON( void )
 {
-    static OtaFileContext_t fileContext = { 0 };
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
-    OtaFileContext_t * pFileContext = &fileContext;
     JsonDocModel_t otaJobDocModel;
     JsonDocModel_t otaJobDocModelCopy;
 
     err = initDocModel( &otaJobDocModel,
                         otaJobDocModelParamStructure,
-                        ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                        &otaAgent.fileContext,
                         sizeof( OtaFileContext_t ),
                         OTA_NUM_JOB_PARAMS );
 
@@ -180,15 +179,13 @@ void test_OTA_JobParsing_Invalid_JSON( void )
  */
 void test_OTA_jobParsing_invalidDocModel( void )
 {
-    static OtaFileContext_t fileContext = { 0 };
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
-    OtaFileContext_t * pFileContext = &fileContext;
     JsonDocModel_t otaJobDocModel;
 
     /* Test for invalid json document model. */
     err = initDocModel( NULL,
                         otaJobDocModelParamStructure,
-                        ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                        &otaAgent.fileContext,
                         sizeof( OtaFileContext_t ),
                         OTA_NUM_JOB_PARAMS );
     TEST_ASSERT_EQUAL( DocParseErrNullModelPointer, err );
@@ -196,7 +193,7 @@ void test_OTA_jobParsing_invalidDocModel( void )
     /*Test for invalid job document parameters. */
     err = initDocModel( &otaJobDocModel,
                         NULL,
-                        ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                        &otaAgent.fileContext,
                         sizeof( OtaFileContext_t ),
                         OTA_NUM_JOB_PARAMS );
     TEST_ASSERT_EQUAL( DocParseErrNullBodyPointer, err );
@@ -204,7 +201,7 @@ void test_OTA_jobParsing_invalidDocModel( void )
     /*Test when the document has more parameters than expected */
     err = initDocModel( &otaJobDocModel,
                         otaJobDocModelParamStructure,
-                        ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                        &otaAgent.fileContext,
                         sizeof( OtaFileContext_t ),
                         OTA_DOC_MODEL_MAX_PARAMS + 1 );
     TEST_ASSERT_EQUAL( DocParseErrTooManyParams, err );

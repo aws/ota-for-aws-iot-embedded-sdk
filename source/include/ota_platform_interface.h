@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V1.2.0
+ * FreeRTOS OTA V2.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -26,20 +26,25 @@
 #ifndef _OTA_PLATFORM_INTERFACE_
 #define _OTA_PLATFORM_INTERFACE_
 
-#include "ota.h"
+#include "ota_private.h"
+
+/**
+ * @brief OTA Error type.
+ */
+typedef uint32_t OtaErr_t;
 
 /**
  * @brief Abort an OTA transfer.
  *
- * Aborts access to an existing open file represented by the OTA file context C. This is only valid
- * for jobs that started successfully.
+ * Aborts access to an existing open file represented by the OTA file context pFileContext. This is
+ * only valid for jobs that started successfully.
  *
- * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called.
- * This function may be called before the file is opened, so the file pointer C->fileHandle may be NULL
- * when this function is called.
+ * This function may be called before the file is opened, so the file pointer pFileContext->fileHandle
+ * may be NULL when this function is called.
  *
- * @param[in] C OTA file context information.
+ * @param[in] pFileContext OTA file context information.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
@@ -48,22 +53,22 @@
  * OTA_ERR_NONE is returned when aborting access to the open file was successful.
  * OTA_ERR_FILE_ABORT is returned when aborting access to the open file context was unsuccessful.
  */
-OtaErr_t prvPAL_Abort( OtaFileContext_t * const C );
+typedef OtaErr_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Create a new receive file for the data chunks as they come in.
  *
  * @note Opens the file indicated in the OTA file context in the MCU file system.
  *
- * @note The previous image may be present in the designated image download partition or file, so the partition or file
- * must be completely erased or overwritten in this routine.
+ * @note The previous image may be present in the designated image download partition or file, so the
+ * partition or file must be completely erased or overwritten in this routine.
  *
- * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called.
- * The device file path is a required field in the OTA job document, so C->pFilePath is
+ * The device file path is a required field in the OTA job document, so pFileContext->pFilePath is
  * checked for NULL by the OTA agent before this function is called.
  *
- * @param[in] C OTA file context information.
+ * @param[in] pFileContext OTA file context information.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
@@ -73,22 +78,22 @@ OtaErr_t prvPAL_Abort( OtaFileContext_t * const C );
  * OTA_ERR_BOOT_INFO_CREATE_FAILED is returned if the bootloader information file creation fails.
  * OTA_ERR_RX_FILE_CREATE_FAILED is returned for other errors creating the file in the device's non-volatile memory.
  */
-OtaErr_t prvPAL_CreateFileForRx( OtaFileContext_t * const C );
+typedef OtaErr_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
 
 /* @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
- * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called. This function is called only at the end of block ingestion.
  * prvPAL_CreateFileForRx() must succeed before this function is reached, so
- * C->fileHandle(or C->pFile) is never NULL.
+ * pFileContext->fileHandle(or pFileContext->pFile) is never NULL.
  * The certificate path on the device is a required job document field in the OTA Agent,
- * so C->pCertFilepath is never NULL.
- * The file signature key is required job document field in the OTA Agent, so C->pSignature will
+ * so pFileContext->pCertFilepath is never NULL.
+ * The file signature key is required job document field in the OTA Agent, so pFileContext->pSignature will
  * never be NULL.
  *
  * If the signature verification fails, file close should still be attempted.
  *
- * @param[in] C OTA file context information.
+ * @param[in] pFileContext OTA file context information.
  *
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
@@ -98,30 +103,31 @@ OtaErr_t prvPAL_CreateFileForRx( OtaFileContext_t * const C );
  * OTA_ERR_BAD_SIGNER_CERT is returned for errors in the certificate itself.
  * OTA_ERR_FILE_CLOSE is returned when closing the file fails.
  */
-OtaErr_t prvPAL_CloseFile( OtaFileContext_t * const C );
+typedef OtaErr_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Write a block of data to the specified file at the given offset.
  *
- * @note The input OtaFileContext_t C is checked for NULL by the OTA agent before this
+ * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called.
- * The file pointer/handle C->pFile, is checked for NULL by the OTA agent before this
+ * The file pointer/handle pFileContext->pFile, is checked for NULL by the OTA agent before this
  * function is called.
- * pacData is checked for NULL by the OTA agent before this function is called.
- * ulBlockSize is validated for range by the OTA agent before this function is called.
- * ulBlockIndex is validated by the OTA agent before this function is called.
+ * pData is checked for NULL by the OTA agent before this function is called.
+ * blockSize is validated for range by the OTA agent before this function is called.
+ * offset is validated by the OTA agent before this function is called.
  *
- * @param[in] C OTA file context information.
- * @param[in] ulOffset Byte offset to write to from the beginning of the file.
- * @param[in] pacData Pointer to the byte array of data to write.
- * @param[in] ulBlockSize The number of bytes to write.
+ * @param[in] pFileContext OTA file context information.
+ * @param[in] offset Byte offset to write to from the beginning of the file.
+ * @param[in] pData Pointer to the byte array of data to write.
+ * @param[in] blockSize The number of bytes to write.
  *
- * @return The number of bytes written on a success, or a negative error code from the platform abstraction layer.
+ * @return The number of bytes written on a success, or a negative error code from the platform
+ * abstraction layer.
  */
-int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
-                           uint32_t ulOffset,
-                           uint8_t * const pcData,
-                           uint32_t ulBlockSize );
+typedef int16_t ( * OtaPalWriteBlock_t ) ( OtaFileContext_t * const pFileContext,
+                                           uint32_t offset,
+                                           uint8_t * const pData,
+                                           uint32_t blockSize );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -135,7 +141,7 @@ int16_t prvPAL_WriteBlock( OtaFileContext_t * const C,
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-OtaErr_t prvPAL_ActivateNewImage( OtaFileContext_t * const C );
+typedef OtaErr_t ( * OtaPalActivateNewImage_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Reset the device.
@@ -149,13 +155,15 @@ OtaErr_t prvPAL_ActivateNewImage( OtaFileContext_t * const C );
  * error codes information in ota.h.
  */
 
-OtaErr_t prvPAL_ResetDevice( OtaFileContext_t * const C );
+typedef OtaErr_t ( * OtaPalResetDevice_t ) ( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Attempt to set the state of the OTA update image.
  *
  * Do whatever is required by the platform to Accept/Reject the OTA update image (or bundle).
  * Refer to the PAL implementation to determine what happens on your platform.
+ *
+ * @param[in] pFileContext File context of type OtaFileContext_t.
  *
  * @param[in] eState The desired state of the OTA update image.
  *
@@ -170,8 +178,8 @@ OtaErr_t prvPAL_ResetDevice( OtaFileContext_t * const C );
  *   OTA_ERR_REJECT_FAILED: failed to roll back the update image as requested by OtaImageStateRejected.
  *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
-OtaErr_t prvPAL_SetPlatformImageState( OtaFileContext_t * const C,
-                                       OtaImageState_t eState );
+typedef OtaErr_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
+                                                      OtaImageState_t eState );
 
 /**
  * @brief Get the state of the OTA update image.
@@ -187,6 +195,8 @@ OtaErr_t prvPAL_SetPlatformImageState( OtaFileContext_t * const C,
  * If the update image state is not in "pending commit," the self test timer is
  * not started.
  *
+ * @param[in] pFileContext File context of type OtaFileContext_t.
+ *
  * @return An OtaPalImageState_t. One of the following:
  *   OtaPalImageStatePendingCommit (the new firmware image is in the self test phase)
  *   OtaPalImageStateValid         (the new firmware image is already committed)
@@ -194,6 +204,21 @@ OtaErr_t prvPAL_SetPlatformImageState( OtaFileContext_t * const C,
  *
  *   NOTE: OtaPalImageStateUnknown should NEVER be returned and indicates an implementation error.
  */
-OtaPalImageState_t prvPAL_GetPlatformImageState( OtaFileContext_t * const C );
+typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_t * const pFileContext );
+
+/**
+ *  OTA pal Interface structure.
+ */
+typedef struct OtaPalInterface
+{
+    OtaPalAbort_t abort;                                 /*!< Abort an OTA transfer. */
+    OtaPalCreateFileForRx_t createFile;                  /*!< Create a new receive file. */
+    OtaPalCloseFile_t closeFile;                         /*!< Authenticate and close the receive file. */
+    OtaPalWriteBlock_t writeBlock;                       /*!< Write a block of data to the specified file at the given offset. */
+    OtaPalActivateNewImage_t activate;                   /*!< Activate the file received over-the-air. */
+    OtaPalResetDevice_t reset;                           /*!< Reset the device. */
+    OtaPalSetPlatformImageState_t setPlatformImageState; /*!< Set the state of the OTA update image. */
+    OtaPalGetPlatformImageState_t getPlatformImageState; /*!< Get the state of the OTA update image. */
+} OtaPalInterface_t;
 
 #endif /* ifndef _OTA_PLATFORM_INTERFACE_ */
