@@ -32,44 +32,36 @@
 #include <string.h>
 #include <mqueue.h>
 #include <time.h>
+#include <unistd.h>
 #include "unity.h"
 
 /* For accessing OTA private functions and error codes. */
 #include "ota.h"
-#include "ota_os_posix.c"
-
+#include "ota_os_posix.h"
 
 /* Testing constants. */
 #define TIMER_NAME             "dummy_name"
-#define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
+#define OTA_DEFAULT_TIMEOUT    1000 /*!< Timeout in milliseconds. */
 
 /* Interfaces for Timer and Event. */
 static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
+static struct timespec start;
+static bool timerCallbackInovked = false;
 
-/**
- * @brief Get the Time elapsed from the timer.
- *
- * This is used to ensure that the timer has started successfully,
- * by using the timer id to get the time elapsed and store it into
- * timer structure.
- *
- * @return long time elapsed in nano seconds.
- */
-static long getTimeElapsed()
+static void timerCallback()
 {
-    struct itimerspec timerAttr;
-    long retVal = 0;
+    struct timespec now;
 
-    /* On error, -1 is returned else 0. */
-    if( timer_gettime( otaTimers[ timer_id ], &timerAttr ) == 0 )
-    {
-        retVal = timerAttr.it_value.tv_nsec;
-    }
+    timerCallbackInovked = true;
+    clock_gettime( CLOCK_REALTIME, &now );
+    int elapse_ms = ( now.tv_sec - start.tv_sec ) * 1e3 + ( now.tv_nsec - start.tv_nsec ) / 1e6;
 
-    return retVal;
+    /* Assert the time elapsed is within 0.9 to 1.1 of the specified time. */
+    TEST_ASSERT_LESS_THAN( OTA_DEFAULT_TIMEOUT * 1.1, elapse_ms );
+    TEST_ASSERT_GREATER_THAN( OTA_DEFAULT_TIMEOUT * 0.9, elapse_ms );
 }
 /* ============================   UNITY FIXTURES ============================ */
 
@@ -88,6 +80,7 @@ void setUp( void )
 
 void tearDown( void )
 {
+    timerCallbackInovked = false;
 }
 
 /* ========================================================================== */
@@ -148,10 +141,16 @@ void test_OTA_posix_TimerCreateAndStop( void )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
 
-    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
+    clock_gettime( CLOCK_REALTIME, &start );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    TEST_ASSERT_NOT_EQUAL( 0, getTimeElapsed() );
+    /* Wait for the timer callback to be invoked. */
+    while( timerCallbackInovked == false )
+    {
+        /* Sleep 1 ms. */
+        usleep( 1000 );
+    }
 
     result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
@@ -192,7 +191,7 @@ void test_OTA_posix_MemoryAllocAndFree( void )
 {
     uint8_t * buffer = NULL;
 
-    buffer = ( uint8_t * ) STDC_Malloc( MAX_MESSAGES * sizeof( uint8_t ) );
+    buffer = ( uint8_t * ) STDC_Malloc( sizeof( uint8_t ) );
     TEST_ASSERT_NOT_NULL( buffer );
 
     /* Test that we can access and assign a value in the buffer. */
