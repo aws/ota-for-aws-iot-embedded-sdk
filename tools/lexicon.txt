@@ -43,6 +43,8 @@ c89
 c90
 ca
 cbor
+cborerror
+cborvalue
 cborwork
 certfile
 certfilepathmaxsize
@@ -67,12 +69,14 @@ coremqtt
 couldn
 coverity
 cr
+createfile
 createfileforrx
 currentstate
 customjobcallback
 currblock
 cwd
 datalength
+decodememmaxsize
 decodememorysize
 datacallback
 deduplicate
@@ -114,6 +118,7 @@ errno
 errornumber
 eventid
 ewouldblock
+expectedtype
 expectedstatus
 failedwithval
 fclose
@@ -168,6 +173,7 @@ ingestresultblockoutofrange
 ingestresultfileclosefail
 ingestresultfilecomplete
 ingestresultfilecomplete
+ingestresultnodecodememory
 ingestresultnullcontext
 ingestresultnullresultpointer
 ingestresultsigcheckfail
@@ -256,6 +262,7 @@ otaagenteventclosefile
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
+otaappcallback
 otaclose
 otacontrolinterface
 otaeventtosend
@@ -293,6 +300,7 @@ otatimer
 otatimerid
 pacdata
 pactopic
+pactivejobname
 paddrinfo
 pagentctx
 palcallbacks
@@ -327,7 +335,9 @@ pconnectioncontext
 pcontrolinterface
 pctimername
 pctopicbuffer
+pdecodemem
 pdecodememory
+pdata
 pdatainterface
 pdest
 pdestoffset
