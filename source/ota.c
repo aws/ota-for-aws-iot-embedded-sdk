@@ -1018,69 +1018,87 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     if( pFileContext != NULL )
     {
         /* Free or clear the filepath buffer.*/
-        if( ( pFileContext->pFilePath != NULL ) && ( pFileContext->filePathMaxSize > 0 ) )
+        if( pFileContext->pFilePath != NULL )
         {
-            memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pFilePath );
-            pFileContext->pFilePath = NULL;
+            if( pFileContext->filePathMaxSize > 0 )
+            {
+                memset( pFileContext->pFilePath, 0, pFileContext->filePathMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pFilePath );
+                pFileContext->pFilePath = NULL;
+            }
         }
 
         /* Free or clear the certfile path buffer.*/
-        if( ( pFileContext->pCertFilepath != NULL ) && ( pFileContext->certFilePathMaxSize > 0 ) )
+        if( pFileContext->certFilePathMaxSize != NULL )
         {
-            memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pCertFilepath );
-            pFileContext->pCertFilepath = NULL;
+            if( pFileContext->certFilePathMaxSize > 0 )
+            {
+                memset( pFileContext->pCertFilepath, 0, pFileContext->certFilePathMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pCertFilepath );
+                pFileContext->pCertFilepath = NULL;
+            }
         }
 
         /* Free or clear the streamname buffer.*/
-        if( ( pFileContext->pStreamName != NULL ) && ( pFileContext->streamNameMaxSize > 0 ) )
+        if( pFileContext->pStreamName != NULL )
         {
-            memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pStreamName );
-            pFileContext->pStreamName = NULL;
+            if( pFileContext->streamNameMaxSize > 0 )
+            {
+                memset( pFileContext->pStreamName, 0, pFileContext->streamNameMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pStreamName );
+                pFileContext->pStreamName = NULL;
+            }
         }
 
         /* Free or clear the bitmap buffer.*/
-        if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blockBitmapMaxSize > 0 ) )
+        if( pFileContext->pRxBlockBitmap != NULL )
         {
-            memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
-            pFileContext->pRxBlockBitmap = NULL;
+            if( pFileContext->blockBitmapMaxSize > 0 )
+            {
+                memset( pFileContext->pRxBlockBitmap, 0, pFileContext->blockBitmapMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pRxBlockBitmap );
+                pFileContext->pRxBlockBitmap = NULL;
+            }
         }
 
         /* Free or clear url buffer.*/
-        if( ( pFileContext->pUpdateUrlPath != NULL ) && ( pFileContext->updateUrlMaxSize > 0 ) )
+        if( pFileContext->pUpdateUrlPath != NULL )
         {
-            memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pUpdateUrlPath );
-            pFileContext->pUpdateUrlPath = NULL;
+            if( pFileContext->updateUrlMaxSize > 0 )
+            {
+                memset( pFileContext->pUpdateUrlPath, 0, pFileContext->updateUrlMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pUpdateUrlPath );
+                pFileContext->pUpdateUrlPath = NULL;
+            }
         }
 
         /* Initialize auth scheme buffer from application buffer.*/
-        if( ( pFileContext->pAuthScheme != NULL ) && ( pFileContext->authSchemeMaxSize > 0 ) )
+        if( pFileContext->pAuthScheme != NULL )
         {
-            memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
-        }
-        else
-        {
-            otaAgent.pOtaInterface->os.mem.free( pFileContext->pAuthScheme );
-            pFileContext->pAuthScheme = NULL;
+            if( pFileContext->authSchemeMaxSize > 0 )
+            {
+                memset( pFileContext->pAuthScheme, 0, pFileContext->authSchemeMaxSize );
+            }
+            else
+            {
+                otaAgent.pOtaInterface->os.mem.free( pFileContext->pAuthScheme );
+                pFileContext->pAuthScheme = NULL;
+            }
         }
     }
 }
@@ -1593,7 +1611,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
              *  context and save that in the ota agent */
             if( strlen( pFileContext->pJobName ) > 0 )
             {
-                memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+                memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                               JobStatusSucceeded,
                                                               JobReasonAccepted,
@@ -1661,7 +1679,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             ( void ) otaClose( &( otaAgent.fileContext ) );
 
             /* Set new active job name. */
-            memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+            memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
 
             err = OtaJobParseErrNone;
         }
@@ -1728,7 +1746,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     else
     {
         /* Assume control of the job name from the context. */
-        memcpy( otaAgent.pActiveJobName, otaAgent.fileContext.pJobName, OTA_JOB_ID_MAX_SIZE );
+        memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
     }
 
     /* Store the File ID received in the job. */
