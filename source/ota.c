@@ -1163,10 +1163,10 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
     assert( *pSig256 != NULL );
 
     base64Status = base64Decode( ( *pSig256 )->data,
-                                    sizeof( ( *pSig256 )->data ),
-                                    &actualLen,
-                                    ( const uint8_t * ) pValueInJson,
-                                    valueLength );
+                                 sizeof( ( *pSig256 )->data ),
+                                 &actualLen,
+                                 ( const uint8_t * ) pValueInJson,
+                                 valueLength );
 
     if( base64Status != Base64Success )
     {
@@ -1181,8 +1181,8 @@ static DocParseErr_t decodeAndStoreKey( char * pValueInJson,
     {
         ( *pSig256 )->size = ( uint16_t ) actualLen;
         LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
-                    OTA_JsonFileSignatureKey,
-                    pValueInJson ) );
+                   OTA_JsonFileSignatureKey,
+                   pValueInJson ) );
     }
 
     return err;
