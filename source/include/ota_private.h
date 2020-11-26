@@ -153,6 +153,8 @@
  * @ingroup ota_private_datatypes_enums
  * @brief Data ingest results.
  *
+ * The negative error codes represent actual error in ingesting the data block whereas the positive error codes
+ * represent success and other conditions that are not ingest errors like duplicate block is received.
  */
 typedef enum
 {
