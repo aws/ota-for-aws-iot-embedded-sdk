@@ -1040,7 +1040,7 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
     }
 
     /* Free or clear the certfile path buffer.*/
-    if( pFileContext->certFilePathMaxSize != NULL )
+    if( pFileContext->pCertFilepath != NULL )
     {
         if( pFileContext->certFilePathMaxSize > 0 )
         {
@@ -1416,7 +1416,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     JSONStatus_t result;
     uint16_t paramIndex;
     const char * pFileParams = NULL;
-    uint32_t fileParamsLength;
+    uint32_t fileParamsLength = 0;
 
     /* Fetch the model parameters from the DocModel*/
     pModelParam = pDocModel->pBodyDef;
@@ -1615,9 +1615,9 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
         {
             /* Custom job was parsed by external callback successfully. Grab the job name from the file
              *  context and save that in the ota agent */
-            if( ( const char * ) strlen( pFileContext->pJobName ) > 0 )
+            if( strlen( ( const char * ) pFileContext->pJobName ) > 0 )
             {
-                memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
+                memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( ( const char * ) pFileContext->pJobName ) );
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                               JobStatusSucceeded,
                                                               JobReasonAccepted,
@@ -1685,7 +1685,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
             ( void ) otaClose( &( otaAgent.fileContext ) );
 
             /* Set new active job name. */
-            memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
+            memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( ( const char * ) pFileContext->pJobName ) );
 
             err = OtaJobParseErrNone;
         }
@@ -1752,7 +1752,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     else
     {
         /* Assume control of the job name from the context. */
-        memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( pFileContext->pJobName ) );
+        memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( ( const char * ) pFileContext->pJobName ) );
     }
 
     /* Store the File ID received in the job. */
