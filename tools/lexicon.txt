@@ -575,3 +575,7 @@ paldefaultactivatenewimage
 paldefaultgetplatformimagestate
 paldefaultresetdevice
 paldefaultsetplatformimagestate
+pvportmalloc
+vportfree
+repo
+stdlib
