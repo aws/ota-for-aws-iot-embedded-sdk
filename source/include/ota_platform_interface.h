@@ -211,7 +211,10 @@ typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_
  */
 typedef struct OtaPalInterface
 {
-    /* coverity[misra_c_2012_rule_21_8_violation] Allow abort as an identifier. */
+    /* MISRA rule 21.8 prohibits the use of abort from stdlib.h. However, this is merely one of the
+     * OTA platform abstraction layer interfaces, which is used to abort an OTA update. So it's a
+     * false positive. */
+    /* coverity[misra_c_2012_rule_21_8_violation] */
     OtaPalAbort_t abort;                                 /*!< Abort an OTA transfer. */
     OtaPalCreateFileForRx_t createFile;                  /*!< Create a new receive file. */
     OtaPalCloseFile_t closeFile;                         /*!< Authenticate and close the receive file. */

@@ -58,7 +58,11 @@
  * @brief The OTA signature algorithm string is specified by the PAL.
  *
  */
-/* coverity[misra_c_2012_rule_8_6_violation] This is defined in OTA pal. */
+
+/* MISRA rule 8.6 requires identifier with external linkage to have exact one external definition.
+ * However, this variable is defined in OTA platform abstraction layer implementation, which is
+ * not in this repository but in C-SDK and amazon-freertos repo, so it's a false positive. */
+/* coverity[misra_c_2012_rule_8_6_violation] */
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
 /*-------------------------- OTA enumerated types --------------------------*/

@@ -281,7 +281,9 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-/* coverity[misra_c_2012_rule_2_2_violation] Used in logs. */
+/* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
+ * disabled when running static analysis. So it's a false positive. */
+/* coverity[misra_c_2012_rule_2_2_violation] */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
     "Init",
@@ -298,7 +300,7 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-/* coverity[misra_c_2012_rule_2_2_violation] Used in logs. */
+/* coverity[misra_c_2012_rule_2_2_violation] */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
     "Start",
@@ -1792,7 +1794,10 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
     /* Validate version of the update received.*/
     errVersionCheck = validateUpdateVersion( pFileContext );
 
-    /* coverity[misra_c_2012_rule_14_3_violation] otaconfigAllowDowngrade is a user config. */
+    /* MISRA rule 14.3 requires controlling expressions to be not invariant. otaconfigAllowDowngrade is
+     * one of the OTA library configuration and it's set to 0 when running the static analysis. But
+     * users can change it when they build their application. So this is a false positive. */
+    /* coverity[misra_c_2012_rule_14_3_violation] */
     if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OTA_ERR_NONE ) )
     {
         /* The running firmware version is newer than the firmware that performed

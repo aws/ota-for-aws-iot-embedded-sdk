@@ -213,9 +213,12 @@ typedef struct OtaTimerInterface
  */
 typedef struct OtaMallocInterface
 {
-    /* coverity[misra_c_2012_rule_21_3_violation] This is part of our interface . */
+    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h, however, we're only
+     * defining the interface here. On FreeRTOS this is implemented with pvPortMalloc and vPortFree,
+     * and on Linux it's implemented with standard C malloc and free. This is a false positive. */
+    /* coverity[misra_c_2012_rule_21_3_violation] */
     OtaMalloc_t malloc; /*!< OTA memory allocate interface. */
-    /* coverity[misra_c_2012_rule_21_3_violation] This is part of our interface . */
+    /* coverity[misra_c_2012_rule_21_3_violation] */
     OtaFree_t free;     /*!< OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 

@@ -27,7 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-/* coverity[misra_c_2012_rule_21_5_violation] This is on linux. */
+
+/* MISRA rule 21.5 prohibits use of signal.h on embedded system. But this implementation is on linux.
+ * So it's a false positive. */
+/* coverity[misra_c_2012_rule_21_5_violation] */
 #include <signal.h>
 #include <errno.h>
 
@@ -80,7 +83,11 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 
     /* Open the event queue.*/
     errno = 0;
-    /* coverity[misra_c_2012_rule_10_1_violation] silence warnings for linux message queue flags. */
+
+    /* MISRA rule 10.1 requires bitwise operand to be unsigned type. However, O_CREAT and O_RDWR
+     * flags are from standard linux header, and this is the normal way of using them. Hence we
+     * silence the warning here. */
+    /* coverity[misra_c_2012_rule_10_1_violation] */
     otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
 
     if( otaEventQueue == -1 )
@@ -402,13 +409,19 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 void * STDC_Malloc( size_t size )
 {
     /* Use standard C malloc.*/
-    /* coverity[misra_c_2012_rule_21_3_violation] This is on linux. */
+
+    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h. But this implementation
+     * is on linux, so it's a false positive. */
+    /* coverity[misra_c_2012_rule_21_3_violation]. */
     return malloc( size );
 }
 
 void STDC_Free( void * ptr )
 {
     /* Use standard C free.*/
-    /* coverity[misra_c_2012_rule_21_3_violation] This is on linux. */
+
+    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h. But this implementation
+     * is on linux, so it's a false positive. */
+    /* coverity[misra_c_2012_rule_21_3_violation]. */
     free( ptr );
 }

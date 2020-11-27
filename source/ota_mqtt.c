@@ -226,6 +226,12 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     assert( pAgentCtx != NULL );
 
     /* Build and subscribe to the first topic. */
+
+    /* MISRA rule 21.6 prohibits use of all functions from stdio.h because they have undefined
+     * behavior. So snprintf, undefined behavior only occurs when the destination buffer and format
+     * buffer overlaps. We are using static buffers and format strings defined in this files, and
+     * format arguments are from OTA agent job document, so this can never happen. Hence we deviate
+     * from this rule and allow use of snprintf here. */
     /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
     topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
                                       sizeof( pJobTopicGetNext ),
