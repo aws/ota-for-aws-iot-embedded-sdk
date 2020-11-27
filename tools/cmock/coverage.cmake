@@ -67,6 +67,15 @@ execute_process(
                          --no-external
                          --rc lcov_branch_coverage=1
         )
+
+# remove source files from dependencies and unit tests
+execute_process(
+            COMMAND lcov --rc lcov_branch_coverage=1
+                            --remove ${CMAKE_BINARY_DIR}/coverage.info *dependency* *unit-test*
+                            --output-file ${CMAKE_BINARY_DIR}/coverage.info
+        )
+
+# generate html report
 execute_process(
             COMMAND genhtml --rc lcov_branch_coverage=1
                             --branch-coverage
