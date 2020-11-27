@@ -61,9 +61,9 @@ void ( * timerCallback[ OtaNumOfTimers ] )( TimerHandle_t T ) = { requestTimerCa
 
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
-    ( void ) pEventCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    ( void ) pEventCtx;
 
     otaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
                                         ( UBaseType_t ) MAX_MSG_SIZE,
@@ -93,12 +93,11 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
                                 const void * pEventMsg,
                                 unsigned int timeout )
 {
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    BaseType_t retVal = pdFALSE;
+
     ( void ) pEventCtx;
     ( void ) timeout;
-
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
-    BaseType_t retVal = pdFALSE;
 
     /* Send the event to OTA event queue.*/
     retVal = xQueueSendToBack( otaEventQueue, pEventMsg, ( TickType_t ) 0 );
@@ -122,19 +121,18 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     return otaErrRet;
 }
 
-OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pContext,
+OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
                                    void * pEventMsg,
                                    uint32_t timeout )
 {
-    ( void ) pContext;
-    ( void ) timeout;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     BaseType_t retVal = pdFALSE;
 
     /* Temp buffer.*/
     uint8_t buff[ sizeof( OtaEventMsg_t ) ];
+
+    ( void ) pEventCtx;
+    ( void ) timeout;
 
     retVal = xQueueReceive( otaEventQueue, &buff, portMAX_DELAY );
 
@@ -160,11 +158,11 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
+OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
-    ( void ) pContext;
-
     OtaErr_t otaErrRet = OTA_ERR_NONE;
+
+    ( void ) pEventCtx;
 
     /* Remove the event queue.*/
     if( otaEventQueue != NULL )
@@ -217,7 +215,6 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
                                  OtaTimerCallback_t callback )
 {
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     BaseType_t retVal = pdFALSE;
 
     configASSERT( callback != NULL );
@@ -294,11 +291,10 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
 OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     BaseType_t retVal = pdFALSE;
+
+    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
@@ -333,11 +329,10 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
 OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     BaseType_t retVal = pdFALSE;
+
+    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
