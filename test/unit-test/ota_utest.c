@@ -249,14 +249,6 @@ static void stubMqttDataCallback( void * unused )
 {
 }
 
-static OtaAppCallback_t stubOtaAppCallback( OtaJobEvent_t event )
-{
-    if( event == OtaJobEventStartTest )
-    {
-        OTA_SetImageState( OtaImageStateAccepted );
-    }
-}
-
 OtaErr_t mockPalAbort( OtaFileContext_t * const pFileContext )
 {
     return OTA_ERR_NONE;
@@ -315,6 +307,14 @@ OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileC
     return imageState;
 }
 
+static void mockAppleteCallback( OtaJobEvent_t event )
+{
+    if( event == OtaJobEventStartTest )
+    {
+        OTA_SetImageState( OtaImageStateAccepted );
+    }
+}
+
 /* Set default OTA OS interface to mockOSEventSendThenStop. This allows us to easily control the
  * state machine transition by blocking any event in OTA internal handlers. */
 static void otaInterfaceDefault()
@@ -348,17 +348,23 @@ static void otaInterfaceDefault()
 }
 
 static void otaInit( const char * pClientID,
-                     OtaAppCallback_t otaAppCallback )
+                     OtaAppCallback_t appCallback )
 {
+    pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
+    pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
+    pOtaAppBuffer.pCertFilePath = pOtaAppBuffer.pUpdateFilePath + pOtaAppBuffer.updateFilePathsize;
+    pOtaAppBuffer.certFilePathSize = OTA_CERT_FILE_PATH_SIZE;
+    pOtaAppBuffer.pStreamName = pOtaAppBuffer.pCertFilePath + pOtaAppBuffer.certFilePathSize;
+    pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
     OTA_Init( &pOtaAppBuffer,
               &otaInterfaces,
               ( const uint8_t * ) pClientID,
-              otaAppCallback );
+              appCallback );
 }
 
 static void otaInitDefault()
 {
-    otaInit( pOtaDefaultClientId, stubOtaAppCallback );
+    otaInit( pOtaDefaultClientId, mockAppleteCallback );
 }
 
 static void otaDeinit()
@@ -541,7 +547,7 @@ void test_OTA_InitWhenReady()
 void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. OTA agent should remain in stopped state. */
-    otaInit( NULL, stubOtaAppCallback );
+    otaInit( NULL, mockAppleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -551,7 +557,7 @@ void test_OTA_InitWithNameTooLong()
     char long_name[ 100 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
-    otaInit( long_name, stubOtaAppCallback );
+    otaInit( long_name, mockAppleteCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -691,15 +697,16 @@ void test_OTA_ResumeFailedWhenSuspended()
 
 void test_OTA_Statistics()
 {
-    OtaAgentStatistics_t * pStatistics = { 0 };
-
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsDropped() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsQueued() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsProcessed() );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( pStatistics ) );
+    OtaAgentStatistics_t statistics = { 0 };
+    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( &statistics ) );
+
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsReceived );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsQueued );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsProcessed );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsDropped );
 }
 
 void test_OTA_CheckForUpdate()
@@ -936,7 +943,7 @@ void test_OTA_ReceiveFileBlockComplete()
         otaWaitForEmptyEvent();
         TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-        /* TODO, statistics is now broken. Need to fix it to test OTA_GetStatistics
+        /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
          * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
         remainingBlocks -= OTA_FILE_BLOCK_SIZE;
     }
