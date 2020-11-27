@@ -61,7 +61,7 @@ void ( * timerCallback[ OtaNumOfTimers ] )( TimerHandle_t T ) = { requestTimerCa
 
 OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
-    ( void )pEventCtx;
+    ( void ) pEventCtx;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
@@ -127,14 +127,14 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pContext,
                                    uint32_t timeout )
 {
     ( void ) pContext;
-	( void ) timeout;
+    ( void ) timeout;
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     BaseType_t retVal = pdFALSE;
 
     /* Temp buffer.*/
-    uint8_t buff[ sizeof(OtaEventMsg_t) ];
+    uint8_t buff[ sizeof( OtaEventMsg_t ) ];
 
     retVal = xQueueReceive( otaEventQueue, &buff, portMAX_DELAY );
 
@@ -164,7 +164,7 @@ OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
 {
     ( void ) pContext;
 
-	OtaErr_t otaErrRet = OTA_ERR_NONE;
+    OtaErr_t otaErrRet = OTA_ERR_NONE;
 
     /* Remove the event queue.*/
     if( otaEventQueue != NULL )
@@ -174,12 +174,12 @@ OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pContext )
         LogDebug( ( "OTA Event Queue Deleted." ) );
     }
 
-	return otaErrRet;
+    return otaErrRet;
 }
 
 static void selfTestTimerCallback( TimerHandle_t T )
 {
-	(void)T;
+    ( void ) T;
 
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
@@ -196,7 +196,7 @@ static void selfTestTimerCallback( TimerHandle_t T )
 
 static void requestTimerCallback( TimerHandle_t T )
 {
-	(void)T;
+    ( void ) T;
 
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
@@ -220,9 +220,9 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
     BaseType_t retVal = pdFALSE;
 
-	configASSERT( callback != NULL );
-	configASSERT( pTimerName != NULL );
-	configASSERT((otaTimerId >= OtaRequestTimer) && (otaTimerId < OtaNumOfTimers));
+    configASSERT( callback != NULL );
+    configASSERT( pTimerName != NULL );
+    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     /* If timer is not created.*/
     if( otaTimer[ otaTimerId ] == NULL )
@@ -294,11 +294,11 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
 OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-	configASSERT((otaTimerId >= OtaRequestTimer) && (otaTimerId < OtaNumOfTimers));
+    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-	BaseType_t retVal = pdFALSE;
+    BaseType_t retVal = pdFALSE;
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
@@ -333,11 +333,11 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
 OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-	configASSERT((otaTimerId >= OtaRequestTimer) && (otaTimerId < OtaNumOfTimers));
+    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-	BaseType_t retVal = pdFALSE;
+    BaseType_t retVal = pdFALSE;
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
