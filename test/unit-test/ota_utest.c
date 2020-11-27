@@ -943,8 +943,6 @@ void test_OTA_ReceiveFileBlockComplete()
         otaWaitForEmptyEvent();
         TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-        /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
-         * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
         remainingBlocks -= OTA_FILE_BLOCK_SIZE;
     }
 

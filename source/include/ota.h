@@ -451,44 +451,24 @@ void otaAgentTask( void * pUnused );
 /*---------------------------------------------------------------------------*/
 
 /**
- * @brief Get the number of OTA message packets received by the OTA agent.
+ * @brief Get the statistics of OTA message packets.
  *
+ * Packet statistics are:
+ * <ul>
+ *  <li> Received: The number of OTA packets that have been received
+ *  but not necessarily queued for processing by the OTA agent.
+ *  <li> Queued: The number of OTA packets that have been queued for
+ *  processing. This implies there was a free message queue entry so
+ *  it can be passed to the agent for processing.
+ *  <li> Processed: The number of OTA packets that have actually been
+ *  processed.
+ *  <li> Dropped: The number of OTA packets that have been dropped
+ *  because of either no queue or at shutdown cleanup.
+ *</ul>
  * @note Calling @ref OTA_Init will reset this statistic.
  *
- * @return The number of OTA packets that have been received but not
- * necessarily queued for processing by the OTA agent.
+ * @return OTA_ERR_NONE if the statistics can be received successfully.
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
-
-/**
- * @brief Get the number of OTA message packets queued by the OTA agent.
- *
- * @note Calling @ref OTA_Init will reset this statistic.
- *
- * @return The number of OTA packets that have been queued for processing.
- * This implies there was a free message queue entry so it can be passed
- * to the agent for processing.
- */
-uint32_t OTA_GetPacketsQueued( void );
-
-/**
- * @brief Get the number of OTA message packets processed by the OTA agent.
- *
- * @note Calling @ref OTA_Init will reset this statistic.
- *
- * @return the number of OTA packets that have actually been processed.
- *
- */
-uint32_t OTA_GetPacketsProcessed( void );
-
-/**
- * @brief Get the number of OTA message packets dropped by the OTA agent.
- *
- * @note Calling @ref OTA_Init will reset this statistic.
- *
- * @return the number of OTA packets that have been dropped because
- * of either no queue or at shutdown cleanup.
- */
-uint32_t OTA_GetPacketsDropped( void );
 
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */

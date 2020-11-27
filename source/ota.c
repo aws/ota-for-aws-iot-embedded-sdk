@@ -2803,30 +2803,6 @@ OtaState_t OTA_GetState( void )
 }
 
 /*
- * Return the number of packets dropped.
- */
-uint32_t OTA_GetPacketsDropped( void )
-{
-    return otaAgent.statistics.otaPacketsDropped;
-}
-
-/*
- * Return the number of packets queued.
- */
-uint32_t OTA_GetPacketsQueued( void )
-{
-    return otaAgent.statistics.otaPacketsQueued;
-}
-
-/*
- * Return the number of packets processed.
- */
-uint32_t OTA_GetPacketsProcessed( void )
-{
-    return otaAgent.statistics.otaPacketsProcessed;
-}
-
-/*
  * Return the details of the packets received.
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
