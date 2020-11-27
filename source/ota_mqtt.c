@@ -60,9 +60,9 @@
  * lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future.
  *  @{
  */
+static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
 static const char pOtaJobsGetNextAcceptedTopicTemplate[] = "$aws/things/%s/jobs/$next/get/accepted";                        /*!< Topic template for getting next job. */
 static const char pOtaJobsNotifyNextTopicTemplate[] = "$aws/things/%s/jobs/notify-next";                                    /*!< Topic template to notify next . */
-static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
 static const char pOtaJobStatusTopicTemplate[] = "$aws/things/%s/jobs/%s/update";                                           /*!< Topic template to update the current job. */
 static const char pOtaStreamDataTopicTemplate[] = "$aws/things/%s/streams/%s/data/cbor";                                    /*!< Topic template to receive data over a stream. */
 static const char pOtaGetStreamTopicTemplate[] = "$aws/things/%s/streams/%s/get/cbor";                                      /*!< Topic template to request next data over a stream. */
@@ -114,6 +114,18 @@ static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "acti
 #define JOB_NAME_MAX_LEN       128U                                             /*!< Maximum length of the name of job documents received from the server. */
 #define STREAM_NAME_MAX_LEN    44U                                              /*!< Maximum length for the name of MQTT streams. */
 #define NULL_CHAR_LEN          1U                                               /*!< Size of a single null character used to terminate topics and messages. */
+
+/* Pre-calculate max buffer size for mqtt topics and messages. We make sure the buffer size is large
+ * enough to hold a dynamically constructed topic and message string.
+ */
+#define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )              /*!< Calculate max buffer size based on topic template and thing name length. */
+#define TOPIC_GET_NEXT_BUFFER_SIZE             ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                      /*!< Max buffer size for `jobs/$next/get` topic. */
+#define TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextAcceptedTopicTemplate ) )              /*!< Max buffer size for `jobs/$next/get/accepted` topic. */
+#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                   /*!< Max buffer size for `jobs/notify-next` topic. */
+#define TOPIC_JOB_STATUS_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )     /*!< Max buffer size for `jobs/<job_name>/update` topic. */
+#define TOPIC_STREAM_DATA_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN ) /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
+#define TOPIC_GET_STREAM_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )  /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
+#define MSG_GET_NEXT_BUFFER_SIZE               ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )           /*!< Max buffer size for message of `jobs/$next/get topic`. */
 
 /**
  * @brief Subscribe to the jobs notification topic (i.e. New file version available).
@@ -206,16 +218,8 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 
     /* These buffers are used to store generated MQTT topics. The static sizes
      * are calculated from the templates and the corresponding parameters. */
-    const uint32_t getNextBufferSize =
-        CONST_STRLEN( pOtaJobsGetNextAcceptedTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + NULL_CHAR_LEN;
-    char pJobTopicGetNext[ getNextBufferSize ];
-    const uint32_t notifyNextBufferSize =
-        CONST_STRLEN( pOtaJobsNotifyNextTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + NULL_CHAR_LEN;
-    char pJobTopicNotifyNext[ notifyNextBufferSize ];
+    char pJobTopicGetNext[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
+    char pJobTopicNotifyNext[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
 
     assert( pAgentCtx != NULL );
 
@@ -292,12 +296,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    const uint32_t rxStreamBufferSize =
-        CONST_STRLEN( pOtaStreamDataTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + STREAM_NAME_MAX_LEN
-        + NULL_CHAR_LEN;
-    char pOtaRxStreamTopic[ rxStreamBufferSize ];
+    char pOtaRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ];
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -347,11 +346,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
      * is calculated from the template and the corresponding parameters. This
      * buffer is used with two separate templates and its size is set fit the
      * larger of the two. */
-    const uint32_t jobTopicBufferSize =
-        CONST_STRLEN( pOtaJobsGetNextAcceptedTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + NULL_CHAR_LEN;
-    char pJobTopic[ jobTopicBufferSize ];
+    char pJobTopic[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     uint16_t topicLen = 0;
 
     assert( pAgentCtx != NULL );
@@ -428,12 +423,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    const uint32_t topicBufferSize =
-        CONST_STRLEN( pOtaJobStatusTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + JOB_NAME_MAX_LEN
-        + NULL_CHAR_LEN;
-    char pTopicBuffer[ topicBufferSize ];
+    char pTopicBuffer[ TOPIC_JOB_STATUS_BUFFER_SIZE ];
 
     assert( pAgentCtx != NULL );
     /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
@@ -633,11 +623,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    const uint32_t jobTopicBufferSize =
-        CONST_STRLEN( pOtaJobsGetNextTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + NULL_CHAR_LEN;
-    char pJobTopic[ jobTopicBufferSize ];
+    char pJobTopic[ TOPIC_GET_NEXT_BUFFER_SIZE ];
     static uint32_t reqCounter = 0;
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     uint32_t msgSize = 0;
@@ -646,11 +632,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* The following buffer is big enough to hold a dynamically constructed
      * $next/get job message. It contains a client token that is used to track
      * how many requests have been made. */
-    const uint32_t msgBufferSize =
-        CONST_STRLEN( pOtaGetNextJobMsgTemplate )
-        + U32_MAX_LEN
-        + otaconfigMAX_THINGNAME_LEN;
-    char pMsg[ msgBufferSize ];
+    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ];
 
     assert( pAgentCtx != NULL );
 
@@ -770,12 +752,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    const uint32_t rxStreamTopicBufferSize =
-        CONST_STRLEN( pOtaStreamDataTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + STREAM_NAME_MAX_LEN
-        + NULL_CHAR_LEN;
-    char pRxStreamTopic[ rxStreamTopicBufferSize ]; /*!< Buffer to store the topic generated for requesting data stream. */
+    char pRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -822,6 +799,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     size_t msgSizeFromStream = 0;
+    uint32_t blockSize = OTA_FILE_BLOCK_SIZE;
     uint32_t numBlocks = 0;
     uint32_t bitmapLen = 0;
     uint32_t msgSizeToPublish = 0;
@@ -831,12 +809,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    const uint32_t topicBufferSize =
-        CONST_STRLEN( pOtaGetStreamTopicTemplate )
-        + otaconfigMAX_THINGNAME_LEN
-        + STREAM_NAME_MAX_LEN
-        + NULL_CHAR_LEN;
-    char pTopicBuffer[ topicBufferSize ];
+    char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     const OtaFileContext_t * pFileContext = 0;
 
@@ -848,7 +821,6 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
 
-    uint32_t blockSize = OTA_FILE_BLOCK_SIZE & 0x7fffffffU;
     numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 

@@ -58,17 +58,18 @@ static OtaTimerCallback_t otaTimerCallback;
 static mqd_t otaEventQueue;
 
 /* OTA Timer handles.*/
-static timer_t otaTimer[ OtaNumOfTimers ];
+timer_t otaTimers[ OtaNumOfTimers ];
+timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
 
 /* OTA Timer callbacks.*/
 void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
-    ( void ) pEventCtx;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
     struct mq_attr attr;
+
+    ( void ) pEventCtx;
 
     /* Unlink the event queue.*/
     mq_unlink( OTA_QUEUE_NAME );
@@ -107,10 +108,10 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                              const void * pEventMsg,
                              unsigned int timeout )
 {
+    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
     ( void ) pEventCtx;
     ( void ) timeout;
-
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
     /* Send the event to OTA event queue.*/
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
@@ -138,13 +139,12 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
                                 void * pEventMsg,
                                 uint32_t timeout )
 {
-    ( void ) pContext;
-    ( void ) timeout;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
-
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
+
+    ( void ) pContext;
+    ( void ) timeout;
 
     /* Receive the next event from OTA event queue.*/
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
@@ -173,9 +173,9 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
 
 OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
 {
-    ( void ) pContext;
-
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+
+    ( void ) pContext;
 
     /* Remove the event queue.*/
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
@@ -201,6 +201,8 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
 
 static void selfTestTimerCallback( union sigval arg )
 {
+    ( void ) arg;
+
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
@@ -216,6 +218,8 @@ static void selfTestTimerCallback( union sigval arg )
 
 static void requestTimerCallback( union sigval arg )
 {
+    ( void ) arg;
+
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
@@ -240,13 +244,15 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     struct sigevent sgEvent;
     struct itimerspec timerAttr;
 
+    ( void ) pTimerName;
+
     /* clear everything in the structures. */
     memset( &sgEvent, 0, sizeof( struct sigevent ) );
     memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
     /* Set attributes. */
     sgEvent.sigev_notify = SIGEV_THREAD;
-    sgEvent.sigev_value.sival_ptr = otaTimer[ otaTimerId ];
+    sgEvent.sigev_value.sival_ptr = otaTimers[ otaTimerId ];
     sgEvent.sigev_notify_function = timerCallback[ otaTimerId ];
 
     /* Set OTA lib callback. */
@@ -256,9 +262,9 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     timerAttr.it_value.tv_sec = timeout / 1000;
 
     /* Create timer if required.*/
-    if( otaTimer[ otaTimerId ] == NULL )
+    if( pOtaTimers[ otaTimerId ] == NULL )
     {
-        if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimer[ otaTimerId ] ) == -1 )
+        if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
 
@@ -269,14 +275,18 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
                         otaErrRet,
                         strerror( errno ) ) );
         }
+        else
+        {
+            pOtaTimers[ otaTimerId ] = &otaTimers[ otaTimerId ];
+        }
     }
 
     /* Set timeout.*/
-    if( otaTimer[ otaTimerId ] != NULL )
+    if( pOtaTimers[ otaTimerId ] != NULL )
     {
-        if( timer_settime( otaTimer[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
+        if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+            otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
@@ -308,10 +318,10 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     /* Clear the timeout. */
     timerAttr.it_value.tv_sec = 0;
 
-    if( otaTimer[ otaTimerId ] != NULL )
+    if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Stop the timer*/
-        if( timer_settime( otaTimer[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
+        if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
 
@@ -333,7 +343,7 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     {
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
 
-        otaErrRet = OTA_ERR_NONE;
+        otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
     }
 
     return otaErrRet;
@@ -343,10 +353,10 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 {
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    if( otaTimer[ otaTimerId ] != NULL )
+    if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Delete the timer*/
-        if( timer_delete( otaTimer[ otaTimerId ] ) == -1 )
+        if( timer_delete( otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
 
@@ -361,6 +371,7 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
         {
             LogDebug( ( "OTA Timer deleted." ) );
 
+            pOtaTimers[ otaTimerId ] = NULL;
             otaErrRet = OTA_ERR_NONE;
         }
     }
@@ -368,7 +379,7 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
     {
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
 
-        otaErrRet = OTA_ERR_NONE;
+        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
     }
 
     return otaErrRet;

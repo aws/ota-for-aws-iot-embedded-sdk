@@ -102,7 +102,7 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
     {
         cborResult = cbor_encode_int(
             &cborMapEncoder,
-            blockPayloadSize );
+            ( int64_t ) blockPayloadSize );
     }
 
     /* Encode the block payload. */

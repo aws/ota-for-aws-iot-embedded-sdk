@@ -106,7 +106,7 @@ typedef enum OtaJobParseErr
     OtaJobParseErrNonConformingJobDoc, /* The job document failed to fulfill the model requirements. */
     OtaJobParseErrBadModelInitParams,  /* There was an invalid initialization parameter used in the document model. */
     OtaJobParseErrNoContextAvailable,  /* There was not an OTA context available. */
-    OtaJobParseErrNoActiveJobs,        /* No active jobs are available in the service. */
+    OtaJobParseErrNoActiveJobs         /* No active jobs are available in the service. */
 } OtaJobParseErr_t;
 
 /**
@@ -317,8 +317,9 @@ typedef struct OtaAgentContext
 #define OTA_ERR_EVENT_Q_RECEIVE_FAILED       0x30000000U /*!< Failed to receive from the event queue. */
 #define OTA_ERR_EVENT_Q_DELETE_FAILED        0x31000000U /*!< Failed to delete the event queue. */
 #define OTA_ERR_EVENT_TIMER_CREATE_FAILED    0x32000000U /*!< Failed to create the timer. */
-#define OTA_ERR_EVENT_TIMER_STOP_FAILED      0x33000000U /*!< Failed to stop the timer. */
-#define OTA_ERR_EVENT_TIMER_DELETE_FAILED    0x34000000U /*!< Failed to delete the timer. */
+#define OTA_ERR_EVENT_TIMER_START_FAILED     0x33000000U /*!< Failed to create the timer. */
+#define OTA_ERR_EVENT_TIMER_STOP_FAILED      0x34000000U /*!< Failed to stop the timer. */
+#define OTA_ERR_EVENT_TIMER_DELETE_FAILED    0x35000000U /*!< Failed to delete the timer. */
 #define OTA_ERR_SUBSCRIBE_FAILED             0x40000000U /*!< Failed to subscribe to a topic. */
 #define OTA_ERR_UNSUBSCRIBE_FAILED           0x41000000U /*!< Failed to unsubscribe from a topic. */
 #define OTA_ERR_FAILED_TO_DECODE_CBOR        0x42000000U /*!< Failed to decode CBOR object. */
@@ -443,7 +444,7 @@ OtaErr_t OTA_Resume( void );
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  */
-void otaAgentTask( const void * pUnused );
+void otaAgentTask( void * pUnused );
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */
