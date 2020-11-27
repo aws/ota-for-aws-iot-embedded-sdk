@@ -236,7 +236,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
         if( otaTimer[ otaTimerId ] == NULL )
         {
-            otaErrRet = OTA_ERR_TIMER_CREATE_FAILED;
+            otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
 
             LogError( ( "Failed to create OTA timer: "
                         "timerCreate returned NULL "
@@ -260,7 +260,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
             }
             else
             {
-                otaErrRet = OTA_ERR_TIMER_START_FAILED;
+                otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
 
                 LogError( ( "Failed to start OTA timer: "
                             "timerStart returned error." ) );
@@ -280,7 +280,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
         }
         else
         {
-            otaErrRet = OTA_ERR_TIMER_RESTART_FAILED;
+            otaErrRet = OTA_ERR_EVENT_TIMER_RESTART_FAILED;
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
@@ -318,7 +318,7 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
                         "otaErrRet=%i ",
                         otaErrRet ) );
 
-            otaErrRet = OTA_ERR_TIMER_STOP_FAILED;
+            otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
         }
     }
     else
@@ -341,7 +341,7 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
-        /* Stop the timer. */
+        /* Delete the timer. */
         retVal = xTimerDelete( otaTimer[ otaTimerId ], portMAX_DELAY );
 
         if( retVal == pdTRUE )
@@ -354,7 +354,7 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
         }
         else
         {
-            otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
+            otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
 
             LogError( ( "Failed to delete OTA timer: "
                         "timer_delete returned error: "
@@ -364,7 +364,7 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
     }
     else
     {
-        otaErrRet = OTA_ERR_TIMER_DELETE_FAILED;
+        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
 
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
     }
