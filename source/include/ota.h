@@ -323,6 +323,11 @@ typedef struct OtaAgentContext
 #define OTA_ERR_SUBSCRIBE_FAILED             0x40000000U /*!< Failed to subscribe to a topic. */
 #define OTA_ERR_UNSUBSCRIBE_FAILED           0x41000000U /*!< Failed to unsubscribe from a topic. */
 #define OTA_ERR_FAILED_TO_DECODE_CBOR        0x42000000U /*!< Failed to decode CBOR object. */
+#define OTA_ERR_TIMER_CREATE_FAILED          0x43000000U /*!< Failed to create timer. */
+#define OTA_ERR_TIMER_START_FAILED           0x44000000U /*!< Failed to start timer. */
+#define OTA_ERR_TIMER_STOP_FAILED            0x45000000U /*!< Failed to stop timer. */
+#define OTA_ERR_TIMER_DELETE_FAILED          0x46000000U /*!< Failed to delete timer. */
+#define OTA_ERR_TIMER_RESTART_FAILED         0x47000000U /*!< Failed to restart timer. */
 
 /* @[define_ota_err_codes] */
 
