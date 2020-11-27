@@ -220,8 +220,8 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
 
     /* These buffers are used to store generated MQTT topics. The static sizes
      * are calculated from the templates and the corresponding parameters. */
-    char pJobTopicGetNext[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
-    char pJobTopicNotifyNext[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
+    static char pJobTopicGetNext[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
+    static char pJobTopicNotifyNext[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
 
     assert( pAgentCtx != NULL );
 
@@ -776,7 +776,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    char pRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ]; /*!< Buffer to store the topic generated for requesting data stream. */
+    static char pRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
 
