@@ -66,6 +66,18 @@ create_real_library(${real_name}
     "${real_include_directories}"
     "${mock_name}"
 )
+# Suppress warnings in dependency folder
+set_source_files_properties(
+    ${JSON_SOURCES}
+    ${TINYCBOR_SOURCES}
+    PROPERTIES COMPILE_FLAGS
+    "-w"
+)
+target_include_directories(${real_name}
+    SYSTEM PRIVATE
+    ${TINYCBOR_INCLUDE_DIRS}
+    ${JSON_INCLUDE_PUBLIC_DIRS}
+)
 
 list(APPEND utest_link_list
     -lpthread
@@ -109,12 +121,16 @@ create_test(ota_cbor_utest
 create_test(ota_os_posix_utest
     "ota_os_posix_utest.c"
     "${utest_link_list}"
-    "${utest_mem_ops_list}"
     "${utest_dep_list}"
     "${test_include_directories}"
 )
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
 
-# Use Address sanitizer to check memory operations
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -g")
+# Enable sanitizers.
+target_compile_options(
+    ${real_name} PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined
+)
+target_link_options(
+    ${real_name} PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined
+)
