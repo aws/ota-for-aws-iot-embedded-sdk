@@ -568,3 +568,10 @@ www
 xaa
 xyz
 zg
+defaultcustomjobcallback
+defaultotacompletecallback
+otaagentstatestopped
+paldefaultactivatenewimage
+paldefaultgetplatformimagestate
+paldefaultresetdevice
+paldefaultsetplatformimagestate
