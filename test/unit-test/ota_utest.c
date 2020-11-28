@@ -1115,6 +1115,7 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
 void test_OTA_RefreshWithSameJobDoc()
 {
     OtaEventMsg_t otaEvent = { 0 };
+
     pOtaJobDoc = JOB_DOC_A;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
@@ -1140,6 +1141,7 @@ void test_OTA_RefreshWithSameJobDoc()
 void test_OTA_RefreshWithDifferentJobDoc()
 {
     OtaEventMsg_t otaEvent = { 0 };
+
     pOtaJobDoc = JOB_DOC_A;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
