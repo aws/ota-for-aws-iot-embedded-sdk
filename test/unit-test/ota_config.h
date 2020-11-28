@@ -33,4 +33,26 @@
 
 #define configENABLED_DATA_PROTOCOLS    ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )
 
+#define LOG_LEVEL_ERROR                 0
+#define LOG_LEVEL_WARN                  1
+#define LOG_LEVEL_INFO                  2
+#define LOG_LEVEL_DEBUG                 3
+
+#ifndef LOG_LEVEL
+    #define LOG_LEVEL                   -1
+#endif
+
+#if LOG_LEVEL >= LOG_LEVEL_ERROR
+    #define LogError( msg )    { printf( "[Error] " ); printf msg; printf( "\n" ); }
+#endif
+#if LOG_LEVEL >= LOG_LEVEL_WARN
+    #define LogWarn( msg )     { printf( "[Warn] " ); printf msg; printf( "\n" ); }
+#endif
+#if LOG_LEVEL >= LOG_LEVEL_INFO
+    #define LogInfo( msg )     { printf( "[Info] " ); printf msg; printf( "\n" ); }
+#endif
+#if LOG_LEVEL >= LOG_LEVEL_DEBUG
+    #define LogDebug( msg )    { printf( "[Debug] " ); printf msg; printf( "\n" ); }
+#endif
+
 #endif /* _OTA_CONFIG_H_ */

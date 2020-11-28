@@ -80,3 +80,9 @@ execute_process(COMMAND genhtml
     --output-directory ${CMAKE_BINARY_DIR}/coverage
     ${CMAKE_BINARY_DIR}/coverage.info
 )
+
+# output coverage summary to console
+execute_process(COMMAND lcov
+    --rc lcov_branch_coverage=1
+    --list ${CMAKE_BINARY_DIR}/coverage.info
+)
