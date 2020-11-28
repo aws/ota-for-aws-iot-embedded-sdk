@@ -190,32 +190,6 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 
-/* The default OTA callback handler if not provided to OTA_Init(). */
-
-static void defaultOTACompleteCallback( OtaJobEvent_t event );
-
-/* Default Custom Callback handler if not provided to OTA_Init() */
-
-static OtaJobParseErr_t defaultCustomJobCallback( const char * pJson,
-                                                  uint32_t messageLength );
-
-/* Default Reset Device handler if not provided to OTA_Init() */
-
-static OtaErr_t palDefaultResetDevice( uint32_t serverFileID );
-
-/* Default Get Platform Image State handler if not provided to OTA_Init() */
-
-static OtaPalImageState_t palDefaultGetPlatformImageState( uint32_t serverFileID );
-
-/* Default Set Platform Image State handler if not provided to OTA_Init() */
-
-static OtaErr_t palDefaultSetPlatformImageState( uint32_t serverFileID,
-                                                 OtaImageState_t state );
-
-/* Default Activate New Image handler if not provided to OTA_Init() */
-
-static OtaErr_t palDefaultActivateNewImage( uint32_t serverFileID );
-
 /* A helper function to cleanup resources during OTA agent shutdown. */
 
 static void agentShutdownCleanup( void );
