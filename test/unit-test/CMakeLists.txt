@@ -8,14 +8,11 @@ set(project_name "aws_ota")
 
 # list the files to mock here
 list(APPEND mock_list
-    "${MODULE_ROOT_DIR}/source/include/ota_private.h"
-    "${MODULE_ROOT_DIR}/source/include/ota_platform_interface.h"
+    "${MODULE_ROOT_DIR}/source/dependency/coreJSON/source/include/core_json.h"
 )
 # list the directories your mocks need
 list(APPEND mock_include_list
-    .
-    "${MODULE_ROOT_DIR}/source/include"
-    "${MODULE_ROOT_DIR}/source/portable/os"
+    ""
 )
 #list the definitions of your mocks to control what to be included
 list(APPEND mock_define_list
@@ -30,6 +27,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/ota_interface.c"
     "${MODULE_ROOT_DIR}/source/ota_base64.c"
     "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
+    "${MODULE_ROOT_DIR}/source/ota_http.c"
     "${MODULE_ROOT_DIR}/source/ota_cbor.c"
     "${MODULE_ROOT_DIR}/source/portable/os/ota_os_posix.c"
     ${TINYCBOR_SOURCES}
