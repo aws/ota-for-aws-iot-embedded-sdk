@@ -49,21 +49,18 @@ static uint32_t currBlock;
  */
 OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
-    LogInfo( ( "Invoking initFileTransfer_Http" ) );
+    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    char * pURL = NULL;
+    OtaFileContext_t * fileContext = NULL;
 
+    LogDebug( ( "Invoking initFileTransfer_Http" ) );
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
 
-    /* Return status. */
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
-
-    /* Pre-signed URL. */
-    char * pURL = NULL;
-
     /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
+    fileContext = &( pAgentCtx->fileContext );
 
     /* Get pre-signed URL from pAgentCtx. */
-    pURL = fileContext->pUpdateUrlPath;
+    pURL = ( char * ) fileContext->pUpdateUrlPath;
 
     /* Connect to the HTTP server and initialize download information. */
     status = pAgentCtx->pOtaInterface->http.init( pURL );
@@ -76,19 +73,18 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
  */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
-    LogInfo( ( "Invoking requestDataBlock_Http" ) );
-
-    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
-
-    /* Return status. */
     OtaErr_t status = OTA_ERR_UNINITIALIZED;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
     uint32_t rangeEnd = 0;
 
-    /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
+    OtaFileContext_t * fileContext = NULL;
+
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    LogDebug( ( "Invoking requestDataBlock_Http" ) );
+
+    fileContext = &( pAgentCtx->fileContext );
 
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
@@ -128,8 +124,8 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
     /* The data received over HTTP does not require any decoding. */
     *pPayload = pMessageBuffer;
     *pFileId = 0;
-    *pBlockId = currBlock;
-    *pBlockSize = messageSize;
+    *pBlockId = ( int32_t ) currBlock;
+    *pBlockSize = ( int32_t ) messageSize;
     *pPayloadSize = messageSize;
 
     /* Current block is processed, set the file block to next. */
@@ -143,10 +139,10 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
  */
 OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx )
 {
-    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    OtaErr_t status = OTA_ERR_NONE;
 
-    /* Call HTTP deinit to cleanup */
-    OtaErr_t status = pAgentCtx->pOtaInterface->http.deinit();
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    status = pAgentCtx->pOtaInterface->http.deinit();
 
     /* Reset currBlock. */
     currBlock = 0;
