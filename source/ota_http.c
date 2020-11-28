@@ -107,7 +107,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 /*
  * Decode a cbor encoded fileblock received from streaming service.
  */
-OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
+OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,
@@ -118,14 +118,12 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
     assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
             pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
 
-    /* Unused parameters. */
-    ( void ) messageSize;
-
-    /* The data received over HTTP does not require any decoding. */
-    *pPayload = pMessageBuffer;
     *pFileId = 0;
     *pBlockId = ( int32_t ) currBlock;
     *pBlockSize = ( int32_t ) messageSize;
+
+    /* The data received over HTTP does not require any decoding. */
+    memcpy(*pPayload, pMessageBuffer, messageSize);
     *pPayloadSize = messageSize;
 
     /* Current block is processed, set the file block to next. */
@@ -137,7 +135,7 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
 /*
  * Perform any cleanup operations required for data plane.
  */
-OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx )
+OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t status = OTA_ERR_NONE;
 

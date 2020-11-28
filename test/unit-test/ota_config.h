@@ -31,6 +31,6 @@
 #ifndef OTA_CONFIG_H_
 #define OTA_CONFIG_H_
 
-/* Dummy ota_config.h for building the library. */
+#define configENABLED_DATA_PROTOCOLS    ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )
 
 #endif /* _OTA_CONFIG_H_ */
