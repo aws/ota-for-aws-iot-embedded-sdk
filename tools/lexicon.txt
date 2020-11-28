@@ -579,3 +579,11 @@ pvportmalloc
 vportfree
 repo
 stdlib
+crt
+ecdsa
+executionnumber
+lastupdatedat
+queuedat
+sig
+testclient
+versionnumber
