@@ -35,10 +35,10 @@
  */
 typedef enum OtaHttpStatus
 {
-    OtaErrHttpSuccess = 0,       /*!< OTA HTTP interface success. */
-    OtaErrHttpInitFailed = 0xc0, /*!< Error initializing the HTTP connection. */
-    OtaErrHttpDeinitFailed,      /*!< Error deinitializing the HTTP connection. */
-    OtaErrHttpRequestFailed      /*!< Error sending the HTTP request. */
+    OtaHttpSuccess = 0,       /*!< OTA HTTP interface success. */
+    OtaHttpInitFailed = 0xc0, /*!< Error initializing the HTTP connection. */
+    OtaHttpDeinitFailed,      /*!< Error deinitializing the HTTP connection. */
+    OtaHttpRequestFailed      /*!< Error sending the HTTP request. */
 } OtaHttpStatus_t;
 
 /**
@@ -48,7 +48,7 @@ typedef enum OtaHttpStatus
  *
  * @param[in] pUrl         Pointer to the pre-signed url for downloading update file.
  *
- * @return              OtaErrHttpSuccess if success , other error code on failure.
+ * @return              OtaHttpSuccess if success , other error code on failure.
  */
 
 typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
@@ -62,7 +62,7 @@ typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
  *
  * @param[in] rangeEnd    End index of the file data to be requested.
  *
- * @return             OtaErrHttpSuccess if success , other error code on failure.
+ * @return             OtaHttpSuccess if success , other error code on failure.
  */
 
 typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
@@ -74,7 +74,7 @@ typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  * This function cleanups Http connection and other data used for
  * requesting file blocks using the pre-signed url.
  *
- * @return        OtaErrHttpSuccess if success , other error code on failure.
+ * @return        OtaHttpSuccess if success , other error code on failure.
  */
 typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
 
