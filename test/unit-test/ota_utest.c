@@ -884,7 +884,7 @@ void test_OTA_ProcessJobDocumentValidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
 }
 
-void test_OTA_InitFileTransferMqtt()
+static void otaInitFileTransfer()
 {
     OtaEventMsg_t otaEvent = { 0 };
 
@@ -897,13 +897,19 @@ void test_OTA_InitFileTransferMqtt()
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetAgentState() );
 }
 
+void test_OTA_InitFileTransferMqtt()
+{
+    pOtaJobDoc = JOB_DOC_A;
+    otaInitFileTransfer();
+}
+
 void test_OTA_InitFileTransferHttp()
 {
     pOtaJobDoc = JOB_DOC_HTTP;
-    test_OTA_InitFileTransferMqtt();
+    otaInitFileTransfer();
 }
 
-void test_OTA_RequestFileBlockMqtt()
+static void otaRequestFileBlock()
 {
     OtaEventMsg_t otaEvent = { 0 };
 
@@ -916,10 +922,16 @@ void test_OTA_RequestFileBlockMqtt()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
 }
 
+void test_OTA_RequestFileBlockMqtt()
+{
+    pOtaJobDoc = JOB_DOC_A;
+    otaRequestFileBlock();
+}
+
 void test_OTA_RequestFileBlockHttp()
 {
     pOtaJobDoc = JOB_DOC_HTTP;
-    test_OTA_RequestFileBlockMqtt();
+    otaRequestFileBlock();
 }
 
 void test_OTA_ReceiveFileBlockEmpty()
