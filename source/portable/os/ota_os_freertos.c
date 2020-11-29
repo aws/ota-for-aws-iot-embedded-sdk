@@ -59,9 +59,9 @@ static void requestTimerCallback( TimerHandle_t T );
 static void selfTestTimerCallback( TimerHandle_t T );
 void ( * timerCallback[ OtaNumOfTimers ] )( TimerHandle_t T ) = { requestTimerCallback, selfTestTimerCallback };
 
-OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
+OtaOsStatus_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
 
     ( void ) pEventCtx;
 
@@ -72,7 +72,7 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 
     if( otaEventQueue == NULL )
     {
-        otaErrRet = OTA_ERR_EVENT_Q_CREATE_FAILED;
+        otaErrRet = OtaOsEventQueueCreateFailed;
 
         LogError( ( "Failed to create OTA Event Queue: "
                     "xQueueCreateStatic returned error: "
@@ -81,19 +81,17 @@ OtaErr_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
     }
     else
     {
-        otaErrRet = OTA_ERR_NONE;
-
         LogDebug( ( "OTA Event Queue created." ) );
     }
 
     return otaErrRet;
 }
 
-OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
-                                const void * pEventMsg,
-                                unsigned int timeout )
+OtaOsStatus_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
+                                     const void * pEventMsg,
+                                     unsigned int timeout )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
     ( void ) pEventCtx;
@@ -104,13 +102,11 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
 
     if( retVal == pdTRUE )
     {
-        otaErrRet = OTA_ERR_NONE;
-
         LogDebug( ( "OTA Event Sent." ) );
     }
     else
     {
-        otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
+        otaErrRet = OtaOsEventQueueSendFailed;
 
         LogError( ( "Failed to send event to OTA Event Queue: "
                     "xQueueSendToBack returned error: "
@@ -121,11 +117,11 @@ OtaErr_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     return otaErrRet;
 }
 
-OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
-                                   void * pEventMsg,
-                                   uint32_t timeout )
+OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
+                                        void * pEventMsg,
+                                        uint32_t timeout )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
     /* Temp buffer.*/
@@ -140,14 +136,11 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     {
         /* copy the data from local buffer.*/
         memcpy( pEventMsg, buff, MAX_MSG_SIZE );
-
-        otaErrRet = OTA_ERR_NONE;
-
         LogDebug( ( "OTA Event received" ) );
     }
     else
     {
-        otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
+        otaErrRet = OtaOsEventQueueReceiveFailed;
 
         LogError( ( "Failed to receive event from OTA Event Queue: "
                     "xQueueReceive returned error: "
@@ -158,9 +151,9 @@ OtaErr_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     return otaErrRet;
 }
 
-OtaErr_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
+OtaOsStatus_t OtaDeinitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 {
-    OtaErr_t otaErrRet = OTA_ERR_NONE;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
 
     ( void ) pEventCtx;
 
@@ -209,12 +202,12 @@ static void requestTimerCallback( TimerHandle_t T )
     }
 }
 
-OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
-                                 const char * const pTimerName,
-                                 const uint32_t timeout,
-                                 OtaTimerCallback_t callback )
+OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
+                                      const char * const pTimerName,
+                                      const uint32_t timeout,
+                                      OtaTimerCallback_t callback )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
     configASSERT( callback != NULL );
@@ -233,7 +226,7 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
         if( otaTimer[ otaTimerId ] == NULL )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+            otaErrRet = OtaOsTimerCreateFailed;
 
             LogError( ( "Failed to create OTA timer: "
                         "timerCreate returned NULL "
@@ -242,8 +235,6 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
         }
         else
         {
-            otaErrRet = OTA_ERR_NONE;
-
             LogDebug( ( "OTA Timer created." ) );
 
             /* Start the timer. */
@@ -251,13 +242,11 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
             if( retVal == pdTRUE )
             {
-                otaErrRet = OTA_ERR_NONE;
-
                 LogDebug( ( "OTA Timer started." ) );
             }
             else
             {
-                otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
+                otaErrRet = OtaOsTimerStartFailed;
 
                 LogError( ( "Failed to start OTA timer: "
                             "timerStart returned error." ) );
@@ -271,13 +260,11 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
         if( retVal == pdTRUE )
         {
-            otaErrRet = OTA_ERR_NONE;
-
             LogDebug( ( "OTA Timer restarted." ) );
         }
         else
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_RESTART_FAILED;
+            otaErrRet = OtaOsTimerRestartFailed;
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
@@ -289,9 +276,9 @@ OtaErr_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
     return otaErrRet;
 }
 
-OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
+OtaOsStatus_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
     configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
@@ -304,8 +291,6 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
         if( retVal == pdTRUE )
         {
             LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
-
-            otaErrRet = OTA_ERR_NONE;
         }
         else
         {
@@ -314,22 +299,20 @@ OtaErr_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
                         "otaErrRet=%i ",
                         otaErrRet ) );
 
-            otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+            otaErrRet = OtaOsTimerStopFailed;
         }
     }
     else
     {
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
-
-        otaErrRet = OTA_ERR_NONE;
     }
 
     return otaErrRet;
 }
 
-OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
+OtaOsStatus_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaErrRet = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
     configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
@@ -341,15 +324,12 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
         if( retVal == pdTRUE )
         {
-            otaErrRet = OTA_ERR_NONE;
-
             otaTimer[ otaTimerId ] == NULL;
-
             LogDebug( ( "OTA Timer deleted." ) );
         }
         else
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+            otaErrRet = OtaOsTimerDeleteFailed;
 
             LogError( ( "Failed to delete OTA timer: "
                         "timer_delete returned error: "
@@ -359,7 +339,7 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
     }
     else
     {
-        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+        otaErrRet = OtaOsTimerDeleteFailed;
 
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
     }
