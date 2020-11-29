@@ -897,7 +897,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     }
     else
     {
-        result = OTA_ERR_FAILED_TO_ENCODE_CBOR;
+        result = OtaErrFailedToEncodeCbor;
 
         LogError( ( "Failed to CBOR encode stream request message: "
                     "OTA_CBOR_Encode_GetStreamRequestMessage returned error." ) );
@@ -938,7 +938,7 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
     }
     else
     {
-        result = OTA_ERR_FAILED_TO_DECODE_CBOR;
+        result = OtaErrFailedToDecodeCbor;
 
         LogError( ( "Failed to decode MQTT file block: "
                     "OTA_CBOR_Decode_GetStreamResponseMessage returned error." ) );

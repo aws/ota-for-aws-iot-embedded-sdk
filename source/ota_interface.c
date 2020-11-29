@@ -67,7 +67,7 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
-    OtaErr_t err = OTA_ERR_INVALID_DATA_PROTOCOL;
+    OtaErr_t err = OtaErrInvalidDataProtocol;
     uint32_t i;
 
     /*

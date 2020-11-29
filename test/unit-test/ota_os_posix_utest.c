@@ -131,7 +131,7 @@ void test_OTA_posix_InvalidEventQueue( void )
 
     /* Try to deinitialize a non-existing queue. */
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_DELETE_FAILED, result );
+    TEST_ASSERT_EQUAL( OtaOsEventQueueDeleteFailed, result );
 }
 
 /**

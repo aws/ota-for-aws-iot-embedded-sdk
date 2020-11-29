@@ -456,7 +456,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     }
     else
     {
-        err = OTA_ERR_NO_ACTIVE_JOB;
+        err = OtaErrNoActiveJob;
     }
 
     if( err != OTA_ERR_NONE )
@@ -523,7 +523,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
         LogWarn( ( "Rejecting new image and rebooting:"
                    "The job is in the self-test state while the platform is not." ) );
 
-        err = setImageStateWithReason( OtaImageStateRejected, OTA_ERR_IMAGE_STATE_MISMATCH );
+        err = setImageStateWithReason( OtaImageStateRejected, OtaErrImageStateMismatch );
         ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
     }
 
@@ -590,7 +590,7 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
                  * Too many requests have been sent without a response or too many failures
                  * when trying to publish the request message. Abort. Store attempt count in low bits.
                  */
-                retVal = ( uint32_t ) OTA_ERR_MOMENTUM_ABORT | ( otaconfigMAX_NUM_REQUEST_MOMENTUM & ( uint32_t ) OTA_PAL_ERR_MASK );
+                retVal = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
             }
         }
     }
@@ -636,14 +636,14 @@ static OtaErr_t processNullFileContext()
          */
         LogError( ( "OTA job doc parse failed: OtaErr_t=%d, aborting current update.", retVal ) );
 
-        retVal = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_JOB_PARSER_ERROR );
+        retVal = setImageStateWithReason( OtaImageStateAborted, OtaErrJobParserError );
 
         if( retVal != OTA_ERR_NONE )
         {
             LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
         }
 
-        retVal = OTA_ERR_JOB_PARSER_ERROR;
+        retVal = OtaErrJobParserError;
     }
 
     return retVal;
@@ -781,7 +781,7 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
             {
                 /* Too many requests have been sent without a response or too many failures
                  * when trying to publish the request message. Abort. Store attempt count in low bits. */
-                err = ( uint32_t ) OTA_ERR_MOMENTUM_ABORT | ( otaconfigMAX_NUM_REQUEST_MOMENTUM & ( uint32_t ) OTA_PAL_ERR_MASK );
+                err = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
             }
         }
     }
@@ -851,7 +851,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
             {
                 /* Too many requests have been sent without a response or too many failures
                  * when trying to publish the request message. Abort. Store attempt count in low bits. */
-                err = ( uint32_t ) OTA_ERR_MOMENTUM_ABORT | ( otaconfigMAX_NUM_REQUEST_MOMENTUM & ( uint32_t ) OTA_PAL_ERR_MASK );
+                err = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
 
                 /* Reset the request momentum. */
                 otaAgent.requestMomentum = 0;
@@ -989,7 +989,7 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
     /* If we have active Job abort it and close the file. */
     if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
     {
-        err = setImageStateWithReason( OtaImageStateAborted, OTA_ERR_USER_ABORT );
+        err = setImageStateWithReason( OtaImageStateAborted, OtaErrUserAbort );
 
         if( err == OTA_ERR_NONE )
         {
@@ -1614,14 +1614,14 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
             LogWarn( ( "Application version of the new image is identical to the current image: "
                        "New images are expected to have a higher version number: " ) );
 
-            err = OTA_ERR_SAME_FIRMWARE_VERSION;
+            err = OtaErrSameFirmwareVersion;
         }
         /* Check if update version received is older than current version.*/
         else if( pFileContext->updaterVersion > appFirmwareVersion.u.unsignedVersion32 )
         {
             LogWarn( ( "Application version of the new image is lower than the current image: "
                        "New images are expected to have a higher version number." ) );
-            err = OTA_ERR_DOWNGRADE_NOT_ALLOWED;
+            err = OtaErrDowngradeNotAllowed;
         }
 
         /* pFileContext->updaterVersion < appFirmwareVersion.u.unsignedVersion32 is true.
@@ -1984,7 +1984,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
             otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                           JobStatusFailedWithVal,
-                                                          ( int32_t ) OTA_ERR_JOB_PARSER_ERROR,
+                                                          ( int32_t ) OtaErrJobParserError,
                                                           ( int32_t ) err );
 
             if( otaErr != OTA_ERR_NONE )
@@ -2322,10 +2322,10 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                 uint32_t closeResult = ( uint32_t ) *pCloseResult;
 
                 LogError( ( "Failed to close the OTA file: Error=(%u:0x%06x)",
-                            closeResult >> OTA_MAIN_ERR_SHIFT_DOWN_BITS,
-                            closeResult & ( uint32_t ) OTA_PAL_ERR_MASK ) );
+                            OTA_MAIN_ERR( closeResult ),
+                            OTA_PAL_ERR( closeResult ) ) );
 
-                if( ( ( closeResult ) & ( OTA_MAIN_ERR_MASK ) ) == OTA_ERR_SIGNATURE_CHECK_FAILED )
+                if( OTA_PAL_ERR( closeResult ) == OtaPalSignatureCheckFailed )
                 {
                     eIngestResult = IngestResultSigCheckFail;
                 }
@@ -2388,7 +2388,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
         else
         {
             /* Default to a generic ingest function error until we prove success. */
-            *pCloseResult = OTA_ERR_GENERIC_INGEST_ERROR;
+            *pCloseResult = OtaErrGenericIngestError;
         }
     }
 
@@ -2982,7 +2982,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
         default:
 
             /*lint -e788 Keep lint quiet about the obvious unused states we're catching here. */
-            err = OTA_ERR_BAD_IMAGE_STATE;
+            err = OtaErrInvalidArg;
 
             break;
     }
@@ -3027,7 +3027,7 @@ OtaErr_t OTA_Suspend( void )
     }
     else
     {
-        err = OTA_ERR_OTA_AGENT_STOPPED;
+        err = OtaErrOtaAgentStopped;
 
         LogWarn( ( "Failed to suspend OTA Agent: "
                    "OTA Agent is stopped: "
@@ -3057,7 +3057,7 @@ OtaErr_t OTA_Resume( void )
     }
     else
     {
-        err = OTA_ERR_OTA_AGENT_STOPPED;
+        err = OtaErrOtaAgentStopped;
 
         LogWarn( ( "Failed to resume OTA Agent: "
                    "OTA Agent is stopped: "
