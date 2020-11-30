@@ -1230,9 +1230,15 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     else
     {
         ( *pSig256 )->size = ( uint16_t ) actualLen;
-        LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
+
+        char save = ( *pSig256 )->data[ 32 ];
+        ( *pSig256 )->data[ 32 ] = '\0';
+
+        LogInfo( ( "Extracted parameter [ %s: %s... ]",
                    OTA_JsonFileSignatureKey,
                    pValueInJson ) );
+
+        ( *pSig256 )->data[ 32 ] = save;
     }
 
     return err;
@@ -1327,14 +1333,6 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
         err = extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
-    }
-    else if( ModelParamTypeStringInDoc == docParam.modelParamType )
-    {
-        /* Copy pointer to source string instead of duplicating the string. */
-        *( const char ** ) pParamAdd = pValueInJson;
-
-        LogInfo( ( "Extracted parameter: [key: value]=[%s: %.*s]",
-                   docParam.pSrcKey, ( int16_t ) valueLength, pValueInJson ) );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
