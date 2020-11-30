@@ -31,7 +31,6 @@
 
 #include <string.h>
 #include <mqueue.h>
-#include <time.h>
 #include <unistd.h>
 #include "unity.h"
 
@@ -48,20 +47,11 @@ static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
-static struct timespec start;
 static bool timerCallbackInovked = false;
 
 static void timerCallback()
 {
-    struct timespec now;
-
     timerCallbackInovked = true;
-    clock_gettime( CLOCK_REALTIME, &now );
-    int elapse_ms = ( now.tv_sec - start.tv_sec ) * 1e3 + ( now.tv_nsec - start.tv_nsec ) / 1e6;
-
-    /* Assert the time elapsed is within 0.9 to 1.1 of the specified time. */
-    TEST_ASSERT_LESS_THAN( OTA_DEFAULT_TIMEOUT * 1.1, elapse_ms );
-    TEST_ASSERT_GREATER_THAN( OTA_DEFAULT_TIMEOUT * 0.9, elapse_ms );
 }
 /* ============================   UNITY FIXTURES ============================ */
 
@@ -140,17 +130,20 @@ void test_OTA_posix_InvalidEventQueue( void )
 void test_OTA_posix_TimerCreateAndStop( void )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
 
-    clock_gettime( CLOCK_REALTIME, &start );
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
     /* Wait for the timer callback to be invoked. */
-    while( timerCallbackInovked == false )
+    while( timerCallbackInovked == false && wait > 0 )
     {
         /* Sleep 1 ms. */
         usleep( 1000 );
+        --wait;
     }
+
+    TEST_ASSERT_EQUAL( true, timerCallbackInovked );
 
     result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );

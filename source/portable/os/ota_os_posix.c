@@ -28,8 +28,9 @@
 #include <string.h>
 #include <time.h>
 
-/* MISRA rule 21.5 prohibits use of signal.h on embedded system. But this implementation is on linux.
- * So it's a false positive. */
+/* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
+ * implemetation is on posix, which has well defined behavior. We're using the timer functionality
+ * from posix so we deviate from this rule. */
 /* coverity[misra_c_2012_rule_21_5_violation] */
 #include <signal.h>
 #include <errno.h>
@@ -410,8 +411,11 @@ void * STDC_Malloc( size_t size )
 {
     /* Use standard C malloc.*/
 
-    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h. But this implementation
-     * is on linux, so it's a false positive. */
+    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h because of undefined
+     * behavior. The design for our OTA library is to let user choose whether they want to pass
+     * buffers to us or not. Dynamic allocation is used only when they do not provide these buffers.
+     * Futher, we have unit tests with memory, and address sanitizer enabled to ensure we're not
+     * leaking or free memory that's not dynamically allocated.  */
     /* coverity[misra_c_2012_rule_21_3_violation]. */
     return malloc( size );
 }
@@ -420,8 +424,7 @@ void STDC_Free( void * ptr )
 {
     /* Use standard C free.*/
 
-    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h. But this implementation
-     * is on linux, so it's a false positive. */
+    /* See explaination in STDC_Malloc. */
     /* coverity[misra_c_2012_rule_21_3_violation]. */
     free( ptr );
 }
