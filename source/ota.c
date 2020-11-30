@@ -190,7 +190,6 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 
-
 /* A helper function to cleanup resources during OTA agent shutdown. */
 
 static void agentShutdownCleanup( void );
@@ -2626,15 +2625,15 @@ static void initializeLocalBuffers( void )
 /*
  * Public API to initialize the OTA Agent.
  *
- * If the Application calls OTA_AgentInit() after it is already initialized, we will
+ * If the Application calls OTA_Init() after it is already initialized, we will
  * only reset the statistics counters and set the job complete callback but will not
- * modify the existing OTA agent context. You must first call OTA_AgentShutdown()
+ * modify the existing OTA agent context. You must first call OTA_Shutdown()
  * successfully.
  */
-OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
-                        OtaInterfaces_t * pOtaInterfaces,
-                        const uint8_t * pThingName,
-                        OtaAppCallback_t OtaAppCallback )
+OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+                   OtaInterfaces_t * pOtaInterfaces,
+                   const uint8_t * pThingName,
+                   OtaAppCallback_t OtaAppCallback )
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OTA_ERR_UNINITIALIZED;
@@ -2722,7 +2721,7 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
 /*
  * Public API to shutdown the OTA Agent.
  */
-OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
+OtaState_t OTA_Shutdown( uint32_t ticksToWait )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t ticks = ticksToWait;
@@ -2772,41 +2771,25 @@ OtaState_t OTA_AgentShutdown( uint32_t ticksToWait )
 /*
  * Return the current state of the OTA agent.
  */
-OtaState_t OTA_GetAgentState( void )
+OtaState_t OTA_GetState( void )
 {
     return otaAgent.state;
 }
 
 /*
- * Return the number of packets dropped.
+ * Return the details of the packets received.
  */
-uint32_t OTA_GetPacketsDropped( void )
+OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
 {
-    return otaAgent.statistics.otaPacketsDropped;
-}
+    OtaErr_t err = OTA_ERR_NULL_STAT_PTR;
 
-/*
- * Return the number of packets queued.
- */
-uint32_t OTA_GetPacketsQueued( void )
-{
-    return otaAgent.statistics.otaPacketsQueued;
-}
+    if( pStatistics != NULL )
+    {
+        *pStatistics = otaAgent.statistics;
+        err = OTA_ERR_NONE;
+    }
 
-/*
- * Return the number of packets processed.
- */
-uint32_t OTA_GetPacketsProcessed( void )
-{
-    return otaAgent.statistics.otaPacketsProcessed;
-}
-
-/*
- * Return the number of packets received.
- */
-uint32_t OTA_GetPacketsReceived( void )
-{
-    return otaAgent.statistics.otaPacketsReceived;
+    return err;
 }
 
 OtaErr_t OTA_CheckForUpdate( void )
