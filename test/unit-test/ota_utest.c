@@ -370,7 +370,7 @@ static void otaInitDefault()
 static void otaDeinit()
 {
     mockOSEventReset( NULL );
-    OTA_Shutdown( 1 );
+    OTA_Shutdown( otaDefaultWait );
 }
 
 void * pthreadOtaAgentTask( void * params )
@@ -699,6 +699,8 @@ void test_OTA_Statistics()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    TEST_ASSERT_EQUAL( OTA_ERR_NULL_STAT_PTR, OTA_GetStatistics( NULL ) );
 
     OtaAgentStatistics_t statistics = { 0 };
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( &statistics ) );

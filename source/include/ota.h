@@ -324,6 +324,8 @@ typedef struct OtaAgentContext
 #define OTA_ERR_SUBSCRIBE_FAILED              0x40000000U /*!< Failed to subscribe to a topic. */
 #define OTA_ERR_UNSUBSCRIBE_FAILED            0x41000000U /*!< Failed to unsubscribe from a topic. */
 #define OTA_ERR_FAILED_TO_DECODE_CBOR         0x42000000U /*!< Failed to decode CBOR object. */
+#define OTA_ERR_NULL_STAT_PTR                 0x50000000U /*!< Attempt to use a null statistics pointer. */
+
 
 /* @[define_ota_err_codes] */
 

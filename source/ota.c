@@ -2781,8 +2781,15 @@ OtaState_t OTA_GetState( void )
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
 {
-    *pStatistics = otaAgent.statistics;
-    return OTA_ERR_NONE;
+    OtaErr_t err = OTA_ERR_NULL_STAT_PTR;
+
+    if( pStatistics != NULL )
+    {
+        *pStatistics = otaAgent.statistics;
+        err = OTA_ERR_NONE;
+    }
+
+    return err;
 }
 
 OtaErr_t OTA_CheckForUpdate( void )
