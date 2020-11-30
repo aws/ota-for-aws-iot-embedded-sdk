@@ -123,11 +123,6 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 static DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 
-/* Checks for duplicate entries in the JSON document. */
-
-static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
-                                      uint16_t paramIndex );
-
 /* Store the parameter from the json to the offset specified by the document model. */
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
@@ -147,12 +142,21 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd );
 
+/* Extract the value from json and store it into the allocated memory. */
+
+static DocParseErr_t extractAndStoreArray( const char * pKey,
+                                           const char * pValueInJson,
+                                           size_t valueLength,
+                                           void * pParamAdd,
+                                           uint32_t * pParamSizeAdd );
+
 /* Check if all the required parameters for the job are present in the JSON. */
 
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
                                                     const JsonDocModel_t * pDocModel );
 
 /* Validate the version of the update received. */
+
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
 /* Check if the JSON can be parsed through a custom callback if initial parsing fails. */
@@ -180,6 +184,21 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob );
 
+/* Validate block index and block size of the data block. */
+
+static bool validateDataBlock( const OtaFileContext_t * pFileContext,
+                               uint32_t blockIndex,
+                               uint32_t blockSize );
+
+/* Decode and ingest the incoming data block.*/
+
+static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
+                                               const uint8_t * pRawMsg,
+                                               uint32_t messageSize,
+                                               uint8_t ** pPayload,
+                                               uint32_t * uBlockSize,
+                                               uint32_t * uBlockIndex );
+
 /* Close an open OTA file context and free it. */
 
 static bool otaClose( OtaFileContext_t * const pFileContext );
@@ -196,6 +215,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 static void agentShutdownCleanup( void );
 
 /* A helper function to cleanup resources when data ingestion is complete. */
+
 static void dataHandlerCleanup( IngestResult_t result );
 
 /*
@@ -217,6 +237,9 @@ static bool inSelftest( void );
 
 static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
+/* Free or clear multiple buffers used in the file context. */
+static void freeFileContextMem( OtaFileContext_t * const pFileContext );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );
@@ -232,6 +255,8 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData );
 static OtaErr_t suspendHandler( const OtaEventData_t * pEventData );
 static OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
+static void executeHandler( uint32_t index,
+                            const OtaEventMsg_t * const pEventMsg );
 
 /* This is THE OTA agent context and initialization state. */
 
@@ -1213,6 +1238,8 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     return err;
 }
 
+/* Extract the value from json and store it into the allocated memory. */
+
 static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            const char * pValueInJson,
                                            size_t valueLength,
@@ -1353,28 +1380,6 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     return err;
 }
 
-/* Checks for duplicate entries in the JSON document. */
-
-static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
-                                      uint16_t paramIndex )
-{
-    DocParseErr_t err = DocParseErrNone;
-
-    /* TODO need to change this implementation because duplicates are not searched properly */
-    /* Check for duplicates of the token*/
-    if( ( *paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-    {
-        err = DocParseErrDuplicatesNotAllowed;
-    }
-    else
-    {
-        /* Mark parameter as received in the bitmap. */
-        *paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-    }
-
-    return err;
-}
-
 /* Check if all the required parameters for job document are extracted from the JSON */
 
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
@@ -1441,8 +1446,6 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
         if( result == JSONSuccess )
         {
-            err = checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex );
-
             if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
             {
                 /* Do nothing if we don't need to store the parameter */
@@ -2427,12 +2430,12 @@ static void executeHandler( uint32_t index,
         }
     }
 
-    LogDebug( ( "Current State=[%s]"
-                ", Event=[%s]"
-                ", New state=[%s]",
-                pOtaAgentStateStrings[ otaAgent.state ],
-                pOtaEventStrings[ pEventMsg->eventId ],
-                pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
+    LogInfo( ( "Current State=[%s]"
+               ", Event=[%s]"
+               ", New state=[%s]",
+               pOtaAgentStateStrings[ otaAgent.state ],
+               pOtaEventStrings[ pEventMsg->eventId ],
+               pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
 }
 
 static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )

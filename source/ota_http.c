@@ -63,7 +63,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
 
     /* Get pre-signed URL from pAgentCtx. */
-    pURL = fileContext->pUpdateUrlPath;
+    pURL = ( char * ) fileContext->pUpdateUrlPath;
 
     /* Connect to the HTTP server and initialize download information. */
     status = pAgentCtx->pOtaInterface->http.init( pURL );
