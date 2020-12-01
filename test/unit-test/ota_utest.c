@@ -663,7 +663,7 @@ void test_OTA_StartFailedWhenReady()
 void test_OTA_SuspendWhenStopped()
 {
     /* Calling suspend when stopped should return an error. */
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, OTA_Suspend() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_Suspend() );
 
     /* OTA agent should remain in stopped state. */
     otaWaitForEmptyEvent();
@@ -675,7 +675,7 @@ void test_OTA_SuspendWhenReady()
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Suspend() );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Suspend() );
     otaWaitForState( OtaAgentStateSuspended );
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
@@ -689,14 +689,14 @@ void test_OTA_SuspendFailedWhenReady()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Suspend should fail and OTA agent should remain in ready state. */
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Suspend() );
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_Suspend() );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_ResumeWhenStopped()
 {
     /* Calling resume when stopped should return an error. */
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, OTA_Resume() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_Resume() );
 
     /* OTA agent should remain in stopped state. */
     otaWaitForEmptyEvent();
@@ -708,7 +708,7 @@ void test_OTA_ResumeWhenSuspended()
     otaGoToState( OtaAgentStateSuspended );
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Resume() );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
     otaWaitForState( OtaAgentStateRequestingJob );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
@@ -720,7 +720,7 @@ void test_OTA_ResumeWhenReady()
 
     /* Calling resume when OTA agent is not suspend state. This should be an unexpected event and
      * the agent should remain in ready state. */
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Resume() );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
     otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
@@ -734,7 +734,7 @@ void test_OTA_ResumeFailedWhenSuspended()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Resume should fail and OTA agent should remain in suspend state. */
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Resume() );
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_Resume() );
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
 
@@ -746,7 +746,7 @@ void test_OTA_Statistics()
     TEST_ASSERT_EQUAL( OtaErrInvalidArg, OTA_GetStatistics( NULL ) );
 
     OtaAgentStatistics_t statistics = { 0 };
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( &statistics ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_GetStatistics( &statistics ) );
 
     TEST_ASSERT_EQUAL( 0, statistics.otaPacketsReceived );
     TEST_ASSERT_EQUAL( 0, statistics.otaPacketsQueued );
@@ -759,7 +759,7 @@ void test_OTA_CheckForUpdate()
     otaGoToState( OtaAgentStateRequestingJob );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_CheckForUpdate() );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_CheckForUpdate() );
     otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
@@ -773,7 +773,7 @@ void test_OTA_CheckForUpdateFailToSendEvent()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Check for update should fail and OTA agent should remain in requesting job state. */
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_CheckForUpdate() );
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_CheckForUpdate() );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
@@ -783,7 +783,7 @@ void test_OTA_ActivateNewImage()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Activate image simply calls the PAL implementation and return its return value. */
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_ActivateNewImage() );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
 
     otaInterfaces.pal.activate = mockPalActivateReturnFail;
     TEST_ASSERT_EQUAL( OtaPalActivateFailed, OTA_ActivateNewImage() );
@@ -793,7 +793,7 @@ void test_OTA_ActivateNewImage()
  * should fail. */
 void test_OTA_ActivateNewImageWhenStopped()
 {
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, OTA_ActivateNewImage() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ImageStateAbortWithActiveJob()
@@ -811,7 +811,7 @@ void test_OTA_ImageStateAbortWithNoJob()
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Calling abort without an active job would fail. OTA agent should remain in ready state. */
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_SetImageState( OtaImageStateAborted ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAborted ) );
     otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
@@ -824,7 +824,7 @@ void test_OTA_ImageStateAbortFailToSendEvent()
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_SetImageState( OtaImageStateAborted ) );
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_SetImageState( OtaImageStateAborted ) );
     otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
