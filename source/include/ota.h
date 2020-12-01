@@ -259,13 +259,6 @@ typedef struct OtaAgentContext
 /**
  * @constantspage{ota,OTA library}
  *
- * @section ota_constants_err_codes OTA Error Codes
- * @brief OTA Agent error codes returned by OTA agent API.
- *
- * @snippet this define_ota_err_codes
- *
- * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
- *
  * @section ota_constants_err_code_helpers OTA Error Code Helper constants
  * @brief OTA Error code helper constant for extracting the error code from the OTA error returned.
  *
@@ -277,7 +270,8 @@ typedef struct OtaAgentContext
  */
 
 /**
- * @brief The OTA agent return status.
+ * @brief The OTA API return status.
+ * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
  */
 typedef enum OtaErr
 {
