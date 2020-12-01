@@ -972,7 +972,7 @@ void test_OTA_ReceiveFileBlockTooLarge()
 
     otaEvent.eventId = OtaAgentEventReceivedFileBlock;
     otaEvent.pEventData = &eventBuffer;
-    otaEvent.pEventData->dataLength = 2 * OTA_FILE_BLOCK_SIZE;
+    otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE + 1;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
@@ -984,7 +984,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
     uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
     size_t streamingMessageSize = 0;
-    int remainingBlocks = OTA_TEST_FILE_SIZE;
+    int remainingBytes = OTA_TEST_FILE_SIZE;
     int idx = 0;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
@@ -1003,7 +1003,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     /* Send blocks. */
     idx = 0;
 
-    while( remainingBlocks > OTA_FILE_BLOCK_SIZE )
+    while( remainingBytes > OTA_FILE_BLOCK_SIZE )
     {
         /* Construct a AWS IoT streaming message. */
         createOtaStreammingMessage(
@@ -1021,7 +1021,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
         otaWaitForEmptyEvent();
         TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-        remainingBlocks -= OTA_FILE_BLOCK_SIZE;
+        remainingBytes -= OTA_FILE_BLOCK_SIZE;
     }
 
     /* Send last block. */
@@ -1030,7 +1030,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
         sizeof( pStreamingMessage ),
         idx,
         pFileBlock,
-        remainingBlocks,
+        remainingBytes,
         &streamingMessageSize );
     otaEvent.pEventData = &eventBuffer;
     memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
@@ -1046,7 +1046,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 {
     OtaEventMsg_t otaEvent = { NULL, OtaAgentEventReceivedFileBlock };
     uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
-    int remainingBlocks = OTA_TEST_FILE_SIZE;
+    int remainingBytes = OTA_TEST_FILE_SIZE;
     int idx = 0;
 
     pOtaJobDoc = JOB_DOC_HTTP;
@@ -1063,7 +1063,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
         pFileBlock[ idx ] = idx % UINT8_MAX;
     }
 
-    while( remainingBlocks > OTA_FILE_BLOCK_SIZE )
+    while( remainingBytes > OTA_FILE_BLOCK_SIZE )
     {
         otaEvent.pEventData = &eventBuffer;
         memcpy( otaEvent.pEventData->data, pFileBlock, OTA_FILE_BLOCK_SIZE );
@@ -1075,7 +1075,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
         /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
          * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
-        remainingBlocks -= OTA_FILE_BLOCK_SIZE;
+        remainingBytes -= OTA_FILE_BLOCK_SIZE;
     }
 
     /* Send last block. */
