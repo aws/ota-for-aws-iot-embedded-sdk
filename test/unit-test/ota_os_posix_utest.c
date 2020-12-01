@@ -31,48 +31,27 @@
 
 #include <string.h>
 #include <mqueue.h>
-#include <time.h>
+#include <unistd.h>
 #include "unity.h"
 
 /* For accessing OTA private functions and error codes. */
 #include "ota.h"
 #include "ota_os_posix.h"
 
-
 /* Testing constants. */
 #define TIMER_NAME             "dummy_name"
-#define OTA_DEFAULT_TIMEOUT    10000 /*!< Timeout in milliseconds. */
-
-/* Timer used in os_posix.c */
-extern timer_t otaTimers[ OtaNumOfTimers ];
+#define OTA_DEFAULT_TIMEOUT    1000 /*!< Timeout in milliseconds. */
 
 /* Interfaces for Timer and Event. */
 static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
+static bool timerCallbackInovked = false;
 
-/**
- * @brief Get the Time elapsed from the timer.
- *
- * This is used to ensure that the timer has started successfully,
- * by using the timer id to get the time elapsed and store it into
- * timer structure.
- *
- * @return long time elapsed in nano seconds.
- */
-static long getTimeElapsed()
+static void timerCallback()
 {
-    struct itimerspec timerAttr;
-    long retVal = 0;
-
-    /* On error, -1 is returned else 0. */
-    if( timer_gettime( otaTimers[ timer_id ], &timerAttr ) == 0 )
-    {
-        retVal = timerAttr.it_value.tv_nsec;
-    }
-
-    return retVal;
+    timerCallbackInovked = true;
 }
 /* ============================   UNITY FIXTURES ============================ */
 
@@ -91,6 +70,7 @@ void setUp( void )
 
 void tearDown( void )
 {
+    timerCallbackInovked = false;
 }
 
 /* ========================================================================== */
@@ -150,11 +130,20 @@ void test_OTA_posix_InvalidEventQueue( void )
 void test_OTA_posix_TimerCreateAndStop( void )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
 
-    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
 
-    TEST_ASSERT_NOT_EQUAL( 0, getTimeElapsed() );
+    /* Wait for the timer callback to be invoked. */
+    while( timerCallbackInovked == false && wait > 0 )
+    {
+        /* Sleep 1 ms. */
+        usleep( 1000 );
+        --wait;
+    }
+
+    TEST_ASSERT_EQUAL( true, timerCallbackInovked );
 
     result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );

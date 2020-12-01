@@ -27,6 +27,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+/* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
+ * implementation is on POSIX, which has well defined behavior. We're using the timer functionality
+ * from POSIX so we deviate from this rule. */
+/* coverity[misra_c_2012_rule_21_5_violation] */
 #include <signal.h>
 #include <errno.h>
 
@@ -46,9 +51,6 @@
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
-/* Linkage for error reporting. */
-extern int errno;
-
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
 
@@ -58,11 +60,11 @@ static OtaTimerCallback_t otaTimerCallback;
 static mqd_t otaEventQueue;
 
 /* OTA Timer handles.*/
-timer_t otaTimers[ OtaNumOfTimers ];
-timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
+static timer_t otaTimers[ OtaNumOfTimers ];
+static timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
 
 /* OTA Timer callbacks.*/
-void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
+static void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
 OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
@@ -72,15 +74,21 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
     ( void ) pEventCtx;
 
     /* Unlink the event queue.*/
-    mq_unlink( OTA_QUEUE_NAME );
+    ( void ) mq_unlink( OTA_QUEUE_NAME );
 
     /* Initialize queue attributes.*/
     attr.mq_flags = 0;
     attr.mq_maxmsg = MAX_MESSAGES;
-    attr.mq_msgsize = MAX_MSG_SIZE;
+    attr.mq_msgsize = ( long ) MAX_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
     /* Open the event queue.*/
+    errno = 0;
+
+    /* MISRA rule 10.1 requires bitwise operand to be unsigned type. However, O_CREAT and O_RDWR
+     * flags are from standard linux header, and this is the normal way of using them. Hence we
+     * silence the warning here. */
+    /* coverity[misra_c_2012_rule_10_1_violation] */
     otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
 
     if( otaEventQueue == -1 )
@@ -114,6 +122,8 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     ( void ) timeout;
 
     /* Send the event to OTA event queue.*/
+    errno = 0;
+
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
@@ -135,7 +145,7 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     return otaErrRet;
 }
 
-OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
+OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
                                 void * pEventMsg,
                                 uint32_t timeout )
 {
@@ -143,10 +153,12 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
 
-    ( void ) pContext;
+    ( void ) pEventCtx;
     ( void ) timeout;
 
     /* Receive the next event from OTA event queue.*/
+    errno = 0;
+
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
@@ -163,7 +175,7 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
         LogDebug( ( "OTA Event received." ) );
 
         /* copy the data from local buffer.*/
-        memcpy( pDst, buff, MAX_MSG_SIZE );
+        ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
 
         otaErrRet = OTA_ERR_NONE;
     }
@@ -171,13 +183,15 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pContext,
     return otaErrRet;
 }
 
-OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pContext )
+OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
 {
     OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
 
-    ( void ) pContext;
+    ( void ) pEventCtx;
 
     /* Remove the event queue.*/
+    errno = 0;
+
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
     {
         otaErrRet = OTA_ERR_EVENT_Q_DELETE_FAILED;
@@ -247,8 +261,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     ( void ) pTimerName;
 
     /* clear everything in the structures. */
-    memset( &sgEvent, 0, sizeof( struct sigevent ) );
-    memset( &timerAttr, 0, sizeof( struct itimerspec ) );
+    ( void ) memset( &sgEvent, 0, sizeof( struct sigevent ) );
+    ( void ) memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
     /* Set attributes. */
     sgEvent.sigev_notify = SIGEV_THREAD;
@@ -259,11 +273,13 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     otaTimerCallback = callback;
 
     /* Set timeout attributes.*/
-    timerAttr.it_value.tv_sec = timeout / 1000;
+    timerAttr.it_value.tv_sec = ( time_t ) timeout / 1000;
 
     /* Create timer if required.*/
     if( pOtaTimers[ otaTimerId ] == NULL )
     {
+        errno = 0;
+
         if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
@@ -284,6 +300,8 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     /* Set timeout.*/
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
+        errno = 0;
+
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
@@ -313,7 +331,7 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     struct itimerspec timerAttr;
 
     /* clear everything in the structures. */
-    memset( &timerAttr, 0, sizeof( struct itimerspec ) );
+    ( void ) memset( &timerAttr, 0, sizeof( struct itimerspec ) );
 
     /* Clear the timeout. */
     timerAttr.it_value.tv_sec = 0;
@@ -321,6 +339,8 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Stop the timer*/
+        errno = 0;
+
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
@@ -356,6 +376,8 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
         /* Delete the timer*/
+        errno = 0;
+
         if( timer_delete( otaTimers[ otaTimerId ] ) == -1 )
         {
             otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
@@ -388,11 +410,21 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 void * STDC_Malloc( size_t size )
 {
     /* Use standard C malloc.*/
+
+    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h because of undefined
+     * behavior. The design for our OTA library is to let user choose whether they want to pass
+     * buffers to us or not. Dynamic allocation is used only when they do not provide these buffers.
+     * Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not
+     * leaking or free memory that's not dynamically allocated.  */
+    /* coverity[misra_c_2012_rule_21_3_violation]. */
     return malloc( size );
 }
 
 void STDC_Free( void * ptr )
 {
     /* Use standard C free.*/
+
+    /* See explanation in STDC_Malloc. */
+    /* coverity[misra_c_2012_rule_21_3_violation]. */
     free( ptr );
 }
