@@ -645,3 +645,4 @@ otaostimerstartfailed
 otaostimerrestartfailed
 otaostimerstopfailed
 otaostimerdeletefailed
+deinitializing
