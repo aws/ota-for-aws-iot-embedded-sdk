@@ -558,9 +558,9 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
         {
             /* Start the request timer. */
             osErr = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
-                                                             "OtaRequestTimer",
-                                                             otaconfigFILE_REQUEST_WAIT_MS,
-                                                             otaTimerCallback );
+                                                            "OtaRequestTimer",
+                                                            otaconfigFILE_REQUEST_WAIT_MS,
+                                                            otaTimerCallback );
 
             if( osErr != OtaOsSuccess )
             {
@@ -747,9 +747,9 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         {
             /* Start the request timer. */
             osErr = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
-                                                          "OtaRequestTimer",
-                                                          otaconfigFILE_REQUEST_WAIT_MS,
-                                                          otaTimerCallback );
+                                                            "OtaRequestTimer",
+                                                            otaconfigFILE_REQUEST_WAIT_MS,
+                                                            otaTimerCallback );
 
             if( osErr != OtaOsSuccess )
             {
@@ -813,9 +813,9 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     {
         /* Start the request timer. */
         osErr = otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
-                                                      "OtaRequestTimer",
-                                                      otaconfigFILE_REQUEST_WAIT_MS,
-                                                      otaTimerCallback );
+                                                        "OtaRequestTimer",
+                                                        otaconfigFILE_REQUEST_WAIT_MS,
+                                                        otaTimerCallback );
 
         if( ( osErr == OtaOsSuccess ) && ( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM ) )
         {
