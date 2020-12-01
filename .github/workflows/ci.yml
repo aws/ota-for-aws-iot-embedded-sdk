@@ -75,12 +75,12 @@ jobs:
           LINE_COVERAGE=$(cat cov_summary.txt | tail -n 1 | cut -d '|' -f 2 | sed -n "s/\([^%]*\)%.*/\1/p")
           BRANCH_COVERAGE=$(cat cov_summary.txt | tail -n 1 | cut -d '|' -f 4 | sed -n "s/\([^%]*\)%.*/\1/p")
           RESULT=0
-          echo "Required line coverage: $MIN_LINE_COVERAGE%"
-          echo "Required branch coverage: $MIN_BRANCH_COVERAGE%"
+          echo "Required line coverage: $MIN_LINE_COVERAGE%, actual: $LINE_COVERAGE%"
           if [[ $(echo "$LINE_COVERAGE < $MIN_LINE_COVERAGE" | bc) -ne 0 ]]; then
             echo "Line Coverage is too low."
             RESULT=1
           fi
+          echo "Required branch coverage: $MIN_BRANCH_COVERAGE%, actual: $BRANCH_COVERAGE%"
           if [[ $(echo "$BRANCH_COVERAGE < $MIN_BRANCH_COVERAGE" | bc) -ne 0 ]]; then
             echo "Branch Coverage is too low."
             RESULT=1
