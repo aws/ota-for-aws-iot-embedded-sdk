@@ -63,11 +63,6 @@ jobs:
           sudo apt-get install -y lcov
           cmake -S test -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build
-      - name: Test
-        run: |
-          cd build/
-          ctest -E system --output-on-failure
-          cd ..
       - name: Run Coverage
         run: |
           cmake --build build/ --target coverage
