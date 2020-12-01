@@ -33,19 +33,20 @@
  */
 typedef enum OtaPalStatus
 {
-    OtaPalSuccess = 0,                 /*!< OTA platform interface success. */
-    OtaPalSignatureCheckFailed = 0xe0, /*!< The signature check failed for the specified file. */
-    OtaPalRxFileCreateFailed,          /*!< The PAL failed to create the OTA receive file. */
-    OtaPalRxFileTooLarge,              /*!< The OTA receive file is too big for the platform to support. */
-    OtaPalBootInfoCreateFailed,        /*!< The PAL failed to create the OTA boot info file. */
-    OtaPalBadSignerCert,               /*!< The signer certificate was not readable or zero length. */
-    OtaPalBadImageState,               /*!< The specified OTA image state was out of range. */
-    OtaPalAbortFailed,                 /*!< Error trying to abort the OTA. */
-    OtaPalRejectFailed,                /*!< Error trying to reject the OTA image. */
-    OtaPalCommitFailed,                /*!< The acceptance commit of the new OTA image failed. */
-    OtaPalActivateFailed,              /*!< The activation of the new OTA image failed. */
-    OtaPalFileAbort,                   /*!< Error in low level file abort. */
-    OtaPalFileClose                    /*!< Error in low level file close. */
+    OtaPalSuccess = 0,          /*!< OTA platform interface success. */
+    OtaPalUninitialized = 0xe0, /*!< Result is not yet initialized from PAL. */
+    OtaPalSignatureCheckFailed, /*!< The signature check failed for the specified file. */
+    OtaPalRxFileCreateFailed,   /*!< The PAL failed to create the OTA receive file. */
+    OtaPalRxFileTooLarge,       /*!< The OTA receive file is too big for the platform to support. */
+    OtaPalBootInfoCreateFailed, /*!< The PAL failed to create the OTA boot info file. */
+    OtaPalBadSignerCert,        /*!< The signer certificate was not readable or zero length. */
+    OtaPalBadImageState,        /*!< The specified OTA image state was out of range. */
+    OtaPalAbortFailed,          /*!< Error trying to abort the OTA. */
+    OtaPalRejectFailed,         /*!< Error trying to reject the OTA image. */
+    OtaPalCommitFailed,         /*!< The acceptance commit of the new OTA image failed. */
+    OtaPalActivateFailed,       /*!< The activation of the new OTA image failed. */
+    OtaPalFileAbort,            /*!< Error in low level file abort. */
+    OtaPalFileClose             /*!< Error in low level file close. */
 } OtaPalStatus_t;
 
 /**

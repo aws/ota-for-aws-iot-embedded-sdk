@@ -277,31 +277,32 @@ typedef struct OtaAgentContext
  */
 
 /* @[define_ota_err_codes] */
-#define OTA_ERR_NONE                     0x00000000U      /*!< No error occurred during the operation. */
-#define OTA_ERR_UNINITIALIZED            0xff000000U      /*!< The error code has not yet been set by a logic path. */
-
-#define OTA_ERR_PUBLISH_FAILED           0x08000000U      /*!< Attempt to publish a MQTT message failed. */
-#define OTA_ERR_HTTP_REQUEST_FAILED      0x0d000000U      /*!< Error sending the HTTP request. */
-#define OTA_ERR_EVENT_Q_SEND_FAILED      0x2c000000U      /*!< Posting event message to the event queue failed. */
-
 typedef enum OtaErr
 {
-    OtaErrNone = 0,            /*!< No error occurred during the operation. */
-    OtaErrUninitialized,       /*!< The error code has not yet been set by a logic path. */
-    OtaErrPanic,               /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
-    OtaErrInvalidArg,          /*!< API called with invalid argument. */
-    OtaErrNoActiveJob,         /*!< Attempt to set final image state without an active job. */
-    OtaErrMomentumAbort,       /*!< Too many OTA stream requests without any response. */
-    OtaErrDowngradeNotAllowed, /*!< Firmware version is older than the previous version. */
-    OtaErrSameFirmwareVersion, /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-    OtaErrJobParserError,      /*!< An error occurred during job document parsing. See reason sub-code. */
-    OtaErrImageStateMismatch,  /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-    OtaErrGenericIngestError,  /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
-    OtaErrUserAbort,           /*!< User aborted the active OTA. */
-    OtaErrInvalidDataProtocol, /*!< Job does not have a valid protocol for data transfer. */
-    OtaErrOtaAgentStopped,     /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
-    OtaErrFailedToEncodeCbor,  /*!< Failed to encode CBOR object. */
-    OtaErrFailedToDecodeCbor   /*!< Failed to decode CBOR object. */
+    OtaErrNone = 0,               /*!< No error occurred during the operation. */
+    OtaErrUninitialized,          /*!< The error code has not yet been set by a logic path. */
+    OtaErrPanic,                  /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
+    OtaErrInvalidArg,             /*!< API called with invalid argument. */
+    OtaErrAgentStopped,           /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+    OtaErrSignalEventFailed,      /*!< Failed to send event to OTA state machine. */
+    OtaErrRequestJobFailed,       /*!< Failed to request the job document. */
+    OtaErrInitFileTransferFailed, /*!< Failed to update the OTA job status. */
+    OtaErrRequestFileBlockFailed, /*!< Failed to request file block. */
+    OtaErrCleanupControlFailed,   /*!< Failed to clean up the control plane. */
+    OtaErrCleanupDataFailed,      /*!< Failed to clean up the data plane. */
+    OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
+    OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
+    OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
+    OtaErrIngestError,            /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
+    OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
+    OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
+    OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
+    OtaErrImageStateMismatch,     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+    OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
+    OtaErrUserAbort,              /*!< User aborted the active OTA. */
+    OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
+    OtaErrFailedToDecodeCbor,     /*!< Failed to decode CBOR object from streaming service response. */
+    OtaErrSetImageStateFailed     /*!< Failed to set platform image state. */
 } OtaErr_t;
 
 /* @[define_ota_err_codes] */
@@ -367,7 +368,7 @@ OtaState_t OTA_GetState( void );
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
  * @ref OTA_Init function for more information about configuring the callback.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_ActivateNewImage( void );
@@ -381,7 +382,7 @@ OtaErr_t OTA_ActivateNewImage( void );
  *
  * @param[in] state The state to set of the OTA image.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_SetImageState( OtaImageState_t state );
@@ -399,7 +400,7 @@ OtaImageState_t OTA_GetImageState( void );
 /**
  * @brief Request for the next available OTA job from the job service.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_CheckForUpdate( void );
@@ -407,7 +408,7 @@ OtaErr_t OTA_CheckForUpdate( void );
 /**
  * @brief Suspend OTA agent operations .
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_Suspend( void );
@@ -415,7 +416,7 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_Resume( void );
@@ -448,7 +449,7 @@ void otaAgentTask( void * pUnused );
  *</ul>
  * @note Calling @ref OTA_Init will reset this statistic.
  *
- * @return OTA_ERR_NONE if the statistics can be received successfully.
+ * @return OtaErrNone if the statistics can be received successfully.
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
 
