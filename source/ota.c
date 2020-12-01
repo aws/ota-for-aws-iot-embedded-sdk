@@ -995,6 +995,11 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
             ( void ) otaClose( &( otaAgent.fileContext ) );
         }
     }
+    else
+    {
+        err = OtaErrNoActiveJob;
+    }
+
 
     return err;
 }
