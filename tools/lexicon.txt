@@ -646,3 +646,4 @@ otaostimerrestartfailed
 otaostimerstopfailed
 otaostimerdeletefailed
 deinitializing
+palerr
