@@ -57,7 +57,6 @@
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
- * lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future.
  *  @{
  */
 static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
@@ -305,7 +304,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
     pFileContext = &( pAgentCtx->fileContext );
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic, /*lint -e586 Intentionally using snprintf. */
+    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic,
                                       sizeof( pOtaRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
                                       pAgentCtx->pThingName,
@@ -352,7 +351,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     assert( pAgentCtx != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
-    topicLen = ( uint16_t ) snprintf( pJobTopic, /*lint -e586 Intentionally using snprintf. */
+    topicLen = ( uint16_t ) snprintf( pJobTopic,
                                       sizeof( pJobTopic ),
                                       pOtaJobsNotifyNextTopicTemplate,
                                       pAgentCtx->pThingName );
@@ -381,7 +380,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     if( result == OTA_ERR_NONE )
     {
         /* Try to unsubscribe from the second of two job topics. */
-        topicLen = ( uint16_t ) snprintf( pJobTopic, /*lint -e586 Intentionally using snprintf. */
+        topicLen = ( uint16_t ) snprintf( pJobTopic,
                                           sizeof( pJobTopic ),
                                           pOtaJobsGetNextAcceptedTopicTemplate,
                                           pAgentCtx->pThingName );
@@ -430,7 +429,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     assert( pMsg != NULL );
 
     /* Build the dynamic job status topic . */
-    topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
+    topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                       sizeof( pTopicBuffer ),
                                       pOtaJobStatusTopicTemplate,
                                       pAgentCtx->pThingName,
@@ -488,14 +487,14 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     if( ( received % OTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
-        msgSize = ( uint32_t ) snprintf( pMsgBuffer,       /*lint -e586 Intentionally using snprintf. */
+        msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                          msgBufferSize,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReceiveDetailsTemplate,
                                              pOtaStringReceive,
@@ -519,14 +518,14 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
+    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
     assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-    msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+    msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                          msgBufferSize - msgSize,
                                          pOtaJobStatusSelfTestDetailsTemplate,
                                          OTA_JSON_SELF_TEST_KEY_ONLY,
@@ -550,7 +549,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
+    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
@@ -563,7 +562,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     if( status == JobStatusFailedWithVal )
     {
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonValTemplate,
                                              reason,
@@ -584,7 +583,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
         newVersion.u.unsignedVersion32 = ( uint32_t ) subReason;
 
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusSucceededStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
@@ -601,7 +600,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     else
     {
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
@@ -642,7 +641,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     if( result == OTA_ERR_NONE )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-        /*lint -e586 Intentionally using snprintf. */
+
         msgSize = ( uint32_t ) snprintf( pMsg,
                                          sizeof( pMsg ),
                                          pOtaGetNextJobMsgTemplate,
@@ -840,7 +839,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
         /* Try to build the dynamic data REQUEST topic to publish to. */
-        topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
+        topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                           sizeof( pTopicBuffer ),
                                           pOtaGetStreamTopicTemplate,
                                           pAgentCtx->pThingName,
@@ -898,8 +897,8 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
     cborDecodeRet = OTA_CBOR_Decode_GetStreamResponseMessage( pMessageBuffer,
                                                               messageSize,
                                                               pFileId,
-                                                              pBlockId,   /*lint !e9087 CBOR requires pointer to int and our block index's never exceed 31 bits. */
-                                                              pBlockSize, /*lint !e9087 CBOR requires pointer to int and our block sizes never exceed 31 bits. */
+                                                              pBlockId,   /* CBOR requires pointer to int and our block indices never exceed 31 bits. */
+                                                              pBlockSize, /* CBOR requires pointer to int and our block sizes never exceed 31 bits. */
                                                               pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
                                                               pPayloadSize );
 

@@ -449,7 +449,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
      */
     if( ( err != OTA_ERR_NONE ) && ( state != OtaImageStateAborted ) )
     {
-        state = OtaImageStateRejected; /*lint !e9044 intentionally override state since we failed within this function. */
+        /* Intentionally override state since we failed within this function. */
+        state = OtaImageStateRejected;
 
         /*
          * Capture the failure reason if not already set (and we're not already Aborted as checked above). Otherwise Keep
@@ -458,7 +459,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
          */
         if( reason == OTA_ERR_NONE )
         {
-            reason = err; /*lint !e9044 intentionally override reason since we failed within this function. */
+            /* Intentionally override reason since we failed within this function. */
+            reason = err;
         }
     }
 
@@ -1445,7 +1447,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
         if( result == JSONSuccess )
         {
             /* Mark parameter as received in the bitmap. */
-            pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
+            pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex );
 
             if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
             {
@@ -1832,8 +1834,6 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 }
 
 /* This is the OTA job document model describing the parameters, their types, destination and how to extract. */
-/*lint -e{708} We intentionally do some things lint warns about but produce the proper model. */
-/* Namely union initialization and pointers converted to values. */
 
 static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 {
@@ -1877,7 +1877,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
     parseError = initDocModel( &otaJobDocModel,
                                otaJobDocModelParamStructure,
-                               ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                               ( void * ) pFileContext,
                                ( uint32_t ) sizeof( OtaFileContext_t ),
                                OTA_NUM_JOB_PARAMS );
 
@@ -1985,7 +1985,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen ); /*lint !e9079 FreeRTOS malloc port returns void*. */
+        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
@@ -2915,7 +2915,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
 
         default:
 
-            /*lint -e788 Keep lint quiet about the obvious unused states we're catching here. */
+            /* We are catching unused states here which is not possible. */
             err = OTA_ERR_BAD_IMAGE_STATE;
 
             break;
