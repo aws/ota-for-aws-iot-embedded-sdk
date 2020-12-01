@@ -2851,7 +2851,7 @@ OtaState_t OTA_GetState( void )
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics )
 {
-    OtaErr_t err = OTA_ERR_NULL_STAT_PTR;
+    OtaErr_t err = OtaErrInvalidArg;
 
     if( pStatistics != NULL )
     {
