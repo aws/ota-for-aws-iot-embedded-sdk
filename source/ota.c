@@ -1000,7 +1000,6 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
         err = OtaErrNoActiveJob;
     }
 
-
     return err;
 }
 
