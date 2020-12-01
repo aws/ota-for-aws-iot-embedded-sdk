@@ -383,10 +383,10 @@ static void otaInit( const char * pClientID,
     pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
     pOtaAppBuffer.pUrl = pOtaAppBuffer.pStreamName + pOtaAppBuffer.streamNameSize;
     pOtaAppBuffer.urlSize = OTA_UPDATE_URL_SIZE;
-    OTA_AgentInit( &pOtaAppBuffer,
-                   &otaInterfaces,
-                   ( const uint8_t * ) pClientID,
-                   appCallback );
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pClientID,
+              appCallback );
 }
 
 static void otaInitDefault()
@@ -397,7 +397,7 @@ static void otaInitDefault()
 static void otaDeinit()
 {
     mockOSEventReset( NULL );
-    OTA_AgentShutdown( 1 );
+    OTA_Shutdown( otaDefaultWait );
 }
 
 void * pthreadOtaAgentTask( void * params )
@@ -410,7 +410,7 @@ static void otaStartAgentTask()
 {
     pthread_t otaThread;
 
-    if( OtaAgentStateInit == OTA_GetAgentState() )
+    if( OtaAgentStateInit == OTA_GetState() )
     {
         pthread_create( &otaThread, NULL, pthreadOtaAgentTask, NULL );
     }
@@ -419,7 +419,7 @@ static void otaStartAgentTask()
 static void otaWaitForStateWithTimeout( OtaState_t state,
                                         int milliseconds )
 {
-    while( milliseconds > 0 && state != OTA_GetAgentState() )
+    while( milliseconds > 0 && state != OTA_GetState() )
     {
         usleep( 1000 );
         milliseconds--;
@@ -465,12 +465,12 @@ static void otaGoToStateWithTimeout( OtaState_t state,
 {
     OtaEventMsg_t otaEvent = { 0 };
 
-    if( state == OTA_GetAgentState() )
+    if( state == OTA_GetState() )
     {
         return;
     }
 
-    if( OtaAgentStateStopped == OTA_GetAgentState() )
+    if( OtaAgentStateStopped == OTA_GetState() )
     {
         otaInitDefault();
     }
@@ -546,7 +546,7 @@ static void otaGoToState( OtaState_t state )
 
 void setUp()
 {
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
     otaInterfaceDefault();
 }
 
@@ -559,39 +559,39 @@ void tearDown()
     otaInterfaceDefault();
     otaDeinit();
     otaWaitForState( OtaAgentStateStopped );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_InitWhenStopped()
 {
     otaGoToState( OtaAgentStateInit );
-    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
 
     /* TODO, fix the bug. Once OTA agent is initialized. It has to be start first before calling
      * shutdown. There's no way to shutdown when it's in init state.*/
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_InitWhenReady()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Calling init again should remain in ready state. */
     otaInitDefault();
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Explicitly test NULL client name and NULL complete callback. */
     otaInit( NULL, NULL );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. OTA agent should remain in stopped state. */
     otaInit( NULL, mockAppleteCallback );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_InitWithNameTooLong()
@@ -601,27 +601,27 @@ void test_OTA_InitWithNameTooLong()
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
     otaInit( long_name, mockAppleteCallback );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_ShutdownWhenStopped()
 {
     /* Calling shutdown when already stopped should have no effect. */
-    OTA_AgentShutdown( otaDefaultWait );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    OTA_Shutdown( otaDefaultWait );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_ShutdownFailToSendEvent()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
-    OTA_AgentShutdown( otaDefaultWait );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    OTA_Shutdown( otaDefaultWait );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_StartWhenReady()
@@ -632,12 +632,12 @@ void test_OTA_StartWhenReady()
     imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     otaEvent.eventId = OtaAgentEventStart;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateRequestingJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
 void test_OTA_StartFailedWhenReady()
@@ -648,7 +648,7 @@ void test_OTA_StartFailedWhenReady()
     imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Set the event send interface to a mock function that fails after first event sent. */
     otaInterfaces.os.event.send = mockOSEventSendThenFail;
@@ -657,7 +657,7 @@ void test_OTA_StartFailedWhenReady()
     otaEvent.eventId = OtaAgentEventStart;
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_SuspendWhenStopped()
@@ -667,30 +667,30 @@ void test_OTA_SuspendWhenStopped()
 
     /* OTA agent should remain in stopped state. */
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_SuspendWhenReady()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Suspend() );
     otaWaitForState( OtaAgentStateSuspended );
-    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
 
 void test_OTA_SuspendFailedWhenReady()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Suspend should fail and OTA agent should remain in ready state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Suspend() );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_ResumeWhenStopped()
@@ -700,82 +700,87 @@ void test_OTA_ResumeWhenStopped()
 
     /* OTA agent should remain in stopped state. */
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_ResumeWhenSuspended()
 {
     otaGoToState( OtaAgentStateSuspended );
-    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Resume() );
     otaWaitForState( OtaAgentStateRequestingJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
 void test_OTA_ResumeWhenReady()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Calling resume when OTA agent is not suspend state. This should be an unexpected event and
      * the agent should remain in ready state. */
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_Resume() );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_ResumeFailedWhenSuspended()
 {
     otaGoToState( OtaAgentStateSuspended );
-    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Resume should fail and OTA agent should remain in suspend state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_Resume() );
-    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
 
 void test_OTA_Statistics()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsDropped() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsQueued() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsProcessed() );
-    TEST_ASSERT_EQUAL( 0, OTA_GetPacketsReceived() );
+    TEST_ASSERT_EQUAL( OTA_ERR_NULL_STAT_PTR, OTA_GetStatistics( NULL ) );
+
+    OtaAgentStatistics_t statistics = { 0 };
+    TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_GetStatistics( &statistics ) );
+
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsReceived );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsQueued );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsProcessed );
+    TEST_ASSERT_EQUAL( 0, statistics.otaPacketsDropped );
 }
 
 void test_OTA_CheckForUpdate()
 {
     otaGoToState( OtaAgentStateRequestingJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_CheckForUpdate() );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_CheckForUpdateFailToSendEvent()
 {
     otaGoToState( OtaAgentStateRequestingJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Check for update should fail and OTA agent should remain in requesting job state. */
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_CheckForUpdate() );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
 void test_OTA_ActivateNewImage()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Activate image simply calls the PAL implementation and return its return value. */
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_ActivateNewImage() );
@@ -799,7 +804,7 @@ void test_OTA_ImageStateAbortWithActiveJob()
 void test_OTA_ImageStateAbortWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * since setting image state to abort would send an user abort event in the handler. */
@@ -808,20 +813,20 @@ void test_OTA_ImageStateAbortWithNoJob()
     /* Calling abort without an active job would fail. OTA agent should remain in ready state. */
     TEST_ASSERT_EQUAL( OTA_ERR_NONE, OTA_SetImageState( OtaImageStateAborted ) );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_ImageStateAbortFailToSendEvent()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Set the event send interface to a mock function that always fail. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_SEND_FAILED, OTA_SetImageState( OtaImageStateAborted ) );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_ImageStateRjectWithActiveJob()
@@ -832,7 +837,7 @@ void test_OTA_ImageStateRjectWithActiveJob()
 void test_OTA_ImageStateRjectWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OtaErrNoActiveJob, OTA_SetImageState( OtaImageStateRejected ) );
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
@@ -846,7 +851,7 @@ void test_OTA_ImageStateAcceptWithActiveJob()
 void test_OTA_ImageStateAcceptWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OtaErrNoActiveJob, OTA_SetImageState( OtaImageStateAccepted ) );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
@@ -862,11 +867,11 @@ void test_OTA_ProcessJobDocumentInvalidJson()
     pOtaJobDoc = JOB_DOC_INVALID;
 
     otaGoToState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument( otaDefaultWait );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentValidJson()
@@ -877,49 +882,61 @@ void test_OTA_ProcessJobDocumentValidJson()
     imageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateCreatingFile );
-    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 }
 
-void test_OTA_InitFileTransferMqtt()
+static void otaInitFileTransfer()
 {
     OtaEventMsg_t otaEvent = { 0 };
 
     otaGoToState( OtaAgentStateCreatingFile );
-    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 
     otaEvent.eventId = OtaAgentEventCreateFile;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateRequestingFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+}
+
+void test_OTA_InitFileTransferMqtt()
+{
+    pOtaJobDoc = JOB_DOC_A;
+    otaInitFileTransfer();
 }
 
 void test_OTA_InitFileTransferHttp()
 {
     pOtaJobDoc = JOB_DOC_HTTP;
-    test_OTA_InitFileTransferMqtt();
+    otaInitFileTransfer();
 }
 
-void test_OTA_RequestFileBlockMqtt()
+static void otaRequestFileBlock()
 {
     OtaEventMsg_t otaEvent = { 0 };
 
     otaGoToState( OtaAgentStateRequestingFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
 
     otaEvent.eventId = OtaAgentEventRequestFileBlock;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+}
+
+void test_OTA_RequestFileBlockMqtt()
+{
+    pOtaJobDoc = JOB_DOC_A;
+    otaRequestFileBlock();
 }
 
 void test_OTA_RequestFileBlockHttp()
 {
     pOtaJobDoc = JOB_DOC_HTTP;
-    test_OTA_RequestFileBlockMqtt();
+    otaRequestFileBlock();
 }
 
 void test_OTA_ReceiveFileBlockEmpty()
@@ -927,7 +944,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     OtaEventMsg_t otaEvent = { 0 };
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * This is required because decode failure would cause OtaAgentEventCloseFile event to be sent
@@ -939,7 +956,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     otaEvent.pEventData->dataLength = 0;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockTooLarge()
@@ -949,7 +966,7 @@ void test_OTA_ReceiveFileBlockTooLarge()
     pOtaJobDoc = JOB_DOC_HTTP;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     otaInterfaces.os.event.send = mockOSEventSend;
 
@@ -958,7 +975,7 @@ void test_OTA_ReceiveFileBlockTooLarge()
     otaEvent.pEventData->dataLength = 2 * OTA_FILE_BLOCK_SIZE;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockCompleteMqtt()
@@ -971,7 +988,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     int idx = 0;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * because we're receiving multiple blocks in this test. */
@@ -1002,10 +1019,8 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
 
         OTA_SignalEvent( &otaEvent );
         otaWaitForEmptyEvent();
-        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-        /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
-         * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
         remainingBlocks -= OTA_FILE_BLOCK_SIZE;
     }
 
@@ -1024,7 +1039,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     /* OTA agent should complete the update and go back to waiting for job state. */
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockCompleteHttp()
@@ -1036,7 +1051,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
     pOtaJobDoc = JOB_DOC_HTTP;
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * because we're receiving multiple blocks in this test. */
@@ -1056,7 +1071,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
         OTA_SignalEvent( &otaEvent );
         otaWaitForEmptyEvent();
-        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
         /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
          * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
@@ -1071,7 +1086,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     /* OTA agent should complete the update and go back to waiting for job state. */
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_SelfTest()
@@ -1083,7 +1098,7 @@ void test_OTA_SelfTest()
     otaInterfaces.os.event.send = mockOSEventSend;
 
     otaGoToState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Let the PAL says it's in self test. */
     imageState = OtaPalImageStatePendingCommit;
@@ -1091,7 +1106,7 @@ void test_OTA_SelfTest()
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateCreatingFile );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
@@ -1100,7 +1115,7 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
     pOtaJobDoc = JOB_DOC_A;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Reset the event queue so that we can send the next event. */
     mockOSEventReset( NULL );
@@ -1109,7 +1124,7 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
     pOtaJobDoc = JOB_DOC_B;
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateRequestingJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
 void test_OTA_RefreshWithSameJobDoc()
@@ -1119,7 +1134,7 @@ void test_OTA_RefreshWithSameJobDoc()
     pOtaJobDoc = JOB_DOC_A;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * We need this to go through the process of refreshing job doc. */
@@ -1130,12 +1145,12 @@ void test_OTA_RefreshWithSameJobDoc()
     otaEvent.eventId = OtaAgentEventRequestJobDocument;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Now send the same job doc, OTA agent should resume the download. */
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 }
 
 void test_OTA_RefreshWithDifferentJobDoc()
@@ -1145,7 +1160,7 @@ void test_OTA_RefreshWithDifferentJobDoc()
     pOtaJobDoc = JOB_DOC_A;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously.
      * We need this to go through the process of refreshing job doc. */
@@ -1156,11 +1171,11 @@ void test_OTA_RefreshWithDifferentJobDoc()
     otaEvent.eventId = OtaAgentEventRequestJobDocument;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Now send a different job doc, OTA agent should abort current and job and start the new job. */
     pOtaJobDoc = JOB_DOC_B;
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 }

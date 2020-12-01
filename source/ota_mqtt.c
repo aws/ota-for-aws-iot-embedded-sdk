@@ -228,11 +228,17 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     /* Build and subscribe to the first topic. */
 
     /* MISRA rule 21.6 prohibits use of all functions from stdio.h because they have undefined
-     * behavior. So snprintf, undefined behavior only occurs when the destination buffer and format
-     * buffer overlaps. We are using static buffers and format strings defined in this files, and
-     * format arguments are from OTA agent job document, so this can never happen. Hence we deviate
-     * from this rule and allow use of snprintf here. */
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+     * behaviors. We are only using snprintf here, and have checked no undefined behaviors can
+     * occur because,
+     * - the destination buffer size is pre-calculated to make sure it's large enough.
+     * - the destination buffer are static in this file and format buffer comes from job document,
+     *   they will never overlap.
+     * - we only use %s, %u and %x specifiers. No precision is specified, and no length modifier is
+     *   used.
+     * - we enabled compiler warnings to ensure number of arguments and their types are matching.
+     * - we enabled undefined behavior sanitizer in our unit tests.
+     */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
                                       sizeof( pJobTopicGetNext ),
                                       pOtaJobsGetNextAcceptedTopicTemplate,
@@ -265,7 +271,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     if( result == OTA_ERR_NONE )
     {
         /* Build and subscribe to the second topic. */
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
                                           sizeof( pJobTopicNotifyNext ),
                                           pOtaJobsNotifyNextTopicTemplate,
@@ -315,7 +321,7 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
     pFileContext = &( pAgentCtx->fileContext );
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic,
                                       sizeof( pOtaRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
@@ -363,7 +369,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     assert( pAgentCtx != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pJobTopic,
                                       sizeof( pJobTopic ),
                                       pOtaJobsNotifyNextTopicTemplate,
@@ -393,7 +399,7 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     if( result == OTA_ERR_NONE )
     {
         /* Try to unsubscribe from the second of two job topics. */
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint16_t ) snprintf( pJobTopic,
                                           sizeof( pJobTopic ),
                                           pOtaJobsGetNextAcceptedTopicTemplate,
@@ -444,7 +450,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     assert( pMsg != NULL );
 
     /* Build the dynamic job status topic . */
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                       sizeof( pTopicBuffer ),
                                       pOtaJobStatusTopicTemplate,
@@ -503,7 +509,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     if( ( received % OTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                          msgBufferSize,
                                          pOtaJobStatusStatusTemplate,
@@ -511,7 +517,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReceiveDetailsTemplate,
@@ -536,7 +542,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
@@ -544,7 +550,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     /* The buffer is static and the size is calculated to fit. */
     assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                          msgBufferSize - msgSize,
                                          pOtaJobStatusSelfTestDetailsTemplate,
@@ -569,7 +575,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
@@ -583,7 +589,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     if( status == JobStatusFailedWithVal )
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonValTemplate,
@@ -605,7 +611,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
         newVersion.u.unsignedVersion32 = ( uint32_t ) subReason;
 
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusSucceededStrTemplate,
@@ -623,7 +629,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     else
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonStrTemplate,
@@ -665,7 +671,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     if( result == OTA_ERR_NONE )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgSize = ( uint32_t ) snprintf( pMsg,
                                          sizeof( pMsg ),
                                          pOtaGetNextJobMsgTemplate,
@@ -675,7 +681,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
 
         reqCounter++;
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint16_t ) snprintf( pJobTopic,
                                           sizeof( pJobTopic ),
                                           pOtaJobsGetNextTopicTemplate,
@@ -784,7 +790,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     pFileContext = &( pAgentCtx->fileContext );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pRxStreamTopic,
                                       sizeof( pRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
@@ -865,7 +871,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
         /* Try to build the dynamic data REQUEST topic to publish to. */
-        /* coverity[misra_c_2012_rule_21_6_violation] Buffer overlap will never happen. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                           sizeof( pTopicBuffer ),
                                           pOtaGetStreamTopicTemplate,

@@ -119,7 +119,7 @@ typedef enum OtaJobParseErr
  * @brief OTA Job callback events.
  *
  * After an OTA update image is received and authenticated, the agent calls the user
- * callback (set with the @ref OTA_AgentInit API) with the value OtaJobEventActivate to
+ * callback (set with the @ref OTA_Init API) with the value OtaJobEventActivate to
  * signal that the device must be rebooted to activate the new image. When the device
  * boots, if the OTA job status is in self test mode, the agent calls the user callback
  * with the value OtaJobEventStartTest, signaling that any additional self tests
@@ -332,10 +332,10 @@ typedef enum OtaErr
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
-OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
-                        OtaInterfaces_t * pOtaInterfaces,
-                        const uint8_t * pThingName,
-                        OtaAppCallback_t OtaAppCallback );
+OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+                   OtaInterfaces_t * pOtaInterfaces,
+                   const uint8_t * pThingName,
+                   OtaAppCallback_t OtaAppCallback );
 
 /**
  * @brief Signal to the OTA Agent to shut down.
@@ -350,14 +350,14 @@ OtaErr_t OTA_AgentInit( OtaAppBuffer_t * pOtaBuffer,
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
  */
-OtaState_t OTA_AgentShutdown( uint32_t ticksToWait );
+OtaState_t OTA_Shutdown( uint32_t ticksToWait );
 
 /**
  * @brief Get the current state of the OTA agent.
  *
  * @return The current state of the OTA agent.
  */
-OtaState_t OTA_GetAgentState( void );
+OtaState_t OTA_GetState( void );
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -365,7 +365,7 @@ OtaState_t OTA_GetAgentState( void );
  * This function should reset the MCU and cause a reboot of the system to execute the newly updated
  * firmware. It should be called by the user code sometime after the OtaJobEventActivate event
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
- * @ref OTA_AgentInit function for more information about configuring the callback.
+ * @ref OTA_Init function for more information about configuring the callback.
  *
  * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
@@ -432,44 +432,24 @@ void otaAgentTask( void * pUnused );
 /*---------------------------------------------------------------------------*/
 
 /**
- * @brief Get the number of OTA message packets received by the OTA agent.
+ * @brief Get the statistics of OTA message packets.
  *
- * @note Calling @ref OTA_AgentInit will reset this statistic.
+ * Packet statistics are:
+ * <ul>
+ *  <li> Received: The number of OTA packets that have been received
+ *  but not necessarily queued for processing by the OTA agent.
+ *  <li> Queued: The number of OTA packets that have been queued for
+ *  processing. This implies there was a free message queue entry so
+ *  it can be passed to the agent for processing.
+ *  <li> Processed: The number of OTA packets that have actually been
+ *  processed.
+ *  <li> Dropped: The number of OTA packets that have been dropped
+ *  because of either no queue or at shutdown cleanup.
+ *</ul>
+ * @note Calling @ref OTA_Init will reset this statistic.
  *
- * @return The number of OTA packets that have been received but not
- * necessarily queued for processing by the OTA agent.
+ * @return OTA_ERR_NONE if the statistics can be received successfully.
  */
-uint32_t OTA_GetPacketsReceived( void );
-
-/**
- * @brief Get the number of OTA message packets queued by the OTA agent.
- *
- * @note Calling @ref OTA_AgentInit will reset this statistic.
- *
- * @return The number of OTA packets that have been queued for processing.
- * This implies there was a free message queue entry so it can be passed
- * to the agent for processing.
- */
-uint32_t OTA_GetPacketsQueued( void );
-
-/**
- * @brief Get the number of OTA message packets processed by the OTA agent.
- *
- * @note Calling @ref OTA_AgentInit will reset this statistic.
- *
- * @return the number of OTA packets that have actually been processed.
- *
- */
-uint32_t OTA_GetPacketsProcessed( void );
-
-/**
- * @brief Get the number of OTA message packets dropped by the OTA agent.
- *
- * @note Calling @ref OTA_AgentInit will reset this statistic.
- *
- * @return the number of OTA packets that have been dropped because
- * of either no queue or at shutdown cleanup.
- */
-uint32_t OTA_GetPacketsDropped( void );
+OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
 
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */
