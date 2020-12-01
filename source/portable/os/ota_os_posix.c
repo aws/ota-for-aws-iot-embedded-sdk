@@ -29,8 +29,8 @@
 #include <time.h>
 
 /* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
- * implementation is on posix, which has well defined behavior. We're using the timer functionality
- * from posix so we deviate from this rule. */
+ * implementation is on POSIX, which has well defined behavior. We're using the timer functionality
+ * from POSIX so we deviate from this rule. */
 /* coverity[misra_c_2012_rule_21_5_violation] */
 #include <signal.h>
 #include <errno.h>
