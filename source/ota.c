@@ -2827,7 +2827,13 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait )
                 "ticks=%u",
                 ticks ) );
 
-    if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
+    if( otaAgent.state == OtaAgentStateInit )
+    {
+        /* When in init state, the OTA state machine is not running yet. So directly set state to
+         * stopped. */
+        otaAgent.state = OtaAgentStateStopped;
+    }
+    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
     {
         /*
          * Send shutdown signal to OTA Agent task.

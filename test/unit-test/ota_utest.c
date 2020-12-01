@@ -669,11 +669,6 @@ void test_OTA_InitWhenStopped()
 {
     otaGoToState( OtaAgentStateInit );
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
-
-    /* TODO, fix the bug. Once OTA agent is initialized. It has to be start first before calling
-     * shutdown. There's no way to shutdown when it's in init state.*/
-    otaGoToState( OtaAgentStateReady );
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 void test_OTA_InitWhenReady()
@@ -901,7 +896,12 @@ void test_OTA_ActivateNewImageWhenStopped()
 
 void test_OTA_ImageStateAbortWithActiveJob()
 {
-    /* TODO. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    /* Calling abort with an active job would make OTA agent transit to waiting for job state. */
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAborted ) );
+    otaWaitForEmptyEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ImageStateAbortWithNoJob()
@@ -934,7 +934,10 @@ void test_OTA_ImageStateAbortFailToSendEvent()
 
 void test_OTA_ImageStateRjectWithActiveJob()
 {
-    /* TODO. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateRejected ) );
+    TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
 
 void test_OTA_ImageStateRjectWithNoJob()
@@ -948,7 +951,10 @@ void test_OTA_ImageStateRjectWithNoJob()
 
 void test_OTA_ImageStateAcceptWithActiveJob()
 {
-    /* TODO. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAccepted ) );
+    TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
 void test_OTA_ImageStateAcceptWithNoJob()
