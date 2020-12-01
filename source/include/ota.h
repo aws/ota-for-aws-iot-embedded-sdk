@@ -276,7 +276,9 @@ typedef struct OtaAgentContext
  * layer in use to determine the meaning of the lower 24 bits.
  */
 
-/* @[define_ota_err_codes] */
+/**
+ * @brief The OTA agent return status.
+ */
 typedef enum OtaErr
 {
     OtaErrNone = 0,               /*!< No error occurred during the operation. */
@@ -304,8 +306,6 @@ typedef enum OtaErr
     OtaErrFailedToDecodeCbor,     /*!< Failed to decode CBOR object from streaming service response. */
     OtaErrSetImageStateFailed     /*!< Failed to set platform image state. */
 } OtaErr_t;
-
-/* @[define_ota_err_codes] */
 
 /* @[define_ota_err_code_helpers] */
 #define OTA_PAL_ERR_MASK                0xffffffUL                                               /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
