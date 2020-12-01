@@ -1444,6 +1444,9 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
         if( result == JSONSuccess )
         {
+            /* Mark parameter as received in the bitmap. */
+            pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
+
             if( OTA_DONT_STORE_PARAM == pModelParam[ paramIndex ].pDestOffset )
             {
                 /* Do nothing if we don't need to store the parameter */

@@ -342,6 +342,7 @@ pdatainterface
 pdest
 pdestoffset
 pdestsizeoffset
+pdocmodel
 pem
 pencodeddata
 peventcontext
