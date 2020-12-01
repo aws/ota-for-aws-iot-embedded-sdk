@@ -966,7 +966,7 @@ void test_OTA_ReceiveFileBlockTooLarge()
     pOtaJobDoc = JOB_DOC_HTTP;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     otaInterfaces.os.event.send = mockOSEventSend;
 
@@ -975,7 +975,7 @@ void test_OTA_ReceiveFileBlockTooLarge()
     otaEvent.pEventData->dataLength = 2 * OTA_FILE_BLOCK_SIZE;
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockCompleteMqtt()
@@ -1051,7 +1051,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
     pOtaJobDoc = JOB_DOC_HTTP;
     otaGoToState( OtaAgentStateWaitingForFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
     /* Set the event send interface to a mock function that allows events to be sent continuously
      * because we're receiving multiple blocks in this test. */
@@ -1071,7 +1071,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
         OTA_SignalEvent( &otaEvent );
         otaWaitForEmptyEvent();
-        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetAgentState() );
+        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
         /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
          * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
@@ -1086,7 +1086,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     /* OTA agent should complete the update and go back to waiting for job state. */
     OTA_SignalEvent( &otaEvent );
     otaWaitForEmptyEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetAgentState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_SelfTest()
