@@ -157,11 +157,13 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  * @param[in] pAgentCtx Agent context which provides the details for the thing, job and mqtt interface.
  * @param[in] pMsg Message to publish.
  * @param[in] msgSize Size of message to send.
+ * @param[in] qos Quality of service level for mqtt.
  * @return OtaErr_t OTA_ERR_NONE if the message is publish is successful.
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       const char * pMsg,
-                                      uint32_t msgSize );
+                                      uint32_t msgSize,
+                                      uint8_t qos );
 
 /**
  * @brief Populate the message buffer with the job status message.
@@ -224,6 +226,19 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     assert( pAgentCtx != NULL );
 
     /* Build and subscribe to the first topic. */
+
+    /* MISRA rule 21.6 prohibits use of all functions from stdio.h because they have undefined
+     * behaviors. We are only using snprintf here, and have checked no undefined behaviors can
+     * occur because,
+     * - the destination buffer size is pre-calculated to make sure it's large enough.
+     * - the destination buffer are static in this file and format buffer comes from job document,
+     *   they will never overlap.
+     * - we only use %s, %u and %x specifiers. No precision is specified, and no length modifier is
+     *   used.
+     * - we enabled compiler warnings to ensure number of arguments and their types are matching.
+     * - we enabled undefined behavior sanitizer in our unit tests.
+     */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
                                       sizeof( pJobTopicGetNext ),
                                       pOtaJobsGetNextAcceptedTopicTemplate,
@@ -256,6 +271,7 @@ static OtaErr_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAge
     if( result == OTA_ERR_NONE )
     {
         /* Build and subscribe to the second topic. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
                                           sizeof( pJobTopicNotifyNext ),
                                           pOtaJobsNotifyNextTopicTemplate,
@@ -298,14 +314,15 @@ static OtaErr_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pOtaRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ];
     uint16_t topicLen = 0;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic, /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic,
                                       sizeof( pOtaRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
                                       pAgentCtx->pThingName,
@@ -352,7 +369,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     assert( pAgentCtx != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
-    topicLen = ( uint16_t ) snprintf( pJobTopic, /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    topicLen = ( uint16_t ) snprintf( pJobTopic,
                                       sizeof( pJobTopic ),
                                       pOtaJobsNotifyNextTopicTemplate,
                                       pAgentCtx->pThingName );
@@ -381,7 +399,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
     if( result == OTA_ERR_NONE )
     {
         /* Try to unsubscribe from the second of two job topics. */
-        topicLen = ( uint16_t ) snprintf( pJobTopic, /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        topicLen = ( uint16_t ) snprintf( pJobTopic,
                                           sizeof( pJobTopic ),
                                           pOtaJobsGetNextAcceptedTopicTemplate,
                                           pAgentCtx->pThingName );
@@ -416,7 +435,8 @@ static OtaErr_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * p
  */
 static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                       const char * pMsg,
-                                      uint32_t msgSize )
+                                      uint32_t msgSize,
+                                      uint8_t qos )
 {
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
     uint32_t topicLen = 0;
@@ -430,7 +450,8 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     assert( pMsg != NULL );
 
     /* Build the dynamic job status topic . */
-    topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                       sizeof( pTopicBuffer ),
                                       pOtaJobStatusTopicTemplate,
                                       pAgentCtx->pThingName,
@@ -448,7 +469,7 @@ static OtaErr_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                                      ( uint16_t ) topicLen,
                                                      &pMsg[ 0 ],
                                                      msgSize,
-                                                     1 );
+                                                     qos );
 
     if( result == OTA_ERR_NONE )
     {
@@ -488,14 +509,16 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     if( ( received % OTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
-        msgSize = ( uint32_t ) snprintf( pMsgBuffer,       /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                          msgBufferSize,
                                          pOtaJobStatusStatusTemplate,
                                          pOtaJobStatusStrings[ status ] );
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReceiveDetailsTemplate,
                                              pOtaStringReceive,
@@ -519,14 +542,16 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
     /* The buffer is static and the size is calculated to fit. */
     assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
-    msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                          msgBufferSize - msgSize,
                                          pOtaJobStatusSelfTestDetailsTemplate,
                                          OTA_JSON_SELF_TEST_KEY_ONLY,
@@ -550,7 +575,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer, /*lint -e586 Intentionally using snprintf. */
+    /* coverity[misra_c_2012_rule_21_6_violation] */
+    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
                                      msgBufferSize,
                                      pOtaJobStatusStatusTemplate,
                                      pOtaJobStatusStrings[ status ] );
@@ -563,7 +589,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     if( status == JobStatusFailedWithVal )
     {
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonValTemplate,
                                              reason,
@@ -584,7 +611,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
         newVersion.u.unsignedVersion32 = ( uint32_t ) subReason;
 
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusSucceededStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
@@ -601,7 +629,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     else
     {
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ], /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
                                              msgBufferSize - msgSize,
                                              pOtaJobStatusReasonStrTemplate,
                                              pOtaJobReasonStrings[ reason ],
@@ -642,7 +671,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     if( result == OTA_ERR_NONE )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-        /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         msgSize = ( uint32_t ) snprintf( pMsg,
                                          sizeof( pMsg ),
                                          pOtaGetNextJobMsgTemplate,
@@ -652,6 +681,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
 
         reqCounter++;
+        /* coverity[misra_c_2012_rule_21_6_violation] */
         topicLen = ( uint16_t ) snprintf( pJobTopic,
                                           sizeof( pJobTopic ),
                                           pOtaJobsGetNextTopicTemplate,
@@ -696,7 +726,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
     char pMsg[ OTA_STATUS_MSG_MAX_SIZE ];
     uint8_t qos = 1;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -726,7 +756,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    result = publishStatusMessage( pAgentCtx, pMsg, msgSize );
+    result = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
     if( result == OTA_ERR_NONE )
     {
@@ -754,12 +784,13 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     static char pRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ]; /*!< Buffer to store the topic generated for requesting data stream. */
     uint16_t topicLen = 0;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
 
+    /* coverity[misra_c_2012_rule_21_6_violation] */
     topicLen = ( uint16_t ) snprintf( pRxStreamTopic,
                                       sizeof( pRxStreamTopic ),
                                       pOtaStreamDataTopicTemplate,
@@ -811,7 +842,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     OtaErr_t result = OTA_ERR_UNINITIALIZED;
-    const OtaFileContext_t * pFileContext = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     assert( pAgentCtx != NULL );
 
@@ -840,7 +871,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
         /* Try to build the dynamic data REQUEST topic to publish to. */
-        topicLen = ( uint32_t ) snprintf( pTopicBuffer, /*lint -e586 Intentionally using snprintf. */
+        /* coverity[misra_c_2012_rule_21_6_violation] */
+        topicLen = ( uint32_t ) snprintf( pTopicBuffer,
                                           sizeof( pTopicBuffer ),
                                           pOtaGetStreamTopicTemplate,
                                           pAgentCtx->pThingName,
