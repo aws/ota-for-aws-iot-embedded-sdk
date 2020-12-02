@@ -539,7 +539,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     {
         /* Callback for application specific self-test. */
         err = OTA_ERR_NONE;
-        otaAgent.OtaAppCallback( OtaJobEventStartTest );
+        otaAgent.OtaAppCallback( OtaJobEventStartTest , NULL );
     }
     else
     {
@@ -756,6 +756,9 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
         retVal = processValidFileContext();
     }
 
+      /* Application callback for event processed. */
+    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventData );
+
     return retVal;
 }
 
@@ -911,7 +914,7 @@ static void dataHandlerCleanup( IngestResult_t result )
     }
 
     /* Let main application know of our result. */
-    otaAgent.OtaAppCallback( ( result == IngestResultFileComplete ) ? OtaJobEventActivate : OtaJobEventFail );
+    otaAgent.OtaAppCallback( ( result == IngestResultFileComplete ) ? OtaJobEventActivate : OtaJobEventFail, NULL );
 
     /* Clear any remaining string memory holding the job name since this job is done. */
     ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
@@ -983,13 +986,10 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
             }
         }
     }
-
-    if( err != OTA_ERR_NONE )
-    {
-        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%u",
-                    err ) );
-    }
-
+  
+    /* Application callback for event processed. */
+    otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventData );
+    
     return OTA_ERR_NONE;
 }
 
@@ -2467,6 +2467,29 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
                 ", Event received=[%s]",
                 pOtaAgentStateStrings[ otaAgent.state ],
                 pOtaEventStrings[ pEventMsg->eventId ] ) );
+
+    /* Perform any cleanup operations required for specifc unhandled events.*/
+    switch( pEventMsg->eventId )
+    {
+        case OtaAgentEventReceivedJobDocument:
+
+            /* Let the application know to release buffer.*/
+            otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventMsg->pEventData );
+
+            break;
+
+        case OtaAgentEventReceivedFileBlock:
+
+            /* Let the application know to release buffer.*/
+            otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventMsg->pEventData );
+
+            break;
+
+        default:
+
+            /* Nothing to do here.*/
+            break;
+    }
 }
 
 /*
