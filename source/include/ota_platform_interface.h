@@ -29,9 +29,25 @@
 #include "ota_private.h"
 
 /**
- * @brief OTA Error type.
+ * @brief The OTA platform interface return status.
  */
-typedef uint32_t OtaErr_t;
+typedef enum OtaPalStatus
+{
+    OtaPalSuccess = 0,          /*!< OTA platform interface success. */
+    OtaPalUninitialized = 0xe0, /*!< Result is not yet initialized from PAL. */
+    OtaPalSignatureCheckFailed, /*!< The signature check failed for the specified file. */
+    OtaPalRxFileCreateFailed,   /*!< The PAL failed to create the OTA receive file. */
+    OtaPalRxFileTooLarge,       /*!< The OTA receive file is too big for the platform to support. */
+    OtaPalBootInfoCreateFailed, /*!< The PAL failed to create the OTA boot info file. */
+    OtaPalBadSignerCert,        /*!< The signer certificate was not readable or zero length. */
+    OtaPalBadImageState,        /*!< The specified OTA image state was out of range. */
+    OtaPalAbortFailed,          /*!< Error trying to abort the OTA. */
+    OtaPalRejectFailed,         /*!< Error trying to reject the OTA image. */
+    OtaPalCommitFailed,         /*!< The acceptance commit of the new OTA image failed. */
+    OtaPalActivateFailed,       /*!< The activation of the new OTA image failed. */
+    OtaPalFileAbort,            /*!< Error in low level file abort. */
+    OtaPalFileClose             /*!< Error in low level file close. */
+} OtaPalStatus_t;
 
 /**
  * @brief Abort an OTA transfer.
@@ -50,10 +66,10 @@ typedef uint32_t OtaErr_t;
  * error codes information in ota.h.
  *
  * The file pointer will be set to NULL after this function returns.
- * OTA_ERR_NONE is returned when aborting access to the open file was successful.
- * OTA_ERR_FILE_ABORT is returned when aborting access to the open file context was unsuccessful.
+ * OtaPalSuccess is returned when aborting access to the open file was successful.
+ * OtaPalFileAbort is returned when aborting access to the open file context was unsuccessful.
  */
-typedef OtaErr_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContext );
+typedef OtaPalStatus_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Create a new receive file for the data chunks as they come in.
@@ -73,12 +89,12 @@ typedef OtaErr_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContext );
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  *
- * OTA_ERR_NONE is returned when file creation is successful.
- * OTA_ERR_RX_FILE_TOO_LARGE is returned if the file to be created exceeds the device's non-volatile memory size constraints.
- * OTA_ERR_BOOT_INFO_CREATE_FAILED is returned if the bootloader information file creation fails.
- * OTA_ERR_RX_FILE_CREATE_FAILED is returned for other errors creating the file in the device's non-volatile memory.
+ * OtaPalSuccess is returned when file creation is successful.
+ * OtaPalRxFileTooLarge is returned if the file to be created exceeds the device's non-volatile memory size constraints.
+ * OtaPalBootInfoCreateFailed is returned if the bootloader information file creation fails.
+ * OtaPalRxFileCreateFailed is returned for other errors creating the file in the device's non-volatile memory.
  */
-typedef OtaErr_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
+typedef OtaPalStatus_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
 
 /* @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
@@ -98,12 +114,12 @@ typedef OtaErr_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileCont
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  *
- * OTA_ERR_NONE is returned on success.
- * OTA_ERR_SIGNATURE_CHECK_FAILED is returned when cryptographic signature verification fails.
- * OTA_ERR_BAD_SIGNER_CERT is returned for errors in the certificate itself.
- * OTA_ERR_FILE_CLOSE is returned when closing the file fails.
+ * OtaPalSuccess is returned on success.
+ * OtaPalSignatureCheckFailed is returned when cryptographic signature verification fails.
+ * OtaPalBadSignerCert is returned for errors in the certificate itself.
+ * OtaPalFileClose is returned when closing the file fails.
  */
-typedef OtaErr_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
+typedef OtaPalStatus_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Write a block of data to the specified file at the given offset.
@@ -141,7 +157,7 @@ typedef int16_t ( * OtaPalWriteBlock_t ) ( OtaFileContext_t * const pFileContext
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-typedef OtaErr_t ( * OtaPalActivateNewImage_t )( OtaFileContext_t * const pFileContext );
+typedef OtaPalStatus_t ( * OtaPalActivateNewImage_t )( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Reset the device.
@@ -155,7 +171,7 @@ typedef OtaErr_t ( * OtaPalActivateNewImage_t )( OtaFileContext_t * const pFileC
  * error codes information in ota.h.
  */
 
-typedef OtaErr_t ( * OtaPalResetDevice_t ) ( OtaFileContext_t * const pFileContext );
+typedef OtaPalStatus_t ( * OtaPalResetDevice_t ) ( OtaFileContext_t * const pFileContext );
 
 /**
  * @brief Attempt to set the state of the OTA update image.
@@ -167,19 +183,19 @@ typedef OtaErr_t ( * OtaPalResetDevice_t ) ( OtaFileContext_t * const pFileConte
  *
  * @param[in] eState The desired state of the OTA update image.
  *
- * @return The OtaErr_t error code combined with the MCU specific error code. See ota.h for
+ * @return The OtaPalStatus_t error code combined with the MCU specific error code. See ota.h for
  *         OTA major error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
  *
- *   OTA_ERR_NONE on success.
- *   OTA_ERR_BAD_IMAGE_STATE: if you specify an invalid OtaImageState_t. No sub error code.
- *   OTA_ERR_ABORT_FAILED: failed to roll back the update image as requested by OtaImageStateAborted.
- *   OTA_ERR_REJECT_FAILED: failed to roll back the update image as requested by OtaImageStateRejected.
- *   OTA_ERR_COMMIT_FAILED: failed to make the update image permanent as requested by OtaImageStateAccepted.
+ *   OtaPalSuccess on success.
+ *   OtaPalBadImageState: if you specify an invalid OtaImageState_t. No sub error code.
+ *   OtaPalAbortFailed: failed to roll back the update image as requested by OtaImageStateAborted.
+ *   OtaPalRejectFailed: failed to roll back the update image as requested by OtaImageStateRejected.
+ *   OtaPalCommitFailed: failed to make the update image permanent as requested by OtaImageStateAccepted.
  */
-typedef OtaErr_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
-                                                      OtaImageState_t eState );
+typedef OtaPalStatus_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * const pFileContext,
+                                                            OtaImageState_t eState );
 
 /**
  * @brief Get the state of the OTA update image.

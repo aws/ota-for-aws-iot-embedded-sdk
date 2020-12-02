@@ -73,6 +73,37 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
 /**
  * @ingroup ota_datatypes_enums
+ * @brief The OTA API return status.
+ * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
+ */
+typedef enum OtaErr
+{
+    OtaErrNone = 0,               /*!< No error occurred during the operation. */
+    OtaErrUninitialized,          /*!< The error code has not yet been set by a logic path. */
+    OtaErrPanic,                  /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
+    OtaErrInvalidArg,             /*!< API called with invalid argument. */
+    OtaErrAgentStopped,           /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+    OtaErrSignalEventFailed,      /*!< Failed to send event to OTA state machine. */
+    OtaErrRequestJobFailed,       /*!< Failed to request the job document. */
+    OtaErrInitFileTransferFailed, /*!< Failed to update the OTA job status. */
+    OtaErrRequestFileBlockFailed, /*!< Failed to request file block. */
+    OtaErrCleanupControlFailed,   /*!< Failed to clean up the control plane. */
+    OtaErrCleanupDataFailed,      /*!< Failed to clean up the data plane. */
+    OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
+    OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
+    OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
+    OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
+    OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
+    OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
+    OtaErrImageStateMismatch,     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+    OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
+    OtaErrUserAbort,              /*!< User aborted the active OTA. */
+    OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
+    OtaErrFailedToDecodeCbor      /*!< Failed to decode CBOR object from streaming service response. */
+} OtaErr_t;
+
+/**
+ * @ingroup ota_datatypes_enums
  * @brief OTA Agent states.
  *
  * The current state of the OTA Task (OTA Agent).
@@ -144,11 +175,6 @@ typedef enum OtaJobEvent
 /**
  * @functionpointers{ota,OTA library}
  */
-
-/**
- * @brief OTA Error type.
- */
-typedef uint32_t OtaErr_t;
 
 /**
  * @ingroup ota_datatypes_functionpointers
@@ -264,13 +290,6 @@ typedef struct OtaAgentContext
 /**
  * @constantspage{ota,OTA library}
  *
- * @section ota_constants_err_codes OTA Error Codes
- * @brief OTA Agent error codes returned by OTA agent API.
- *
- * @snippet this define_ota_err_codes
- *
- * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
- *
  * @section ota_constants_err_code_helpers OTA Error Code Helper constants
  * @brief OTA Error code helper constant for extracting the error code from the OTA error returned.
  *
@@ -281,63 +300,11 @@ typedef struct OtaAgentContext
  * layer in use to determine the meaning of the lower 24 bits.
  */
 
-/* @[define_ota_err_codes] */
-#define OTA_ERR_PANIC                         0xfe000000U /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
-#define OTA_ERR_UNINITIALIZED                 0xff000000U /*!< The error code has not yet been set by a logic path. */
-#define OTA_ERR_NONE                          0x00000000U /*!< No error occurred during the operation. */
-#define OTA_ERR_SIGNATURE_CHECK_FAILED        0x01000000U /*!< The signature check failed for the specified file. */
-#define OTA_ERR_BAD_SIGNER_CERT               0x02000000U /*!< The signer certificate was not readable or zero length. */
-#define OTA_ERR_OUT_OF_MEMORY                 0x03000000U /*!< General out of memory error. */
-#define OTA_ERR_ACTIVATE_FAILED               0x04000000U /*!< The activation of the new OTA image failed. */
-#define OTA_ERR_COMMIT_FAILED                 0x05000000U /*!< The acceptance commit of the new OTA image failed. */
-#define OTA_ERR_REJECT_FAILED                 0x06000000U /*!< Error trying to reject the OTA image. */
-#define OTA_ERR_ABORT_FAILED                  0x07000000U /*!< Error trying to abort the OTA. */
-#define OTA_ERR_PUBLISH_FAILED                0x08000000U /*!< Attempt to publish a MQTT message failed. */
-#define OTA_ERR_BAD_IMAGE_STATE               0x09000000U /*!< The specified OTA image state was out of range. */
-#define OTA_ERR_NO_ACTIVE_JOB                 0x0a000000U /*!< Attempt to set final image state without an active job. */
-#define OTA_ERR_NO_FREE_CONTEXT               0x0b000000U /*!< There was not an OTA file context available for processing. */
-#define OTA_ERR_HTTP_INIT_FAILED              0x0c000000U /*!< Error initializing the HTTP connection. */
-#define OTA_ERR_HTTP_REQUEST_FAILED           0x0d000000U /*!< Error sending the HTTP request. */
-#define OTA_ERR_FILE_ABORT                    0x10000000U /*!< Error in low level file abort. */
-#define OTA_ERR_FILE_CLOSE                    0x11000000U /*!< Error in low level file close. */
-#define OTA_ERR_RX_FILE_CREATE_FAILED         0x12000000U /*!< The PAL failed to create the OTA receive file. */
-#define OTA_ERR_BOOT_INFO_CREATE_FAILED       0x13000000U /*!< The PAL failed to create the OTA boot info file. */
-#define OTA_ERR_RX_FILE_TOO_LARGE             0x14000000U /*!< The OTA receive file is too big for the platform to support. */
-#define OTA_ERR_NULL_FILE_PTR                 0x20000000U /*!< Attempt to use a null file pointer. */
-#define OTA_ERR_MOMENTUM_ABORT                0x21000000U /*!< Too many OTA stream requests without any response. */
-#define OTA_ERR_DOWNGRADE_NOT_ALLOWED         0x22000000U /*!< Firmware version is older than the previous version. */
-#define OTA_ERR_SAME_FIRMWARE_VERSION         0x23000000U /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-#define OTA_ERR_JOB_PARSER_ERROR              0x24000000U /*!< An error occurred during job document parsing. See reason sub-code. */
-#define OTA_ERR_FAILED_TO_ENCODE_CBOR         0x25000000U /*!< Failed to encode CBOR object. */
-#define OTA_ERR_IMAGE_STATE_MISMATCH          0x26000000U /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-#define OTA_ERR_GENERIC_INGEST_ERROR          0x27000000U /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
-#define OTA_ERR_USER_ABORT                    0x28000000U /*!< User aborted the active OTA. */
-#define OTA_ERR_RESET_NOT_SUPPORTED           0x29000000U /*!< We tried to reset the device but the device does not support it. */
-#define OTA_ERR_TOPIC_TOO_LARGE               0x2a000000U /*!< Attempt to build a topic string larger than the supplied buffer. */
-#define OTA_ERR_SELF_TEST_TIMER_FAILED        0x2b000000U /*!< Attempt to start self-test timer failed. */
-#define OTA_ERR_EVENT_Q_SEND_FAILED           0x2c000000U /*!< Posting event message to the event queue failed. */
-#define OTA_ERR_INVALID_DATA_PROTOCOL         0x2d000000U /*!< Job does not have a valid protocol for data transfer. */
-#define OTA_ERR_OTA_AGENT_STOPPED             0x2e000000U /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
-#define OTA_ERR_EVENT_Q_CREATE_FAILED         0x2f000000U /*!< Failed to create the event queue. */
-#define OTA_ERR_EVENT_Q_RECEIVE_FAILED        0x30000000U /*!< Failed to receive from the event queue. */
-#define OTA_ERR_EVENT_Q_DELETE_FAILED         0x31000000U /*!< Failed to delete the event queue. */
-#define OTA_ERR_EVENT_TIMER_CREATE_FAILED     0x32000000U /*!< Failed to create the timer. */
-#define OTA_ERR_EVENT_TIMER_START_FAILED      0x33000000U /*!< Failed to create the timer. */
-#define OTA_ERR_EVENT_TIMER_STOP_FAILED       0x34000000U /*!< Failed to stop the timer. */
-#define OTA_ERR_EVENT_TIMER_DELETE_FAILED     0x35000000U /*!< Failed to delete the timer. */
-#define OTA_ERR_EVENT_TIMER_RESTART_FAILED    0x36000000U /*!< Failed to restart the timer. */
-#define OTA_ERR_SUBSCRIBE_FAILED              0x40000000U /*!< Failed to subscribe to a topic. */
-#define OTA_ERR_UNSUBSCRIBE_FAILED            0x41000000U /*!< Failed to unsubscribe from a topic. */
-#define OTA_ERR_FAILED_TO_DECODE_CBOR         0x42000000U /*!< Failed to decode CBOR object. */
-#define OTA_ERR_NULL_STAT_PTR                 0x50000000U /*!< Attempt to use a null statistics pointer. */
-
-
-/* @[define_ota_err_codes] */
-
 /* @[define_ota_err_code_helpers] */
-#define OTA_PAL_ERR_MASK                0xffffffUL    /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
-#define OTA_MAIN_ERR_MASK               0xff000000UL  /*!< Mask out all but the OTA Agent error code (high 8 bits). */
-#define OTA_MAIN_ERR_SHIFT_DOWN_BITS    24U           /*!< The OTA Agent error code is the highest 8 bits of the word. */
+#define OTA_PAL_ERR_MASK                0xffffffUL                                               /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
+#define OTA_MAIN_ERR_SHIFT_DOWN_BITS    24U                                                      /*!< The OTA Agent error code is the highest 8 bits of the word. */
+#define OTA_MAIN_ERR( err )    ( ( uint32_t ) err >> ( uint32_t ) OTA_MAIN_ERR_SHIFT_DOWN_BITS ) /*!< Helper to get the OTA library error code. */
+#define OTA_PAL_ERR( err )     ( ( uint32_t ) err & ( uint32_t ) OTA_PAL_ERR_MASK )              /*!< Helper to get the OTA PAL error code. */
 /* @[define_ota_err_code_helpers] */
 
 
@@ -394,7 +361,7 @@ OtaState_t OTA_GetState( void );
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
  * @ref OTA_Init function for more information about configuring the callback.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_ActivateNewImage( void );
@@ -408,7 +375,7 @@ OtaErr_t OTA_ActivateNewImage( void );
  *
  * @param[in] state The state to set of the OTA image.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_SetImageState( OtaImageState_t state );
@@ -426,7 +393,7 @@ OtaImageState_t OTA_GetImageState( void );
 /**
  * @brief Request for the next available OTA job from the job service.
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_CheckForUpdate( void );
@@ -434,7 +401,7 @@ OtaErr_t OTA_CheckForUpdate( void );
 /**
  * @brief Suspend OTA agent operations .
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_Suspend( void );
@@ -442,7 +409,7 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @return OTA_ERR_NONE if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
 OtaErr_t OTA_Resume( void );
@@ -475,7 +442,7 @@ void otaAgentTask( void * pUnused );
  *</ul>
  * @note Calling @ref OTA_Init will reset this statistic.
  *
- * @return OTA_ERR_NONE if the statistics can be received successfully.
+ * @return OtaErrNone if the statistics can be received successfully.
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
 

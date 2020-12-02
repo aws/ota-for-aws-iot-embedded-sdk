@@ -31,9 +31,15 @@
 #include <stdint.h>
 
 /**
- * @brief OTA Error type.
+ * @brief The OTA HTTP interface return status.
  */
-typedef uint32_t OtaErr_t;
+typedef enum OtaHttpStatus
+{
+    OtaHttpSuccess = 0,       /*!< OTA HTTP interface success. */
+    OtaHttpInitFailed = 0xc0, /*!< Error initializing the HTTP connection. */
+    OtaHttpDeinitFailed,      /*!< Error deinitializing the HTTP connection. */
+    OtaHttpRequestFailed      /*!< Error sending the HTTP request. */
+} OtaHttpStatus_t;
 
 /**
  * @brief Init OTA Http interface.
@@ -42,10 +48,10 @@ typedef uint32_t OtaErr_t;
  *
  * @param[in] pUrl         Pointer to the pre-signed url for downloading update file.
  *
- * @return              OTA_ERR_NONE if success , other error code on failure.
+ * @return              OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
+typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
 
 /**
  * @brief Request file block over Http.
@@ -56,11 +62,11 @@ typedef OtaErr_t ( * ota_HttpInit_t ) ( char * pUrl );
  *
  * @param[in] rangeEnd    End index of the file data to be requested.
  *
- * @return             OTA_ERR_NONE if success , other error code on failure.
+ * @return             OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
-                                            uint32_t rangeEnd );
+typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
+                                                   uint32_t rangeEnd );
 
 /**
  * @brief Deinit OTA Http interface.
@@ -68,9 +74,9 @@ typedef OtaErr_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  * This function cleanups Http connection and other data used for
  * requesting file blocks using the pre-signed url.
  *
- * @return        OTA_ERR_NONE if success , other error code on failure.
+ * @return        OtaHttpSuccess if success , other error code on failure.
  */
-typedef OtaErr_t ( * ota_HttpDeinit )( void );
+typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
 
 /**
  * @brief OTA Event Interface structure.

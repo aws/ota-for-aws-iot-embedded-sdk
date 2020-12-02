@@ -38,7 +38,8 @@ include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
 add_library( coverity_analysis
     ${OTA_SOURCES}
     ${OTA_OS_POSIX_SOURCES}
-    ${OTA_MQTT_SOURCES} )
+    ${OTA_MQTT_SOURCES}
+    ${OTA_HTTP_SOURCES} )
 
 # Build OTA library target without custom config dependency
 target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )

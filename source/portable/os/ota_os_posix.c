@@ -43,7 +43,6 @@
 #include "ota_os_posix.h"
 
 /* OTA Library include. */
-#include "ota.h"
 #include "ota_private.h"
 
 /* OTA Event queue attributes.*/
@@ -66,9 +65,9 @@ static timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
 /* OTA Timer callbacks.*/
 static void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
-OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
+OtaOsStatus_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     struct mq_attr attr;
 
     ( void ) pEventCtx;
@@ -93,30 +92,28 @@ OtaErr_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 
     if( otaEventQueue == -1 )
     {
-        otaErrRet = OTA_ERR_EVENT_Q_CREATE_FAILED;
+        otaOsStatus = OtaOsEventQueueCreateFailed;
 
         LogError( ( "Failed to create OTA Event Queue: "
                     "mq_open returned error: "
-                    "otaErrRet=%i "
+                    "OtaOsStatus_t=%i "
                     ",errno=%s",
-                    otaErrRet,
+                    otaOsStatus,
                     strerror( errno ) ) );
     }
     else
     {
         LogDebug( ( "OTA Event Queue created." ) );
-
-        otaErrRet = OTA_ERR_NONE;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
-OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
-                             const void * pEventMsg,
-                             unsigned int timeout )
+OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
+                                  const void * pEventMsg,
+                                  unsigned int timeout )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -126,30 +123,28 @@ OtaErr_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 
     if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
     {
-        otaErrRet = OTA_ERR_EVENT_Q_SEND_FAILED;
+        otaOsStatus = OtaOsEventQueueSendFailed;
 
         LogError( ( "Failed to send event to OTA Event Queue: "
                     "mq_send returned error: "
-                    "otaErrRet=%i "
+                    "OtaOsStatus_t=%i "
                     ",errno=%s",
-                    otaErrRet,
+                    otaOsStatus,
                     strerror( errno ) ) );
     }
     else
     {
         LogDebug( ( "OTA Event Sent." ) );
-
-        otaErrRet = OTA_ERR_NONE;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
-OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
-                                void * pEventMsg,
-                                uint32_t timeout )
+OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
+                                     void * pEventMsg,
+                                     uint32_t timeout )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
 
@@ -161,13 +156,13 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
 
     if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
     {
-        otaErrRet = OTA_ERR_EVENT_Q_RECEIVE_FAILED;
+        otaOsStatus = OtaOsEventQueueReceiveFailed;
 
         LogError( ( "Failed to receive OTA Event: "
                     "mq_reqeive returned error: "
-                    "otaErrRet=%i "
+                    "OtaOsStatus_t=%i "
                     ",errno=%s",
-                    otaErrRet,
+                    otaOsStatus,
                     strerror( errno ) ) );
     }
     else
@@ -176,16 +171,14 @@ OtaErr_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
 
         /* copy the data from local buffer.*/
         ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
-
-        otaErrRet = OTA_ERR_NONE;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
-OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
+OtaOsStatus_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
     ( void ) pEventCtx;
 
@@ -194,23 +187,21 @@ OtaErr_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
 
     if( mq_unlink( OTA_QUEUE_NAME ) == -1 )
     {
-        otaErrRet = OTA_ERR_EVENT_Q_DELETE_FAILED;
+        otaOsStatus = OtaOsEventQueueDeleteFailed;
 
         LogError( ( "Failed to delete OTA Event queue: "
                     "mq_unlink returned error: "
-                    "otaErrRet=%i "
+                    "OtaOsStatus_t=%i "
                     ",errno=%s",
-                    otaErrRet,
+                    otaOsStatus,
                     strerror( errno ) ) );
     }
     else
     {
         LogDebug( ( "OTA Event queue deleted." ) );
-
-        otaErrRet = OTA_ERR_NONE;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
 static void selfTestTimerCallback( union sigval arg )
@@ -247,12 +238,12 @@ static void requestTimerCallback( union sigval arg )
     }
 }
 
-OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
-                              const char * const pTimerName,
-                              const uint32_t timeout,
-                              OtaTimerCallback_t callback )
+OtaOsStatus_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
+                                   const char * const pTimerName,
+                                   const uint32_t timeout,
+                                   OtaTimerCallback_t callback )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
     /* Create the timer structures. */
     struct sigevent sgEvent;
@@ -282,13 +273,13 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
 
         if( timer_create( CLOCK_REALTIME, &sgEvent, &otaTimers[ otaTimerId ] ) == -1 )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_CREATE_FAILED;
+            otaOsStatus = OtaOsTimerCreateFailed;
 
             LogError( ( "Failed to create OTA timer: "
                         "timer_create returned error: "
-                        "otaErrRet=%i "
+                        "OtaOsStatus_t=%i "
                         ",errno=%s",
-                        otaErrRet,
+                        otaOsStatus,
                         strerror( errno ) ) );
         }
         else
@@ -304,28 +295,27 @@ OtaErr_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
 
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_START_FAILED;
+            otaOsStatus = OtaOsTimerStartFailed;
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
-                        "otaErrRet=%i "
+                        "OtaOsStatus_t=%i "
                         ",errno=%s",
-                        otaErrRet,
+                        otaOsStatus,
                         strerror( errno ) ) );
         }
         else
         {
             LogDebug( ( "OTA Timer started." ) );
-            otaErrRet = OTA_ERR_NONE;
         }
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
-OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
+OtaOsStatus_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
     /* Create the timer structures. */
     struct itimerspec timerAttr;
@@ -343,35 +333,33 @@ OtaErr_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
 
         if( timer_settime( otaTimers[ otaTimerId ], 0, &timerAttr, NULL ) == -1 )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+            otaOsStatus = OtaOsTimerStopFailed;
 
             LogError( ( "Failed to stop OTA timer: "
                         "timer_settime returned error: "
-                        "otaErrRet=%i "
+                        "OtaOsStatus_t=%i "
                         ",errno=%s",
-                        otaErrRet,
+                        otaOsStatus,
                         strerror( errno ) ) );
         }
         else
         {
             LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
-
-            otaErrRet = OTA_ERR_NONE;
         }
     }
     else
     {
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
 
-        otaErrRet = OTA_ERR_EVENT_TIMER_STOP_FAILED;
+        otaOsStatus = OtaOsTimerStopFailed;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
-OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
+OtaOsStatus_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 {
-    OtaErr_t otaErrRet = OTA_ERR_UNINITIALIZED;
+    OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
     if( pOtaTimers[ otaTimerId ] != NULL )
     {
@@ -380,13 +368,13 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 
         if( timer_delete( otaTimers[ otaTimerId ] ) == -1 )
         {
-            otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+            otaOsStatus = OtaOsTimerDeleteFailed;
 
             LogError( ( "Failed to delete OTA timer: "
                         "timer_delete returned error: "
-                        "otaErrRet=%i "
+                        "OtaOsStatus_t=%i "
                         ",errno=%s",
-                        otaErrRet,
+                        otaOsStatus,
                         strerror( errno ) ) );
         }
         else
@@ -394,17 +382,16 @@ OtaErr_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
             LogDebug( ( "OTA Timer deleted." ) );
 
             pOtaTimers[ otaTimerId ] = NULL;
-            otaErrRet = OTA_ERR_NONE;
         }
     }
     else
     {
         LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
 
-        otaErrRet = OTA_ERR_EVENT_TIMER_DELETE_FAILED;
+        otaOsStatus = OtaOsTimerDeleteFailed;
     }
 
-    return otaErrRet;
+    return otaOsStatus;
 }
 
 void * STDC_Malloc( size_t size )
