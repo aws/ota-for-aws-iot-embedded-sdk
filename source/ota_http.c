@@ -49,7 +49,7 @@ static uint32_t currBlock;
  */
 OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
-    OtaHttpStatus_t httpErr = OtaHttpSuccess;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
     char * pURL = NULL;
     OtaFileContext_t * fileContext = NULL;
 
@@ -63,9 +63,9 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     pURL = ( char * ) fileContext->pUpdateUrlPath;
 
     /* Connect to the HTTP server and initialize download information. */
-    httpErr = pAgentCtx->pOtaInterface->http.init( pURL );
+    httpStatus = pAgentCtx->pOtaInterface->http.init( pURL );
 
-    return httpErr == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
 }
 
 /*
@@ -73,7 +73,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
  */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
-    OtaHttpStatus_t httpErr = OtaHttpSuccess;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
@@ -99,9 +99,9 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     }
 
     /* Request file data over HTTP using the rangeStart and rangeEnd. */
-    httpErr = pAgentCtx->pOtaInterface->http.request( rangeStart, rangeEnd );
+    httpStatus = pAgentCtx->pOtaInterface->http.request( rangeStart, rangeEnd );
 
-    return httpErr == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
 }
 
 /*
@@ -148,13 +148,13 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
  */
 OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaHttpStatus_t httpErr = OtaHttpSuccess;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
-    httpErr = pAgentCtx->pOtaInterface->http.deinit();
+    httpStatus = pAgentCtx->pOtaInterface->http.deinit();
 
     /* Reset currBlock. */
     currBlock = 0;
 
-    return httpErr == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
 }

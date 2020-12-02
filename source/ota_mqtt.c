@@ -213,7 +213,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
  */
 static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     uint16_t topicLen = 0;
 
@@ -246,12 +246,12 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) );
 
-    mqttErr = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
-                                                        topicLen,
-                                                        1,
-                                                        pAgentCtx->pOtaInterface->mqtt.jobCallback );
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
+                                                           topicLen,
+                                                           1,
+                                                           pAgentCtx->pOtaInterface->mqtt.jobCallback );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogInfo( ( "Subscribed to MQTT topic: "
                    "%s",
@@ -263,11 +263,11 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
                     "subscribe returned error: "
                     "OtaMqttStatus_t=%u"
                     ", topic=%s",
-                    mqttErr,
+                    mqttStatus,
                     pJobTopicGetNext ) );
     }
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         /* Build and subscribe to the second topic. */
         /* coverity[misra_c_2012_rule_21_6_violation] */
@@ -279,12 +279,12 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
 
-        mqttErr = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
-                                                            topicLen,
-                                                            1,
-                                                            pAgentCtx->pOtaInterface->mqtt.jobCallback );
+        mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
+                                                               topicLen,
+                                                               1,
+                                                               pAgentCtx->pOtaInterface->mqtt.jobCallback );
 
-        if( mqttErr == OtaMqttSuccess )
+        if( mqttStatus == OtaMqttSuccess )
         {
             LogInfo( ( "Subscribed to MQTT topic: %s", pJobTopicNotifyNext ) );
         }
@@ -294,12 +294,12 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
                         "subscribe returned error: "
                         "OtaMqttStatus_t=%u"
                         ", topic=%s",
-                        mqttErr,
+                        mqttStatus,
                         pJobTopicNotifyNext ) );
         }
     }
 
-    return mqttErr;
+    return mqttStatus;
 }
 
 /*
@@ -307,7 +307,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
  */
 static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
@@ -330,11 +330,11 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
 
-    mqttErr = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
-                                                          topicLen,
-                                                          1 );
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
+                                                             topicLen,
+                                                             1 );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogInfo( ( "Unsubscribed to MQTT topic: %s", pOtaRxStreamTopic ) );
     }
@@ -344,11 +344,11 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
                     "unsubscribe returned error: "
                     "OtaMqttStatus_t=%u"
                     ", topic=%s",
-                    mqttErr,
+                    mqttStatus,
                     pOtaRxStreamTopic ) );
     }
 
-    return mqttErr;
+    return mqttStatus;
 }
 
 /*
@@ -356,7 +356,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
  */
 static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. This
@@ -377,11 +377,11 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
-    mqttErr = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
-                                                          topicLen,
-                                                          0 );
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
+                                                             topicLen,
+                                                             0 );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogInfo( ( "Unsubscribed to MQTT topic: %s", pJobTopic ) );
     }
@@ -391,11 +391,11 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
                     "unsubscribe returned error: "
                     "OtaMqttStatus_t=%u"
                     ", topic=%s",
-                    mqttErr,
+                    mqttStatus,
                     pJobTopic ) );
     }
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         /* Try to unsubscribe from the second of two job topics. */
         /* coverity[misra_c_2012_rule_21_6_violation] */
@@ -407,11 +407,11 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
-        mqttErr = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
-                                                              topicLen,
-                                                              0 );
+        mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
+                                                                 topicLen,
+                                                                 0 );
 
-        if( mqttErr == OtaMqttSuccess )
+        if( mqttStatus == OtaMqttSuccess )
         {
             LogInfo( ( "Unsubscribed to MQTT topic: %s", pJobTopic ) );
         }
@@ -421,12 +421,12 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
                         "unsubscribe returned error: "
                         "OtaMqttStatus_t=%u"
                         ", topic=%s",
-                        mqttErr,
+                        mqttStatus,
                         pJobTopic ) );
         }
     }
 
-    return mqttErr;
+    return mqttStatus;
 }
 
 /*
@@ -437,7 +437,7 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                              uint32_t msgSize,
                                              uint8_t qos )
 {
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     uint32_t topicLen = 0;
 
     /* This buffer is used to store the generated MQTT topic. The static size
@@ -464,13 +464,13 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                 "message=%s",
                 pMsg ) );
 
-    mqttErr = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
-                                                      ( uint16_t ) topicLen,
-                                                      &pMsg[ 0 ],
-                                                      msgSize,
-                                                      qos );
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
+                                                         ( uint16_t ) topicLen,
+                                                         &pMsg[ 0 ],
+                                                         msgSize,
+                                                         qos );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "Published to MQTT topic: "
                     "topic=%s",
@@ -482,11 +482,11 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                     "publish returned error: "
                     "OtaMqttStatus_t=%u"
                     ", topic=%s",
-                    mqttErr,
+                    mqttStatus,
                     pTopicBuffer ) );
     }
 
-    return mqttErr;
+    return mqttStatus;
 }
 
 static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
@@ -653,8 +653,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pJobTopic[ TOPIC_GET_NEXT_BUFFER_SIZE ];
     static uint32_t reqCounter = 0;
-    OtaErr_t result = OtaErrRequestJobFailed;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaErr_t otaError = OtaErrRequestJobFailed;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
 
@@ -666,9 +666,9 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     assert( pAgentCtx != NULL );
 
     /* Subscribe to the OTA job notification topic. */
-    mqttErr = subscribeToJobNotificationTopics( pAgentCtx );
+    mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
         /* coverity[misra_c_2012_rule_21_6_violation] */
@@ -690,25 +690,25 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
-        mqttErr = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgSize, 1 );
+        mqttStatus = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgSize, 1 );
 
-        if( mqttErr == OtaMqttSuccess )
+        if( mqttStatus == OtaMqttSuccess )
         {
             LogDebug( ( "Published MQTT request to get the next job: "
                         "topic=%s",
                         pJobTopic ) );
-            result = OtaErrNone;
+            otaError = OtaErrNone;
         }
         else
         {
             LogError( ( "Failed to publish MQTT message:"
                         "publish returned error: "
                         "OtaMqttStatus_t=%u",
-                        mqttErr ) );
+                        mqttStatus ) );
         }
     }
 
-    return result;
+    return otaError;
 }
 
 
@@ -721,7 +721,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t subReason )
 {
     OtaErr_t result = OtaErrUpdateJobStatusFailed;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
@@ -757,9 +757,9 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    mqttErr = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "Published update to the job status." ) );
         result = OtaErrNone;
@@ -769,7 +769,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         LogError( ( "Failed to publish MQTT status message: "
                     "publishStatusMessage returned error: "
                     "OtaMqttStatus_t=%u",
-                    mqttErr ) );
+                    mqttStatus ) );
     }
 
     return result;
@@ -781,7 +781,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrInitFileTransferFailed;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
@@ -803,12 +803,12 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
 
-    mqttErr = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
-                                                        topicLen,
-                                                        0,
-                                                        pAgentCtx->pOtaInterface->mqtt.dataCallback );
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
+                                                           topicLen,
+                                                           0,
+                                                           pAgentCtx->pOtaInterface->mqtt.dataCallback );
 
-    if( mqttErr == OtaMqttSuccess )
+    if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "Subscribed to the OTA data stream topic: "
                     "topic=%s",
@@ -821,7 +821,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
                     "subscribe returned error: "
                     "OtaMqttStatus_t=%u"
                     ", topic=%s",
-                    mqttErr,
+                    mqttStatus,
                     pRxStreamTopic ) );
     }
 
@@ -834,7 +834,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrRequestFileBlockFailed;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     size_t msgSizeFromStream = 0;
     uint32_t blockSize = OTA_FILE_BLOCK_SIZE;
     uint32_t numBlocks = 0;
@@ -886,13 +886,13 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
-        mqttErr = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
-                                                          ( uint16_t ) topicLen,
-                                                          &pMsg[ 0 ],
-                                                          msgSizeToPublish,
-                                                          0 );
+        mqttStatus = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
+                                                             ( uint16_t ) topicLen,
+                                                             &pMsg[ 0 ],
+                                                             msgSizeToPublish,
+                                                             0 );
 
-        if( mqttErr == OtaMqttSuccess )
+        if( mqttStatus == OtaMqttSuccess )
         {
             LogInfo( ( "Published to MQTT topic to request the next block: "
                        "topic=%s",
@@ -904,7 +904,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
             LogError( ( "Failed to publish MQTT message: "
                         "publish returned error: "
                         "OtaMqttStatus_t=%u",
-                        mqttErr ) );
+                        mqttStatus ) );
         }
     }
     else
@@ -962,19 +962,19 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
 OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrNone;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     assert( pAgentCtx != NULL );
 
     /* Unsubscribe from job notification topics. */
-    mqttErr = unsubscribeFromJobNotificationTopic( pAgentCtx );
+    mqttStatus = unsubscribeFromJobNotificationTopic( pAgentCtx );
 
-    if( mqttErr != OtaMqttSuccess )
+    if( mqttStatus != OtaMqttSuccess )
     {
         LogWarn( ( "Failed cleanup for MQTT control plane: "
                    "unsubscribeFromJobNotificationTopic returned error: "
                    "OtaMqttStatus_t=%u",
-                   mqttErr ) );
+                   mqttStatus ) );
         result = OtaErrCleanupControlFailed;
     }
 
@@ -987,19 +987,19 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrNone;
-    OtaMqttStatus_t mqttErr = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     assert( pAgentCtx != NULL );
 
     /* Unsubscribe from data stream topics. */
-    mqttErr = unsubscribeFromDataStream( pAgentCtx );
+    mqttStatus = unsubscribeFromDataStream( pAgentCtx );
 
-    if( mqttErr != OtaMqttSuccess )
+    if( mqttStatus != OtaMqttSuccess )
     {
         LogWarn( ( "Failed cleanup for MQTT data plane: "
                    "unsubscribeFromDataStream returned error: "
                    "OtaMqttStatus_t=%u",
-                   mqttErr ) );
+                   mqttStatus ) );
         result = OtaErrCleanupDataFailed;
     }
 

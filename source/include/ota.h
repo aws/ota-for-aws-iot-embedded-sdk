@@ -73,6 +73,37 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
 /**
  * @ingroup ota_datatypes_enums
+ * @brief The OTA API return status.
+ * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
+ */
+typedef enum OtaErr
+{
+    OtaErrNone = 0,               /*!< No error occurred during the operation. */
+    OtaErrUninitialized,          /*!< The error code has not yet been set by a logic path. */
+    OtaErrPanic,                  /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
+    OtaErrInvalidArg,             /*!< API called with invalid argument. */
+    OtaErrAgentStopped,           /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
+    OtaErrSignalEventFailed,      /*!< Failed to send event to OTA state machine. */
+    OtaErrRequestJobFailed,       /*!< Failed to request the job document. */
+    OtaErrInitFileTransferFailed, /*!< Failed to update the OTA job status. */
+    OtaErrRequestFileBlockFailed, /*!< Failed to request file block. */
+    OtaErrCleanupControlFailed,   /*!< Failed to clean up the control plane. */
+    OtaErrCleanupDataFailed,      /*!< Failed to clean up the data plane. */
+    OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
+    OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
+    OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
+    OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
+    OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
+    OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
+    OtaErrImageStateMismatch,     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+    OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
+    OtaErrUserAbort,              /*!< User aborted the active OTA. */
+    OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
+    OtaErrFailedToDecodeCbor      /*!< Failed to decode CBOR object from streaming service response. */
+} OtaErr_t;
+
+/**
+ * @ingroup ota_datatypes_enums
  * @brief OTA Agent states.
  *
  * The current state of the OTA Task (OTA Agent).
@@ -268,36 +299,6 @@ typedef struct OtaAgentContext
  * merged with a platform specific code in the lower 24 bits. You must refer to the platform PAL
  * layer in use to determine the meaning of the lower 24 bits.
  */
-
-/**
- * @brief The OTA API return status.
- * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
- */
-typedef enum OtaErr
-{
-    OtaErrNone = 0,               /*!< No error occurred during the operation. */
-    OtaErrUninitialized,          /*!< The error code has not yet been set by a logic path. */
-    OtaErrPanic,                  /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
-    OtaErrInvalidArg,             /*!< API called with invalid argument. */
-    OtaErrAgentStopped,           /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
-    OtaErrSignalEventFailed,      /*!< Failed to send event to OTA state machine. */
-    OtaErrRequestJobFailed,       /*!< Failed to request the job document. */
-    OtaErrInitFileTransferFailed, /*!< Failed to update the OTA job status. */
-    OtaErrRequestFileBlockFailed, /*!< Failed to request file block. */
-    OtaErrCleanupControlFailed,   /*!< Failed to clean up the control plane. */
-    OtaErrCleanupDataFailed,      /*!< Failed to clean up the data plane. */
-    OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
-    OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
-    OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
-    OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
-    OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
-    OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-    OtaErrImageStateMismatch,     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-    OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
-    OtaErrUserAbort,              /*!< User aborted the active OTA. */
-    OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
-    OtaErrFailedToDecodeCbor      /*!< Failed to decode CBOR object from streaming service response. */
-} OtaErr_t;
 
 /* @[define_ota_err_code_helpers] */
 #define OTA_PAL_ERR_MASK                0xffffffUL                                               /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
