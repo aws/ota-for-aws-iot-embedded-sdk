@@ -49,18 +49,15 @@ static uint32_t currBlock;
  */
 OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
-    LogInfo( ( "Invoking initFileTransfer_Http" ) );
+    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    char * pURL = NULL;
+    OtaFileContext_t * fileContext = NULL;
 
+    LogDebug( ( "Invoking initFileTransfer_Http" ) );
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
 
-    /* Return status. */
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
-
-    /* Pre-signed URL. */
-    char * pURL = NULL;
-
     /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
+    fileContext = &( pAgentCtx->fileContext );
 
     /* Get pre-signed URL from pAgentCtx. */
     pURL = ( char * ) fileContext->pUpdateUrlPath;
@@ -76,19 +73,18 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
  */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
-    LogInfo( ( "Invoking requestDataBlock_Http" ) );
-
-    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
-
-    /* Return status. */
     OtaErr_t status = OTA_ERR_UNINITIALIZED;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
     uint32_t rangeEnd = 0;
 
-    /* File context from OTA agent. */
-    OtaFileContext_t * fileContext = &( pAgentCtx->fileContext );
+    OtaFileContext_t * fileContext = NULL;
+
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    LogDebug( ( "Invoking requestDataBlock_Http" ) );
+
+    fileContext = &( pAgentCtx->fileContext );
 
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
@@ -111,7 +107,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 /*
  * Decode a cbor encoded fileblock received from streaming service.
  */
-OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
+OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,
@@ -119,34 +115,43 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
                                uint8_t ** pPayload,
                                size_t * pPayloadSize )
 {
+    OtaErr_t err = OTA_ERR_NONE;
+
     assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
             pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
 
-    /* Unused parameters. */
-    ( void ) messageSize;
+    if( messageSize > OTA_FILE_BLOCK_SIZE )
+    {
+        LogError( ( "Incoming file block size %d larger than block size %d.",
+                    ( int ) messageSize, ( int ) OTA_FILE_BLOCK_SIZE ) );
+        err = OTA_ERR_HTTP_REQUEST_FAILED;
+    }
+    else
+    {
+        *pFileId = 0;
+        *pBlockId = ( int32_t ) currBlock;
+        *pBlockSize = ( int32_t ) messageSize;
 
-    /* The data received over HTTP does not require any decoding. */
-    *pPayload = pMessageBuffer;
-    *pFileId = 0;
-    *pBlockId = currBlock;
-    *pBlockSize = messageSize;
-    *pPayloadSize = messageSize;
+        /* The data received over HTTP does not require any decoding. */
+        memcpy( *pPayload, pMessageBuffer, messageSize );
+        *pPayloadSize = messageSize;
 
-    /* Current block is processed, set the file block to next. */
-    currBlock += 1;
+        /* Current block is processed, set the file block to next. */
+        currBlock += 1;
+    }
 
-    return OTA_ERR_NONE;
+    return err;
 }
 
 /*
  * Perform any cleanup operations required for data plane.
  */
-OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx )
+OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
-    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    OtaErr_t status = OTA_ERR_NONE;
 
-    /* Call HTTP deinit to cleanup */
-    OtaErr_t status = pAgentCtx->pOtaInterface->http.deinit();
+    assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
+    status = pAgentCtx->pOtaInterface->http.deinit();
 
     /* Reset currBlock. */
     currBlock = 0;

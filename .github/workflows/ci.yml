@@ -10,6 +10,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  compiler-warnings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Check warnings
+        run: |
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG'
+          cmake --build build 2>&1 | grep -E "[0-9]+:[0-9]+: warning:" | tee warnings.txt
+          if [[ "$(wc -l < warnings.txt)" = "0" ]]; then exit 0; else exit 1; fi
+
   complexity:
     runs-on: ubuntu-latest
     steps:
@@ -30,28 +43,50 @@ jobs:
           submodules: true
       - name: Build
         run: |
-          sudo apt-get install -y lcov
-          cmake -S test -B build/
-          cmake --build build --target all
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build
       - name: Test
         run: |
           cd build/
           ctest -E system --output-on-failure
           cd ..
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build
+        run: |
+          sudo apt-get install -y lcov
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
       - name: Run Coverage
         run: |
           cmake --build build/ --target coverage
-          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*test*' --output-file build/coverage.info
-          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*CMakeCCompilerId*' --output-file build/coverage.info
-          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*mocks*' --output-file build/coverage.info
-          lcov --rc lcov_branch_coverage=1 --remove build/coverage.info '*dependency*' --output-file build/coverage.info
-          lcov --rc lcov_branch_coverage=1 --list build/coverage.info
       - name: Check Coverage
-        uses: ChicagoFlutter/lcov-cop@v1.0.2
-        with:
-          path: "build/coverage.info"
-          min_coverage: 80
-          exclude: "**/*test*"
+        env:
+          MIN_LINE_COVERAGE: 85
+          MIN_BRANCH_COVERAGE: 60
+        run: |
+          lcov --rc lcov_branch_coverage=1 --list build/coverage.info | tee cov_summary.txt
+          LINE_COVERAGE=$(cat cov_summary.txt | tail -n 1 | cut -d '|' -f 2 | sed -n "s/\([^%]*\)%.*/\1/p")
+          BRANCH_COVERAGE=$(cat cov_summary.txt | tail -n 1 | cut -d '|' -f 4 | sed -n "s/\([^%]*\)%.*/\1/p")
+          RESULT=0
+          echo "Required line coverage: $MIN_LINE_COVERAGE%, actual: $LINE_COVERAGE%"
+          if [[ $(echo "$LINE_COVERAGE < $MIN_LINE_COVERAGE" | bc) -ne 0 ]]; then
+            echo "Line Coverage is too low."
+            RESULT=1
+          fi
+          echo "Required branch coverage: $MIN_BRANCH_COVERAGE%, actual: $BRANCH_COVERAGE%"
+          if [[ $(echo "$BRANCH_COVERAGE < $MIN_BRANCH_COVERAGE" | bc) -ne 0 ]]; then
+            echo "Branch Coverage is too low."
+            RESULT=1
+          fi
+          exit $RESULT
+
   doxygen:
     runs-on: ubuntu-20.04
     steps:
@@ -88,6 +123,7 @@ jobs:
           if [ $? -ne "0" ]; then
             exit 1
           fi
+
   formatting:
     runs-on: ubuntu-20.04
     steps:

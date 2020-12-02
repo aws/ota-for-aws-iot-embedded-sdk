@@ -75,7 +75,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx );
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
+OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,
@@ -94,6 +94,6 @@ OtaErr_t decodeFileBlock_Http( uint8_t * pMessageBuffer,
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t cleanupData_Http( OtaAgentContext_t * pAgentCtx );
+OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
 
 #endif /* ifndef __OTA_HTTP__H__ */

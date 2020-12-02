@@ -4,24 +4,6 @@ include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
 # ====================  Define your project name (edit) ========================
 set(project_name "aws_ota")
 
-# =====================  Create your mock here  (edit)  ========================
-
-# list the files to mock here
-list(APPEND mock_list
-    "${MODULE_ROOT_DIR}/source/include/ota_private.h"
-    "${MODULE_ROOT_DIR}/source/include/ota_platform_interface.h"
-)
-# list the directories your mocks need
-list(APPEND mock_include_list
-    .
-    "${MODULE_ROOT_DIR}/source/include"
-    "${MODULE_ROOT_DIR}/source/portable/os"
-)
-#list the definitions of your mocks to control what to be included
-list(APPEND mock_define_list
-    ""
-)
-
 # ================= Create the library under test here (edit) ==================
 
 # list the files you would like to test here
@@ -30,6 +12,7 @@ list(APPEND real_source_files
     "${MODULE_ROOT_DIR}/source/ota_interface.c"
     "${MODULE_ROOT_DIR}/source/ota_base64.c"
     "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
+    "${MODULE_ROOT_DIR}/source/ota_http.c"
     "${MODULE_ROOT_DIR}/source/ota_cbor.c"
     "${MODULE_ROOT_DIR}/source/portable/os/ota_os_posix.c"
     ${TINYCBOR_SOURCES}
@@ -51,20 +34,12 @@ list(APPEND test_include_directories ".")
 
 # =============================  (end edit)  ===================================
 
-set(mock_name "${project_name}_mock")
 set(real_name "${project_name}_real")
-
-create_mock_list(${mock_name}
-    "${mock_list}"
-    "${MODULE_ROOT_DIR}/tools/cmock/project.yml"
-    "${mock_include_list}"
-    "${mock_define_list}"
-)
 
 create_real_library(${real_name}
     "${real_source_files}"
     "${real_include_directories}"
-    "${mock_name}"
+    ""
 )
 # Suppress warnings in dependency folder
 set_source_files_properties(
@@ -81,7 +56,6 @@ target_include_directories(${real_name}
 
 list(APPEND utest_link_list
     -lpthread
-    -l${mock_name}
     lib${real_name}.a
     -lrt
 )
