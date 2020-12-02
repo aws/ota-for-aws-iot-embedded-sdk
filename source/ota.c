@@ -1275,10 +1275,9 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     }
     else
     {
-        ( *pSig256 )->size = ( uint16_t ) actualLen;
-
-        char save = ( *pSig256 )->data[ 32 ];
+        uint8_t save = ( *pSig256 )->data[ 32 ];
         ( *pSig256 )->data[ 32 ] = '\0';
+        ( *pSig256 )->size = ( uint16_t ) actualLen;
 
         LogInfo( ( "Extracted parameter [ %s: %s... ]",
                    OTA_JsonFileSignatureKey,
