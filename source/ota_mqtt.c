@@ -57,7 +57,6 @@
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
- * lint -e830 -e9003 Keep these in one location for easy discovery should they change in the future.
  *  @{
  */
 static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
@@ -936,8 +935,8 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
     cborDecodeRet = OTA_CBOR_Decode_GetStreamResponseMessage( pMessageBuffer,
                                                               messageSize,
                                                               pFileId,
-                                                              pBlockId,   /*lint !e9087 CBOR requires pointer to int and our block index's never exceed 31 bits. */
-                                                              pBlockSize, /*lint !e9087 CBOR requires pointer to int and our block sizes never exceed 31 bits. */
+                                                              pBlockId,   /* CBOR requires pointer to int and our block indices never exceed 31 bits. */
+                                                              pBlockSize, /* CBOR requires pointer to int and our block sizes never exceed 31 bits. */
                                                               pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
                                                               pPayloadSize );
 
