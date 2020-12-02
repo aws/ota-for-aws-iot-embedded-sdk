@@ -289,7 +289,6 @@ typedef enum OtaErr
     OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
     OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
     OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
-    OtaErrIngestError,            /*!< A failure in block ingestion not caused by the PAL. See the error sub code. */
     OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
     OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
     OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
@@ -297,8 +296,7 @@ typedef enum OtaErr
     OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
     OtaErrUserAbort,              /*!< User aborted the active OTA. */
     OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
-    OtaErrFailedToDecodeCbor,     /*!< Failed to decode CBOR object from streaming service response. */
-    OtaErrSetImageStateFailed     /*!< Failed to set platform image state. */
+    OtaErrFailedToDecodeCbor      /*!< Failed to decode CBOR object from streaming service response. */
 } OtaErr_t;
 
 /* @[define_ota_err_code_helpers] */

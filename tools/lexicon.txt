@@ -604,7 +604,6 @@ otaerrcleanupdatafailed
 otaerrupdatejobstatusfailed
 otaerrjobparsererror
 otaerrinvaliddataprotocol
-otaerringesterror
 otaerrmomentumabort
 otaerrdowngradenotallowed
 otaerrsamefirmwareversion
@@ -613,7 +612,6 @@ otaerrnoactivejob
 otaerruserabort
 otaerrfailedtoencodecbor
 otaerrfailedtodecodecbor
-otaerrsetimagestatefailed
 otapalsuccess
 otapaluninitialized
 otapalsignaturecheckfailed
