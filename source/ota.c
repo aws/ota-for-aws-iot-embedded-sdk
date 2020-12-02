@@ -126,11 +126,6 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 static DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 
-/* Checks for duplicate entries in the JSON document. */
-
-static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
-                                      uint16_t paramIndex );
-
 /* Store the parameter from the json to the offset specified by the document model. */
 
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
@@ -150,12 +145,21 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd );
 
+/* Extract the value from json and store it into the allocated memory. */
+
+static DocParseErr_t extractAndStoreArray( const char * pKey,
+                                           const char * pValueInJson,
+                                           size_t valueLength,
+                                           void * pParamAdd,
+                                           uint32_t * pParamSizeAdd );
+
 /* Check if all the required parameters for the job are present in the JSON. */
 
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
                                                     const JsonDocModel_t * pDocModel );
 
 /* Validate the version of the update received. */
+
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
 /* Check if the JSON can be parsed through a custom callback if initial parsing fails. */
@@ -183,6 +187,21 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob );
 
+/* Validate block index and block size of the data block. */
+
+static bool validateDataBlock( const OtaFileContext_t * pFileContext,
+                               uint32_t blockIndex,
+                               uint32_t blockSize );
+
+/* Decode and ingest the incoming data block.*/
+
+static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
+                                               const uint8_t * pRawMsg,
+                                               uint32_t messageSize,
+                                               uint8_t ** pPayload,
+                                               uint32_t * uBlockSize,
+                                               uint32_t * uBlockIndex );
+
 /* Close an open OTA file context and free it. */
 
 static bool otaClose( OtaFileContext_t * const pFileContext );
@@ -198,6 +217,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 static void agentShutdownCleanup( void );
 
 /* A helper function to cleanup resources when data ingestion is complete. */
+
 static void dataHandlerCleanup( IngestResult_t result );
 
 /*
@@ -219,6 +239,9 @@ static bool inSelftest( void );
 
 static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
+/* Free or clear multiple buffers used in the file context. */
+static void freeFileContextMem( OtaFileContext_t * const pFileContext );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );
@@ -234,6 +257,8 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData );
 static OtaErr_t suspendHandler( const OtaEventData_t * pEventData );
 static OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
+static void executeHandler( uint32_t index,
+                            const OtaEventMsg_t * const pEventMsg );
 
 /* This is THE OTA agent context and initialization state. */
 
@@ -433,7 +458,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
      */
     if( ( err != OTA_ERR_NONE ) && ( state != OtaImageStateAborted ) )
     {
-        state = OtaImageStateRejected; /*lint !e9044 intentionally override state since we failed within this function. */
+        /* Intentionally override state since we failed within this function. */
+        state = OtaImageStateRejected;
 
         /*
          * Capture the failure reason if not already set (and we're not already Aborted as checked above). Otherwise Keep
@@ -442,7 +468,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
          */
         if( reason == OTA_ERR_NONE )
         {
-            reason = err; /*lint !e9044 intentionally override reason since we failed within this function. */
+            /* Intentionally override reason since we failed within this function. */
+            reason = err;
         }
     }
 
@@ -1248,13 +1275,21 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     else
     {
         ( *pSig256 )->size = ( uint16_t ) actualLen;
-        LogInfo( ( "Extracted parameter [ %s: %.32s... ]",
+
+        char save = ( *pSig256 )->data[ 32 ];
+        ( *pSig256 )->data[ 32 ] = '\0';
+
+        LogInfo( ( "Extracted parameter [ %s: %s... ]",
                    OTA_JsonFileSignatureKey,
                    pValueInJson ) );
+
+        ( *pSig256 )->data[ 32 ] = save;
     }
 
     return err;
 }
+
+/* Extract the value from json and store it into the allocated memory. */
 
 static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            const char * pValueInJson,
@@ -1344,14 +1379,6 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     {
         err = extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
     }
-    else if( ModelParamTypeStringInDoc == docParam.modelParamType )
-    {
-        /* Copy pointer to source string instead of duplicating the string. */
-        *( const char ** ) pParamAdd = pValueInJson;
-
-        LogInfo( ( "Extracted parameter: [key: value]=[%s: %.*s]",
-                   docParam.pSrcKey, ( int16_t ) valueLength, pValueInJson ) );
-    }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
     {
         uint32_t * pUint32 = pParamAdd;
@@ -1391,28 +1418,6 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     {
         LogError( ( "Failed to extract document parameter: error=%d, paramter key=%s",
                     err, docParam.pSrcKey ) );
-    }
-
-    return err;
-}
-
-/* Checks for duplicate entries in the JSON document. */
-
-static DocParseErr_t checkDuplicates( uint32_t * paramsReceivedBitmap,
-                                      uint16_t paramIndex )
-{
-    DocParseErr_t err = DocParseErrNone;
-
-    /* TODO need to change this implementation because duplicates are not searched properly */
-    /* Check for duplicates of the token*/
-    if( ( *paramsReceivedBitmap & ( ( uint32_t ) 1U << paramIndex ) ) != 0U ) /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
-    {
-        err = DocParseErrDuplicatesNotAllowed;
-    }
-    else
-    {
-        /* Mark parameter as received in the bitmap. */
-        *paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex ); /*lint !e9032 paramIndex will never be greater than kDocModel_MaxParams, which is the the size of the bitmap. */
     }
 
     return err;
@@ -1484,26 +1489,25 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
         if( result == JSONSuccess )
         {
-            if( OTA_STORE_NESTED_JSON == ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
+            /* Mark parameter as received in the bitmap. */
+            pDocModel->paramsReceivedBitmap |= ( ( uint32_t ) 1U << paramIndex );
+
+            if( OTA_DONT_STORE_PARAM == ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
+            {
+                /* Do nothing if we don't need to store the parameter */
+                continue;
+            }
+            else if( OTA_STORE_NESTED_JSON == pModelParam[ paramIndex ].pDestOffset )
             {
                 pFileParams = pValueInJson + 1;
                 fileParamsLength = ( uint32_t ) valueLength - 2U;
             }
-            else if( OTA_DONT_STORE_PARAM != ( int32_t ) pModelParam[ paramIndex ].pDestOffset )
+            else
             {
                 err = extractParameter( pModelParam[ paramIndex ],
                                         pDocModel->contextBase,
                                         pValueInJson,
                                         valueLength );
-            }
-            else
-            {
-                /* Do nothing if we don't need to store the parameter */
-            }
-
-            if( err == DocParseErrNone )
-            {
-                err = checkDuplicates( &( pDocModel->paramsReceivedBitmap ), paramIndex );
             }
 
             if( err != DocParseErrNone )
@@ -1901,32 +1905,30 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 }
 
 /* This is the OTA job document model describing the parameters, their types, destination and how to extract. */
-/*lint -e{708} We intentionally do some things lint warns about but produce the proper model. */
-/* Namely union initialization and pointers converted to values. */
 
 static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 {
-    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeStringInDoc },
-    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeUInt32      },
-    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ),           U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, isInSelfTest ),       OTA_DONT_STORE_PARAM, ModelParamTypeIdent},
-    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, updaterVersion ),     OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM, ModelParamTypeObject      },
-    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pStreamName ),        U16_OFFSET( OtaFileContext_t, streamNameMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pProtocols ),         U16_OFFSET( OtaFileContext_t, protocolMaxSize ), ModelParamTypeArrayCopy},
-    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, OTA_STORE_NESTED_JSON,        OTA_DONT_STORE_PARAM, ModelParamTypeArray       },
-    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pFilePath ),          U16_OFFSET( OtaFileContext_t, filePathMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, fileSize ),           OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, serverFileID ),       OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pCertFilepath ),      U16_OFFSET( OtaFileContext_t, certFilePathMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pUpdateUrlPath ),     U16_OFFSET( OtaFileContext_t, updateUrlMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pAuthScheme ),        U16_OFFSET( OtaFileContext_t, authSchemeMaxSize ), ModelParamTypeStringCopy},
-    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pSignature ),         OTA_DONT_STORE_PARAM, ModelParamTypeSigBase64},
-    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, fileAttributes ),     OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
-    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, fileType ),           OTA_DONT_STORE_PARAM, ModelParamTypeUInt32}
+    { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeStringInDoc },
+    { OTA_JSON_TIMESTAMP_KEY,       OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeUInt32      },
+    { OTA_JSON_EXECUTION_KEY,       OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeObject      },
+    { OTA_JSON_JOB_ID_KEY,          OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ),            U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_STATUS_DETAILS_KEY,  OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeObject      },
+    { OTA_JSON_SELF_TEST_KEY,       OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, isInSelfTest ),        OTA_DONT_STORE_PARAM, ModelParamTypeIdent},
+    { OTA_JSON_UPDATED_BY_KEY,      OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, updaterVersion ),      OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_JOB_DOC_KEY,         OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeObject      },
+    { OTA_JSON_OTA_UNIT_KEY,        OTA_JOB_PARAM_REQUIRED, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeObject      },
+    { OTA_JSON_STREAM_NAME_KEY,     OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pStreamName ),         U16_OFFSET( OtaFileContext_t, streamNameMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_PROTOCOLS_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pProtocols ),          U16_OFFSET( OtaFileContext_t, protocolMaxSize ), ModelParamTypeArrayCopy},
+    { OTA_JSON_FILE_GROUP_KEY,      OTA_JOB_PARAM_REQUIRED, OTA_STORE_NESTED_JSON,        OTA_STORE_NESTED_JSON, ModelParamTypeArray       },
+    { OTA_JSON_FILE_PATH_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pFilePath ),           U16_OFFSET( OtaFileContext_t, filePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_FILE_SIZE_KEY,       OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, fileSize ),            OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_ID_KEY,         OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, serverFileID ),        OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILE_CERT_NAME_KEY,  OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pCertFilepath ),       U16_OFFSET( OtaFileContext_t, certFilePathMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_UPDATE_DATA_URL_KEY, OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pUpdateUrlPath ),      U16_OFFSET( OtaFileContext_t, updateUrlMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JSON_AUTH_SCHEME_KEY,     OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, pAuthScheme ),         U16_OFFSET( OtaFileContext_t, authSchemeMaxSize ), ModelParamTypeStringCopy},
+    { OTA_JsonFileSignatureKey,     OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pSignature ),          OTA_DONT_STORE_PARAM, ModelParamTypeSigBase64},
+    { OTA_JSON_FILE_ATTRIBUTE_KEY,  OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, fileAttributes ),      OTA_DONT_STORE_PARAM, ModelParamTypeUInt32},
+    { OTA_JSON_FILETYPE_KEY,        OTA_JOB_PARAM_OPTIONAL, U16_OFFSET( OtaFileContext_t, fileType ),            OTA_DONT_STORE_PARAM, ModelParamTypeUInt32}
 };
 
 /* Parse the OTA job document and validate. Return the populated
@@ -1946,7 +1948,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
     parseError = initDocModel( &otaJobDocModel,
                                otaJobDocModelParamStructure,
-                               ( void * ) pFileContext, /*lint !e9078 !e923 Intentionally casting context pointer to a value for initDocModel. */
+                               ( void * ) pFileContext,
                                ( uint32_t ) sizeof( OtaFileContext_t ),
                                OTA_NUM_JOB_PARAMS );
 
@@ -2054,7 +2056,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen ); /*lint !e9079 FreeRTOS malloc port returns void*. */
+        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
@@ -2496,12 +2498,12 @@ static void executeHandler( uint32_t index,
         }
     }
 
-    LogDebug( ( "Current State=[%s]"
-                ", Event=[%s]"
-                ", New state=[%s]",
-                pOtaAgentStateStrings[ otaAgent.state ],
-                pOtaEventStrings[ pEventMsg->eventId ],
-                pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
+    LogInfo( ( "Current State=[%s]"
+               ", Event=[%s]"
+               ", New state=[%s]",
+               pOtaAgentStateStrings[ otaAgent.state ],
+               pOtaEventStrings[ pEventMsg->eventId ],
+               pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
 }
 
 static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
@@ -2964,7 +2966,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
 
         default:
 
-            /*lint -e788 Keep lint quiet about the obvious unused states we're catching here. */
+            /* We are catching unused states here which is not possible. */
             err = OTA_ERR_BAD_IMAGE_STATE;
 
             break;

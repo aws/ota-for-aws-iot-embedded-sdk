@@ -343,7 +343,7 @@ OtaErr_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
         {
             otaErrRet = OTA_ERR_NONE;
 
-            otaTimer[ otaTimerId ] == NULL;
+            otaTimer[ otaTimerId ] = NULL;
 
             LogDebug( ( "OTA Timer deleted." ) );
         }
