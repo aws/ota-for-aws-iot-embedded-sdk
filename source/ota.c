@@ -2468,7 +2468,7 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
                 pOtaAgentStateStrings[ otaAgent.state ],
                 pOtaEventStrings[ pEventMsg->eventId ] ) );
 
-    /* Perform any cleanup operations required for specifc unhandled events.*/
+    /* Perform any cleanup operations required for specific unhandled events.*/
     switch( pEventMsg->eventId )
     {
         case OtaAgentEventReceivedJobDocument:
