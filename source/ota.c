@@ -539,7 +539,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     {
         /* Callback for application specific self-test. */
         err = OTA_ERR_NONE;
-        otaAgent.OtaAppCallback( OtaJobEventStartTest , NULL );
+        otaAgent.OtaAppCallback( OtaJobEventStartTest, NULL );
     }
     else
     {
@@ -756,7 +756,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
         retVal = processValidFileContext();
     }
 
-      /* Application callback for event processed. */
+    /* Application callback for event processed. */
     otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     return retVal;
@@ -986,10 +986,10 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
             }
         }
     }
-  
+
     /* Application callback for event processed. */
-    otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventData );
-    
+    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventData );
+
     return OTA_ERR_NONE;
 }
 
@@ -2474,14 +2474,14 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
         case OtaAgentEventReceivedJobDocument:
 
             /* Let the application know to release buffer.*/
-            otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventMsg->pEventData );
+            otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventMsg->pEventData );
 
             break;
 
         case OtaAgentEventReceivedFileBlock:
 
             /* Let the application know to release buffer.*/
-            otaAgent.OtaAppCallback( OtaJobEventProcessed, (void *) pEventMsg->pEventData );
+            otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventMsg->pEventData );
 
             break;
 

@@ -178,10 +178,11 @@ typedef uint32_t OtaErr_t;
  * job has failed in some way and should be rejected.
  *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
- * 
+ *
  * @param[in] pData Optional data related to the event.
  */
-typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent, void * pData );
+typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
+                                   void * pData );
 
 /**
  * @ingroup ota_datatypes_functionpointers
