@@ -49,7 +49,7 @@ static uint32_t currBlock;
  */
 OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 {
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
     char * pURL = NULL;
     OtaFileContext_t * fileContext = NULL;
 
@@ -63,9 +63,9 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     pURL = ( char * ) fileContext->pUpdateUrlPath;
 
     /* Connect to the HTTP server and initialize download information. */
-    status = pAgentCtx->pOtaInterface->http.init( pURL );
+    httpStatus = pAgentCtx->pOtaInterface->http.init( pURL );
 
-    return status;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
 }
 
 /*
@@ -73,7 +73,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
  */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
-    OtaErr_t status = OTA_ERR_UNINITIALIZED;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
     /* Values for the "Range" field in HTTP header. */
     uint32_t rangeStart = 0;
@@ -99,9 +99,9 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     }
 
     /* Request file data over HTTP using the rangeStart and rangeEnd. */
-    status = pAgentCtx->pOtaInterface->http.request( rangeStart, rangeEnd );
+    httpStatus = pAgentCtx->pOtaInterface->http.request( rangeStart, rangeEnd );
 
-    return status;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
 }
 
 /*
@@ -115,7 +115,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                uint8_t ** pPayload,
                                size_t * pPayloadSize )
 {
-    OtaErr_t err = OTA_ERR_NONE;
+    OtaErr_t err = OtaErrNone;
 
     assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
             pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
@@ -124,7 +124,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
     {
         LogError( ( "Incoming file block size %d larger than block size %d.",
                     ( int ) messageSize, ( int ) OTA_FILE_BLOCK_SIZE ) );
-        err = OTA_ERR_HTTP_REQUEST_FAILED;
+        err = OtaErrInvalidArg;
     }
     else
     {
@@ -148,13 +148,13 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
  */
 OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaErr_t status = OTA_ERR_NONE;
+    OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
     assert( pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL );
-    status = pAgentCtx->pOtaInterface->http.deinit();
+    httpStatus = pAgentCtx->pOtaInterface->http.deinit();
 
     /* Reset currBlock. */
     currBlock = 0;
 
-    return status;
+    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
 }

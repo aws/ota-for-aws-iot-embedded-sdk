@@ -82,20 +82,20 @@ void test_OTA_posix_SendAndRecvEvent( void )
 {
     OtaEventMsg_t otaEventToSend = { 0 };
     OtaEventMsg_t otaEventToRecv = { 0 };
-    OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    OtaErr_t result = OtaErrUninitialized;
 
     otaEventToSend.eventId = OtaAgentEventStart;
     result = event.init( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     result = event.send( event.pEventContext, &otaEventToSend, 0 );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
     result = event.recv( event.pEventContext, &otaEventToRecv, 0 );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
     TEST_ASSERT_EQUAL( otaEventToSend.eventId, otaEventToRecv.eventId );
 
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 }
 
 /**
@@ -109,19 +109,19 @@ void test_OTA_posix_InvalidEventQueue( void )
 {
     OtaEventMsg_t otaEventToSend = { 0 };
     OtaEventMsg_t otaEventToRecv = { 0 };
-    OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    OtaErr_t result = OtaErrUninitialized;
 
     otaEventToSend.eventId = OtaAgentEventRequestJobDocument;
 
     result = event.init( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Try to deinitialize a non-existing queue. */
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OTA_ERR_EVENT_Q_DELETE_FAILED, result );
+    TEST_ASSERT_EQUAL( OtaOsEventQueueDeleteFailed, result );
 }
 
 /**
@@ -129,11 +129,11 @@ void test_OTA_posix_InvalidEventQueue( void )
  */
 void test_OTA_posix_TimerCreateAndStop( void )
 {
-    OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    OtaErr_t result = OtaErrUninitialized;
     int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
 
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Wait for the timer callback to be invoked. */
     while( timerCallbackInovked == false && wait > 0 )
@@ -146,10 +146,10 @@ void test_OTA_posix_TimerCreateAndStop( void )
     TEST_ASSERT_EQUAL( true, timerCallbackInovked );
 
     result = timer.stop( timer_id );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     result = timer.delete( timer_id );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 }
 
 /**
@@ -157,24 +157,24 @@ void test_OTA_posix_TimerCreateAndStop( void )
  */
 void test_OTA_posix_InvalidTimerOperations( void )
 {
-    OtaErr_t result = OTA_ERR_UNINITIALIZED;
+    OtaErr_t result = OtaErrUninitialized;
 
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Set the timeout to 0 and stop the timer*/
     result = timer.start( timer_id, TIMER_NAME, 0, NULL );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     result = timer.stop( timer_id );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     result = timer.delete( timer_id );
-    TEST_ASSERT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Delete a timer that has been deleted. */
     result = timer.delete( timer_id );
-    TEST_ASSERT_NOT_EQUAL( OTA_ERR_NONE, result );
+    TEST_ASSERT_NOT_EQUAL( OtaErrNone, result );
 }
 
 /**
