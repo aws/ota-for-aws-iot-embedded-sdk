@@ -45,6 +45,8 @@ typedef enum OtaPalMainStatus
 {
     OtaPalSuccess = 0,          /*!< OTA platform interface success. */
     OtaPalUninitialized = 0xe0, /*!< Result is not yet initialized from PAL. */
+    OtaPalOutOfMemory,          /*!< Out of memory. */
+    OtaPalNullFileContext,      /*!< The PAL is called with a NULL file context. */
     OtaPalSignatureCheckFailed, /*!< The signature check failed for the specified file. */
     OtaPalRxFileCreateFailed,   /*!< The PAL failed to create the OTA receive file. */
     OtaPalRxFileTooLarge,       /*!< The OTA receive file is too big for the platform to support. */
