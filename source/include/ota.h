@@ -208,7 +208,7 @@ typedef enum OtaJobEvent
  * @param[in] pData Optional data related to the event.
  */
 typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
-                                   void * pData );
+                                   const void * pData );
 
 /**
  * @ingroup ota_datatypes_functionpointers
