@@ -446,18 +446,18 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet )
 {
     OtaErr_t err = OtaErrNone;
-    OtaPalStatus_t palErr = OtaPalSuccess;
     OtaImageState_t state = stateToSet;
     uint32_t reason = reasonToSet;
+    OtaPalStatus_t palStatus;
 
     /* Call the platform specific code to set the image state. */
-    palErr = otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), state );
+    palStatus = otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), state );
 
     /*
      * If the platform image state couldn't be set correctly, force fail the update by setting the
      * image state to "Rejected" unless it's already in "Aborted".
      */
-    if( ( palErr != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
+    if( ( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
     {
         /* Intentionally override state since we failed within this function. */
         state = OtaImageStateRejected;
@@ -470,7 +470,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
         if( reason == OtaErrNone )
         {
             /* Intentionally override reason since we failed within this function. */
-            reason = palErr;
+            reason = palStatus;
         }
     }
 
@@ -494,7 +494,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                    ", state=%d"
                    ", reason=%d",
                    err,
-                   palErr,
+                   palStatus,
                    stateToSet,
                    reasonToSet ) );
     }
@@ -614,11 +614,9 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
             }
             else
             {
-                /*
-                 * Too many requests have been sent without a response or too many failures
-                 * when trying to publish the request message. Abort. Store attempt count in low bits.
-                 */
-                retVal = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
+                /* Too many requests have been sent without a response or too many failures
+                 * when trying to publish the request message. Abort. */
+                retVal = OtaErrMomentumAbort;
             }
         }
     }
@@ -804,8 +802,8 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
             else
             {
                 /* Too many requests have been sent without a response or too many failures
-                 * when trying to publish the request message. Abort. Store attempt count in low bits. */
-                err = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
+                 * when trying to publish the request message. Abort. */
+                err = OtaErrMomentumAbort;
             }
         }
     }
@@ -875,8 +873,8 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
             else
             {
                 /* Too many requests have been sent without a response or too many failures
-                 * when trying to publish the request message. Abort. Store attempt count in low bits. */
-                err = ( uint32_t ) OtaErrMomentumAbort | OTA_PAL_ERR( otaconfigMAX_NUM_REQUEST_MOMENTUM );
+                 * when trying to publish the request message. Abort. */
+                err = OtaErrMomentumAbort;
 
                 /* Reset the request momentum. */
                 otaAgent.requestMomentum = 0;
@@ -919,7 +917,7 @@ static void dataHandlerCleanup( IngestResult_t result )
 static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t err = OtaErrNone;
-    OtaPalStatus_t closeResult = OtaPalUninitialized;
+    OtaPalStatus_t closeResult = OTA_PAL_COMBINE_ERR( OtaPalUninitialized, 0 );
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Get the file context. */
@@ -2158,7 +2156,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                         pFileContext->blocksRemaining ) );
 
             eIngestResult = IngestResultDuplicate_Continue;
-            *pCloseResult = OtaPalSuccess; /* This is a success path. */
+            *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 ); /* This is a success path. */
         }
     }
     else
@@ -2191,7 +2189,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                 pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ~bitMask;
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
-                *pCloseResult = OtaPalSuccess;
+                *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
             }
         }
         else
@@ -2286,6 +2284,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                                               OtaPalStatus_t * pCloseResult )
 {
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
+    OtaPalMainStatus_t otaPalMainErr;
+    OtaPalSubStatus_t otaPalSubErr;
 
     if( pFileContext->blocksRemaining == 0U )
     {
@@ -2305,21 +2305,20 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
         if( pFileContext->pFile != NULL )
         {
             *pCloseResult = otaAgent.pOtaInterface->pal.closeFile( pFileContext );
+            otaPalMainErr = OTA_PAL_MAIN_ERR( *pCloseResult );
+            otaPalSubErr = OTA_PAL_SUB_ERR( *pCloseResult );
 
-            if( *pCloseResult == OtaPalSuccess )
+            if( otaPalMainErr == OtaPalSuccess )
             {
                 LogInfo( ( "Received entire update and validated the signature." ) );
                 eIngestResult = IngestResultFileComplete;
             }
             else
             {
-                uint32_t closeResult = ( uint32_t ) *pCloseResult;
-
                 LogError( ( "Failed to close the OTA file: Error=(%u:0x%06x)",
-                            OTA_MAIN_ERR( closeResult ),
-                            OTA_PAL_ERR( closeResult ) ) );
+                            otaPalMainErr, otaPalSubErr ) );
 
-                if( OTA_PAL_ERR( closeResult ) == OtaPalSignatureCheckFailed )
+                if( otaPalMainErr == OtaPalSignatureCheckFailed )
                 {
                     eIngestResult = IngestResultSigCheckFail;
                 }

@@ -29,9 +29,19 @@
 #include "ota_private.h"
 
 /**
- * @brief The OTA platform interface return status.
+ * @brief The OTA platform interface return status. Composed of main and sub status.
  */
-typedef enum OtaPalStatus
+typedef uint32_t   OtaPalStatus_t;
+
+/**
+ * @brief The OTA platform interface sub status.
+ */
+typedef uint32_t   OtaPalSubStatus_t;
+
+/**
+ * @brief The OTA platform interface main status.
+ */
+typedef enum OtaPalMainStatus
 {
     OtaPalSuccess = 0,          /*!< OTA platform interface success. */
     OtaPalUninitialized = 0xe0, /*!< Result is not yet initialized from PAL. */
@@ -47,7 +57,28 @@ typedef enum OtaPalStatus
     OtaPalActivateFailed,       /*!< The activation of the new OTA image failed. */
     OtaPalFileAbort,            /*!< Error in low level file abort. */
     OtaPalFileClose             /*!< Error in low level file close. */
-} OtaPalStatus_t;
+} OtaPalMainStatus_t;
+
+/**
+ * @constantspage{ota,OTA library}
+ *
+ * @section ota_constants_err_code_helpers OTA Error Code Helper constants
+ * @brief OTA PAL Error code helper for extracting the error code from the OTA PAL.
+ *
+ * @snippet this define_ota_err_code_helpers
+ *
+ * OTA pal error codes consist of an main code in the upper 8 bits of a 32 bit word and sometimes
+ * merged with a platform specific code in the lower 24 bits. You must refer to the platform PAL
+ * layer in use to determine the meaning of the lower 24 bits.
+ */
+
+/* @[define_ota_err_code_helpers] */
+#define OTA_PAL_ERR_MASK    0xffffffUL                                                                                /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
+#define OTA_PAL_SUB_BITS    24U                                                                                       /*!< The OTA Agent error code is the highest 8 bits of the word. */
+#define OTA_PAL_MAIN_ERR( err )             ( ( uint32_t ) err >> ( uint32_t ) OTA_PAL_SUB_BITS )                     /*!< Helper to get the OTA library error code. */
+#define OTA_PAL_SUB_ERR( err )              ( ( uint32_t ) err & ( uint32_t ) OTA_PAL_ERR_MASK )                      /*!< Helper to get the OTA PAL error code. */
+#define OTA_PAL_COMBINE_ERR( main, sub )    ( ( uint32_t ) main << ( uint32_t ) OTA_PAL_SUB_BITS | ( uint32_t ) sub ) /*!< Helper to combine the OTA PAL main and sub error code. */
+/* @[define_ota_err_code_helpers] */
 
 /**
  * @brief Abort an OTA transfer.

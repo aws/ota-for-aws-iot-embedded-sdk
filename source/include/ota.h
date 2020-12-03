@@ -285,29 +285,6 @@ typedef struct OtaAgentContext
     OtaCustomJobCallback_t customJobCallback;              /*!< Custom job callback. */
 } OtaAgentContext_t;
 
-/*------------------------- OTA defined constants --------------------------*/
-
-/**
- * @constantspage{ota,OTA library}
- *
- * @section ota_constants_err_code_helpers OTA Error Code Helper constants
- * @brief OTA Error code helper constant for extracting the error code from the OTA error returned.
- *
- * @snippet this define_ota_err_code_helpers
- *
- * OTA error codes consist of an agent code in the upper 8 bits of a 32 bit word and sometimes
- * merged with a platform specific code in the lower 24 bits. You must refer to the platform PAL
- * layer in use to determine the meaning of the lower 24 bits.
- */
-
-/* @[define_ota_err_code_helpers] */
-#define OTA_PAL_ERR_MASK                0xffffffUL                                               /*!< The PAL layer uses the signed low 24 bits of the OTA error code. */
-#define OTA_MAIN_ERR_SHIFT_DOWN_BITS    24U                                                      /*!< The OTA Agent error code is the highest 8 bits of the word. */
-#define OTA_MAIN_ERR( err )    ( ( uint32_t ) err >> ( uint32_t ) OTA_MAIN_ERR_SHIFT_DOWN_BITS ) /*!< Helper to get the OTA library error code. */
-#define OTA_PAL_ERR( err )     ( ( uint32_t ) err & ( uint32_t ) OTA_PAL_ERR_MASK )              /*!< Helper to get the OTA PAL error code. */
-/* @[define_ota_err_code_helpers] */
-
-
 /*------------------------- OTA Public API --------------------------*/
 
 /**
