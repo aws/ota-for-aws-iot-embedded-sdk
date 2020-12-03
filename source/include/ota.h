@@ -99,7 +99,8 @@ typedef enum OtaErr
     OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
     OtaErrUserAbort,              /*!< User aborted the active OTA. */
     OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
-    OtaErrFailedToDecodeCbor      /*!< Failed to decode CBOR object from streaming service response. */
+    OtaErrFailedToDecodeCbor,     /*!< Failed to decode CBOR object from streaming service response. */
+    OtaErrActivateFailed          /*!< Failed to activate the new image. */
 } OtaErr_t;
 
 /**

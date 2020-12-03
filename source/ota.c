@@ -2021,6 +2021,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     uint32_t bitmapLen;             /* Length of the file block bitmap in bytes. */
     OtaFileContext_t * pUpdateFile; /* Pointer to an OTA update context. */
     OtaErr_t err = OtaErrNone;
+    OtaPalStatus_t palStatus;
 
     bool updateJob = false;
 
@@ -2073,11 +2074,11 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             pUpdateFile->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
 
             /* Create/Open the OTA file on the file system. */
-            err = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
+            palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
 
-            if( err != OtaErrNone )
+            if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
             {
-                err = setImageStateWithReason( OtaImageStateAborted, err );
+                err = setImageStateWithReason( OtaImageStateAborted, palStatus );
                 ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
                 pUpdateFile = NULL;
             }
@@ -2881,7 +2882,7 @@ OtaErr_t OTA_CheckForUpdate( void )
  */
 OtaErr_t OTA_ActivateNewImage( void )
 {
-    OtaErr_t err = OtaErrUninitialized;
+    OtaPalStatus_t palStatus = OTA_PAL_COMBINE_ERR( OtaPalActivateFailed, 0 );
 
     /*
      * Call platform specific code to activate the image. This should reset the device
@@ -2890,16 +2891,16 @@ OtaErr_t OTA_ActivateNewImage( void )
      */
     if( ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
     {
-        err = otaAgent.pOtaInterface->pal.activate( &( otaAgent.fileContext ) );
+        palStatus = otaAgent.pOtaInterface->pal.activate( &( otaAgent.fileContext ) );
     }
 
     LogError( ( "Failed to activate new image: "
                 "activateNewImage returned error: "
                 "Manual reset required: "
-                "OtaErr_t=%d",
-                err ) );
+                "OtaPalStatus_t=%d",
+                palStatus ) );
 
-    return err;
+    return OTA_PAL_MAIN_ERR( palStatus ) == OtaPalSuccess ? OtaErrNone : OtaErrActivateFailed;
 }
 
 /*

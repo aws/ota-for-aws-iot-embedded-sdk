@@ -648,3 +648,4 @@ deinitializing
 palerr
 otapaloutofmemory
 otapalnullfilecontext
+otaerractivatefailed
