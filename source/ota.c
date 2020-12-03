@@ -757,7 +757,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( void * ) pEventData );
+    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventData );
 
     return retVal;
 }
