@@ -413,8 +413,8 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysInvalid( OtaFileContext_t *
     return OtaPalImageStateInvalid;
 }
 
-static void mockAppleteCallback( OtaJobEvent_t event,
-                                 const void * pData )
+static void mockAppCallback( OtaJobEvent_t event,
+                             const void * pData )
 {
     if( event == OtaJobEventStartTest )
     {
@@ -487,7 +487,7 @@ static void otaInit( const char * pClientID,
 
 static void otaInitDefault()
 {
-    otaInit( pOtaDefaultClientId, mockAppleteCallback );
+    otaInit( pOtaDefaultClientId, mockAppCallback );
 }
 
 static void otaDeinit()
@@ -688,7 +688,7 @@ void test_OTA_InitWhenReady()
 void test_OTA_InitWithNullName()
 {
     /* Explicitly test NULL client name. OTA agent should remain in stopped state. */
-    otaInit( NULL, mockAppleteCallback );
+    otaInit( NULL, mockAppCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -698,7 +698,7 @@ void test_OTA_InitWithNameTooLong()
     char long_name[ 100 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
-    otaInit( long_name, mockAppleteCallback );
+    otaInit( long_name, mockAppCallback );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
