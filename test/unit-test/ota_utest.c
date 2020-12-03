@@ -105,7 +105,7 @@ static FILE * pOtaFileHandle = NULL;
 static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 
 /* Default wait time for OTA state machine transition. */
-static const int otaDefaultWait = 1000;
+static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
 
@@ -272,19 +272,19 @@ static OtaHttpStatus_t stubHttpDeinit()
 
 OtaPalStatus_t mockPalAbort( OtaFileContext_t * const pFileContext )
 {
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalStatus_t mockPalCreateFileForRx( OtaFileContext_t * const pFileContext )
 {
     pOtaFileHandle = ( FILE * ) pOtaFileBuffer;
     pFileContext->pFile = pOtaFileHandle;
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalStatus_t mockPalCloseFile( OtaFileContext_t * const pFileContext )
 {
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
@@ -303,24 +303,24 @@ int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
 
 OtaPalStatus_t mockPalActivate( OtaFileContext_t * const pFileContext )
 {
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalStatus_t mockPalActivateReturnFail( OtaFileContext_t * const pFileContext )
 {
-    return OtaPalActivateFailed;
+    return OTA_PAL_COMBINE_ERR( OtaPalActivateFailed, 0 );
 }
 
 OtaPalStatus_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
 {
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalStatus_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileContext,
                                              OtaImageState_t eState )
 {
     imageState = eState;
-    return OtaPalSuccess;
+    return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileContext )
@@ -787,7 +787,7 @@ void test_OTA_ActivateNewImage()
     TEST_ASSERT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
 
     otaInterfaces.pal.activate = mockPalActivateReturnFail;
-    TEST_ASSERT_EQUAL( OtaPalActivateFailed, OTA_ActivateNewImage() );
+    TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 /* OTA pal function pointers should be NULL when OTA agent stopped. Calling OTA_ActivateNewImage

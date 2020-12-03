@@ -647,3 +647,6 @@ otaostimerstopfailed
 otaostimerdeletefailed
 deinitializing
 palerr
+otapaloutofmemory
+otapalnullfilecontext
+otaerractivatefailed
