@@ -328,7 +328,8 @@ OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileC
     return imageState;
 }
 
-static void mockAppCallback( OtaJobEvent_t event )
+static void mockAppCallback( OtaJobEvent_t event,
+                             const void * pData )
 {
     if( event == OtaJobEventStartTest )
     {
