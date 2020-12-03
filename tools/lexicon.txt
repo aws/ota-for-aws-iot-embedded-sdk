@@ -280,6 +280,7 @@ otaimagestatetesting
 otaimagestateunknown
 otajobeventactivate
 otajobeventfail
+otajobeventprocessed
 otajobeventstarttest
 otajobparseerrbadmodelinitparams
 otajobparseerrbusywithexistingjob

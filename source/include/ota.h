@@ -168,6 +168,7 @@ typedef enum OtaJobEvent
     OtaJobEventActivate = 0,  /*!< OTA receive is authenticated and ready to activate. */
     OtaJobEventFail = 1,      /*!< OTA receive failed. Unable to use this update. */
     OtaJobEventStartTest = 2, /*!< OTA job is now in self test, perform user tests. */
+    OtaJobEventProcessed = 3, /*!< OTA event is processed. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
@@ -204,8 +205,11 @@ typedef enum OtaJobEvent
  * job has failed in some way and should be rejected.
  *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
+ *
+ * @param[in] pData Optional data related to the event.
  */
-typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent );
+typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
+                                   const void * pData );
 
 /**
  * @ingroup ota_datatypes_functionpointers
