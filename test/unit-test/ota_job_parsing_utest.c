@@ -48,8 +48,8 @@
 #define JOB_PARSING_MALFORMED_JSON_LENGTH                    ( strlen( JOB_PARSING_VALID_JSON ) )
 
 /* Removed the required parameter 'filepath'. */
-#define JOB_PARSING_INVALID_JSON_MISSING_FILEPATH            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
-#define JOB_PARSING_INVALID_JSON_MISSING_FILEPATH_LENGTH     ( strlen( JOB_PARSING_INVALID_JSON_MISSING_FILEPATH ) )
+#define JOB_PARSING_INVALID_JSON_MISSING_JOBID               "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filesize\":180568,\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_PARSING_INVALID_JSON_MISSING_JOBID_LENGTH        ( strlen( JOB_PARSING_INVALID_JSON_MISSING_JOBID ) )
 
 /* Replaced numeric value of 'fileid' with string. */
 #define JOB_PARSING_INVALID_JSON_INVALID_NUMERIC             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":180568,\"fileid\":\"text\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
@@ -162,7 +162,7 @@ void test_OTA_JobParsing_Invalid_JSON( void )
     TEST_ASSERT_EQUAL( DocParseErrNullDocPointer, err );
 
     memcpy( &otaJobDocModelCopy, &otaJobDocModel, sizeof( JsonDocModel_t ) );
-    err = parseJSONbyModel( JOB_PARSING_INVALID_JSON_MISSING_FILEPATH, JOB_PARSING_INVALID_JSON_MISSING_FILEPATH_LENGTH, &otaJobDocModelCopy );
+    err = parseJSONbyModel( JOB_PARSING_INVALID_JSON_MISSING_JOBID, JOB_PARSING_INVALID_JSON_MISSING_JOBID_LENGTH, &otaJobDocModelCopy );
     TEST_ASSERT_EQUAL( DocParseErrMalformedDoc, err );
 
     memcpy( &otaJobDocModelCopy, &otaJobDocModel, sizeof( JsonDocModel_t ) );
