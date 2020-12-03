@@ -105,7 +105,7 @@ static FILE * pOtaFileHandle = NULL;
 static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 
 /* Default wait time for OTA state machine transition. */
-static const int otaDefaultWait = 1000;
+static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
 
