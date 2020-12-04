@@ -39,7 +39,7 @@
 #include <pthread.h>
 #include "unity.h"
 
-/* For accessing OTA private functions. */
+/* OTA includes. */
 #include "ota_appversion32.h"
 #include "ota.h"
 #include "ota_private.h"
@@ -89,6 +89,7 @@ static OtaInterfaces_t otaInterfaces;
 
 /* OTA image state. */
 static OtaPalImageState_t palImageState = OtaPalImageStateUnknown;
+static bool resetCalled = false;
 
 /* OTA application buffer. */
 static OtaAppBuffer_t pOtaAppBuffer;
@@ -104,7 +105,7 @@ static bool eventIgnore;
 static FILE * pOtaFileHandle = NULL;
 static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 
-/* Default wait time for OTA state machine transition. */
+/* 2 seconds default wait time for OTA state machine transition. */
 static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
@@ -167,8 +168,11 @@ static OtaOsStatus_t mockOSEventSend( OtaEventContext_t * unused_1,
 {
     const OtaEventMsg_t * pOtaEvent = pEventMsg;
 
-    otaCurrentEvent.eventId = pOtaEvent->eventId;
-    otaCurrentEvent.pEventData = pOtaEvent->pEventData;
+    if ( otaCurrentEvent.eventId == OtaAgentEventMax)
+    {
+        otaCurrentEvent.eventId = pOtaEvent->eventId;
+        otaCurrentEvent.pEventData = pOtaEvent->pEventData;
+    }
 
     return OtaOsSuccess;
 }
@@ -197,9 +201,12 @@ static OtaOsStatus_t mockOSEventReceive( OtaEventContext_t * unused_1,
     }
     else
     {
-        usleep( 1000 );
         err = OtaOsEventQueueReceiveFailed;
     }
+
+    /* Sleep for 10 ms to lower the CPU usage. This also makes sure we have chance to test state
+     * transition happened inside OTA agent. */
+    usleep( 10000 );
 
     return err;
 }
@@ -211,6 +218,16 @@ static OtaOsStatus_t stubOSTimerStart( OtaTimerId_t timerId,
 {
     return OtaOsSuccess;
 }
+
+static OtaOsStatus_t mockOSTimerInvokeCallback( OtaTimerId_t timerId,
+                                                const char * const pTimerName,
+                                                const uint32_t timeout,
+                                                OtaTimerCallback_t callback )
+{
+    callback( timerId );
+    return OtaOsSuccess;
+}
+
 
 static OtaOsStatus_t stubOSTimerStop( OtaTimerId_t timerId )
 {
@@ -239,6 +256,15 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
+static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
+                                                  uint16_t unused_2,
+                                                  const char * unused_3,
+                                                  uint32_t unused_4,
+                                                  uint8_t unused_5 )
+{
+    return OtaMqttPublishFailed;
+}
+
 static OtaMqttStatus_t stubMqttUnsubscribe( const char * unused_1,
                                             uint16_t unused_2,
                                             uint8_t unused_3 )
@@ -259,10 +285,21 @@ static OtaHttpStatus_t stubHttpInit( char * url )
     return OtaHttpSuccess;
 }
 
+static OtaHttpStatus_t mockHttpInitAlwaysFail( char * url )
+{
+    return OtaHttpInitFailed;
+}
+
 static OtaHttpStatus_t stubHttpRequest( uint32_t rangeStart,
                                         uint32_t rangeEnd )
 {
     return OtaHttpSuccess;
+}
+
+static OtaHttpStatus_t mockHttpRequestAlwaysFail( uint32_t rangeStart,
+                                                  uint32_t rangeEnd )
+{
+    return OtaHttpRequestFailed;
 }
 
 static OtaHttpStatus_t stubHttpDeinit()
@@ -313,6 +350,7 @@ OtaPalStatus_t mockPalActivateReturnFail( OtaFileContext_t * const pFileContext 
 
 OtaPalStatus_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
 {
+    resetCalled = true;
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
@@ -451,7 +489,6 @@ static void otaWaitForState( OtaState_t state )
     otaWaitForStateWithTimeout( state, otaDefaultWait );
 }
 
-
 static void otaWaitForEmptyEventWithTimeout( int milliseconds )
 {
     while( milliseconds > 0 && otaCurrentEvent.eventId != OtaAgentEventMax )
@@ -459,6 +496,9 @@ static void otaWaitForEmptyEventWithTimeout( int milliseconds )
         usleep( 1000 );
         milliseconds--;
     }
+
+    /* Delay for 10 ms to make sure the event handler is finished. */
+    usleep( 10000 );
 }
 
 static void otaWaitForEmptyEvent()
@@ -514,8 +554,6 @@ static void otaGoToStateWithTimeout( OtaState_t state,
             break;
 
         case OtaAgentStateRequestingJob:
-            /* Let the PAL says it's not in self test.*/
-            palImageState = OtaPalImageStateValid;
             otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
             otaEvent.eventId = OtaAgentEventStart;
             OTA_SignalEvent( &otaEvent );
@@ -529,8 +567,6 @@ static void otaGoToStateWithTimeout( OtaState_t state,
 
         case OtaAgentStateCreatingFile:
             otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
-            /* Let the PAL says it's not in self test.*/
-            palImageState = OtaPalImageStateValid;
             otaReceiveJobDocument();
             break;
 
@@ -573,6 +609,7 @@ void setUp()
 void tearDown()
 {
     palImageState = OtaPalImageStateUnknown;
+    resetCalled = false;
     pOtaJobDoc = NULL;
     pOtaFileHandle = NULL;
     memset( pOtaFileBuffer, 0, OTA_TEST_FILE_SIZE );
@@ -882,6 +919,32 @@ void test_OTA_ImageStateInvalidState()
     TEST_ASSERT_EQUAL( OtaErrInvalidArg, OTA_SetImageState( -1 ) );
 }
 
+void test_OTA_RequestJobDocumentRetryFail()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Let MQTT publish fail so request job will also fail. */
+    otaInterfaces.mqtt.publish = mockMqttPublishAlwaysFail;
+
+    /* Let timer invoke callback directly. */
+    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+
+    /* Allow event to be sent continously so that retries can work. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Start OTA agent, it should first transit to requesting job state. Then keep requesting job
+     * until failed, which should then shutdown itself. */
+    otaEvent.eventId = OtaAgentEventStart;
+    OTA_SignalEvent( &otaEvent );
+    otaWaitForState( OtaAgentStateRequestingJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+    otaWaitForState( OtaAgentStateStopped );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 void test_OTA_ProcessJobDocumentInvalidJson()
 {
     pOtaJobDoc = JOB_DOC_INVALID;
@@ -934,6 +997,34 @@ void test_OTA_InitFileTransferHttp()
     otaInitFileTransfer();
 }
 
+void test_OTA_InitFileTransferRetryFail()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Use HTTP data transfer so we can intentionally fail the init transfer. */
+    pOtaJobDoc = JOB_DOC_HTTP;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Let http init fail so init file transfer will also fail. */
+    otaInterfaces.http.init = mockHttpInitAlwaysFail;
+
+    /* Let timer invoke callback directly. */
+    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+
+    /* Allow event to be sent continously so that retries can work. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* After receiving a valid job document, OTA agent should first transit to creating file state.
+     * Then keep calling init file transfer until failed, which should then shutdown itself. */
+    otaReceiveJobDocument();
+    otaWaitForState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    otaWaitForState( OtaAgentStateStopped );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 static void otaRequestFileBlock()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -957,6 +1048,34 @@ void test_OTA_RequestFileBlockHttp()
 {
     pOtaJobDoc = JOB_DOC_HTTP;
     otaRequestFileBlock();
+}
+
+void test_OTA_RequestFileBlockRetryFail()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Use HTTP data transfer so we can intentionally fail the file block request. */
+    pOtaJobDoc = JOB_DOC_HTTP;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Let http request fail so request file block will also fail. */
+    otaInterfaces.http.request = mockHttpRequestAlwaysFail;
+
+    /* Let timer invoke callback directly. */
+    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+
+    /* Allow event to be sent continously so that retries can work. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* After receiving a valid job document and starts file transfer, OTA agent should first transit
+     * to requesting file block state. Then keep calling request file block until failed. */
+    otaReceiveJobDocument();
+    otaWaitForState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+    otaWaitForState( OtaAgentStateStopped );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockEmpty()
@@ -1058,7 +1177,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
 
     /* OTA agent should complete the update and go back to waiting for job state. */
     OTA_SignalEvent( &otaEvent );
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -1105,7 +1224,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
     /* OTA agent should complete the update and go back to waiting for job state. */
     OTA_SignalEvent( &otaEvent );
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -1125,7 +1244,7 @@ void invokeSelfTestHandler()
     otaWaitForState( OtaAgentStateWaitingForJob );
 }
 
-void test_OTA_SelfTest()
+void test_OTA_SelfTestJob()
 {
     invokeSelfTestHandler();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
@@ -1140,6 +1259,20 @@ void test_OTA_SelfTestJobPlatformMismatch()
     invokeSelfTestHandler();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
+}
+
+void test_OTA_StartWithSelfTest()
+{
+    /* Directly set pal image state to pending commit, pretending we're in self test. */
+    palImageState = OtaPalImageStatePendingCommit;
+
+    /* Let timer start to invoke callback directly. */
+    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+
+    /* Start OTA agent. */
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+    TEST_ASSERT_EQUAL( true, resetCalled );
 }
 
 void test_OTA_ReceiveNewJobDocWhileInProgress()
