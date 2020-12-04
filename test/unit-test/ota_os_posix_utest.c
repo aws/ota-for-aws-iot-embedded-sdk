@@ -43,7 +43,6 @@
 #define OTA_DEFAULT_TIMEOUT    1000 /*!< Timeout in milliseconds. */
 
 /* Interfaces for Timer and Event. */
-static OtaTimerId_t timer_id = 0;
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
@@ -124,10 +123,7 @@ void test_OTA_posix_InvalidEventQueue( void )
     TEST_ASSERT_EQUAL( OtaOsEventQueueDeleteFailed, result );
 }
 
-/**
- * @brief Test timers are initialized, stopped and deleted successfully.
- */
-void test_OTA_posix_TimerCreateAndStop( void )
+void timerCreateAndStop( OtaTimerId_t timer_id )
 {
     OtaErr_t result = OtaErrUninitialized;
     int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
@@ -153,11 +149,28 @@ void test_OTA_posix_TimerCreateAndStop( void )
 }
 
 /**
+ * @brief Test timers are initialized, stopped and deleted successfully.
+ */
+void test_OTA_posix_RequestTimerCreateAndStop( void )
+{
+    timerCreateAndStop( OtaRequestTimer );
+}
+
+/**
+ * @brief Test timers are initialized, stopped and deleted successfully.
+ */
+void test_OTA_posix_SelfTestTimerCreateAndStop( void )
+{
+    timerCreateAndStop( OtaSelfTestTimer );
+}
+
+/**
  * @brief Test invalid operations on timers.
  */
 void test_OTA_posix_InvalidTimerOperations( void )
 {
     OtaErr_t result = OtaErrUninitialized;
+    OtaTimerId_t timer_id = OtaRequestTimer;
 
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
     TEST_ASSERT_EQUAL( OtaErrNone, result );

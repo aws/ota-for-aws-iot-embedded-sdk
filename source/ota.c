@@ -956,9 +956,10 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
-            /* We're actively receiving a file so update the job status as needed. */
-            /* First reset the momentum counter since we received a good block. */
+            /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
+            /* We're actively receiving a file so update the job status as needed. */
+            otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
         }
 
         if( otaAgent.numOfBlocksToReceive > 1U )
@@ -2042,19 +2043,26 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
     {
-        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
-        {
-            /* Free any previously allocated bitmap. */
-            otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
-            pUpdateFile->pRxBlockBitmap = NULL;
-        }
-
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+
+        if( pUpdateFile->blockBitmapMaxSize == 0u )
+        {
+            if( pUpdateFile->pRxBlockBitmap != NULL )
+            {
+                /* Free any previously allocated bitmap. */
+                otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+            }
+
+            pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+        }
+        else
+        {
+            assert( pUpdateFile->pRxBlockBitmap != NULL );
+            memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+        }
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
@@ -2819,7 +2827,13 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait )
                 "ticks=%u",
                 ticks ) );
 
-    if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
+    if( otaAgent.state == OtaAgentStateInit )
+    {
+        /* When in init state, the OTA state machine is not running yet. So directly set state to
+         * stopped. */
+        otaAgent.state = OtaAgentStateStopped;
+    }
+    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
     {
         /*
          * Send shutdown signal to OTA Agent task.
