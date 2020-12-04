@@ -261,9 +261,9 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         LogError( ( "Failed to subscribe to MQTT topic: "
                     "subscribe returned error: "
-                    "OtaMqttStatus_t=%u"
+                    "OtaMqttStatus_t=%s"
                     ", topic=%s",
-                    mqttStatus,
+                    OTA_MQTT_strerror( mqttStatus ),
                     pJobTopicGetNext ) );
     }
 
@@ -292,9 +292,9 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         {
             LogError( ( "Failed to subscribe to MQTT topic: "
                         "subscribe returned error: "
-                        "OtaMqttStatus_t=%u"
+                        "OtaMqttStatus_t=%s"
                         ", topic=%s",
-                        mqttStatus,
+                        OTA_MQTT_strerror( mqttStatus ),
                         pJobTopicNotifyNext ) );
         }
     }
@@ -342,9 +342,9 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     {
         LogError( ( "Failed to unsubscribe to MQTT topic: "
                     "unsubscribe returned error: "
-                    "OtaMqttStatus_t=%u"
+                    "OtaMqttStatus_t=%s"
                     ", topic=%s",
-                    mqttStatus,
+                    OTA_MQTT_strerror( mqttStatus ),
                     pOtaRxStreamTopic ) );
     }
 
@@ -389,9 +389,9 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     {
         LogError( ( "Failed to unsubscribe to MQTT topic: "
                     "unsubscribe returned error: "
-                    "OtaMqttStatus_t=%u"
+                    "OtaMqttStatus_t=%s"
                     ", topic=%s",
-                    mqttStatus,
+                    OTA_MQTT_strerror( mqttStatus ),
                     pJobTopic ) );
     }
 
@@ -419,9 +419,9 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
         {
             LogError( ( "Failed to unsubscribe to MQTT topic: "
                         "unsubscribe returned error: "
-                        "OtaMqttStatus_t=%u"
+                        "OtaMqttStatus_t=%s"
                         ", topic=%s",
-                        mqttStatus,
+                        OTA_MQTT_strerror( mqttStatus ),
                         pJobTopic ) );
         }
     }
@@ -480,9 +480,9 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     {
         LogError( ( "Failed to publish MQTT message: "
                     "publish returned error: "
-                    "OtaMqttStatus_t=%u"
+                    "OtaMqttStatus_t=%s"
                     ", topic=%s",
-                    mqttStatus,
+                    OTA_MQTT_strerror( mqttStatus ),
                     pTopicBuffer ) );
     }
 
@@ -703,8 +703,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         {
             LogError( ( "Failed to publish MQTT message:"
                         "publish returned error: "
-                        "OtaMqttStatus_t=%u",
-                        mqttStatus ) );
+                        "OtaMqttStatus_t=%s",
+                        OTA_MQTT_strerror( mqttStatus ) ) );
         }
     }
 
@@ -768,8 +768,8 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     {
         LogError( ( "Failed to publish MQTT status message: "
                     "publishStatusMessage returned error: "
-                    "OtaMqttStatus_t=%u",
-                    mqttStatus ) );
+                    "OtaMqttStatus_t=%s",
+                    OTA_MQTT_strerror( mqttStatus ) ) );
     }
 
     return result;
@@ -819,9 +819,9 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     {
         LogError( ( "Failed to subscribe to MQTT topic: "
                     "subscribe returned error: "
-                    "OtaMqttStatus_t=%u"
+                    "OtaMqttStatus_t=%s"
                     ", topic=%s",
-                    mqttStatus,
+                    OTA_MQTT_strerror( mqttStatus ),
                     pRxStreamTopic ) );
     }
 
@@ -903,8 +903,8 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         {
             LogError( ( "Failed to publish MQTT message: "
                         "publish returned error: "
-                        "OtaMqttStatus_t=%u",
-                        mqttStatus ) );
+                        "OtaMqttStatus_t=%s",
+                        OTA_MQTT_strerror( mqttStatus ) ) );
         }
     }
     else
@@ -973,8 +973,8 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
     {
         LogWarn( ( "Failed cleanup for MQTT control plane: "
                    "unsubscribeFromJobNotificationTopic returned error: "
-                   "OtaMqttStatus_t=%u",
-                   mqttStatus ) );
+                   "OtaMqttStatus_t=%s",
+                   OTA_MQTT_strerror( mqttStatus ) ) );
         result = OtaErrCleanupControlFailed;
     }
 
@@ -998,10 +998,37 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
     {
         LogWarn( ( "Failed cleanup for MQTT data plane: "
                    "unsubscribeFromDataStream returned error: "
-                   "OtaMqttStatus_t=%u",
-                   mqttStatus ) );
+                   "OtaMqttStatus_t=%s",
+                   OTA_MQTT_strerror( mqttStatus ) ) );
         result = OtaErrCleanupDataFailed;
     }
 
     return result;
+}
+
+const char * OTA_MQTT_strerror( OtaMqttStatus_t err )
+{
+    const char * str = NULL;
+
+    switch( err )
+    {
+        case OtaMqttSuccess:
+            str = "OtaMqttSuccess";
+            break;
+
+        case OtaMqttPublishFailed:
+            str = "OtaMqttPublishFailed";
+            break;
+
+        case OtaMqttSubscribeFailed:
+            str = "OtaMqttSubscribeFailed";
+            break;
+
+        case OtaMqttUnsubscribeFailed:
+            str = "OtaMqttUnsubscribeFailed";
+            break;
+
+        default:
+            str = "InvalidErrorcode";
+    }
 }

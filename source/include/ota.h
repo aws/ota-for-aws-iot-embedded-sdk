@@ -428,4 +428,24 @@ void otaAgentTask( void * pUnused );
  */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
 
+/**
+ * @brief Error code to string conversion for OTA errors.
+ *
+ * @param[in] err The error to convert to a string.
+ *
+ * @return The string representation of the error.
+ */
+/* @[declare_ota_error_strerror] */
+const char * OTA_Err_strerror( OtaErr_t err );
+/* @[declare_ota_error_strerror] */
+
+/**
+ * @brief Error code to string conversion for OTA Job Parsing errors.
+ *
+ * @param[in] err The error to convert to a string.
+ *
+ * @return The string representation of the error.
+ */
+const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err );
+
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */

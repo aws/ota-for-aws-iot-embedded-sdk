@@ -158,3 +158,30 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
 }
+
+const char * OTA_HTTP_strerror( OtaHttpStatus_t err )
+{
+    const char * str = NULL;
+
+    switch( err )
+    {
+        case OtaHttpSuccess:
+            str = "OtaHttpSuccess";
+            break;
+
+        case OtaHttpInitFailed:
+            str = "OtaHttpInitFailed";
+            break;
+
+        case OtaHttpDeinitFailed:
+            str = "OtaHttpDeinitFailed";
+            break;
+
+        case OtaHttpRequestFailed:
+            str = "OtaHttpRequestFailed";
+            break;
+
+        default:
+            str = "InvalidErrorcode";
+    }
+}
