@@ -38,7 +38,7 @@
 #define otaconfigOTA_UPDATE_STATUS_FREQUENCY    1
 
 /* Lower request momentum so that retry fails faster. */
-#define otaconfigMAX_NUM_REQUEST_MOMENTUM       1
+#define otaconfigMAX_NUM_REQUEST_MOMENTUM       3
 
 #define LOG_LEVEL_ERROR                         0
 #define LOG_LEVEL_WARN                          1

@@ -34,7 +34,6 @@ bool
 bootloader
 br
 buf
-bufferused
 bytesreceived
 bytessent
 bytestorecv

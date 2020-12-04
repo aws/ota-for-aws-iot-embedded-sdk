@@ -49,11 +49,13 @@
 
 /* Job document for testing. */
 #define OTA_TEST_FILE_SIZE           10240
+#define OTA_TEST_FILE_NUM_BLOCKS     ( OTA_TEST_FILE_SIZE / OTA_FILE_BLOCK_SIZE + 1 )
 #define OTA_TEST_FILE_SIZE_STR       "10240"
 #define JOB_DOC_A                    "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_B                    "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob21\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_SELF_TEST            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_HTTP                 "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob22\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"HTTP\"],\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"update_data_url\":\"https://dummy-url.com/ota.bin\",\"auth_scheme\":\"aws.s3.presigned\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_ONE_BLOCK            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob22\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"HTTP\"],\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": \"1024\" ,\"fileid\":0,\"certfile\":\"test.crt\",\"update_data_url\":\"https://dummy-url.com/ota.bin\",\"auth_scheme\":\"aws.s3.presigned\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID              "not a json"
 
 /* OTA application buffer size. */
@@ -72,6 +74,8 @@
       OTA_FILE_BITMAP_SIZE +      \
       OTA_UPDATE_URL_SIZE +       \
       OTA_AUTH_SCHEME_SIZE )
+
+#define min( x, y )    ( x < y ? x : y )
 
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
@@ -214,10 +218,14 @@ static OtaOsStatus_t mockOSEventReceive( OtaEventContext_t * unused_1,
 
     if( otaEventQueueEnd != otaEventQueue )
     {
+        pthread_mutex_lock( &eventLock );
+
         pOtaEvent->eventId = otaEventQueue[ 0 ].eventId;
         pOtaEvent->pEventData = otaEventQueue[ 0 ].pEventData;
         memmove( otaEventQueue, otaEventQueue + 1, sizeof( OtaEventMsg_t ) * ( currQueueSize - 1 ) );
         otaEventQueueEnd--;
+
+        pthread_mutex_unlock( &eventLock );
     }
     else
     {
@@ -1088,6 +1096,12 @@ void test_OTA_RequestFileBlockHttp()
     otaRequestFileBlock();
 }
 
+void test_OTA_RequestFileBlockHttpOneBlock()
+{
+    pOtaJobDoc = JOB_DOC_ONE_BLOCK;
+    otaRequestFileBlock();
+}
+
 void test_OTA_RequestFileBlockRetryFail()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -1157,7 +1171,8 @@ void test_OTA_ReceiveFileBlockTooLarge()
 
 void test_OTA_ReceiveFileBlockCompleteMqtt()
 {
-    OtaEventMsg_t otaEvent = { NULL, OtaAgentEventReceivedFileBlock };
+    OtaEventMsg_t otaEvent;
+    OtaEventData_t eventBuffers[ OTA_TEST_FILE_NUM_BLOCKS ];
     uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
     uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
     size_t streamingMessageSize = 0;
@@ -1180,43 +1195,36 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     /* Send blocks. */
     idx = 0;
 
-    while( remainingBytes > OTA_FILE_BLOCK_SIZE )
+    while( remainingBytes >= 0 )
     {
         /* Construct a AWS IoT streaming message. */
         createOtaStreammingMessage(
             pStreamingMessage,
             sizeof( pStreamingMessage ),
-            idx++,
+            idx,
             pFileBlock,
-            OTA_FILE_BLOCK_SIZE,
+            min( remainingBytes, OTA_FILE_BLOCK_SIZE ),
             &streamingMessageSize );
-        otaEvent.pEventData = &eventBuffer;
+
+        otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+        otaEvent.pEventData = &eventBuffers[ idx ];
         memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
         otaEvent.pEventData->dataLength = streamingMessageSize;
-
         OTA_SignalEvent( &otaEvent );
-        otaWaitForEmptyEvent();
-        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
+        idx++;
         remainingBytes -= OTA_FILE_BLOCK_SIZE;
     }
 
-    /* Send last block. */
-    createOtaStreammingMessage(
-        pStreamingMessage,
-        sizeof( pStreamingMessage ),
-        idx,
-        pFileBlock,
-        remainingBytes,
-        &streamingMessageSize );
-    otaEvent.pEventData = &eventBuffer;
-    memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
-    otaEvent.pEventData->dataLength = streamingMessageSize;
-
     /* OTA agent should complete the update and go back to waiting for job state. */
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Check if received complete file. */
+    for( idx = 0; idx < OTA_TEST_FILE_SIZE; ++idx )
+    {
+        TEST_ASSERT_EQUAL( pFileBlock[ idx % sizeof( pFileBlock ) ], pOtaFileBuffer[ idx ] );
+    }
 }
 
 void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
@@ -1227,9 +1235,11 @@ void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
 
 void test_OTA_ReceiveFileBlockCompleteHttp()
 {
-    OtaEventMsg_t otaEvent = { NULL, OtaAgentEventReceivedFileBlock };
+    OtaEventMsg_t otaEvent;
+    OtaEventData_t eventBuffers[ OTA_TEST_FILE_NUM_BLOCKS ];
     uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
     int remainingBytes = OTA_TEST_FILE_SIZE;
+    int fileBlockSize = 0;
     int idx = 0;
 
     pOtaJobDoc = JOB_DOC_HTTP;
@@ -1246,30 +1256,31 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
         pFileBlock[ idx ] = idx % UINT8_MAX;
     }
 
-    while( remainingBytes > OTA_FILE_BLOCK_SIZE )
+    idx = 0;
+
+    while( remainingBytes >= 0 )
     {
-        otaEvent.pEventData = &eventBuffer;
-        memcpy( otaEvent.pEventData->data, pFileBlock, OTA_FILE_BLOCK_SIZE );
-        otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE;
-
+        fileBlockSize = min( remainingBytes, OTA_FILE_BLOCK_SIZE );
+        otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+        otaEvent.pEventData = &eventBuffers[ idx ];
+        memset( eventBuffer.data, 0, OTA_DATA_BLOCK_SIZE );
+        memcpy( otaEvent.pEventData->data, pFileBlock, fileBlockSize );
+        otaEvent.pEventData->dataLength = fileBlockSize;
         OTA_SignalEvent( &otaEvent );
-        otaWaitForEmptyEvent();
-        TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-        /* TODO, statistics is now broken. Need to fix it to test OTA_GetPacketsReceived
-         * OTA_GetPacketsProcessed, and OTA_GetPacketsDropped . */
+        idx++;
         remainingBytes -= OTA_FILE_BLOCK_SIZE;
     }
 
-    /* Send last block. */
-    otaEvent.pEventData = &eventBuffer;
-    memcpy( otaEvent.pEventData->data, pFileBlock, OTA_FILE_BLOCK_SIZE );
-    otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE;
-
     /* OTA agent should complete the update and go back to waiting for job state. */
-    OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Check if received complete file. */
+    for( idx = 0; idx < OTA_TEST_FILE_SIZE; ++idx )
+    {
+        TEST_ASSERT_EQUAL( pFileBlock[ idx % sizeof( pFileBlock ) ], pOtaFileBuffer[ idx ] );
+    }
 }
 
 void test_OTA_ReceiveFileBlockCompleteDynamicBufferHttp()
