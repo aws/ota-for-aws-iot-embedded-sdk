@@ -46,11 +46,10 @@
 #include "ota_appversion32.h"
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN               "rdy"                /*!< Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN           "rdy" /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE        128U             /*!< Max length of a job status message to the service. */
-#define OTA_UPDATE_STATUS_FREQUENCY    64U              /*!< Update the job status every 64 unique blocks received. */
+#define OTA_STATUS_MSG_MAX_SIZE    128U /*!< Max length of a job status message to the service. */
 
 /**
  *  @addtogroup ota_mqtt_topic_strings
@@ -506,7 +505,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
-    if( ( received % OTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
+    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
         /* coverity[misra_c_2012_rule_21_6_violation] */
         msgSize = ( uint32_t ) snprintf( pMsgBuffer,

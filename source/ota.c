@@ -956,9 +956,10 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
-            /* We're actively receiving a file so update the job status as needed. */
-            /* First reset the momentum counter since we received a good block. */
+            /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
+            /* We're actively receiving a file so update the job status as needed. */
+            otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
         }
 
         if( otaAgent.numOfBlocksToReceive > 1U )

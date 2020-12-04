@@ -88,7 +88,7 @@ static const char * pOtaJobDoc = NULL;
 static OtaInterfaces_t otaInterfaces;
 
 /* OTA image state. */
-static OtaImageState_t imageState = OtaImageStateUnknown;
+static OtaPalImageState_t palImageState = OtaPalImageStateUnknown;
 
 /* OTA application buffer. */
 static OtaAppBuffer_t pOtaAppBuffer;
@@ -319,13 +319,32 @@ OtaPalStatus_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
 OtaPalStatus_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileContext,
                                              OtaImageState_t eState )
 {
-    imageState = eState;
+    switch( eState )
+    {
+        case OtaImageStateTesting:
+            palImageState = OtaPalImageStatePendingCommit;
+            break;
+
+        case OtaImageStateAccepted:
+            palImageState = OtaPalImageStateValid;
+
+        default:
+            palImageState = OtaPalImageStateInvalid;
+            break;
+    }
+
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileContext )
 {
-    return imageState;
+    return palImageState;
+}
+
+OtaPalImageState_t mockPalGetPlatformImageStateAlwaysInvalid( OtaFileContext_t * const pFileContext )
+{
+    ( void ) pFileContext;
+    return OtaPalImageStateInvalid;
 }
 
 static void mockAppleteCallback( OtaJobEvent_t event,
@@ -496,7 +515,7 @@ static void otaGoToStateWithTimeout( OtaState_t state,
 
         case OtaAgentStateRequestingJob:
             /* Let the PAL says it's not in self test.*/
-            imageState = OtaPalImageStateValid;
+            palImageState = OtaPalImageStateValid;
             otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
             otaEvent.eventId = OtaAgentEventStart;
             OTA_SignalEvent( &otaEvent );
@@ -511,7 +530,7 @@ static void otaGoToStateWithTimeout( OtaState_t state,
         case OtaAgentStateCreatingFile:
             otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
             /* Let the PAL says it's not in self test.*/
-            imageState = OtaPalImageStateValid;
+            palImageState = OtaPalImageStateValid;
             otaReceiveJobDocument();
             break;
 
@@ -553,7 +572,7 @@ void setUp()
 
 void tearDown()
 {
-    imageState = OtaImageStateUnknown;
+    palImageState = OtaPalImageStateUnknown;
     pOtaJobDoc = NULL;
     pOtaFileHandle = NULL;
     memset( pOtaFileBuffer, 0, OTA_TEST_FILE_SIZE );
@@ -630,7 +649,7 @@ void test_OTA_StartWhenReady()
     OtaEventMsg_t otaEvent = { 0 };
 
     /* Let the PAL says it's not in self test.*/
-    imageState = OtaPalImageStateValid;
+    palImageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
@@ -646,7 +665,7 @@ void test_OTA_StartFailedWhenReady()
     OtaEventMsg_t otaEvent = { 0 };
 
     /* Let the PAL says it's not in self test.*/
-    imageState = OtaPalImageStateValid;
+    palImageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
@@ -880,7 +899,7 @@ void test_OTA_ProcessJobDocumentValidJson()
     pOtaJobDoc = JOB_DOC_A;
 
     /* Let the PAL says it's not in self test.*/
-    imageState = OtaPalImageStateValid;
+    palImageState = OtaPalImageStateValid;
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
@@ -1090,7 +1109,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
-void test_OTA_SelfTest()
+void invokeSelfTestHandler()
 {
     pOtaJobDoc = JOB_DOC_SELF_TEST;
 
@@ -1101,14 +1120,26 @@ void test_OTA_SelfTest()
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
-    /* Let the PAL says it's in self test. */
-    imageState = OtaPalImageStatePendingCommit;
-
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateCreatingFile );
     otaWaitForState( OtaAgentStateWaitingForJob );
+}
+
+void test_OTA_SelfTest()
+{
+    invokeSelfTestHandler();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
+}
+
+void test_OTA_SelfTestJobPlatformMismatch()
+{
+    /* Let the PAL always says it's not in self test. */
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageStateAlwaysInvalid;
+
+    invokeSelfTestHandler();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
 
 void test_OTA_ReceiveNewJobDocWhileInProgress()

@@ -127,6 +127,20 @@
 #endif
 
 /**
+ * @brief How frequently the device will report its OTA progress to the cloud.
+ *
+ * @note Device will update the job status with the number of blocks it has received every certain
+ * number of blocks it receives. For example, 64 means device will update job status every 64 blocks
+ * it receives.
+ *
+ * <b>Possible values:</b> Any unsigned 32 integer. <br>
+ * <b>Default value:</b> '64'
+ */
+#ifndef otaconfigOTA_UPDATE_STATUS_FREQUENCY
+    #define otaconfigOTA_UPDATE_STATUS_FREQUENCY    64U
+#endif
+
+/**
  * @brief The number of data buffers reserved by the OTA agent.
  *
  * @note This configurations parameter sets the maximum number of static data
