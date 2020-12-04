@@ -96,7 +96,8 @@ static OtaAppBuffer_t pOtaAppBuffer;
 static uint8_t pUserBuffer[ OTA_APP_BUFFER_SIZE ];
 
 /* OTA Event. */
-static OtaEventMsg_t otaCurrentEvent;
+static OtaEventMsg_t otaEventQueue[ OTA_NUM_MSG_Q_ENTRIES ];
+static OtaEventMsg_t * otaEventQueueEnd = otaEventQueue;
 static OtaEventData_t eventBuffer;
 static pthread_mutex_t eventLock;
 static bool eventIgnore;
@@ -112,8 +113,7 @@ static const int otaDefaultWait = 2000;
 
 static OtaOsStatus_t mockOSEventReset( OtaEventContext_t * unused )
 {
-    otaCurrentEvent.eventId = OtaAgentEventMax;
-    otaCurrentEvent.pEventData = NULL;
+    otaEventQueueEnd = otaEventQueue;
     eventIgnore = false;
 
     return OtaOsSuccess;
@@ -125,14 +125,20 @@ static OtaOsStatus_t mockOSEventSendThenStop( OtaEventContext_t * unused_1,
                                               const void * pEventMsg,
                                               uint32_t unused_2 )
 {
+    if( otaEventQueueEnd >= otaEventQueue + OTA_NUM_MSG_Q_ENTRIES )
+    {
+        return OtaOsEventQueueSendFailed;
+    }
+
     pthread_mutex_lock( &eventLock );
 
     if( !eventIgnore )
     {
         const OtaEventMsg_t * pOtaEvent = pEventMsg;
 
-        otaCurrentEvent.eventId = pOtaEvent->eventId;
-        otaCurrentEvent.pEventData = pOtaEvent->pEventData;
+        otaEventQueueEnd->eventId = pOtaEvent->eventId;
+        otaEventQueueEnd->pEventData = pOtaEvent->pEventData;
+        otaEventQueueEnd++;
 
         eventIgnore = true;
     }
@@ -166,13 +172,20 @@ static OtaOsStatus_t mockOSEventSend( OtaEventContext_t * unused_1,
                                       const void * pEventMsg,
                                       uint32_t unused_2 )
 {
+    if( otaEventQueueEnd >= otaEventQueue + OTA_NUM_MSG_Q_ENTRIES )
+    {
+        return OtaOsEventQueueSendFailed;
+    }
+
+    pthread_mutex_lock( &eventLock );
+
     const OtaEventMsg_t * pOtaEvent = pEventMsg;
 
-    if ( otaCurrentEvent.eventId == OtaAgentEventMax)
-    {
-        otaCurrentEvent.eventId = pOtaEvent->eventId;
-        otaCurrentEvent.pEventData = pOtaEvent->pEventData;
-    }
+    otaEventQueueEnd->eventId = pOtaEvent->eventId;
+    otaEventQueueEnd->pEventData = pOtaEvent->pEventData;
+    otaEventQueueEnd++;
+
+    pthread_mutex_unlock( &eventLock );
 
     return OtaOsSuccess;
 }
@@ -191,13 +204,14 @@ static OtaOsStatus_t mockOSEventReceive( OtaEventContext_t * unused_1,
 {
     OtaOsStatus_t err = OtaOsSuccess;
     OtaEventMsg_t * pOtaEvent = pEventMsg;
+    size_t currQueueSize = otaEventQueueEnd - otaEventQueue;
 
-    if( otaCurrentEvent.eventId != OtaAgentEventMax )
+    if( otaEventQueueEnd != otaEventQueue )
     {
-        pOtaEvent->eventId = otaCurrentEvent.eventId;
-        pOtaEvent->pEventData = otaCurrentEvent.pEventData;
-        otaCurrentEvent.eventId = OtaAgentEventMax;
-        otaCurrentEvent.pEventData = NULL;
+        pOtaEvent->eventId = otaEventQueue[ 0 ].eventId;
+        pOtaEvent->pEventData = otaEventQueue[ 0 ].pEventData;
+        memmove( otaEventQueue, otaEventQueue + 1, sizeof( OtaEventMsg_t ) * ( currQueueSize - 1 ) );
+        otaEventQueueEnd--;
     }
     else
     {
@@ -491,7 +505,7 @@ static void otaWaitForState( OtaState_t state )
 
 static void otaWaitForEmptyEventWithTimeout( int milliseconds )
 {
-    while( milliseconds > 0 && otaCurrentEvent.eventId != OtaAgentEventMax )
+    while( milliseconds > 0 && otaEventQueueEnd != otaEventQueue )
     {
         usleep( 1000 );
         milliseconds--;
@@ -608,6 +622,11 @@ void setUp()
 
 void tearDown()
 {
+    if( OtaAgentStateStopped != OTA_GetState() )
+    {
+        otaWaitForEmptyEvent();
+    }
+
     palImageState = OtaPalImageStateUnknown;
     resetCalled = false;
     pOtaJobDoc = NULL;
