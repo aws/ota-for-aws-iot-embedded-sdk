@@ -1269,7 +1269,6 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
         fileBlockSize = min( remainingBytes, OTA_FILE_BLOCK_SIZE );
         otaEvent.eventId = OtaAgentEventReceivedFileBlock;
         otaEvent.pEventData = &eventBuffers[ idx ];
-        memset( eventBuffer.data, 0, OTA_DATA_BLOCK_SIZE );
         memcpy( otaEvent.pEventData->data, pFileBlock, fileBlockSize );
         otaEvent.pEventData->dataLength = fileBlockSize;
         OTA_SignalEvent( &otaEvent );
