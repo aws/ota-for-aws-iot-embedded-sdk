@@ -34,7 +34,6 @@ bool
 bootloader
 br
 buf
-bufferused
 bytesreceived
 bytessent
 bytestorecv
@@ -650,3 +649,4 @@ palerr
 otapaloutofmemory
 otapalnullfilecontext
 otaerractivatefailed
+cpu

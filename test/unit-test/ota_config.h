@@ -31,15 +31,22 @@
 #ifndef OTA_CONFIG_H_
 #define OTA_CONFIG_H_
 
-#define configENABLED_DATA_PROTOCOLS    ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )
+/* Enable both MQTT and HTTP in unit tests. */
+#define configENABLED_DATA_PROTOCOLS            ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )
 
-#define LOG_LEVEL_ERROR                 0
-#define LOG_LEVEL_WARN                  1
-#define LOG_LEVEL_INFO                  2
-#define LOG_LEVEL_DEBUG                 3
+/* Call status update for every block that we received so that we can hit some internal routines. */
+#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    1
+
+/* Lower request momentum so that retry fails faster. */
+#define otaconfigMAX_NUM_REQUEST_MOMENTUM       3
+
+#define LOG_LEVEL_ERROR                         0
+#define LOG_LEVEL_WARN                          1
+#define LOG_LEVEL_INFO                          2
+#define LOG_LEVEL_DEBUG                         3
 
 #ifndef LOG_LEVEL
-    #define LOG_LEVEL                   -1
+    #define LOG_LEVEL                           -1
 #endif
 
 #if LOG_LEVEL >= LOG_LEVEL_ERROR
