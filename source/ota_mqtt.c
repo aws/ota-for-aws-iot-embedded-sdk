@@ -1031,4 +1031,6 @@ const char * OTA_MQTT_strerror( OtaMqttStatus_t err )
         default:
             str = "InvalidErrorcode";
     }
+
+    return str;
 }

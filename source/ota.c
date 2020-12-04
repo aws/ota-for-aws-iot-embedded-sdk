@@ -493,7 +493,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                    ", OtaPalStatus_t=%u"
                    ", state=%d"
                    ", reason=%d",
-                   OTA_Status_strerror( err ),
+                   OTA_Err_strerror( err ),
                    palStatus,
                    stateToSet,
                    reasonToSet ) );
@@ -559,7 +559,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     {
         LogError( ( "Failed to start self-test: "
                     "OtaErr_t=%s",
-                    OTA_Status_strerror( err ) ) );
+                    OTA_Err_strerror( err ) ) );
     }
 
     return err;
@@ -656,13 +656,13 @@ static OtaErr_t processNullFileContext()
          *
          * If there is a valid job id, then a job status update will be sent.
          */
-        LogError( ( "OTA job doc parse failed: OtaErr_t=%s, aborting current update.", OTA_Status_strerror( retVal ) ) );
+        LogError( ( "OTA job doc parse failed: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
 
         retVal = setImageStateWithReason( OtaImageStateAborted, OtaErrJobParserError );
 
         if( retVal != OtaErrNone )
         {
-            LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( retVal ) ) );
+            LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( retVal ) ) );
         }
 
         retVal = OtaErrJobParserError;
@@ -701,13 +701,13 @@ static OtaErr_t processValidFileContext()
              * Failed to set the data interface so abort the OTA.If there is a valid job id,
              * then a job status update will be sent.
              */
-            LogError( ( "Failed to set OTA data interface: OtaErr_t=%s, aborting current update.", OTA_Status_strerror( retVal ) ) );
+            LogError( ( "Failed to set OTA data interface: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
 
             retVal = setImageStateWithReason( OtaImageStateAborted, retVal );
 
             if( retVal != OtaErrNone )
             {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( retVal ) ) );
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( retVal ) ) );
             }
         }
     }
@@ -863,7 +863,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
 
             if( err != OtaErrNone )
             {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( err ) ) );
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( err ) ) );
             }
 
             /* Send shutdown event. */
@@ -990,7 +990,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     if( err != OtaErrNone )
     {
         LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                    OTA_Status_strerror( err ) ) );
+                    OTA_Err_strerror( err ) ) );
     }
 
     return err;
@@ -1714,7 +1714,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
     if( otaErr != OtaErrNone )
     {
         LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                    OTA_Status_strerror( otaErr ) ) );
+                    OTA_Err_strerror( otaErr ) ) );
     }
 
     return err;
@@ -1813,19 +1813,19 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
 
         if( otaErr != OtaErrNone )
         {
-            LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Status_strerror( otaErr ) ) );
+            LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
         }
     }
     else
     {
         LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
-                   "OtaErr_t=%s", OTA_Status_strerror( errVersionCheck ) ) );
+                   "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
 
         otaErr = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
         if( otaErr != OtaErrNone )
         {
-            LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Status_strerror( otaErr ) ) );
+            LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
         }
 
         /* All reject cases must reset the device. */
@@ -1988,7 +1988,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
             if( otaErr != OtaErrNone )
             {
                 LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                            OTA_Status_strerror( otaErr ) ) );
+                            OTA_Err_strerror( otaErr ) ) );
             }
 
             /* We don't need the job name memory anymore since we're done with this job. */
@@ -2101,7 +2101,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         LogDebug( ( "Failed to parse the file context from the job document: "
                     "OtaErr_t=%s",
-                    OTA_Status_strerror( err ) ) );
+                    OTA_Err_strerror( err ) ) );
     }
 
     return pUpdateFile; /* Return the OTA file context. */
@@ -2511,7 +2511,7 @@ static void executeHandler( uint32_t index,
         {
             LogError( ( "Failed to execute state transition handler: "
                         "Handler returned error: OtaErr_t=%s",
-                        OTA_Status_strerror( err ) ) );
+                        OTA_Err_strerror( err ) ) );
         }
     }
 
@@ -2993,7 +2993,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
     {
         LogDebug( ( "Failed to update the image state: "
                     "OtaErr_t=%s",
-                    OTA_Status_strerror( err ) ) );
+                    OTA_Err_strerror( err ) ) );
     }
 
     return err;
@@ -3034,7 +3034,7 @@ OtaErr_t OTA_Suspend( void )
         LogWarn( ( "Failed to suspend OTA Agent: "
                    "OTA Agent is stopped: "
                    "OtaErr_t=%s",
-                   OTA_Status_strerror( err ) ) );
+                   OTA_Err_strerror( err ) ) );
     }
 
     return err;
@@ -3064,7 +3064,7 @@ OtaErr_t OTA_Resume( void )
         LogWarn( ( "Failed to resume OTA Agent: "
                    "OTA Agent is stopped: "
                    "OtaErr_t=%s",
-                   OTA_Status_strerror( err ) ) );
+                   OTA_Err_strerror( err ) ) );
     }
 
     return err;
@@ -3172,6 +3172,8 @@ const char * OTA_Err_strerror( OtaErr_t err )
         default:
             str = "Invalid Error code";
     }
+
+    return str;
 }
 
 const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err )
@@ -3223,5 +3225,7 @@ const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err )
         default:
             str = "InvalidErrorcode";
     }
+
+    return str;
 }
 /*-----------------------------------------------------------*/
