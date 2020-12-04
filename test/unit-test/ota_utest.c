@@ -970,7 +970,7 @@ void test_OTA_RequestJobDocumentRetryFail()
     /* Let timer invoke callback directly. */
     otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
 
-    /* Allow event to be sent continously so that retries can work. */
+    /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Start OTA agent, it should first transit to requesting job state. Then keep requesting job
@@ -1051,7 +1051,7 @@ void test_OTA_InitFileTransferRetryFail()
     /* Let timer invoke callback directly. */
     otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
 
-    /* Allow event to be sent continously so that retries can work. */
+    /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* After receiving a valid job document, OTA agent should first transit to creating file state.
@@ -1104,7 +1104,7 @@ void test_OTA_RequestFileBlockRetryFail()
     /* Let timer invoke callback directly. */
     otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
 
-    /* Allow event to be sent continously so that retries can work. */
+    /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* After receiving a valid job document and starts file transfer, OTA agent should first transit
