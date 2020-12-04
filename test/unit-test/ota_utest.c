@@ -1223,7 +1223,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     }
 
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
@@ -1269,7 +1269,6 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
         fileBlockSize = min( remainingBytes, OTA_FILE_BLOCK_SIZE );
         otaEvent.eventId = OtaAgentEventReceivedFileBlock;
         otaEvent.pEventData = &eventBuffers[ idx ];
-        memset( eventBuffer.data, 0, OTA_DATA_BLOCK_SIZE );
         memcpy( otaEvent.pEventData->data, pFileBlock, fileBlockSize );
         otaEvent.pEventData->dataLength = fileBlockSize;
         OTA_SignalEvent( &otaEvent );
@@ -1279,7 +1278,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     }
 
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
