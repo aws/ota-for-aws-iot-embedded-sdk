@@ -489,11 +489,11 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     if( err != OtaErrNone )
     {
         LogWarn( ( "Failed to set image state with reason: "
-                   "OtaErr_t=%u"
+                   "OtaErr_t=%s"
                    ", OtaPalStatus_t=%u"
                    ", state=%d"
                    ", reason=%d",
-                   err,
+                   OTA_Status_strerror( err ),
                    palStatus,
                    stateToSet,
                    reasonToSet ) );
@@ -558,8 +558,8 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     if( err != OtaErrNone )
     {
         LogError( ( "Failed to start self-test: "
-                    "OtaErr_t=%d",
-                    err ) );
+                    "OtaErr_t=%s",
+                    OTA_Status_strerror( err ) ) );
     }
 
     return err;
@@ -656,13 +656,13 @@ static OtaErr_t processNullFileContext()
          *
          * If there is a valid job id, then a job status update will be sent.
          */
-        LogError( ( "OTA job doc parse failed: OtaErr_t=%d, aborting current update.", retVal ) );
+        LogError( ( "OTA job doc parse failed: OtaErr_t=%s, aborting current update.", OTA_Status_strerror( retVal ) ) );
 
         retVal = setImageStateWithReason( OtaImageStateAborted, OtaErrJobParserError );
 
         if( retVal != OtaErrNone )
         {
-            LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
+            LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( retVal ) ) );
         }
 
         retVal = OtaErrJobParserError;
@@ -701,13 +701,13 @@ static OtaErr_t processValidFileContext()
              * Failed to set the data interface so abort the OTA.If there is a valid job id,
              * then a job status update will be sent.
              */
-            LogError( ( "Failed to set OTA data interface: OtaErr_t=%d, aborting current update.", retVal ) );
+            LogError( ( "Failed to set OTA data interface: OtaErr_t=%s, aborting current update.", OTA_Status_strerror( retVal ) ) );
 
             retVal = setImageStateWithReason( OtaImageStateAborted, retVal );
 
             if( retVal != OtaErrNone )
             {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%d", retVal ) );
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( retVal ) ) );
             }
         }
     }
@@ -863,7 +863,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
 
             if( err != OtaErrNone )
             {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%d", err ) );
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Status_strerror( err ) ) );
             }
 
             /* Send shutdown event. */
@@ -989,8 +989,8 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
     if( err != OtaErrNone )
     {
-        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%u",
-                    err ) );
+        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                    OTA_Status_strerror( err ) ) );
     }
 
     return err;
@@ -1690,8 +1690,8 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                 /* Job is malformed - return an error */
                 err = OtaJobParseErrNonConformingJobDoc;
 
-                LogError( ( "Custom job document was parsed, but the job name is NULL: OtaJobParseErr_t=%i",
-                            err ) );
+                LogError( ( "Custom job document was parsed, but the job name is NULL: OtaJobParseErr_t=%s",
+                            OTA_JobParseErr_strerror( err ) ) );
             }
         }
         else
@@ -1713,8 +1713,8 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
 
     if( otaErr != OtaErrNone )
     {
-        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%d",
-                    otaErr ) );
+        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                    OTA_Status_strerror( otaErr ) ) );
     }
 
     return err;
@@ -1813,19 +1813,19 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
 
         if( otaErr != OtaErrNone )
         {
-            LogError( ( "Failed to set image state to testing: OtaErr_t=%d", otaErr ) );
+            LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Status_strerror( otaErr ) ) );
         }
     }
     else
     {
         LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
-                   "OtaErr_t=%u", errVersionCheck ) );
+                   "OtaErr_t=%s", OTA_Status_strerror( errVersionCheck ) ) );
 
         otaErr = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
 
         if( otaErr != OtaErrNone )
         {
-            LogError( ( "Failed to set image state to rejected: OtaErr_t=%d", otaErr ) );
+            LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Status_strerror( otaErr ) ) );
         }
 
         /* All reject cases must reset the device. */
@@ -1895,7 +1895,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     }
     else
     {
-        LogError( ( "Failed to validate and start the job: OtaJobParseErr_t=%d", err ) );
+        LogError( ( "Failed to validate and start the job: OtaJobParseErr_t=%s", OTA_JobParseErr_strerror( err ) ) );
     }
 
     return err;
@@ -1974,8 +1974,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
         {
             LogError( ( "Failed to parse the job document after parsing the job name: "
-                        "OtaJobParseErr_t=%d, Job name=%s",
-                        err, ( const char * ) pFileContext->pJobName ) );
+                        "OtaJobParseErr_t=%s, Job name=%s",
+                        OTA_JobParseErr_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
             /* Assume control of the job name from the context. */
             ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
@@ -1987,8 +1987,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
             if( otaErr != OtaErrNone )
             {
-                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%d",
-                            err ) );
+                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                            OTA_Status_strerror( otaErr ) ) );
             }
 
             /* We don't need the job name memory anymore since we're done with this job. */
@@ -1996,8 +1996,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
         else
         {
-            LogError( ( "Failed to parse job document: OtaJobParseErr_t=%d",
-                        err ) );
+            LogError( ( "Failed to parse job document: OtaJobParseErr_t=%s",
+                        OTA_JobParseErr_strerror( err ) ) );
         }
     }
 
@@ -2100,8 +2100,8 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     if( err != OtaErrNone )
     {
         LogDebug( ( "Failed to parse the file context from the job document: "
-                    "OtaErr_t=%d",
-                    err ) );
+                    "OtaErr_t=%s",
+                    OTA_Status_strerror( err ) ) );
     }
 
     return pUpdateFile; /* Return the OTA file context. */
@@ -2510,8 +2510,8 @@ static void executeHandler( uint32_t index,
         else
         {
             LogError( ( "Failed to execute state transition handler: "
-                        "Handler returned error: OtaErr_t=%d",
-                        err ) );
+                        "Handler returned error: OtaErr_t=%s",
+                        OTA_Status_strerror( err ) ) );
         }
     }
 
@@ -2611,7 +2611,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
         retVal = false;
         LogError( ( "Failed to add even message to OTA event queue: "
                     "send returned error: "
-                    "OtaErr_t=%d",
+                    "OtaOsStatus_t=%d",
                     err ) );
     }
 
@@ -2992,8 +2992,8 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
     if( err != OtaErrNone )
     {
         LogDebug( ( "Failed to update the image state: "
-                    "OtaErr_t=%d",
-                    err ) );
+                    "OtaErr_t=%s",
+                    OTA_Status_strerror( err ) ) );
     }
 
     return err;
@@ -3033,8 +3033,8 @@ OtaErr_t OTA_Suspend( void )
 
         LogWarn( ( "Failed to suspend OTA Agent: "
                    "OTA Agent is stopped: "
-                   "OtaErr_t=%d",
-                   err ) );
+                   "OtaErr_t=%s",
+                   OTA_Status_strerror( err ) ) );
     }
 
     return err;
@@ -3063,11 +3063,165 @@ OtaErr_t OTA_Resume( void )
 
         LogWarn( ( "Failed to resume OTA Agent: "
                    "OTA Agent is stopped: "
-                   "OtaErr_t=%d",
-                   err ) );
+                   "OtaErr_t=%s",
+                   OTA_Status_strerror( err ) ) );
     }
 
     return err;
 }
 
+
+const char * OTA_Err_strerror( OtaErr_t err )
+{
+    const char * str = NULL;
+
+    switch( err )
+    {
+        case OtaErrNone:
+            str = "OtaErrNone";
+            break;
+
+        case OtaErrUninitialized:
+            str = "OtaErrUninitialized";
+            break;
+
+        case OtaErrPanic:
+            str = "OtaErrPanic";
+            break;
+
+        case OtaErrInvalidArg:
+            str = "OtaErrInvalidArg";
+            break;
+
+        case OtaErrAgentStopped:
+            str = "OtaErrAgentStopped";
+            break;
+
+        case OtaErrSignalEventFailed:
+            str = "OtaErrSignalEventFailed";
+            break;
+
+        case OtaErrRequestJobFailed:
+            str = "OtaErrRequestJobFailed";
+            break;
+
+        case OtaErrInitFileTransferFailed:
+            str = "OtaErrInitFileTransferFailed";
+            break;
+
+        case OtaErrRequestFileBlockFailed:
+            str = "OtaErrRequestFileBlockFailed";
+            break;
+
+        case OtaErrCleanupControlFailed:
+            str = "OtaErrCleanupControlFailed";
+            break;
+
+        case OtaErrCleanupDataFailed:
+            str = "OtaErrCleanupDataFailed";
+            break;
+
+        case OtaErrUpdateJobStatusFailed:
+            str = "OtaErrUpdateJobStatusFailed";
+            break;
+
+        case OtaErrJobParserError:
+            str = "OtaErrJobParserError";
+            break;
+
+        case OtaErrInvalidDataProtocol:
+            str = "OtaErrInvalidDataProtocol";
+            break;
+
+        case OtaErrMomentumAbort:
+            str = "OtaErrMomentumAbort";
+            break;
+
+        case OtaErrDowngradeNotAllowed:
+            str = "OtaErrDowngradeNotAllowed";
+            break;
+
+        case OtaErrSameFirmwareVersion:
+            str = "OtaErrSameFirmwareVersion";
+            break;
+
+        case OtaErrImageStateMismatch:
+            str = "OtaErrImageStateMismatch";
+            break;
+
+        case OtaErrNoActiveJob:
+            str = "OtaErrNoActiveJob";
+            break;
+
+        case OtaErrUserAbort:
+            str = "OtaErrUserAbort";
+            break;
+
+        case OtaErrFailedToEncodeCbor:
+            str = "OtaErrFailedToEncodeCbor";
+            break;
+
+        case OtaErrFailedToDecodeCbor:
+            str = "OtaErrFailedToDecodeCbor";
+            break;
+
+        case OtaErrActivateFailed:
+            str = "OtaErrActivateFailed";
+            break;
+
+        default:
+            str = "Invalid Error code";
+    }
+}
+
+const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err )
+{
+    const char * str = NULL;
+
+    switch( err )
+    {
+        case OtaJobParseErrUnknown:
+            str = "OtaJobParseErrUnknown";
+            break;
+
+        case OtaJobParseErrNone:
+            str = "OtaJobParseErrNone";
+            break;
+
+        case OtaJobParseErrBusyWithExistingJob:
+            str = "OtaJobParseErrBusyWithExistingJob";
+            break;
+
+        case OtaJobParseErrNullJob:
+            str = "OtaJobParseErrNullJob";
+            break;
+
+        case OtaJobParseErrUpdateCurrentJob:
+            str = "OtaJobParseErrUpdateCurrentJob";
+            break;
+
+        case OtaJobParseErrZeroFileSize:
+            str = "OtaJobParseErrZeroFileSize";
+            break;
+
+        case OtaJobParseErrNonConformingJobDoc:
+            str = "OtaJobParseErrNonConformingJobDoc";
+            break;
+
+        case OtaJobParseErrBadModelInitParams:
+            str = "OtaJobParseErrBadModelInitParams";
+            break;
+
+        case OtaJobParseErrNoContextAvailable:
+            str = "OtaJobParseErrNoContextAvailable";
+            break;
+
+        case OtaJobParseErrNoActiveJobs:
+            str = "OtaJobParseErrNoActiveJobs";
+            break;
+
+        default:
+            str = "InvalidErrorcode";
+    }
+}
 /*-----------------------------------------------------------*/
