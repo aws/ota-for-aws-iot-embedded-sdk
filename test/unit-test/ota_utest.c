@@ -60,12 +60,18 @@
 #define OTA_UPDATE_FILE_PATH_SIZE    100
 #define OTA_CERT_FILE_PATH_SIZE      100
 #define OTA_STREAM_NAME_SIZE         50
+#define OTA_DECODE_MEMORY_SIZE       OTA_FILE_BLOCK_SIZE
+#define OTA_FILE_BITMAP_SIZE         50
 #define OTA_UPDATE_URL_SIZE          100
+#define OTA_AUTH_SCHEME_SIZE         50
 #define OTA_APP_BUFFER_SIZE       \
     ( OTA_UPDATE_FILE_PATH_SIZE + \
       OTA_CERT_FILE_PATH_SIZE +   \
       OTA_STREAM_NAME_SIZE +      \
-      OTA_UPDATE_URL_SIZE )
+      OTA_DECODE_MEMORY_SIZE +    \
+      OTA_FILE_BITMAP_SIZE +      \
+      OTA_UPDATE_URL_SIZE +       \
+      OTA_AUTH_SCHEME_SIZE )
 
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
@@ -444,8 +450,7 @@ static void otaInterfaceDefault()
     otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageState;
 }
 
-static void otaInit( const char * pClientID,
-                     OtaAppCallback_t appCallback )
+static void otaAppBufferDefault()
 {
     pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
     pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
@@ -453,8 +458,19 @@ static void otaInit( const char * pClientID,
     pOtaAppBuffer.certFilePathSize = OTA_CERT_FILE_PATH_SIZE;
     pOtaAppBuffer.pStreamName = pOtaAppBuffer.pCertFilePath + pOtaAppBuffer.certFilePathSize;
     pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
+    pOtaAppBuffer.pDecodeMemory = pOtaAppBuffer.pStreamName + pOtaAppBuffer.streamNameSize;
+    pOtaAppBuffer.decodeMemorySize = OTA_DECODE_MEMORY_SIZE;
+    pOtaAppBuffer.pFileBitmap = pOtaAppBuffer.pDecodeMemory + pOtaAppBuffer.decodeMemorySize;
+    pOtaAppBuffer.fileBitmapSize = OTA_FILE_BITMAP_SIZE;
     pOtaAppBuffer.pUrl = pOtaAppBuffer.pStreamName + pOtaAppBuffer.streamNameSize;
     pOtaAppBuffer.urlSize = OTA_UPDATE_URL_SIZE;
+    pOtaAppBuffer.pAuthScheme = pOtaAppBuffer.pUrl + pOtaAppBuffer.urlSize;
+    pOtaAppBuffer.authSchemeSize = OTA_AUTH_SCHEME_SIZE;
+}
+
+static void otaInit( const char * pClientID,
+                     OtaAppCallback_t appCallback )
+{
     OTA_Init( &pOtaAppBuffer,
               &otaInterfaces,
               ( const uint8_t * ) pClientID,
@@ -534,6 +550,8 @@ static otaReceiveJobDocument()
     OTA_SignalEvent( &otaEvent );
 }
 
+/* Jump to any state in OTA agent. Event send interface must be set to mockOSEventSendThenStop to
+ * prevent OTA internal state transition. */
 static void otaGoToStateWithTimeout( OtaState_t state,
                                      int timeout_ms )
 {
@@ -618,6 +636,7 @@ void setUp()
 {
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
     otaInterfaceDefault();
+    otaAppBufferDefault();
 }
 
 void tearDown()
@@ -1200,6 +1219,12 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
+{
+    memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
+    test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
 void test_OTA_ReceiveFileBlockCompleteHttp()
 {
     OtaEventMsg_t otaEvent = { NULL, OtaAgentEventReceivedFileBlock };
@@ -1245,6 +1270,12 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     OTA_SignalEvent( &otaEvent );
     otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_ReceiveFileBlockCompleteDynamicBufferHttp()
+{
+    memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
+    test_OTA_ReceiveFileBlockCompleteHttp();
 }
 
 void invokeSelfTestHandler()

@@ -2043,19 +2043,26 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
     {
-        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
-        {
-            /* Free any previously allocated bitmap. */
-            otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
-            pUpdateFile->pRxBlockBitmap = NULL;
-        }
-
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-        pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+
+        if( pUpdateFile->blockBitmapMaxSize == 0u )
+        {
+            if( pUpdateFile->pRxBlockBitmap != NULL )
+            {
+                /* Free any previously allocated bitmap. */
+                otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+            }
+
+            pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+        }
+        else
+        {
+            assert( pUpdateFile->pRxBlockBitmap != NULL );
+            memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+        }
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
         {
