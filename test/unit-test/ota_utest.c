@@ -1223,7 +1223,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     }
 
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
@@ -1279,7 +1279,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     }
 
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForEmptyEvent();
+    otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
