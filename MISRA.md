@@ -17,7 +17,7 @@ Deviations from the MISRA standard are listed below:
 | Rule 21.1 | Required | Allow use of all macro names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
 | Rule 21.2 | Required | Allow use of all macro and identifier names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
 
-### Flagged by Coverity (Required only)
+### Flagged by Coverity
 | Deviation | Category | Justification |
 | :-: | :-: | :-: |
 | Rule 4.12 | Required | This rule prohibits the use of malloc and free from stdlib.h because of undefined behavior. We define a malloc interface in OTA and on POSIX it is implemented with malloc/free. The design for our OTA library is to let user choose whether they want to pass buffers to us or not. Dynamic allocation is used only when they do not provide these buffers. Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not leaking or free memory that's not dynamically allocated. |
@@ -25,7 +25,7 @@ Deviations from the MISRA standard are listed below:
 | Rule 21.5 | Required | This rule prohibits the use of signal.h because of undefined behavior. However, the warning is in OS porting implementation on POSIX, which has well defined behavior. We're using the timer functionality from POSIX so we deviate from this rule. |
 | Rule 8.6  | Required | `OTA_JsonFileSignatureKey` is an extern variable declared but not defined in OTA library. This variable shall be defined in OTA platform abstraction layer implementation, which is found in other repositories. |
 
-### Suppressed with Coverity Comments (Required only)
+### Suppressed with Coverity Comments
 | Deviation | Category | Justification |
 | :-: | :-: | :-: |
 | Rule 21.3 | Required | This is explained in rule 4.12 from section above. We define a malloc and free interface so that our OTA library can be ported to any OS. |
