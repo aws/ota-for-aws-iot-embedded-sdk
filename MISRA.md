@@ -7,7 +7,7 @@ Deviations from the MISRA standard are listed below:
 ### Ignored by [Coverity Configuration](tools/coverity/misra.config)
 | Deviation | Category | Justification |
 | :-: | :-: | :-: |
-| Directive 4.5 | Advisory | Allow names that MISRA considers ambiguous (such as LogInfo and LogError) |
+| Directive 4.5 | Advisory | Allow names that MISRA considers ambiguous (such as LogInfo and LogError). |
 | Directive 4.8 | Advisory | Allow inclusion of unused types. Header files for a specific port, which are needed by all files, may define types that are not used by a specific file. |
 | Directive 4.9 | Advisory | Allow inclusion of function like macros. The `assert` macro is used throughout the library for parameter validation, and logging is done using function like macros. |
 | Rule 2.4 | Advisory | Allow unused tags. Some compilers warn if types are not tagged. |
