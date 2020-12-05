@@ -247,8 +247,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
                                                            topicLen,
-                                                           1,
-                                                           pAgentCtx->pOtaInterface->mqtt.jobCallback );
+                                                           1 );
 
     if( mqttStatus == OtaMqttSuccess )
     {
@@ -280,8 +279,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
 
         mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                                topicLen,
-                                                               1,
-                                                               pAgentCtx->pOtaInterface->mqtt.jobCallback );
+                                                               1 );
 
         if( mqttStatus == OtaMqttSuccess )
         {
@@ -804,8 +802,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
                                                            topicLen,
-                                                           0,
-                                                           pAgentCtx->pOtaInterface->mqtt.dataCallback );
+                                                           0 );
 
     if( mqttStatus == OtaMqttSuccess )
     {
