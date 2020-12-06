@@ -446,6 +446,24 @@ const char * OTA_Err_strerror( OtaErr_t err );
  *
  * @return The string representation of the error.
  */
-const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err );
+const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
+
+/**
+ * @brief Status code to string conversion for OTA PAL status.
+ *
+ * @param[in] err The status to convert to a string.
+ *
+ * @return The string representation of the status.
+ */
+const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
+
+/**
+ * @brief Status code to string conversion for OTA OS status.
+ *
+ * @param[in] err The status to convert to a string.
+ *
+ * @return The string representation of the status.
+ */
+const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
 
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */

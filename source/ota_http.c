@@ -196,7 +196,7 @@ const char * OTA_HTTP_strerror( OtaHttpStatus_t err )
             break;
 
         default:
-            str = "InvalidErrorcode";
+            str = "InvalidErrorCode";
     }
 
     return str;

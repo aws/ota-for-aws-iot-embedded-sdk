@@ -3185,7 +3185,7 @@ const char * OTA_Err_strerror( OtaErr_t err )
             break;
 
         default:
-            str = "Invalid Error code";
+            str = "InvalidErrorCode";
     }
 
     return str;
@@ -3238,7 +3238,7 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err )
             break;
 
         default:
-            str = "InvalidErrorcode";
+            str = "InvalidErrorCode";
     }
 
     return str;
@@ -3291,7 +3291,7 @@ const char * OTA_OsStatus_strerror( OtaOsStatus_t status )
             break;
 
         default:
-            str = "InvalidErrorcode";
+            str = "InvalidErrorCode";
     }
 
     return str;
@@ -3368,7 +3368,7 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status )
             break;
 
         default:
-            str = "InvalidErrorcode";
+            str = "InvalidErrorCode";
     }
 
     return str;

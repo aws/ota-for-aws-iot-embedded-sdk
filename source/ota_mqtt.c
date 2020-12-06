@@ -1028,7 +1028,7 @@ const char * OTA_MQTT_strerror( OtaMqttStatus_t err )
             break;
 
         default:
-            str = "InvalidErrorcode";
+            str = "InvalidErrorCode";
     }
 
     return str;
