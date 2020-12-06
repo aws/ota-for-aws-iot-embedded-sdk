@@ -1445,10 +1445,10 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         {
             if( ( missingParams & ( ( uint32_t ) 1U << scanIndex ) ) != 0U )
             {
-                LogDebug( ( "Failed job document content check: "
-                            "Required job document parameter was not extracted: "
-                            "parameter=%s",
-                            pModelParam[ scanIndex ].pSrcKey ) );
+                LogInfo( ( "Failed job document content check: "
+                           "Required job document parameter was not extracted: "
+                           "parameter=%s",
+                           pModelParam[ scanIndex ].pSrcKey ) );
             }
         }
 
