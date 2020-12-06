@@ -69,7 +69,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     {
         LogError( ( "Error occured while initializing http:"
                     "OtaHttpStatus_t=%s"
-                    , httpStatus ) )
+                    , OTA_HTTP_strerror( httpStatus ) ) )
     }
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
@@ -112,7 +112,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     {
         LogError( ( "Error occured while requesting data block:"
                     "OtaHttpStatus_t=%s"
-                    , httpStatus ) )
+                    , OTA_HTTP_strerror( httpStatus ) ) )
     }
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
@@ -173,11 +173,11 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
 }
 
-const char * OTA_HTTP_strerror( OtaHttpStatus_t err )
+const char * OTA_HTTP_strerror( OtaHttpStatus_t status )
 {
     const char * str = NULL;
 
-    switch( err )
+    switch( status )
     {
         case OtaHttpSuccess:
             str = "OtaHttpSuccess";

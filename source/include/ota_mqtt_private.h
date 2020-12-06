@@ -146,10 +146,10 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 /**
  * @brief Status to string conversion for OTA MQTT interface status.
  *
- * @param[in] err The status to convert to a string.
+ * @param[in] status The status to convert to a string.
  *
  * @return The string representation of the status.
  */
-const char * OTA_MQTT_strerror( OtaMqttStatus_t err );
+const char * OTA_MQTT_strerror( OtaMqttStatus_t status );
 
 #endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */

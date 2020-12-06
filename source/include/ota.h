@@ -451,7 +451,7 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
 /**
  * @brief Status code to string conversion for OTA PAL status.
  *
- * @param[in] err The status to convert to a string.
+ * @param[in] status The status to convert to a string.
  *
  * @return The string representation of the status.
  */
@@ -460,7 +460,7 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
 /**
  * @brief Status code to string conversion for OTA OS status.
  *
- * @param[in] err The status to convert to a string.
+ * @param[in] status The status to convert to a string.
  *
  * @return The string representation of the status.
  */

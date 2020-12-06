@@ -99,10 +99,10 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
 /**
  * @brief Status to string conversion for OTA HTTP interface status.
  *
- * @param[in] err The status to convert to a string.
+ * @param[in] status The status to convert to a string.
  *
  * @return The string representation of the status.
  */
-const char * OTA_HTTP_strerror( OtaHttpStatus_t err );
+const char * OTA_HTTP_strerror( OtaHttpStatus_t status );
 
 #endif /* ifndef __OTA_HTTP__H__ */

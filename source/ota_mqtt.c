@@ -1002,11 +1002,11 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
     return result;
 }
 
-const char * OTA_MQTT_strerror( OtaMqttStatus_t err )
+const char * OTA_MQTT_strerror( OtaMqttStatus_t status )
 {
     const char * str = NULL;
 
-    switch( err )
+    switch( status )
     {
         case OtaMqttSuccess:
             str = "OtaMqttSuccess";
