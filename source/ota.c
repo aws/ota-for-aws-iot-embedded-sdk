@@ -467,7 +467,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
          * the original reject reason code since it is possible for the PAL to fail to update the image state in some
          * cases (e.g. a reset already caused the bundle rollback and we failed to rollback again).
          */
-        if( reason == OtaErrNone )
+        if( reason == 0U )
         {
             /* Intentionally override reason since we failed within this function. */
             reason = palStatus;
@@ -551,7 +551,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
         LogWarn( ( "Rejecting new image and rebooting:"
                    "The job is in the self-test state while the platform is not." ) );
 
-        err = setImageStateWithReason( OtaImageStateRejected, OtaErrImageStateMismatch );
+        err = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) OtaErrImageStateMismatch );
         ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
     }
 
@@ -632,7 +632,7 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
     return retVal;
 }
 
-static OtaErr_t processNullFileContext()
+static OtaErr_t processNullFileContext( void )
 {
     OtaErr_t retVal = OtaErrNone;
     OtaEventMsg_t eventMsg = { 0 };
@@ -658,7 +658,7 @@ static OtaErr_t processNullFileContext()
          */
         LogError( ( "OTA job doc parse failed: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
 
-        retVal = setImageStateWithReason( OtaImageStateAborted, OtaErrJobParserError );
+        retVal = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) OtaErrJobParserError );
 
         if( retVal != OtaErrNone )
         {
@@ -671,7 +671,7 @@ static OtaErr_t processNullFileContext()
     return retVal;
 }
 
-static OtaErr_t processValidFileContext()
+static OtaErr_t processValidFileContext( void )
 {
     OtaErr_t retVal = OtaErrNone;
     OtaEventMsg_t eventMsg = { 0 };
@@ -703,7 +703,7 @@ static OtaErr_t processValidFileContext()
              */
             LogError( ( "Failed to set OTA data interface: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
 
-            retVal = setImageStateWithReason( OtaImageStateAborted, retVal );
+            retVal = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) retVal );
 
             if( retVal != OtaErrNone )
             {
@@ -859,7 +859,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
             ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
             /* Failed to send data request abort and close file. */
-            err = setImageStateWithReason( OtaImageStateAborted, err );
+            err = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) err );
 
             if( err != OtaErrNone )
             {
@@ -959,7 +959,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
             /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
             /* We're actively receiving a file so update the job status as needed. */
-            otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
+            err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
         }
 
         if( otaAgent.numOfBlocksToReceive > 1U )
@@ -1019,7 +1019,7 @@ static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData )
     /* If we have active Job abort it and close the file. */
     if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
     {
-        err = setImageStateWithReason( OtaImageStateAborted, OtaErrUserAbort );
+        err = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) OtaErrUserAbort );
 
         if( err == OtaErrNone )
         {
@@ -1280,15 +1280,15 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     }
     else
     {
-        uint8_t save = ( *pSig256 )->data[ 32 ];
-        ( *pSig256 )->data[ 32 ] = '\0';
-        ( *pSig256 )->size = ( uint16_t ) actualLen;
-
+        char pLogBuffer[ 33 ];
+        ( void ) strncpy( pLogBuffer, pValueInJson, 32 );
+        pLogBuffer[ 32 ] = '\0';
         LogInfo( ( "Extracted parameter [ %s: %s... ]",
                    OTA_JsonFileSignatureKey,
-                   pValueInJson ) );
+                   pLogBuffer ) );
 
-        ( *pSig256 )->data[ 32 ] = save;
+
+        ( *pSig256 )->size = ( uint16_t ) actualLen;
     }
 
     return err;
@@ -1810,7 +1810,7 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
         LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
                    otaAgent.serverFileID ) );
 
-        otaErr = setImageStateWithReason( OtaImageStateTesting, errVersionCheck );
+        otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
 
         if( otaErr != OtaErrNone )
         {
@@ -1822,7 +1822,7 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
         LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
                    "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
 
-        otaErr = setImageStateWithReason( OtaImageStateRejected, errVersionCheck );
+        otaErr = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) errVersionCheck );
 
         if( otaErr != OtaErrNone )
         {
@@ -2061,7 +2061,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         else
         {
             assert( pUpdateFile->pRxBlockBitmap != NULL );
-            memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+            ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
         }
 
         if( pUpdateFile->pRxBlockBitmap != NULL )
@@ -2982,7 +2982,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
             /*
              * Set the image state as rejected.
              */
-            err = setImageStateWithReason( state, 0 );
+            err = setImageStateWithReason( state, 0U );
 
             break;
 
@@ -2991,7 +2991,7 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state )
             /*
              * Set the image state as accepted.
              */
-            err = setImageStateWithReason( state, 0 );
+            err = setImageStateWithReason( state, 0U );
 
             break;
 

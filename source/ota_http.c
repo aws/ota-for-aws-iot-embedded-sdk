@@ -96,13 +96,13 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
 
-    if( fileContext->blocksRemaining == 1 )
+    if( fileContext->blocksRemaining == 1U )
     {
-        rangeEnd = fileContext->fileSize - 1;
+        rangeEnd = fileContext->fileSize - 1U;
     }
     else
     {
-        rangeEnd = rangeStart + OTA_FILE_BLOCK_SIZE - 1;
+        rangeEnd = rangeStart + OTA_FILE_BLOCK_SIZE - 1U;
     }
 
     /* Request file data over HTTP using the rangeStart and rangeEnd. */
@@ -147,11 +147,11 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
         *pBlockSize = ( int32_t ) messageSize;
 
         /* The data received over HTTP does not require any decoding. */
-        memcpy( *pPayload, pMessageBuffer, messageSize );
+        ( void ) memcpy( *pPayload, pMessageBuffer, messageSize );
         *pPayloadSize = messageSize;
 
         /* Current block is processed, set the file block to next. */
-        currBlock += 1;
+        currBlock++;
     }
 
     return err;

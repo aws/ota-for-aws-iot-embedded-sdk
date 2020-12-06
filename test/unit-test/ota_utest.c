@@ -271,8 +271,7 @@ static OtaOsStatus_t stubOSTimerDelete( OtaTimerId_t timerId )
 
 static OtaMqttStatus_t stubMqttSubscribe( const char * unused_1,
                                           uint16_t unused_2,
-                                          uint8_t unused_3,
-                                          OtaMqttCallback_t unused_4 )
+                                          uint8_t unused_3 )
 {
     return OtaMqttSuccess;
 }
@@ -300,14 +299,6 @@ static OtaMqttStatus_t stubMqttUnsubscribe( const char * unused_1,
                                             uint8_t unused_3 )
 {
     return OtaMqttSuccess;
-}
-
-static void stubMqttJobCallback( void * unused )
-{
-}
-
-static void stubMqttDataCallback( void * unused )
-{
 }
 
 static OtaHttpStatus_t stubHttpInit( char * url )
@@ -443,8 +434,6 @@ static void otaInterfaceDefault()
     otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
     otaInterfaces.mqtt.publish = stubMqttPublish;
     otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribe;
-    otaInterfaces.mqtt.jobCallback = stubMqttJobCallback;
-    otaInterfaces.mqtt.dataCallback = stubMqttDataCallback;
 
     otaInterfaces.http.init = stubHttpInit;
     otaInterfaces.http.deinit = stubHttpDeinit;

@@ -42,11 +42,6 @@ typedef enum OtaMqttStatus
 } OtaMqttStatus_t;
 
 /**
- * @brief OTA Mqtt callback.
- */
-typedef void ( * OtaMqttCallback_t )( void * pvParam );
-
-/**
  * @brief Subscribe to the Mqtt topics.
  *
  * This function subscribes to the Mqtt topics with the Quality of service
@@ -59,15 +54,12 @@ typedef void ( * OtaMqttCallback_t )( void * pvParam );
  *
  * @param[ucQoS]                Quality of Service
  *
- * @param[pvCallback]           Callback to be registered.
- *
  * @return                      OtaMqttSuccess if success , other error code on failure.
  */
 
 typedef OtaMqttStatus_t ( * OtaMqttSubscribe_t ) ( const char * pTopicFilter,
                                                    uint16_t topicFilterLength,
-                                                   uint8_t ucQoS,
-                                                   OtaMqttCallback_t callback );
+                                                   uint8_t ucQoS );
 
 /**
  * @brief Unsubscribe to the Mqtt topics.
@@ -119,8 +111,6 @@ typedef struct OtaMqttInterface
     OtaMqttSubscribe_t subscribe;     /*!< Interface for subscribing to Mqtt topics. */
     OtaMqttUnsubscribe_t unsubscribe; /*!< interface for unsubscribing to MQTT topics. */
     OtaMqttPublish_t publish;         /*!< Interface for publishing MQTT messages. */
-    OtaMqttCallback_t jobCallback;    /*!< Interface for a callback that notifies the OTA library when a job document is received. */
-    OtaMqttCallback_t dataCallback;   /*!< Interface for a callback that notifies the OTA library when a data block is received. */
 } OtaMqttInterface_t;
 
 #endif /* ifndef _OTA_MQTT_INTERFACE_H_ */
