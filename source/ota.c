@@ -490,11 +490,11 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     {
         LogWarn( ( "Failed to set image state with reason: "
                    "OtaErr_t=%s"
-                   ", OtaPalStatus_t=%u"
+                   ", OtaPalStatus_t=%s"
                    ", state=%d"
                    ", reason=%d",
                    OTA_Err_strerror( err ),
-                   palStatus,
+                   OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ),
                    stateToSet,
                    reasonToSet ) );
     }
@@ -591,8 +591,8 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
             if( osErr != OtaOsSuccess )
             {
                 LogError( ( "Failed to start request timer: "
-                            "OtaOsStatus_t=%d",
-                            osErr ) );
+                            "OtaOsStatus_t=%s",
+                            OTA_OsStatus_strerror( osErr ) ) );
                 retVal = OtaErrRequestJobFailed;
             }
             else
@@ -781,8 +781,8 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
             if( osErr != OtaOsSuccess )
             {
                 LogError( ( "Failed to start request timer: "
-                            "OtaOsStatus_t=%d",
-                            osErr ) );
+                            "OtaOsStatus_t=%s",
+                            OTA_OsStatus_strerror( osErr ) ) );
                 err = OtaErrInitFileTransferFailed;
             }
             else
@@ -1692,7 +1692,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                 err = OtaJobParseErrNonConformingJobDoc;
 
                 LogError( ( "Custom job document was parsed, but the job name is NULL: OtaJobParseErr_t=%s",
-                            OTA_JobParseErr_strerror( err ) ) );
+                            OTA_JobParse_strerror( err ) ) );
             }
         }
         else
@@ -1896,7 +1896,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     }
     else
     {
-        LogError( ( "Failed to validate and start the job: OtaJobParseErr_t=%s", OTA_JobParseErr_strerror( err ) ) );
+        LogError( ( "Failed to validate and start the job: OtaJobParseErr_t=%s", OTA_JobParse_strerror( err ) ) );
     }
 
     return err;
@@ -1976,7 +1976,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         {
             LogError( ( "Failed to parse the job document after parsing the job name: "
                         "OtaJobParseErr_t=%s, Job name=%s",
-                        OTA_JobParseErr_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+                        OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
             /* Assume control of the job name from the context. */
             ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
@@ -1998,7 +1998,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         else
         {
             LogError( ( "Failed to parse job document: OtaJobParseErr_t=%s",
-                        OTA_JobParseErr_strerror( err ) ) );
+                        OTA_JobParse_strerror( err ) ) );
         }
     }
 
@@ -2330,8 +2330,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             }
             else
             {
-                LogError( ( "Failed to close the OTA file: Error=(%u:0x%06x)",
-                            otaPalMainErr, otaPalSubErr ) );
+                LogError( ( "Failed to close the OTA file: Error=(%s:0x%06x)",
+                            OTA_PalStatus_strerror( otaPalMainErr ), otaPalSubErr ) );
 
                 if( otaPalMainErr == OtaPalSignatureCheckFailed )
                 {
@@ -2619,8 +2619,8 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
         retVal = false;
         LogError( ( "Failed to add even message to OTA event queue: "
                     "send returned error: "
-                    "OtaOsStatus_t=%d",
-                    err ) );
+                    "OtaOsStatus_t=%s",
+                    OTA_OsStatus_strerror( err ) ) );
     }
 
     return retVal;
@@ -2940,8 +2940,8 @@ OtaErr_t OTA_ActivateNewImage( void )
     LogError( ( "Failed to activate new image: "
                 "activateNewImage returned error: "
                 "Manual reset required: "
-                "OtaPalStatus_t=%d",
-                palStatus ) );
+                "OtaPalStatus_t=%s",
+                OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ) ) );
 
     return OTA_PAL_MAIN_ERR( palStatus ) == OtaPalSuccess ? OtaErrNone : OtaErrActivateFailed;
 }
@@ -3084,6 +3084,7 @@ OtaErr_t OTA_Resume( void )
     return err;
 }
 
+/*-----------------------------------------------------------*/
 
 const char * OTA_Err_strerror( OtaErr_t err )
 {
@@ -3190,7 +3191,7 @@ const char * OTA_Err_strerror( OtaErr_t err )
     return str;
 }
 
-const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err )
+const char * OTA_JobParse_strerror( OtaJobParseErr_t err )
 {
     const char * str = NULL;
 
@@ -3234,6 +3235,136 @@ const char * OTA_JobParseErr_strerror( OtaJobParseErr_t err )
 
         case OtaJobParseErrNoActiveJobs:
             str = "OtaJobParseErrNoActiveJobs";
+            break;
+
+        default:
+            str = "InvalidErrorcode";
+    }
+
+    return str;
+}
+
+const char * OTA_OsStatus_strerror( OtaOsStatus_t status )
+{
+    const char * str = NULL;
+
+    switch( status )
+    {
+        case OtaOsSuccess:
+            str = "OtaOsSuccess";
+            break;
+
+        case OtaOsEventQueueCreateFailed:
+            str = "OtaOsEventQueueCreateFailed";
+            break;
+
+        case OtaOsEventQueueSendFailed:
+            str = "OtaOsEventQueueSendFailed";
+            break;
+
+        case OtaOsEventQueueReceiveFailed:
+            str = "OtaOsEventQueueReceiveFailed";
+            break;
+
+        case OtaOsEventQueueDeleteFailed:
+            str = "OtaOsEventQueueDeleteFailed";
+            break;
+
+        case OtaOsTimerCreateFailed:
+            str = "OtaOsTimerCreateFailed";
+            break;
+
+        case OtaOsTimerStartFailed:
+            str = "OtaOsTimerStartFailed";
+            break;
+
+        case OtaOsTimerRestartFailed:
+            str = "OtaOsTimerRestartFailed";
+            break;
+
+        case OtaOsTimerStopFailed:
+            str = "OtaOsTimerStopFailed";
+            break;
+
+        case OtaOsTimerDeleteFailed:
+            str = "OtaOsTimerDeleteFailed";
+            break;
+
+        default:
+            str = "InvalidErrorcode";
+    }
+
+    return str;
+}
+
+const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status )
+{
+    const char * str = NULL;
+
+    switch( status )
+    {
+        case OtaPalSuccess:
+            str = "OtaPalSuccess";
+            break;
+
+        case OtaPalUninitialized:
+            str = "OtaPalUninitialized";
+            break;
+
+        case OtaPalOutOfMemory:
+            str = "OtaPalOutOfMemory";
+            break;
+
+        case OtaPalNullFileContext:
+            str = "OtaPalNullFileContext";
+            break;
+
+        case OtaPalSignatureCheckFailed:
+            str = "OtaPalSignatureCheckFailed";
+            break;
+
+        case OtaPalRxFileCreateFailed:
+            str = "OtaPalRxFileCreateFailed";
+            break;
+
+        case OtaPalRxFileTooLarge:
+            str = "OtaPalRxFileTooLarge";
+            break;
+
+        case OtaPalBootInfoCreateFailed:
+            str = "OtaPalBootInfoCreateFailed";
+            break;
+
+        case OtaPalBadSignerCert:
+            str = "OtaPalBadSignerCert";
+            break;
+
+        case OtaPalBadImageState:
+            str = "OtaPalBadImageState";
+            break;
+
+        case OtaPalAbortFailed:
+            str = "OtaPalAbortFailed";
+            break;
+
+        case OtaPalRejectFailed:
+            str = "OtaPalRejectFailed";
+            break;
+
+        case OtaPalCommitFailed:
+            str = "OtaPalCommitFailed";
+            break;
+
+        case OtaPalActivateFailed:
+            str = "OtaPalActivateFailed";
+            break;
+
+        case OtaPalFileAbort:
+            str = "OtaPalFileAbort";
+            break;
+
+        case OtaPalFileClose:
+            str = "OtaPalFileClose";
             break;
 
         default:
