@@ -69,7 +69,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     {
         LogError( ( "Error occured while initializing http:"
                     "OtaHttpStatus_t=%s"
-                    , OTA_HTTP_strerror( httpStatus ) ) )
+                    , OTA_HTTP_strerror( httpStatus ) ) );
     }
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
@@ -112,7 +112,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     {
         LogError( ( "Error occured while requesting data block:"
                     "OtaHttpStatus_t=%s"
-                    , OTA_HTTP_strerror( httpStatus ) ) )
+                    , OTA_HTTP_strerror( httpStatus ) ) );
     }
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
