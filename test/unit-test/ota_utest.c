@@ -43,6 +43,8 @@
 #include "ota_appversion32.h"
 #include "ota.h"
 #include "ota_private.h"
+#include "ota_mqtt_private.h"
+#include "ota_http_private.h"
 
 /* test includes. */
 #include "utest_helpers.h"
@@ -1398,4 +1400,283 @@ void test_OTA_RefreshWithDifferentJobDoc()
     otaReceiveJobDocument();
     otaWaitForState( OtaAgentStateWaitingForFileBlock );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+}
+
+/**
+ * @brief Test OTA_Err_strerror returns correct strings.
+ */
+void test_OTA_Err_strerror( void )
+{
+    OtaErr_t err;
+    const char * str = NULL;
+
+    err = OtaErrNone;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrNone", str );
+    err = OtaErrUninitialized;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrUninitialized", str );
+    err = OtaErrPanic;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrPanic", str );
+    err = OtaErrInvalidArg;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrInvalidArg", str );
+    err = OtaErrAgentStopped;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrAgentStopped", str );
+    err = OtaErrSignalEventFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrSignalEventFailed", str );
+    err = OtaErrRequestJobFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrRequestJobFailed", str );
+    err = OtaErrInitFileTransferFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrInitFileTransferFailed", str );
+    err = OtaErrRequestFileBlockFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrRequestFileBlockFailed", str );
+    err = OtaErrCleanupControlFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrCleanupControlFailed", str );
+    err = OtaErrCleanupDataFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrCleanupDataFailed", str );
+    err = OtaErrUpdateJobStatusFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrUpdateJobStatusFailed", str );
+    err = OtaErrJobParserError;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrJobParserError", str );
+    err = OtaErrInvalidDataProtocol;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrInvalidDataProtocol", str );
+    err = OtaErrMomentumAbort;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrMomentumAbort", str );
+    err = OtaErrDowngradeNotAllowed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrDowngradeNotAllowed", str );
+    err = OtaErrSameFirmwareVersion;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrSameFirmwareVersion", str );
+    err = OtaErrImageStateMismatch;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrImageStateMismatch", str );
+    err = OtaErrNoActiveJob;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrNoActiveJob", str );
+    err = OtaErrUserAbort;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrUserAbort", str );
+    err = OtaErrFailedToEncodeCbor;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrFailedToEncodeCbor", str );
+    err = OtaErrFailedToDecodeCbor;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrFailedToDecodeCbor", str );
+    err = OtaErrActivateFailed;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "OtaErrActivateFailed", str );
+    err = OtaErrActivateFailed + 1;
+    str = OTA_Err_strerror( err );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/**
+ * @brief Test OTA_OsStatus_strerror returns correct strings.
+ */
+void test_OTA_OsStatus_strerror( void )
+{
+    OtaOsStatus_t status;
+    const char * str = NULL;
+
+    status = OtaOsSuccess;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsSuccess", str );
+    status = OtaOsEventQueueCreateFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsEventQueueCreateFailed", str );
+    status = OtaOsEventQueueSendFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsEventQueueSendFailed", str );
+    status = OtaOsEventQueueReceiveFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsEventQueueReceiveFailed", str );
+    status = OtaOsEventQueueDeleteFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsEventQueueDeleteFailed", str );
+    status = OtaOsTimerCreateFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsTimerCreateFailed", str );
+    status = OtaOsTimerStartFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsTimerStartFailed", str );
+    status = OtaOsTimerRestartFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsTimerRestartFailed", str );
+    status = OtaOsTimerStopFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsTimerStopFailed", str );
+    status = OtaOsTimerDeleteFailed;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaOsTimerDeleteFailed", str );
+    status = OtaOsTimerDeleteFailed + 1;
+    str = OTA_OsStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/**
+ * @brief Test OTA_PalStatus_strerror returns correct strings.
+ */
+void test_OTA_PalStatus_strerror( void )
+{
+    OtaPalMainStatus_t status;
+    const char * str = NULL;
+
+    status = OtaPalSuccess;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalSuccess", str );
+    status = OtaPalUninitialized;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalUninitialized", str );
+    status = OtaPalOutOfMemory;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalOutOfMemory", str );
+    status = OtaPalNullFileContext;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalNullFileContext", str );
+    status = OtaPalSignatureCheckFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalSignatureCheckFailed", str );
+    status = OtaPalRxFileCreateFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalRxFileCreateFailed", str );
+    status = OtaPalRxFileTooLarge;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalRxFileTooLarge", str );
+    status = OtaPalBootInfoCreateFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalBootInfoCreateFailed", str );
+    status = OtaPalBadSignerCert;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalBadSignerCert", str );
+    status = OtaPalBadImageState;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalBadImageState", str );
+    status = OtaPalAbortFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalAbortFailed", str );
+    status = OtaPalRejectFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalRejectFailed", str );
+    status = OtaPalCommitFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalCommitFailed", str );
+    status = OtaPalActivateFailed;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalActivateFailed", str );
+    status = OtaPalFileAbort;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalFileAbort", str );
+    status = OtaPalFileClose;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaPalFileClose", str );
+    status = OtaPalFileClose + 1;
+    str = OTA_PalStatus_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/**
+ * @brief Test OTA_JobParse_strerror returns correct strings.
+ */
+void test_OTA_JobParse_strerror( void )
+{
+    OtaJobParseErr_t status;
+    const char * str = NULL;
+
+    status = OtaJobParseErrUnknown;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrUnknown", str );
+    status = OtaJobParseErrNone;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNone", str );
+    status = OtaJobParseErrBusyWithExistingJob;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrBusyWithExistingJob", str );
+    status = OtaJobParseErrNullJob;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNullJob", str );
+    status = OtaJobParseErrUpdateCurrentJob;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrUpdateCurrentJob", str );
+    status = OtaJobParseErrZeroFileSize;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrZeroFileSize", str );
+    status = OtaJobParseErrNonConformingJobDoc;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNonConformingJobDoc", str );
+    status = OtaJobParseErrBadModelInitParams;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrBadModelInitParams", str );
+    status = OtaJobParseErrNoContextAvailable;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNoContextAvailable", str );
+    status = OtaJobParseErrNoActiveJobs;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNoActiveJobs", str );
+    status = OtaJobParseErrNoActiveJobs + 1;
+    str = OTA_JobParse_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/**
+ * @brief Test OTA_MQTT_strerror returns correct strings.
+ */
+void test_OTA_MQTT_strerror( void )
+{
+    OtaMqttStatus_t status;
+    const char * str = NULL;
+
+    status = OtaMqttSuccess;
+    str = OTA_MQTT_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaMqttSuccess", str );
+    status = OtaMqttPublishFailed;
+    str = OTA_MQTT_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaMqttPublishFailed", str );
+    status = OtaMqttSubscribeFailed;
+    str = OTA_MQTT_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaMqttSubscribeFailed", str );
+    status = OtaMqttUnsubscribeFailed;
+    str = OTA_MQTT_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaMqttUnsubscribeFailed", str );
+    status = OtaMqttUnsubscribeFailed + 1;
+    str = OTA_MQTT_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/**
+ * @brief Test OTA_HTTP_strerror returns correct strings.
+ */
+void test_OTA_HTTP_strerror( void )
+{
+    OtaHttpStatus_t status;
+    const char * str = NULL;
+
+    status = OtaHttpSuccess;
+    str = OTA_HTTP_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaHttpSuccess", str );
+    status = OtaHttpInitFailed;
+    str = OTA_HTTP_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaHttpInitFailed", str );
+    status = OtaHttpDeinitFailed;
+    str = OTA_HTTP_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaHttpDeinitFailed", str );
+    status = OtaHttpRequestFailed;
+    str = OTA_HTTP_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "OtaHttpRequestFailed", str );
+    status = OtaHttpRequestFailed + 1;
+    str = OTA_HTTP_strerror( status );
+    TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
 }

@@ -65,6 +65,13 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
     /* Connect to the HTTP server and initialize download information. */
     httpStatus = pAgentCtx->pOtaInterface->http.init( pURL );
 
+    if( httpStatus != OtaHttpSuccess )
+    {
+        LogError( ( "Error occured while initializing http:"
+                    "OtaHttpStatus_t=%s"
+                    , OTA_HTTP_strerror( httpStatus ) ) )
+    }
+
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
 }
 
@@ -100,6 +107,13 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 
     /* Request file data over HTTP using the rangeStart and rangeEnd. */
     httpStatus = pAgentCtx->pOtaInterface->http.request( rangeStart, rangeEnd );
+
+    if( httpStatus != OtaHttpSuccess )
+    {
+        LogError( ( "Error occured while requesting data block:"
+                    "OtaHttpStatus_t=%s"
+                    , OTA_HTTP_strerror( httpStatus ) ) )
+    }
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
 }
@@ -157,4 +171,33 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
     currBlock = 0;
 
     return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
+}
+
+const char * OTA_HTTP_strerror( OtaHttpStatus_t status )
+{
+    const char * str = NULL;
+
+    switch( status )
+    {
+        case OtaHttpSuccess:
+            str = "OtaHttpSuccess";
+            break;
+
+        case OtaHttpInitFailed:
+            str = "OtaHttpInitFailed";
+            break;
+
+        case OtaHttpDeinitFailed:
+            str = "OtaHttpDeinitFailed";
+            break;
+
+        case OtaHttpRequestFailed:
+            str = "OtaHttpRequestFailed";
+            break;
+
+        default:
+            str = "InvalidErrorCode";
+    }
+
+    return str;
 }
