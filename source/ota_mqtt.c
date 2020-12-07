@@ -995,7 +995,11 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    /* Check if we have some data and publish. */
+    if( msgSize > 0 )
+    {
+        mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    }
 
     if( mqttStatus == OtaMqttSuccess )
     {
