@@ -941,7 +941,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonSigCheckPassed, 0 );
         dataHandlerCleanup( result );
 
-         /* Last file block processed, increment the statistics. */
+        /* Last file block processed, increment the statistics. */
         otaAgent.statistics.otaPacketsProcessed++;
     }
     else if( result < IngestResultFileComplete )
@@ -2619,7 +2619,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     /* Check if file block received and update statistics.*/
     if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
     {
-            otaAgent.statistics.otaPacketsReceived++;
+        otaAgent.statistics.otaPacketsReceived++;
     }
 
     err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
@@ -2646,7 +2646,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
         {
             otaAgent.statistics.otaPacketsDropped++;
         }
-    }    
+    }
 
     return retVal;
 }
