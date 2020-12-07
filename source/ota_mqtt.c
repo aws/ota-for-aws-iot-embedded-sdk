@@ -402,6 +402,15 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
 
     pFileContext = &( pAgentCtx->fileContext );
 
+    /* Try to build the dynamic data stream topic and unsubscribe from it. */
+    topicLen = stringBuilder(
+        pOtaRxStreamTopic,
+        sizeof( pOtaRxStreamTopic ),
+        topicStringParts );
+
+    /* The buffer is static and the size is calculated to fit. */
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
+
     /* NULL-terminated list of topic string parts */
     const char * topicStringParts[] =
     {
@@ -413,16 +422,6 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
         MQTT_API_DATA_CBOR,
         NULL
     };
-
-    /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    topicLen = stringBuilder(
-        pOtaRxStreamTopic,
-        sizeof( pOtaRxStreamTopic ),
-        topicStringParts );
-
-    /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
-
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
                                                              topicLen,
                                                              1 );
