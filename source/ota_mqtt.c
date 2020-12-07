@@ -613,7 +613,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              const OtaFileContext_t * pOTAFileCtx )
 {
     char receivedString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char numBlocksString[ U32_MAX_LEN + 1 ] = { '\0' ];  /* Initialized below */
+    char numBlocksString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
@@ -984,8 +984,9 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
+    pFileContext = &( pAgentCtx->fileContext );
     pTopicParts[1] = pAgentCtx->pThingName;
-    pTopicParts[3] = pAgentCtx->fileContext->pThingName;
+    pTopicParts[3] = pFileContext->pThingName;
 
     topicLen = ( uint16_t ) stringBuilder(
         pRxStreamTopic,
@@ -1039,6 +1040,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     const OtaFileContext_t * pFileContext = NULL;
+
     /* NULL-terminated list of topic string parts */
     const char * pTopicParts[] =
     {
