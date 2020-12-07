@@ -986,7 +986,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     pFileContext = &( pAgentCtx->fileContext );
     pTopicParts[1] = pAgentCtx->pThingName;
-    pTopicParts[3] = pFileContext->pThingName;
+    pTopicParts[3] = pFileContext->pStreamName;
 
     topicLen = ( uint16_t ) stringBuilder(
         pRxStreamTopic,
