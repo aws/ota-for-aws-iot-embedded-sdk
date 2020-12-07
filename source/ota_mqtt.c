@@ -641,7 +641,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
-        msgSize = ( uint32_t ) stringBilder(
+        msgSize = ( uint32_t ) stringBuilder(
             pMsgBuffer,
             msgBufferSize,
             payloadStringParts );
