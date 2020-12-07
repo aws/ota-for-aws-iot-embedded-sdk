@@ -815,6 +815,9 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         /* Reset the request momentum. */
         otaAgent.requestMomentum = 0;
 
+        /* Reset the OTA statistics. */
+        ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
+
         eventMsg.eventId = OtaAgentEventRequestFileBlock;
 
         if( OTA_SignalEvent( &eventMsg ) == false )
@@ -937,6 +940,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         /* File receive is complete and authenticated. Update the job status with the self_test ready identifier. */
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonSigCheckPassed, 0 );
         dataHandlerCleanup( result );
+
+         /* Last file block processed, increment the statistics. */
+        otaAgent.statistics.otaPacketsProcessed++;
     }
     else if( result < IngestResultFileComplete )
     {
@@ -956,6 +962,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
+            /* File block processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsProcessed++;
+
             /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
             /* We're actively receiving a file so update the job status as needed. */
@@ -2485,6 +2494,9 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
             /* Let the application know to release buffer.*/
             otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
 
+            /* File block was not processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsDropped++;
+
             break;
 
         default:
@@ -2604,15 +2616,23 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     bool retVal = false;
     OtaOsStatus_t err = OtaOsSuccess;
 
-    /*
-     * Send event to back of the queue.
-     */
+    /* Check if file block received and update statistics.*/
+    if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+    {
+            otaAgent.statistics.otaPacketsReceived++;
+    }
+
     err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
 
     if( err == OtaOsSuccess )
     {
         retVal = true;
         LogDebug( ( "Added event message to OTA event queue." ) );
+
+        if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+        {
+            otaAgent.statistics.otaPacketsQueued++;
+        }
     }
     else
     {
@@ -2621,7 +2641,12 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
                     "send returned error: "
                     "OtaOsStatus_t=%s",
                     OTA_OsStatus_strerror( err ) ) );
-    }
+
+        if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+        {
+            otaAgent.statistics.otaPacketsDropped++;
+        }
+    }    
 
     return retVal;
 }
