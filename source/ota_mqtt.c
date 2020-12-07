@@ -730,7 +730,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     {
         pOtaJobStatusStrings[ status ],
         "\"reason\":\"",
-        pOtaJobReasonStrings[ reason ],
+        NULL,         /* Filled in based on job status below */
         "  v",
         versionMajorString,
         ".",
@@ -747,7 +747,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     {
         pOtaJobStatusStrings[ status ],
         "\"reason\":\"",
-        pOtaJobReasonStrings[ reason ],
+        NULL,         /* Filled in based on job status below */
         ": 0x",
         subReasonString,
         "\"}}",
@@ -772,9 +772,13 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     else if( status == JobStatusSucceeded )
     {
         pPayloadParts = pPayloadPartsStatusSucceeded;
+	pPayloadParts[2] = pOtaJobReasonStrings[ reason ];
     }
-
-    /* NOTE: else case is handled by initialization of pPayloadParts */
+    else
+    {
+        pPayloadParts = pPayloadPartsStatusOther;
+	pPayloadParts[2] = pOtaJobReasonStrings[ reason ];
+    }
 
     msgSize = ( uint32_t ) stringBuilder(
         pMsgBuffer,
