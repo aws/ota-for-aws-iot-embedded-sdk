@@ -393,6 +393,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
      * is calculated from the template and the corresponding parameters. */
     char pOtaRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ];
     uint16_t topicLen = 0;
+    const OtaFileContext_t * pFileContext = NULL;
 
     /* NULL-terminated list of topic string parts */
     const char * topicStringParts[] =
@@ -407,8 +408,10 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
 
     assert( pAgentCtx != NULL );
 
+    pFileContext = &( pAgentCtx->fileContext );
+
     topicStringParts[1] = pAgentCtx->pThingName;
-    topicStringParts[3] = ( const char * ) pAgentCtx->fileContext->pStreamName;
+    topicStringParts[3] = ( const char * ) pFileContext->pStreamName;
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
     topicLen = ( uint16_t ) stringBuilder(
