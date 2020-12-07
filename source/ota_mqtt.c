@@ -79,11 +79,6 @@ static const char pOtaStreamDataTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_S
 static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_GET_CBOR;                /*!< Topic template to request next data over a stream. */
 
 static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                              /*!< Used to specify client token id to authenticate job. */
-static const char pOtaJobStatusReceiveDetailsTemplate[] = "\"%s\":\"%u/%u\"}}";                                             /*!< Tail of the job receive status. */
-static const char pOtaJobStatusSelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}"; /*!< Tail os self test job status. */
-static const char pOtaJobStatusReasonStrTemplate[] = "\"reason\":\"%s: 0x%08x\"}}";                                         /*!< Tail template to report job failure string. */
-static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.%u\"}}";                                    /*!< Tail template to report job succeeded. */
-static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";                                     /*!< Tail template to report job failure error code. */
 static const char pOtaStringReceive[] = "receive";                                                                          /*!< Used to build the job receive template. */
 /** @}*/
 
@@ -624,6 +619,9 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     uint32_t msgSize = 0;
 
     /* NULL-terminated list of JSON payload components */
+    /* NOTE: this must conform to the following format, do not add spaces, etc. */
+    /*       "\"%s\":\"%u/%u\"}}" */
+
     const char * payloadStringParts[] =
     {
         NULL, /* Job status is not available at compile time, initialized below. */
@@ -672,7 +670,8 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     uint32_t msgSize = 0;
 
     /* NULL-terminated list of JSON payload components */
-    /* NOTE: this must agree with pOtaJobStatusSelfTestDetailsTemplate, do not add spaces, etc. */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}" */
     char versionString[ U32_MAX_LEN + 1 ];
     const char * pPayloadStringParts[] =
     {
@@ -719,7 +718,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     AppVersion32_t newVersion;
 
     /* NULL-terminated list of payload string parts */
-    /* NOTE: this must agree with pOtaJobStatusReasonValTemplate, do not add spaces, etc. */
+    /* NOTE: this must conform to the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"0x%08x: 0x%08x\"}}" */
+
     const char * pPayloadPartsStatusFailedWithValue[] =
     {
         NULL,  /* Job status string not available at compile time, initialized below. */
@@ -731,7 +732,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
         NULL
     };
     /* NULL-terminated list of payload string parts */
-    /* NOTE: this must agree with pOtaJobStatusSucceededStrTemplate, do not add spaces, etc. */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"%s v%u.%u.%u\"}}" */
     const char * pPayloadPartsStatusSucceeded[] =
     {
         NULL,  /* Job status string not available at compile time, initialized below. */
@@ -748,7 +750,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     };
 
     /* NULL-terminated list of payload string parts */
-    /* NOTE: this must agree with pOtaJobStatusReasonStrTemplate, do not add spaces, etc. */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"%s: 0x%08x\"}}" */
     const char * pPayloadPartsStatusOther[] =
     {
         NULL,  /* Job status string not available at compile time, initialized below. */
@@ -765,8 +768,8 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     newVersion.u.signedVersion32 = subReason;
 
-    ( void ) stringBuilderUInt32Hex( reasonString, reason );
-    ( void ) stringBuilderUInt32Hex( subReasonString, subReason );
+    ( void ) stringBuilderUInt32Hex( reasonString, ( uint32_t ) reason );
+    ( void ) stringBuilderUInt32Hex( subReasonString, ( uint32_t ) subReason );
     ( void ) stringBuilderUInt32Decimal( versionMajorString, newVersion.u.x.major );
     ( void ) stringBuilderUInt32Decimal( versionMinorString, newVersion.u.x.minor );
     ( void ) stringBuilderUInt32Decimal( versionBuildString, newVersion.u.x.build );
