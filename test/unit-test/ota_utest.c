@@ -126,6 +126,11 @@ static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
 
+static void * mockMallocAlwaysFail( size_t size )
+{
+    return NULL;
+}
+
 static OtaOsStatus_t mockOSEventReset( OtaEventContext_t * unused )
 {
     otaEventQueueEnd = otaEventQueue;
@@ -1073,6 +1078,19 @@ void test_OTA_ProcessJobDocumentPalCreateFileFail()
     otaReceiveJobDocument();
     otaWaitForEmptyEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_ProcessJobDocumentBitmapMallocFail()
+{
+    pOtaAppBuffer.pFileBitmap = NULL;
+    otaInterfaces.os.mem.malloc = mockMallocAlwaysFail;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    otaWaitForEmptyEvent();
+    TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
 }
 
 static void otaInitFileTransfer()
