@@ -292,7 +292,7 @@ static uint16_t stringBuilderUInt32Hex( char * pBuffer,
     }
 
     pDest[ size++ ] = '\0';
-    return ( uint16_t ) pDest - pBuffer;
+    return size;
 }
 
 /*
@@ -668,7 +668,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     /* NOTE: this must agree with pOtaJobStatusSelfTestDetailsTemplate, do not add spaces, etc. */
     char versionString[ U32_MAX_LEN + 1 ];
     ( void ) stringBuilderUInt32Hex( versionString, appFirmwareVersion.u.unsignedVersion32 );
-    const * char pPayloadStringParts[] =
+    const char * pPayloadStringParts[] =
     {
         pOtaJobStatusStrings[ status ],
         "\"",
