@@ -410,7 +410,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
 
     pFileContext = &( pAgentCtx->fileContext );
 
-    topicStringParts[1] = pAgentCtx->pThingName;
+    topicStringParts[1] = ( const char * ) pAgentCtx->pThingName;
     topicStringParts[3] = ( const char * ) pFileContext->pStreamName;
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
@@ -471,7 +471,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
 
     /* Try to unsubscribe from the first of two job topics. */
 
-    topicStringParts[1] = pAgentCtx->pThingName;
+    topicStringParts[1] = ( const char * ) pAgentCtx->pThingName;
     topicLen = ( uint16_t ) stringBuilder(
         pJobTopic,
         sizeof( pJobTopic ),
@@ -548,13 +548,6 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_JOB_STATUS_BUFFER_SIZE ];
-
-    assert( pAgentCtx != NULL );
-    /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
-    assert( pMsg != NULL );
-
-    /* Build the dynamic job status topic . */
-
     /* NULL-terminated list of topic string parts */
     const char * topicStringParts[] =
     {
@@ -566,7 +559,13 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
         NULL
     };
 
-    topicStringParts[1] = pAgentCtx->pThingName;
+    assert( pAgentCtx != NULL );
+    /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
+    assert( pMsg != NULL );
+
+    /* Build the dynamic job status topic . */
+
+    topicStringParts[1] = ( const char * ) pAgentCtx->pThingName;
     topicStringParts[3] = ( const char * ) pAgentCtx->pActiveJobName;
 
     topicLen = stringBuilder(
@@ -612,8 +611,8 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              const OtaFileContext_t * pOTAFileCtx )
 {
-    char receivedString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char numBlocksString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
+    char receivedString[ U32_MAX_LEN + 1 ];
+    char numBlocksString[ U32_MAX_LEN + 1 ];
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
@@ -630,7 +629,6 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
         "}}",
         NULL
     };
-
 
     assert( pMsgBuffer != NULL );
     /* This function is only called when a file is received, so it can't be NULL. */
@@ -662,13 +660,10 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                                int32_t reason )
 {
     uint32_t msgSize = 0;
-    uint32_t msgTailSize = 0;
-
-    assert( pMsgBuffer != NULL );
 
     /* NULL-terminated list of JSON payload components */
     /* NOTE: this must agree with pOtaJobStatusSelfTestDetailsTemplate, do not add spaces, etc. */
-    char versionString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
+    char versionString[ U32_MAX_LEN + 1 ];
     const char * pPayloadStringParts[] =
     {
         pOtaJobStatusStrings[ status ],
@@ -681,6 +676,8 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
         "\"}}",
         NULL
     };
+
+    assert( pMsgBuffer != NULL );
 
     ( void ) stringBuilderUInt32Hex( versionString, appFirmwareVersion.u.unsignedVersion32 );
 
@@ -701,11 +698,11 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              int32_t subReason )
 {
     uint32_t msgSize = 0;
-    char reasonString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char subReasonString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char versionMajorString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char versionMinorString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
-    char versionBuildString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */
+    char reasonString[ U32_MAX_LEN + 1 ];
+    char subReasonString[ U32_MAX_LEN + 1 ];
+    char versionMajorString[ U32_MAX_LEN + 1 ];
+    char versionMinorString[ U32_MAX_LEN + 1 ];
+    char versionBuildString[ U32_MAX_LEN + 1 ];
     AppVersion32_t newVersion;
 
     /* NULL-terminated list of payload string parts */
@@ -806,12 +803,12 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 {
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
-    char pJobTopic[ TOPIC_GET_NEXT_BUFFER_SIZE ] = { '\0' };  /* Initialized below */
+    char pJobTopic[ TOPIC_GET_NEXT_BUFFER_SIZE ];
 
     /* The following buffer is big enough to hold a dynamically constructed
      * $next/get job message. It contains a client token that is used to track
      * how many requests have been made. */
-    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ] = { '\0' };  /* Initialized below */
+    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ];
 
     static uint32_t reqCounter = 0;
     OtaErr_t otaError = OtaErrRequestJobFailed;
@@ -827,7 +824,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         MQTT_API_JOBS_NEXT_GET,
         NULL
     };
-    char reqCounterString[ U32_MAX_LEN + 1 ] = { '\0' };  /* Initialized below */;
+    char reqCounterString[ U32_MAX_LEN + 1 ];
     /* NULL-terminated list of payload parts */
     /* NOTE: this must agree with pOtaGetNextJobMsgTemplate, do not add spaces, etc. */
     const char * pPayloadParts[] =
@@ -842,8 +839,8 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    pTopicParts[1] = pAgentCtx->pThingName;
-    pPayloadParts[3] = pAgentCtx->pThingName;
+    pTopicParts[1] = ( const char * ) pAgentCtx->pThingName;
+    pPayloadParts[3] = ( const char * ) pAgentCtx->pThingName;
 
     ( void ) stringBuilderUInt32Decimal( reqCounterString, reqCounter );
 
@@ -985,8 +982,8 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     assert( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
-    pTopicParts[1] = pAgentCtx->pThingName;
-    pTopicParts[3] = pFileContext->pStreamName;
+    pTopicParts[1] = ( const char * ) pAgentCtx->pThingName;
+    pTopicParts[3] = ( const char * ) pFileContext->pStreamName;
 
     topicLen = ( uint16_t ) stringBuilder(
         pRxStreamTopic,
@@ -1057,7 +1054,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
 
-    pTopicParts[1] = pAgentCtx->pThingName;
+    pTopicParts[1] = ( const char * ) pAgentCtx->pThingName;
     pTopicParts[3] = ( const char * ) pFileContext->pStreamName;
 
     /* Reset number of blocks requested. */
