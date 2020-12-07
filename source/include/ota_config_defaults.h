@@ -45,8 +45,8 @@
  * <b>Possible values:</b> Any unsigned 32 integer. <br>
  * <b>Default value:</b> '12'
  */
-#ifndef otaconfigLOG2_FILE_BLOCK_SIZE
-    #define otaconfigLOG2_FILE_BLOCK_SIZE    12UL
+#ifndef otaconfigFILE_BLOCK_SIZE
+    #define otaconfigFILE_BLOCK_SIZE    4096U
 #endif
 
 /**

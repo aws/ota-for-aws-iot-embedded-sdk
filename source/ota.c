@@ -202,6 +202,13 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                uint32_t * uBlockSize,
                                                uint32_t * uBlockIndex );
 
+/**
+ * @brief Helper function to calculate the log base 2 of file block size.
+ *
+ * @return uint16_t log_2(file_block_size)
+ */
+static uint16_t getBitsForFileBlockSize( void );
+
 /* Close an open OTA file context and free it. */
 
 static bool otaClose( OtaFileContext_t * const pFileContext );
@@ -2013,6 +2020,19 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     return pFinalFile;
 }
 
+/* Calculates log_2 (otaconfigFILE_BLOCK_SIZE) */
+static uint16_t getBitsForFileBlockSize( void )
+{
+    uint16_t fileBlockSize = otaconfigFILE_BLOCK_SIZE;
+    uint16_t log2fileBlockSize = 0;
+
+    while( fileBlockSize >>= 1 )
+    {
+        log2fileBlockSize++;
+    }
+
+    return log2fileBlockSize;
+}
 
 /* getFileContextFromJob
  *
@@ -2045,7 +2065,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-        numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+        numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> getBitsForFileBlockSize();
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
         if( pUpdateFile->blockBitmapMaxSize == 0u )
@@ -2129,7 +2149,7 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
     bool ret = false;
     uint32_t lastBlock = 0;
 
-    lastBlock = ( ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE ) - 1U;
+    lastBlock = ( ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> getBitsForFileBlockSize() ) - 1U;
 
     if( ( ( blockIndex < lastBlock ) && ( blockSize == OTA_FILE_BLOCK_SIZE ) ) ||
         ( ( blockIndex == lastBlock ) && ( blockSize == ( pFileContext->fileSize - ( lastBlock * OTA_FILE_BLOCK_SIZE ) ) ) ) )
@@ -2247,11 +2267,11 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
         }
         else
         {
-            *pPayload = otaAgent.pOtaInterface->os.mem.malloc( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
+            *pPayload = otaAgent.pOtaInterface->os.mem.malloc( otaconfigFILE_BLOCK_SIZE );
 
             if( *pPayload != NULL )
             {
-                payloadSize = ( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
+                payloadSize = ( otaconfigFILE_BLOCK_SIZE );
             }
         }
     }

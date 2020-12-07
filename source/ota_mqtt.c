@@ -207,6 +207,13 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              int32_t reason,
                                              int32_t subReason );
 
+/**
+ * @brief Helper function to calculate the log base 2 of file block size.
+ *
+ * @return uint16_t log_2(file_block_size)
+ */
+static uint16_t getBitsForFileBlockSize( void );
+
 /*
  * Subscribe to the OTA job notification topics.
  */
@@ -500,7 +507,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     /* This function is only called when a file is received, so it can't be NULL. */
     assert( pOTAFileCtx != NULL );
 
-    numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+    numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> getBitsForFileBlockSize();
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
     if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
@@ -853,7 +860,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
 
-    numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+    numBlocks = ( pFileContext->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> getBitsForFileBlockSize();
     bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
     cborEncodeRet = OTA_CBOR_Encode_GetStreamRequestMessage( ( uint8_t * ) pMsg,
@@ -1000,6 +1007,20 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
     }
 
     return result;
+}
+
+/* Calculates log_2 (otaconfigFILE_BLOCK_SIZE) */
+static uint16_t getBitsForFileBlockSize( void )
+{
+    uint16_t fileBlockSize = otaconfigFILE_BLOCK_SIZE;
+    uint16_t log2fileBlockSize = 0;
+
+    while( fileBlockSize >>= 1 )
+    {
+        log2fileBlockSize++;
+    }
+
+    return log2fileBlockSize;
 }
 
 const char * OTA_MQTT_strerror( OtaMqttStatus_t status )

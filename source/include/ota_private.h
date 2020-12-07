@@ -65,14 +65,14 @@
 /** @endcond */
 
 /* General constants. */
-#define LOG2_BITS_PER_BYTE           3U                                                   /*!< Log base 2 of bits per byte. */
-#define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /*!< Number of bits in a byte. This is used by the block bitmap implementation. */
-#define OTA_FILE_BLOCK_SIZE          ( ( uint32_t ) 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) /*!< Data section size of the file data block message (excludes the header). */
-#define OTA_MAX_FILES                1U                                                   /*!< [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
-#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /*!< Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
-#define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< Maximum size of the message */
-#define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< Maximum size of the S3 presigned URL */
-#define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< The starting state of a group of erased blocks in the Rx block bitmap. */
+#define LOG2_BITS_PER_BYTE           3U                                        /*!< Log base 2 of bits per byte. */
+#define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE ) /*!< Number of bits in a byte. This is used by the block bitmap implementation. */
+#define OTA_FILE_BLOCK_SIZE          ( otaconfigFILE_BLOCK_SIZE )              /*!< Data section size of the file data block message (excludes the header). */
+#define OTA_MAX_FILES                1U                                        /*!< [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
+#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                      /*!< Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
+#define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )        /*!< Maximum size of the message */
+#define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                  /*!< Maximum size of the S3 presigned URL */
+#define OTA_ERASED_BLOCKS_VAL        0xffU                                     /*!< The starting state of a group of erased blocks in the Rx block bitmap. */
 #ifdef configOTA_NUM_MSG_Q_ENTRIES
     #define OTA_NUM_MSG_Q_ENTRIES    configOTA_NUM_MSG_Q_ENTRIES
 #else
@@ -80,14 +80,14 @@
 #endif
 
 /* Job document parser constants. */
-#define OTA_MAX_JSON_TOKENS         64U                                                                         /*!< Number of JSON tokens supported in a single parser call. */
-#define OTA_MAX_JSON_STR_LEN        256U                                                                        /*!< Limit our JSON string compares to something small to avoid going into the weeds. */
-#define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
-#define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< Used to denote a required document model parameter. */
-#define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffff                                                                      /*!< If destOffset in the model is 0xffffffff, do not store the value. */
-#define OTA_STORE_NESTED_JSON       0x1fffU                                                                     /*!< Store the reference to a nested JSON in a separate pointer */
-#define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
+#define OTA_MAX_JSON_TOKENS         64U                                                          /*!< Number of JSON tokens supported in a single parser call. */
+#define OTA_MAX_JSON_STR_LEN        256U                                                         /*!< Limit our JSON string compares to something small to avoid going into the weeds. */
+#define OTA_DOC_MODEL_MAX_PARAMS    32U                                                          /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
+#define OTA_JOB_PARAM_REQUIRED      true                                                         /*!< Used to denote a required document model parameter. */
+#define OTA_JOB_PARAM_OPTIONAL      false                                                        /*!< Used to denote an optional document model parameter. */
+#define OTA_DONT_STORE_PARAM        0xffff                                                       /*!< If destOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_STORE_NESTED_JSON       0x1fffU                                                      /*!< Store the reference to a nested JSON in a separate pointer */
+#define OTA_DATA_BLOCK_SIZE         ( otaconfigFILE_BLOCK_SIZE + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
 
 
 /* OTA Agent task event flags. */
