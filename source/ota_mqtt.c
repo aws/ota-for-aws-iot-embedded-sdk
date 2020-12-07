@@ -241,6 +241,12 @@ static size_t stringBuilder( char * pBuffer,
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
                                           uint32_t value )
 {
+    static const char decDigits[] =
+    {
+        '0', '1', '2', '3',
+        '4', '5', '6', '7',
+        '8', '9'
+    };
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
@@ -248,7 +254,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
     while( value )
     {
-        *pCur++ = '0' + ( char ) ( value % 10 );
+        *pCur++ = decDigits[ ( value % 10 ) ];
         value /= 10;
     }
 
@@ -620,12 +626,12 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     /* NULL-terminated list of JSON payload components */
     const char * payloadStringParts[] =
     {
-        pOtaJobStatusStrings[ status ],
+        NULL, /* Job status is not available at compile time, initialized below. */
         pOtaStringReceive,
         ":",
-        receivedString,
+        NULL, /* Received string is not available at compile time, initialized below. */
         "/",
-        numBlocksString,
+        NULL, /* # blocks string is not available at compile time, initialized below. */
         "}}",
         NULL
     };
@@ -636,6 +642,10 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
+
+    payloadStringParts[0] = pOtaJobStatusStrings[ status ];
+    payloadStringParts[3] = receivedString;
+    payloadStringParts[5] = numBlocksString;
 
     ( void ) stringBuilderUInt32Decimal( receivedString, received );
     ( void ) stringBuilderUInt32Decimal( numBlocksString, received );
@@ -666,13 +676,13 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     char versionString[ U32_MAX_LEN + 1 ];
     const char * pPayloadStringParts[] =
     {
-        pOtaJobStatusStrings[ status ],
+        NULL, /* Job status string not available at compile time, initialized below. */
         "\"",
         OTA_JSON_SELF_TEST_KEY_ONLY,
         "\":\"",
-        pOtaJobReasonStrings[ reason ],
+        NULL,  /* Job reason string not available at compile time, initialized below. */
         "\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x",
-        versionString,
+        NULL,  /* Version string not available at compile time, initialized below. */
         "\"}}",
         NULL
     };
@@ -680,6 +690,9 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
     assert( pMsgBuffer != NULL );
 
     ( void ) stringBuilderUInt32Hex( versionString, appFirmwareVersion.u.unsignedVersion32 );
+    pPayloadStringParts[0] = pOtaJobStatusStrings[ status ];
+    pPayloadStringParts[4] = pOtaJobReasonStrings[ reason ];
+    pPayloadStringParts[6] = versionString;
 
     msgSize = ( uint32_t ) stringBuilder(
         pMsgBuffer,
@@ -709,11 +722,11 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     /* NOTE: this must agree with pOtaJobStatusReasonValTemplate, do not add spaces, etc. */
     const char * pPayloadPartsStatusFailedWithValue[] =
     {
-        pOtaJobStatusStrings[ status ],
+        NULL,  /* Job status string not available at compile time, initialized below. */
         "\"reason\":\"0x",
-        reasonString,
+        NULL,  /* Reason string not available at compile time, initialized below. */
         ": 0x",
-        subReasonString,
+        NULL,  /* Sub-Reason string not available at compile time, initialized below. */
         "\"}}",
         NULL
     };
@@ -721,15 +734,15 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     /* NOTE: this must agree with pOtaJobStatusSucceededStrTemplate, do not add spaces, etc. */
     const char * pPayloadPartsStatusSucceeded[] =
     {
-        pOtaJobStatusStrings[ status ],
+        NULL,  /* Job status string not available at compile time, initialized below. */
         "\"reason\":\"",
-        NULL,         /* Filled in based on job status below */
+        NULL,  /*  Reason string not available at compile time, initialized below. */
         "  v",
-        versionMajorString,
+        NULL,  /* Version major string not available at compile time, initialized below. */
         ".",
-        versionMinorString,
+        NULL,  /* Version minor string not available at compile time, initialized below. */
         ".",
-        versionBuildString,
+        NULL,  /* Version build string not available at compile time, initialized below. */
         "\"}}",
         NULL
     };
@@ -738,15 +751,17 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     /* NOTE: this must agree with pOtaJobStatusReasonStrTemplate, do not add spaces, etc. */
     const char * pPayloadPartsStatusOther[] =
     {
-        pOtaJobStatusStrings[ status ],
+        NULL,  /* Job status string not available at compile time, initialized below. */
         "\"reason\":\"",
-        NULL,         /* Filled in based on job status below */
+        NULL,  /*  Reason string not available at compile time, initialized below. */
         ": 0x",
-        subReasonString,
+        NULL,  /* Sub-Reason string not available at compile time, initialized below. */
         "\"}}",
         NULL
     };
     const char ** pPayloadParts;
+
+    assert( pMsgBuffer != NULL );
 
     newVersion.u.signedVersion32 = subReason;
 
@@ -756,8 +771,6 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     ( void ) stringBuilderUInt32Decimal( versionMinorString, newVersion.u.x.minor );
     ( void ) stringBuilderUInt32Decimal( versionBuildString, newVersion.u.x.build );
 
-    assert( pMsgBuffer != NULL );
-
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
      * include in the code.
@@ -765,6 +778,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     if( status == JobStatusFailedWithVal )
     {
         pPayloadParts = pPayloadPartsStatusFailedWithValue;
+	pPayloadParts[0] = pOtaJobStatusStrings[ status ];
+	pPayloadParts[2] = reasonString;
+	pPayloadParts[4] = subReasonString;
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
@@ -775,12 +791,18 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     else if( status == JobStatusSucceeded )
     {
         pPayloadParts = pPayloadPartsStatusSucceeded;
+	pPayloadParts[0] = pOtaJobStatusStrings[ status ];
 	pPayloadParts[2] = pOtaJobReasonStrings[ reason ];
+	pPayloadParts[4] = versionMajorString;
+	pPayloadParts[6] = versionMinorString;
+	pPayloadParts[8] = versionBuildString;
     }
     else
     {
         pPayloadParts = pPayloadPartsStatusOther;
+	pPayloadParts[0] = pOtaJobStatusStrings[ status ];
 	pPayloadParts[2] = pOtaJobReasonStrings[ reason ];
+	pPayloadParts[4] = subReasonString;
     }
 
     msgSize = ( uint32_t ) stringBuilder(
@@ -830,7 +852,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     const char * pPayloadParts[] =
     {
         "{\"clientToken\":\"",
-        reqCounterString,
+        NULL,     /* Request counter string not available at compile time, initialized below. */
         ":",
         NULL,     /* Thing Name not available at compile time, initialized below */
         "\"}",
@@ -840,6 +862,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     assert( pAgentCtx != NULL );
 
     pTopicParts[1] = ( const char * ) pAgentCtx->pThingName;
+    pPayloadParts[1] = reqCounterString;
     pPayloadParts[3] = ( const char * ) pAgentCtx->pThingName;
 
     ( void ) stringBuilderUInt32Decimal( reqCounterString, reqCounter );
