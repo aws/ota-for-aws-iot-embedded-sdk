@@ -220,9 +220,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              int32_t reason,
                                              int32_t subReason );
 
-static uint16_t stringBuilder( char * pBuffer,
-                               size_t bufferSizeBytes,
-                               const char * strings[] )
+static size_t stringBuilder( char * pBuffer,
+                             size_t bufferSizeBytes,
+                             const char * strings[] )
 {
     size_t curLen = 0;
     int i;
@@ -238,14 +238,13 @@ static uint16_t stringBuilder( char * pBuffer,
     return curLen;
 }
 
-static uint16_t stringBuilderUInt32Decimal( char * pBuffer,
-                                            uint32_t value )
+static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          uint32_t value )
 {
-    size_t curLen = 0;
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
-    uint16_t size = 0;  /* 16 bits is sufficient to store a string of U32_MAX_LEN */
+    size_t size = 0;
 
     while( value )
     {
@@ -262,8 +261,8 @@ static uint16_t stringBuilderUInt32Decimal( char * pBuffer,
     return size;
 }
 
-static uint16_t stringBuilderUInt32Hex( char * pBuffer,
-                                        uint32_t value )
+static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      uint32_t value )
 {
     static const char hexDigits[] =
     {
@@ -272,11 +271,10 @@ static uint16_t stringBuilderUInt32Hex( char * pBuffer,
         '8', '9', 'a', 'b',
         'c', 'd', 'e', 'f',
     };
-    size_t curLen = 0;
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
-    uint16_t size = 0;  /* 16 bits is sufficient to store a string of U32_MAX_LEN */
+    size_t size = 0;
     int i;
 
     /* Render all 8 digits, including leading zeros */
@@ -303,7 +301,6 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     uint16_t topicLen = 0;
-    size_t curLen = 0;
 
     /* These buffers are used to store generated MQTT topics. The static sizes
      * are calculated from the templates and the corresponding parameters. */
@@ -322,7 +319,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     };
 
     /* Build and subscribe to the first topic. */
-    topicLen = stringBuilder(
+    topicLen = ( uint16_t ) stringBuilder(
         pJobTopicGetNext,
         sizeof( pJobTopicGetNext ),
         topicStringParts );
@@ -354,7 +351,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         /* Build and subscribe to the second topic. Only the last part of the topic string changes */
         topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
-        topicLen = stringBuilder(
+        topicLen = ( uint16_t ) stringBuilder(
             pJobTopicGetNext,
             sizeof( pJobTopicGetNext ),
             topicStringParts );
@@ -396,7 +393,6 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     char pOtaRxStreamTopic[ TOPIC_STREAM_DATA_BUFFER_SIZE ];
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
-    size_t curLen = 0;
 
     assert( pAgentCtx != NULL );
 
@@ -414,7 +410,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     };
 
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    topicLen = stringBuilder(
+    topicLen = ( uint16_t ) stringBuilder(
         pOtaRxStreamTopic,
         sizeof( pOtaRxStreamTopic ),
         topicStringParts );
@@ -456,7 +452,6 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
      * larger of the two. */
     char pJobTopic[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     uint16_t topicLen = 0;
-    size_t curLen = 0;
 
     assert( pAgentCtx != NULL );
 
@@ -471,7 +466,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
 
     /* Try to unsubscribe from the first of two job topics. */
 
-    topicLen = stringBuilder(
+    topicLen = ( uint16_t ) stringBuilder(
         pJobTopic,
         sizeof( pJobTopic ),
         topicStringParts );
@@ -503,7 +498,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
         /* Only the last part of the topic string changes here. */
 
         topicStringParts[ 2 ] = MQTT_API_JOBS_NEXT_GET_ACCEPTED;
-        topicLen = stringBuilder(
+        topicLen = ( uint16_t ) stringBuilder(
             pJobTopic,
             sizeof( pJobTopic ),
             topicStringParts );
@@ -542,8 +537,7 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                              uint8_t qos )
 {
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
-    uint32_t topicLen = 0;
-    size_t curLen = 0;
+    size_t topicLen = 0;
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
@@ -853,7 +847,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 
         reqCounter++;
 
-        topicLen = stringBuilder(
+        topicLen = ( uint16_t ) stringBuilder(
             pJobTopic,
             sizeof( pJobTopic ),
             pTopicParts );
@@ -975,7 +969,7 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
         NULL
     };
 
-    topicLen = stringBuilder(
+    topicLen = ( uint16_t ) stringBuilder(
         pRxStreamTopic,
         sizeof( pRxStreamTopic ),
         pTopicParts );
@@ -1067,7 +1061,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
         /* Try to build the dynamic data REQUEST topic to publish to. */
 
-        topicLen = stringBuilder(
+        topicLen = ( uint32_t ) stringBuilder(
             pTopicBuffer,
             sizeof( pTopicBuffer ),
             pTopicParts );
