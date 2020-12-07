@@ -420,6 +420,7 @@ poutputlen
 pparam
 pparamadd
 ppayload
+ppayloadparts
 ppayloadsize
 pprivatekeypath
 pprotocol

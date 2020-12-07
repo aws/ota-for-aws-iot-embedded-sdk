@@ -107,7 +107,7 @@ static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
     "{\"status\":\""JOBS_API_STATUS_FAILED "\",\"statusDetails\":{",
     "{\"status\":\""JOBS_API_STATUS_SUCCEEDED "\",\"statusDetails\":{",
     "{\"status\":\""JOBS_API_STATUS_REJECTED "\",\"statusDetails\":{",
-    "{\"status\":\""FAILED "\",\"statusDetails\":{", /* eJobStatus_FailedWithVal */
+    "{\"status\":\""JOBS_API_STATUS_FAILED "\",\"statusDetails\":{", /* eJobStatus_FailedWithVal */
 };
 
 /**
@@ -245,6 +245,7 @@ static uint16_t stringBuilderUInt32Decimal( char * pBuffer,
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
+    uint16_t size = 0;  /* 16 bits is sufficient to store a string of U32_MAX_LEN */
 
     while( value )
     {
@@ -254,11 +255,11 @@ static uint16_t stringBuilderUInt32Decimal( char * pBuffer,
 
     while( pCur > workBuf )
     {
-        *pDest++ = *--pCur;
+        pDest[ size++ ] = *--pCur;
     }
 
-    *pDest++ = '\0';
-    return ( uint16_t ) pDest - pBuffer;
+    pDest[ size++ ] = '\0';
+    return size;
 }
 
 static uint16_t stringBuilderUInt32Hex( char * pBuffer,
@@ -270,11 +271,12 @@ static uint16_t stringBuilderUInt32Hex( char * pBuffer,
         '4', '5', '6', '7',
         '8', '9', 'a', 'b',
         'c', 'd', 'e', 'f',
-    }
+    };
     size_t curLen = 0;
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
+    uint16_t size = 0;  /* 16 bits is sufficient to store a string of U32_MAX_LEN */
     int i;
 
     /* Render all 8 digits, including leading zeros */
@@ -286,10 +288,10 @@ static uint16_t stringBuilderUInt32Hex( char * pBuffer,
 
     while( pCur > workBuf )
     {
-        *pDest++ = *--pCur;
+        pDest[ size++ ] = *--pCur;
     }
 
-    *pDest++ = '\0';
+    pDest[ size++ ] = '\0';
     return ( uint16_t ) pDest - pBuffer;
 }
 
@@ -401,13 +403,13 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     pFileContext = &( pAgentCtx->fileContext );
 
     /* NULL-terminated list of topic string parts */
-    const char * topicStringParts =
+    const char * topicStringParts[] =
     {
         MQTT_API_THINGS,
         pAgentCtx->pThingName,
         MQTT_API_STREAMS,
         pOtaRxStreamTopic,
-        ( const char * ) pFileCpontext->pStreamName,
+        ( const char * ) pFileContext->pStreamName,
         MQTT_API_DATA_CBOR,
         NULL
     };
