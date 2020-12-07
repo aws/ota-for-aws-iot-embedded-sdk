@@ -40,6 +40,9 @@
 /* Lower request momentum so that retry fails faster. */
 #define otaconfigMAX_NUM_REQUEST_MOMENTUM       3
 
+/* Make number of blocks per mqtt request larger so we can hit some branch. */
+#define otaconfigMAX_NUM_BLOCKS_REQUEST         4
+
 #define LOG_LEVEL_ERROR                         0
 #define LOG_LEVEL_WARN                          1
 #define LOG_LEVEL_INFO                          2
