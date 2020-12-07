@@ -562,8 +562,8 @@ static void otaWaitForEmptyEventWithTimeout( int milliseconds )
         milliseconds--;
     }
 
-    /* Delay for 10 ms to make sure the event handler is finished. */
-    usleep( 10000 );
+    /* Delay for 100 ms to make sure the event handler is finished. */
+    usleep( 100000 );
 }
 
 static void otaWaitForEmptyEvent()
