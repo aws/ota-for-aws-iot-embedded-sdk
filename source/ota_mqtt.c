@@ -58,15 +58,15 @@
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
  *  @{
  */
-#define MQTT_API_THINGS                    "$aws/things/"
-#define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"
-#define MQTT_API_JOBS_NEXT_GET_ACCEPTED    "/jobs/$next/get/accepted"
-#define MQTT_API_JOBS_NOTIFY_NEXT          "/jobs/notify-next"
-#define MQTT_API_JOBS                      "/jobs/"
-#define MQTT_API_UPDATE                    "/update"
-#define MQTT_API_STREAMS                   "/streams/"
-#define MQTT_API_DATA_CBOR                 "/data/cbor"
-#define MQTT_API_GET_CBOR                  "/get/cbor"
+#define MQTT_API_THINGS                    "$aws/things/"             /*!< Topic prefix for thing APIs. */
+#define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"          /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NEXT_GET_ACCEPTED    "/jobs/$next/get/accepted" /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NOTIFY_NEXT          "/jobs/notify-next"        /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS                      "/jobs/"                   /*!< Job API identifier. */
+#define MQTT_API_UPDATE                    "/update"                  /*!< Job API identifier. */
+#define MQTT_API_STREAMS                   "/streams/"                /*!< Stream API identifier. */
+#define MQTT_API_DATA_CBOR                 "/data/cbor"               /*!< Stream API suffix. */
+#define MQTT_API_GET_CBOR                  "/get/cbor"                /*!< Stream API suffix. */
 
 /* NOTE: The format specifiers in this string are placeholders only; the lengths of these
  * strings are used to calculate buffer sizes.
@@ -214,6 +214,38 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              int32_t reason,
                                              int32_t subReason );
+
+/**
+ * @brief Build a string from a set of strings
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
+ * @param[in] strings NULL-terminated array of string pointers.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilder( char * pBuffer,
+                             size_t bufferSizeBytes,
+                             const char * strings[] );
+
+/**
+ * @brief Build a string with the decimal representation of a uint32_t value.
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] value The uint32_t value to convert.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          uint32_t value );
+
+/**
+ * @brief Build a string with the hex representation of a uint32_t value.
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] value The uint32_t value to convert.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      uint32_t value );
 
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
