@@ -570,7 +570,6 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     topicLen = stringBuilder(
         pTopicBuffer,
         sizeof( pTopicBuffer ),
-        MQTT_API_THINGS,
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
@@ -648,7 +647,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
             payloadStringParts );
 
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
+        assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -702,7 +701,9 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     char versionMajorString[ U32_MAX_LEN + 1 ];
     char versionMinorString[ U32_MAX_LEN + 1 ];
     char versionBuildString[ U32_MAX_LEN + 1 ];
-    AppVersion32_t newVersion = ( uint32_t ) subReason;
+    AppVersion32_t newVersion;
+
+    newVersion.u.signedVersion32 = subReason;
 
     ( void ) stringBuilderUInt32Hex( reasonString, reason );
     ( void ) stringBuilderUInt32Hex( subReasonString, subReason );
@@ -753,7 +754,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
         "\"}}",
         NULL
     };
-    const char * pPayloadParts[] = pPayloadPartsStatusOther;
+    const char ** pPayloadParts = pPayloadPartsStatusOther;
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -1066,7 +1067,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         topicLen = stringBuilder(
             pTopicBuffer,
             sizeof( pTopicBuffer ),
-            topicStringParts );
+            pTopicParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
