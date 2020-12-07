@@ -623,8 +623,8 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
-    ( void ) stringBuilderUint32Decimal( receivedString, received );
-    ( void ) stringBuilderUint32Decimal( numBlocksString, received );
+    ( void ) stringBuilderUInt32Decimal( receivedString, received );
+    ( void ) stringBuilderUInt32Decimal( numBlocksString, received );
 
     /* NULL-terminated list of JSON payload components */
     const char * payloadStringParts[] =
@@ -831,7 +831,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         "\"}",
         NULL
     };
-    ( void ) stringBuilderUint32Decimal( reqCounterString, reqCounter );
+    ( void ) stringBuilderUInt32Decimal( reqCounterString, reqCounter );
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
