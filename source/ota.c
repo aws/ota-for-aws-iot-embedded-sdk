@@ -1312,21 +1312,22 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err = DocParseErrNone;
-    char * pStringCopy = NULL;
 
     /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
     char ** pCharPtr = pParamAdd;
 
-    if( *pCharPtr == NULL )
+    if( *pParamSizeAdd == 0 )
     {
-        /* Malloc memory for a copy of the value string plus a zero terminator. */
-        pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
-
-        if( pStringCopy != NULL )
+        /* Free previously allocated buffer. */
+        if( *pCharPtr != NULL )
         {
-            *pCharPtr = pStringCopy;
+            otaAgent.pOtaInterface->os.mem.free( *pCharPtr );
         }
-        else
+
+        /* Malloc memory for a copy of the value string plus a zero terminator. */
+        *pCharPtr = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
+
+        if( *pCharPtr == NULL )
         {
             /* Stop processing on error. */
             err = DocParseErrOutOfMemory;
@@ -1348,11 +1349,6 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                         pKey,
                         valueLength ) );
         }
-        else
-        {
-            pStringCopy = *pCharPtr;
-            err = DocParseErrNone;
-        }
     }
 
     if( err == DocParseErrNone )
@@ -1361,12 +1357,12 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
         ( void ) memcpy( *pCharPtr, pValueInJson, valueLength );
 
         /* Zero terminate the new string. */
-        pStringCopy[ valueLength ] = '\0';
+        ( *pCharPtr )[ valueLength ] = '\0';
 
         LogInfo( ( "Extracted parameter: "
                    "[key: value]=[%s: %s]",
                    pKey,
-                   pStringCopy ) );
+                   *pCharPtr ) );
     }
 
     return err;
