@@ -36,6 +36,7 @@
 /* For FILE type in OtaFileContext_t.*/
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
  * without a custom config. If a custom config is provided, the
@@ -47,22 +48,6 @@
 /* Include config defaults header to get default values of configs not defined
  * in ota_config.h file. */
 #include "ota_config_defaults.h"
-
-/**
- * @cond DOXYGEN_IGNORE
- * Doxygen should ignore this section.
- */
-
-/* bool is defined in only C99+. */
-#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
-    ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
-    #include <stdbool.h>
-#elif !defined( bool )
-    #define bool     int8_t
-    #define false    ( int8_t ) 0
-    #define true     ( int8_t ) 1
-#endif
-/** @endcond */
 
 /* General constants. */
 #define LOG2_BITS_PER_BYTE           3U                                                   /*!< Log base 2 of bits per byte. */
