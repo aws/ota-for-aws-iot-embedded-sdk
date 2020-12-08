@@ -305,42 +305,47 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
+#ifndef LogInfo
+
 /* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
  * disabled when running static analysis. So it's a false positive. */
 /* coverity[misra_c_2012_rule_2_2_violation] */
-static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
-{
-    "Init",
-    "Ready",
-    "RequestingJob",
-    "WaitingForJob",
-    "CreatingFile",
-    "RequestingFileBlock",
-    "WaitingForFileBlock",
-    "ClosingFile",
-    "Suspended",
-    "ShuttingDown",
-    "Stopped",
-    "All"
-};
+    static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
+    {
+        "Init",
+        "Ready",
+        "RequestingJob",
+        "WaitingForJob",
+        "CreatingFile",
+        "RequestingFileBlock",
+        "WaitingForFileBlock",
+        "ClosingFile",
+        "Suspended",
+        "ShuttingDown",
+        "Stopped",
+        "All"
+    };
+#endif /* ifndef LogInfo */
 
-/* coverity[misra_c_2012_rule_2_2_violation] */
-static const char * pOtaEventStrings[ OtaAgentEventMax ] =
-{
-    "Start",
-    "StartSelfTest",
-    "RequestJobDocument",
-    "ReceivedJobDocument",
-    "CreateFile",
-    "RequestFileBlock",
-    "ReceivedFileBlock",
-    "RequestTimer",
-    "CloseFile",
-    "Suspend",
-    "Resume",
-    "UserAbort",
-    "Shutdown"
-};
+#ifndef LogInfo
+    /* coverity[misra_c_2012_rule_2_2_violation] */
+    static const char * pOtaEventStrings[ OtaAgentEventMax ] =
+    {
+        "Start",
+        "StartSelfTest",
+        "RequestJobDocument",
+        "ReceivedJobDocument",
+        "CreateFile",
+        "RequestFileBlock",
+        "ReceivedFileBlock",
+        "RequestTimer",
+        "CloseFile",
+        "Suspend",
+        "Resume",
+        "UserAbort",
+        "Shutdown"
+    };
+#endif /* ifndef LogInfo */
 
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];
 static uint8_t pProtocolBuffer[ 20 ];
@@ -1317,6 +1322,8 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
     /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
     char ** pCharPtr = pParamAdd;
 
+    ( void ) pKey; /* For suppressing compiler-warning: unused variable. */
+
     if( *pCharPtr == NULL )
     {
         /* Malloc memory for a copy of the value string plus a zero terminator. */
@@ -1446,6 +1453,8 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
     DocParseErr_t err = DocParseErrNone;
     uint32_t missingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap )
                              ^ pDocModel->paramsRequiredBitmap;
+
+    ( void ) pModelParam; /* For suppressing compiler-warning: unused variable. */
 
     if( missingParams != 0U )
     {
@@ -2310,6 +2319,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
     OtaPalMainStatus_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr;
+
+    ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
 
     if( pFileContext->blocksRemaining == 0U )
     {

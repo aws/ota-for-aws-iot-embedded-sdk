@@ -128,6 +128,8 @@ static OtaOsStatus_t mockOSEventReset( OtaEventContext_t * unused )
     otaEventQueueEnd = otaEventQueue;
     eventIgnore = false;
 
+    ( void ) unused;
+
     return OtaOsSuccess;
 }
 
@@ -137,6 +139,9 @@ static OtaOsStatus_t mockOSEventSendThenStop( OtaEventContext_t * unused_1,
                                               const void * pEventMsg,
                                               uint32_t unused_2 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+
     if( otaEventQueueEnd >= otaEventQueue + OTA_NUM_MSG_Q_ENTRIES )
     {
         return OtaOsEventQueueSendFailed;
@@ -167,6 +172,9 @@ static OtaOsStatus_t mockOSEventSendThenFail( OtaEventContext_t * unused_1,
 {
     OtaOsStatus_t err = OtaOsSuccess;
 
+    ( void ) unused_1;
+    ( void ) unused_2;
+
     if( eventIgnore )
     {
         err = OtaOsEventQueueSendFailed;
@@ -184,6 +192,9 @@ static OtaOsStatus_t mockOSEventSend( OtaEventContext_t * unused_1,
                                       const void * pEventMsg,
                                       uint32_t unused_2 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+
     if( otaEventQueueEnd >= otaEventQueue + OTA_NUM_MSG_Q_ENTRIES )
     {
         return OtaOsEventQueueSendFailed;
@@ -207,6 +218,10 @@ static OtaOsStatus_t mockOSEventSendAlwaysFail( OtaEventContext_t * unused_1,
                                                 const void * pEventMsg,
                                                 uint32_t unused_2 )
 {
+    ( void ) unused_1;
+    ( void ) pEventMsg;
+    ( void ) unused_2;
+
     return OtaOsEventQueueSendFailed;
 }
 
@@ -217,6 +232,9 @@ static OtaOsStatus_t mockOSEventReceive( OtaEventContext_t * unused_1,
     OtaOsStatus_t err = OtaOsSuccess;
     OtaEventMsg_t * pOtaEvent = pEventMsg;
     size_t currQueueSize = otaEventQueueEnd - otaEventQueue;
+
+    ( void ) unused_1;
+    ( void ) unused_2;
 
     if( otaEventQueueEnd != otaEventQueue )
     {
@@ -246,6 +264,10 @@ static OtaOsStatus_t stubOSTimerStart( OtaTimerId_t timerId,
                                        const uint32_t timeout,
                                        OtaTimerCallback_t callback )
 {
+    ( void ) timerId;
+    ( void ) pTimerName;
+    ( void ) timeout;
+    ( void ) callback;
     return OtaOsSuccess;
 }
 
@@ -255,17 +277,21 @@ static OtaOsStatus_t mockOSTimerInvokeCallback( OtaTimerId_t timerId,
                                                 OtaTimerCallback_t callback )
 {
     callback( timerId );
+    ( void ) timeout;
+    ( void ) pTimerName;
     return OtaOsSuccess;
 }
 
 
 static OtaOsStatus_t stubOSTimerStop( OtaTimerId_t timerId )
 {
+    ( void ) timerId;
     return OtaOsSuccess;
 }
 
 static OtaOsStatus_t stubOSTimerDelete( OtaTimerId_t timerId )
 {
+    ( void ) timerId;
     return OtaOsSuccess;
 }
 
@@ -273,6 +299,10 @@ static OtaMqttStatus_t stubMqttSubscribe( const char * unused_1,
                                           uint16_t unused_2,
                                           uint8_t unused_3 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
     return OtaMqttSuccess;
 }
 
@@ -282,6 +312,12 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
                                         uint32_t unused_4,
                                         uint8_t unused_5 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+    ( void ) unused_4;
+    ( void ) unused_5;
+
     return OtaMqttSuccess;
 }
 
@@ -291,6 +327,12 @@ static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
                                                   uint32_t unused_4,
                                                   uint8_t unused_5 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+    ( void ) unused_4;
+    ( void ) unused_5;
+
     return OtaMqttPublishFailed;
 }
 
@@ -298,28 +340,40 @@ static OtaMqttStatus_t stubMqttUnsubscribe( const char * unused_1,
                                             uint16_t unused_2,
                                             uint8_t unused_3 )
 {
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
     return OtaMqttSuccess;
 }
 
 static OtaHttpStatus_t stubHttpInit( char * url )
 {
+    ( void ) url;
+
     return OtaHttpSuccess;
 }
 
 static OtaHttpStatus_t mockHttpInitAlwaysFail( char * url )
 {
+    ( void ) url;
     return OtaHttpInitFailed;
 }
 
 static OtaHttpStatus_t stubHttpRequest( uint32_t rangeStart,
                                         uint32_t rangeEnd )
 {
+    ( void ) rangeEnd;
+    ( void ) rangeStart;
     return OtaHttpSuccess;
 }
 
 static OtaHttpStatus_t mockHttpRequestAlwaysFail( uint32_t rangeStart,
                                                   uint32_t rangeEnd )
 {
+    ( void ) rangeEnd;
+    ( void ) rangeStart;
+
     return OtaHttpRequestFailed;
 }
 
@@ -330,6 +384,8 @@ static OtaHttpStatus_t stubHttpDeinit()
 
 OtaPalStatus_t mockPalAbort( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
+
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
@@ -342,6 +398,7 @@ OtaPalStatus_t mockPalCreateFileForRx( OtaFileContext_t * const pFileContext )
 
 OtaPalStatus_t mockPalCloseFile( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
@@ -350,6 +407,8 @@ int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
                            uint8_t * const pData,
                            uint32_t blockSize )
 {
+    ( void ) pFileContext;
+
     if( offset >= OTA_TEST_FILE_SIZE )
     {
         TEST_ASSERT_TRUE_MESSAGE( false, "Offset is bigger than test file buffer." );
@@ -361,16 +420,19 @@ int16_t mockPalWriteBlock( OtaFileContext_t * const pFileContext,
 
 OtaPalStatus_t mockPalActivate( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
 
 OtaPalStatus_t mockPalActivateReturnFail( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
     return OTA_PAL_COMBINE_ERR( OtaPalActivateFailed, 0 );
 }
 
 OtaPalStatus_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
     resetCalled = true;
     return OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
 }
@@ -378,6 +440,8 @@ OtaPalStatus_t mockPalResetDevice( OtaFileContext_t * const pFileContext )
 OtaPalStatus_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileContext,
                                              OtaImageState_t eState )
 {
+    ( void ) pFileContext;
+
     switch( eState )
     {
         case OtaImageStateTesting:
@@ -386,6 +450,7 @@ OtaPalStatus_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileConte
 
         case OtaImageStateAccepted:
             palImageState = OtaPalImageStateValid;
+            break;
 
         default:
             palImageState = OtaPalImageStateInvalid;
@@ -397,6 +462,7 @@ OtaPalStatus_t mockPalSetPlatformImageState( OtaFileContext_t * const pFileConte
 
 OtaPalImageState_t mockPalGetPlatformImageState( OtaFileContext_t * const pFileContext )
 {
+    ( void ) pFileContext;
     return palImageState;
 }
 
@@ -409,6 +475,8 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysInvalid( OtaFileContext_t *
 static void mockAppCallback( OtaJobEvent_t event,
                              const void * pData )
 {
+    ( void ) pData;
+
     if( event == OtaJobEventStartTest )
     {
         OTA_SetImageState( OtaImageStateAccepted );
@@ -535,7 +603,7 @@ static void otaWaitForEmptyEvent()
     otaWaitForEmptyEventWithTimeout( otaDefaultWait );
 }
 
-static otaReceiveJobDocument()
+static void otaReceiveJobDocument()
 {
     TEST_ASSERT_NOT_EQUAL( NULL, pOtaJobDoc );
     size_t job_doc_len = strlen( pOtaJobDoc );
@@ -1042,8 +1110,6 @@ void test_OTA_InitFileTransferHttp()
 
 void test_OTA_InitFileTransferRetryFail()
 {
-    OtaEventMsg_t otaEvent = { 0 };
-
     /* Use HTTP data transfer so we can intentionally fail the init transfer. */
     pOtaJobDoc = JOB_DOC_HTTP;
 
@@ -1101,8 +1167,6 @@ void test_OTA_RequestFileBlockHttpOneBlock()
 
 void test_OTA_RequestFileBlockRetryFail()
 {
-    OtaEventMsg_t otaEvent = { 0 };
-
     /* Use HTTP data transfer so we can intentionally fail the file block request. */
     pOtaJobDoc = JOB_DOC_HTTP;
 
@@ -1184,7 +1248,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Fill the file block. */
-    for( idx = 0; idx < sizeof( pFileBlock ); idx++ )
+    for( idx = 0; idx < ( int ) sizeof( pFileBlock ); idx++ )
     {
         pFileBlock[ idx ] = idx % UINT8_MAX;
     }
@@ -1200,7 +1264,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
             sizeof( pStreamingMessage ),
             idx,
             pFileBlock,
-            min( remainingBytes, OTA_FILE_BLOCK_SIZE ),
+            min( ( uint32_t ) remainingBytes, OTA_FILE_BLOCK_SIZE ),
             &streamingMessageSize );
 
         otaEvent.eventId = OtaAgentEventReceivedFileBlock;
@@ -1248,7 +1312,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     otaInterfaces.os.event.send = mockOSEventSend;
 
     /* Fill the file block. */
-    for( idx = 0; idx < sizeof( pFileBlock ); idx++ )
+    for( idx = 0; idx < ( int ) sizeof( pFileBlock ); idx++ )
     {
         pFileBlock[ idx ] = idx % UINT8_MAX;
     }
@@ -1257,7 +1321,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
 
     while( remainingBytes >= 0 )
     {
-        fileBlockSize = min( remainingBytes, OTA_FILE_BLOCK_SIZE );
+        fileBlockSize = min( ( uint32_t ) remainingBytes, OTA_FILE_BLOCK_SIZE );
         otaEvent.eventId = OtaAgentEventReceivedFileBlock;
         otaEvent.pEventData = &eventBuffers[ idx ];
         memcpy( otaEvent.pEventData->data, pFileBlock, fileBlockSize );
