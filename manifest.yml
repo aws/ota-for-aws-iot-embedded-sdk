@@ -2,4 +2,15 @@ name : "ota-for-aws-iot-embedded-sdk"
 version: "v2.0.0"
 description: |
   "Client library for using the AWS Over-The-Air update service on embedded devices.\n"
+dependencies:
+  - name : "coreJSON"
+    version: "v1.0.0"
+    repository:
+      type: "git"
+      url: "https://github.com/FreeRTOS/coreJSON.git"
+  - name : "tinycbor"
+    version: "v1.0.0"
+    repository:
+      type: "git"
+      url: "https://github.com/intel/tinycbor.git"
 license: "MIT"
