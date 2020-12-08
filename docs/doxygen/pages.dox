@@ -121,6 +121,86 @@ More about OTA Demo configurations at @subpage ota_demo_config
 */
 
 /**
+@page ota_functions Functions
+@brief API functions of the OTA library:<br><br>
+@subpage ota_init_function <br>
+@subpage ota_shutdown_function <br>
+@subpage ota_getstate_function <br>
+@subpage ota_activatenewimage_function <br>
+@subpage ota_setimagestate_function <br>
+@subpage ota_getimagestate_function <br>
+@subpage ota_checkforupdate_function <br>
+@subpage ota_suspend_function <br>
+@subpage ota_resume_function <br>
+@subpage otaagenttask_function <br>
+@subpage ota_getstatistics_function <br>
+@subpage ota_err_strerror_function <br>
+@subpage ota_jobparse_strerror_function <br>
+@subpage ota_palstatus_strerror_function <br>
+@subpage ota_osstatus_strerror_function <br>
+
+@page ota_init_function OTA_Init
+@snippet ota.h declare_ota_init
+@copydoc OTA_Init
+
+@page ota_shutdown_function OTA_Shutdown
+@snippet ota.h declare_ota_shutdown
+@copydoc OTA_Shutdown
+
+@page ota_getstate_function OTA_GetState
+@snippet ota.h declare_ota_getstate
+@copydoc OTA_GetState
+
+@page ota_activatenewimage_function OTA_ActivateNewImage
+@snippet ota.h declare_ota_activatenewimage
+@copydoc OTA_ActivateNewImage
+
+@page ota_setimagestate_function OTA_SetImageState
+@snippet ota.h declare_ota_setimagestate
+@copydoc OTA_SetImageState
+
+@page ota_getimagestate_function OTA_GetImageState
+@snippet ota.h declare_ota_getimagestate
+@copydoc OTA_GetImageState
+
+@page ota_checkforupdate_function OTA_CheckForUpdate
+@snippet ota.h declare_ota_checkforupdate
+@copydoc OTA_CheckForUpdate
+
+@page ota_suspend_function OTA_Suspend
+@snippet ota.h declare_ota_suspend
+@copydoc OTA_Suspend
+
+@page ota_resume_function OTA_Resume
+@snippet ota.h declare_ota_resume
+@copydoc OTA_Resume
+
+@page otaagenttask_function otaAgentTask
+@snippet ota.h declare_otaagenttask
+@copydoc otaAgentTask
+
+@page ota_getstatistics_function OTA_GetStatistics
+@snippet ota.h declare_ota_getstatistics
+@copydoc OTA_GetStatistics
+
+@page ota_err_strerror_function OTA_Err_strerror
+@snippet ota.h declare_ota_err_strerror
+@copydoc OTA_Err_strerror
+
+@page ota_jobparse_strerror_function OTA_JobParse_strerror
+@snippet ota.h declare_ota_jobparse_strerror
+@copydoc OTA_JobParse_strerror
+
+@page ota_palstatus_strerror_function OTA_PalStatus_strerror
+@snippet ota.h declare_ota_palstatus_strerror
+@copydoc OTA_PalStatus_strerror
+
+@page ota_osstatus_strerror_function OTA_OsStatus_strerror
+@snippet ota.h declare_ota_osstatus_strerror
+@copydoc OTA_OsStatus_strerror
+*/
+
+/**
 @configpage{ota_demo,OTA demo}
 
 @section OTA_DEMO_CONNECTION_TIMEOUT_MS

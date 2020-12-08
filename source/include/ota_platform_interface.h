@@ -134,7 +134,8 @@ typedef OtaPalStatus_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContex
  */
 typedef OtaPalStatus_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
 
-/* @brief Authenticate and close the underlying receive file in the specified OTA context.
+/**
+ * @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
  * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called. This function is called only at the end of block ingestion.
@@ -261,7 +262,7 @@ typedef OtaPalStatus_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * c
 typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_t * const pFileContext );
 
 /**
- *  OTA pal Interface structure.
+ * @brief OTA pal Interface structure.
  */
 typedef struct OtaPalInterface
 {

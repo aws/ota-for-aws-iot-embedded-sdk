@@ -32,11 +32,22 @@
 #define _OTA_OS_INTERFACE_H_
 
 struct OtaEventContext;
+
+/**
+ * @brief Type definition for Event Context.
+ */
 typedef struct OtaEventContext   OtaEventContext_t;
 
 struct OtaTimerContext;
+
+/**
+ * @brief Type definition for Timer Context.
+ */
 typedef struct OtaTimerContext   OtaTimerContext_t;
 
+/**
+ * @brief Enumeration for tracking multiple timers.
+ */
 typedef enum
 {
     OtaRequestTimer = 0,

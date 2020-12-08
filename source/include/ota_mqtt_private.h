@@ -24,7 +24,7 @@
  */
 
 /**
- * @file ota_http_private.h
+ * @file ota_mqtt_private.h
  * @brief Contains function definitions of routines for OTA download and control using MQTT data plane.
  */
 

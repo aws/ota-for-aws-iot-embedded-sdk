@@ -308,10 +308,12 @@ typedef struct OtaAgentContext
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
+/* @[declare_ota_init] */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
+/* @[declare_ota_init] */
 
 /**
  * @brief Signal to the OTA Agent to shut down.
@@ -326,14 +328,18 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
  */
+/* @[declare_ota_shutdown] */
 OtaState_t OTA_Shutdown( uint32_t ticksToWait );
+/* @[declare_ota_shutdown] */
 
 /**
  * @brief Get the current state of the OTA agent.
  *
  * @return The current state of the OTA agent.
  */
+/* @[declare_ota_getstate] */
 OtaState_t OTA_GetState( void );
+/* @[declare_ota_getstate] */
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -346,7 +352,9 @@ OtaState_t OTA_GetState( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_activatenewimage] */
 OtaErr_t OTA_ActivateNewImage( void );
+/* @[declare_ota_activatenewimage] */
 
 /**
  * @brief Set the state of the current MCU image.
@@ -360,7 +368,9 @@ OtaErr_t OTA_ActivateNewImage( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_setimagestate] */
 OtaErr_t OTA_SetImageState( OtaImageState_t state );
+/* @[declare_ota_setimagestate] */
 
 /**
  * @brief Get the state of the currently running MCU image.
@@ -370,7 +380,9 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state );
  *
  * @return The state of the current context's OTA image.
  */
+/* @[declare_ota_getimagestate] */
 OtaImageState_t OTA_GetImageState( void );
+/* @[declare_ota_getimagestate] */
 
 /**
  * @brief Request for the next available OTA job from the job service.
@@ -378,7 +390,9 @@ OtaImageState_t OTA_GetImageState( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_checkforupdate] */
 OtaErr_t OTA_CheckForUpdate( void );
+/* @[declare_ota_checkforupdate] */
 
 /**
  * @brief Suspend OTA agent operations .
@@ -386,7 +400,9 @@ OtaErr_t OTA_CheckForUpdate( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_suspend] */
 OtaErr_t OTA_Suspend( void );
+/* @[declare_ota_suspend] */
 
 /**
  * @brief Resume OTA agent operations .
@@ -394,14 +410,18 @@ OtaErr_t OTA_Suspend( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_resume] */
 OtaErr_t OTA_Resume( void );
+/* @[declare_ota_resume] */
 
 /**
  * @brief OTA agent task function.
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  */
+/* @[declare_otaagenttask] */
 void otaAgentTask( void * pUnused );
+/* @[declare_otaagenttask] */
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */
@@ -426,7 +446,9 @@ void otaAgentTask( void * pUnused );
  *
  * @return OtaErrNone if the statistics can be received successfully.
  */
+/* @[declare_ota_getstatistics] */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
+/* @[declare_ota_getstatistics] */
 
 /**
  * @brief Error code to string conversion for OTA errors.
@@ -435,9 +457,9 @@ OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
  *
  * @return The string representation of the error.
  */
-/* @[declare_ota_error_strerror] */
+/* @[declare_ota_err_strerror] */
 const char * OTA_Err_strerror( OtaErr_t err );
-/* @[declare_ota_error_strerror] */
+/* @[declare_ota_err_strerror] */
 
 /**
  * @brief Error code to string conversion for OTA Job Parsing errors.
@@ -446,7 +468,9 @@ const char * OTA_Err_strerror( OtaErr_t err );
  *
  * @return The string representation of the error.
  */
+/* @[declare_ota_jobparse_strerror] */
 const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
+/* @[declare_ota_jobparse_strerror] */
 
 /**
  * @brief Status code to string conversion for OTA PAL status.
@@ -455,7 +479,9 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
  *
  * @return The string representation of the status.
  */
+/* @[declare_ota_palstatus_strerror] */
 const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
+/* @[declare_ota_palstatus_strerror] */
 
 /**
  * @brief Status code to string conversion for OTA OS status.
@@ -464,6 +490,8 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
  *
  * @return The string representation of the status.
  */
+/* @[declare_ota_osstatus_strerror] */
 const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
-
+/* @[declare_ota_osstatus_strerror] */
+ 
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */
