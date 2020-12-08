@@ -113,6 +113,17 @@ static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
  */
 static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "active", "accepted", "rejected", "aborted" };
 
+/**
+ * @brief These are used for both decimal and hex string conversions.
+ */
+static const char asciiDigits[] =
+{
+    '0', '1', '2', '3',
+    '4', '5', '6', '7',
+    '8', '9', 'a', 'b',
+    'c', 'd', 'e', 'f',
+};
+
 /* Maximum lengths for constants used in the ota_mqtt_topic_strings templates.
  * These are used to calculate the static size of buffers used to store MQTT
  * topic and message strings. Each length is in terms of bytes. */
@@ -205,7 +216,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
  * @param[in] pMsgBuffer Buffer to populate.
  * @param[in] msgBufferSize Size of the message.
  * @param[in] status Status of the operation.
- * @param[in] reason Reason for failure or the new firmware version .
+ * @param[in] reason Reason for failure or the new firmware version.
  * @param[in] subReason Error code due to which the operation failed.
  * @return uint32_t Size of the message.
  */
@@ -231,20 +242,24 @@ static size_t stringBuilder( char * pBuffer,
  * @brief Build a string with the decimal representation of a uint32_t value.
  *
  * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
  * @param[in] value The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          size_t bufferSizeBytes,
                                           uint32_t value );
 
 /**
  * @brief Build a string with the hex representation of a uint32_t value.
  *
  * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
  * @param[in] value The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      size_t bufferSizeBytes,
                                       uint32_t value );
 
 static size_t stringBuilder( char * pBuffer,
@@ -258,30 +273,35 @@ static size_t stringBuilder( char * pBuffer,
 
     for( i = 0; strings[ i ] != NULL; i++ )
     {
+        size_t thisLength = strlen( strings[ i ] );
+
+        /* Assert if there is not enough buffer space. */
+
+        assert( thisLength + curLen + 1 <= bufferSizeBytes );
+
         strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
-        curLen += strlen( strings[ i ] );
+        curLen += thisLength;
     }
 
     return curLen;
 }
 
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          size_t bufferSizeBytes,
                                           uint32_t value )
 {
-    static const char decDigits[] =
-    {
-        '0', '1', '2', '3',
-        '4', '5', '6', '7',
-        '8', '9'
-    };
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
     size_t size = 0;
 
+    /* Assert if there is not enough buffer space. */
+
+    assert( bufferSizeBytes >= U32_MAX_LEN );
+
     while( value )
     {
-        *pCur++ = decDigits[ ( value % 10 ) ];
+        *pCur++ = asciiDigits[ ( value % 10 ) ];
         value /= 10;
     }
 
@@ -295,25 +315,23 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 }
 
 static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      size_t bufferSizeBytes,
                                       uint32_t value )
 {
-    static const char hexDigits[] =
-    {
-        '0', '1', '2', '3',
-        '4', '5', '6', '7',
-        '8', '9', 'a', 'b',
-        'c', 'd', 'e', 'f',
-    };
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
     size_t size = 0;
     int i;
 
-    /* Render all 8 digits, including leading zeros */
+    /* Assert if there is not enough buffer space. */
+
+    assert( bufferSizeBytes >= U32_MAX_LEN );
+
+    /* Render all 8 digits, including leading zeros. */
     for( i = 0; i < 8; i++ )
     {
-        *pCur++ = hexDigits[ value & 0xf ];
+        *pCur++ = asciiDigits[ value & 0xf ];
         value >>= 4;
     }
 
@@ -384,7 +402,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
 
     if( mqttStatus == OtaMqttSuccess )
     {
-        /* Build and subscribe to the second topic. Only the last part of the topic string changes */
+        /* Build and subscribe to the second topic. Only the last part of the topic string changes. */
         topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
         topicLen = ( uint16_t ) stringBuilder(
             pJobTopicGetNext,
@@ -429,13 +447,13 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
 
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * topicStringParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_STREAMS,
-        NULL, /* Stream Name not available at compile time, initialized below */
+        NULL, /* Stream Name not available at compile time, initialized below. */
         MQTT_API_DATA_CBOR,
         NULL
     };
@@ -491,12 +509,11 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     char pJobTopic[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     uint16_t topicLen = 0;
 
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * topicStringParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
-        /* pAgentCtx->pThingName, */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_JOBS_NOTIFY_NEXT,
         NULL
     };
@@ -582,13 +599,13 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_JOB_STATUS_BUFFER_SIZE ];
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * topicStringParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_JOBS,
-        NULL, /* Active Job Name not available at compile time, initialized below */
+        NULL, /* Active Job Name not available at compile time, initialized below. */
         MQTT_API_UPDATE,
         NULL
     };
@@ -678,8 +695,8 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     payloadStringParts[ 3 ] = receivedString;
     payloadStringParts[ 5 ] = numBlocksString;
 
-    ( void ) stringBuilderUInt32Decimal( receivedString, received );
-    ( void ) stringBuilderUInt32Decimal( numBlocksString, received );
+    ( void ) stringBuilderUInt32Decimal( receivedString, sizeof( receivedString ), received );
+    ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), received );
 
     if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
@@ -721,7 +738,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 
     assert( pMsgBuffer != NULL );
 
-    ( void ) stringBuilderUInt32Hex( versionString, appFirmwareVersion.u.unsignedVersion32 );
+    ( void ) stringBuilderUInt32Hex( versionString, sizeof( versionString ), appFirmwareVersion.u.unsignedVersion32 );
     pPayloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
     pPayloadStringParts[ 4 ] = pOtaJobReasonStrings[ reason ];
     pPayloadStringParts[ 6 ] = versionString;
@@ -801,11 +818,11 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     newVersion.u.signedVersion32 = subReason;
 
-    ( void ) stringBuilderUInt32Hex( reasonString, ( uint32_t ) reason );
-    ( void ) stringBuilderUInt32Hex( subReasonString, ( uint32_t ) subReason );
-    ( void ) stringBuilderUInt32Decimal( versionMajorString, newVersion.u.x.major );
-    ( void ) stringBuilderUInt32Decimal( versionMinorString, newVersion.u.x.minor );
-    ( void ) stringBuilderUInt32Decimal( versionBuildString, newVersion.u.x.build );
+    ( void ) stringBuilderUInt32Hex( reasonString, sizeof( reasonString ), ( uint32_t ) reason );
+    ( void ) stringBuilderUInt32Hex( subReasonString, sizeof( subReasonString ), ( uint32_t ) subReason );
+    ( void ) stringBuilderUInt32Decimal( versionMajorString, sizeof( versionMajorString ), newVersion.u.x.major );
+    ( void ) stringBuilderUInt32Decimal( versionMinorString, sizeof( versionMinorString ), newVersion.u.x.minor );
+    ( void ) stringBuilderUInt32Decimal( versionBuildString, sizeof( versionBuildString ), newVersion.u.x.build );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -874,11 +891,11 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
 
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_JOBS_NEXT_GET,
         NULL
     };
@@ -890,7 +907,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
         "{\"clientToken\":\"",
         NULL, /* Request counter string not available at compile time, initialized below. */
         ":",
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         "\"}",
         NULL
     };
@@ -901,7 +918,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     pPayloadParts[ 1 ] = reqCounterString;
     pPayloadParts[ 3 ] = ( const char * ) pAgentCtx->pThingName;
 
-    ( void ) stringBuilderUInt32Decimal( reqCounterString, reqCounter );
+    ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
@@ -1031,13 +1048,13 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
 
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_STREAMS,
-        NULL, /* Stream Name not available at compile time, initialized below */
+        NULL, /* Stream Name not available at compile time, initialized below. */
         MQTT_API_DATA_CBOR,
         NULL
     };
@@ -1101,13 +1118,13 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     const OtaFileContext_t * pFileContext = NULL;
 
-    /* NULL-terminated list of topic string parts */
+    /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
     {
         MQTT_API_THINGS,
-        NULL, /* Thing Name not available at compile time, initialized below */
+        NULL, /* Thing Name not available at compile time, initialized below. */
         MQTT_API_STREAMS,
-        NULL, /* Stream Name not available at compile time, initialized below */
+        NULL, /* Stream Name not available at compile time, initialized below. */
         MQTT_API_GET_CBOR,
         NULL
     };
