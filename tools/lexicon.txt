@@ -391,7 +391,9 @@ pnumpadding
 pnumwhitespace
 popensslcredentials
 posix
+potaagentstatestrings
 potabuffer
+potaeventstrings
 potafilectx
 potafiles
 potafiles

@@ -305,47 +305,47 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-#ifndef LogInfo
+
 
 /* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
  * disabled when running static analysis. So it's a false positive. */
 /* coverity[misra_c_2012_rule_2_2_violation] */
-    static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
-    {
-        "Init",
-        "Ready",
-        "RequestingJob",
-        "WaitingForJob",
-        "CreatingFile",
-        "RequestingFileBlock",
-        "WaitingForFileBlock",
-        "ClosingFile",
-        "Suspended",
-        "ShuttingDown",
-        "Stopped",
-        "All"
-    };
-#endif /* ifndef LogInfo */
+static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
+{
+    "Init",
+    "Ready",
+    "RequestingJob",
+    "WaitingForJob",
+    "CreatingFile",
+    "RequestingFileBlock",
+    "WaitingForFileBlock",
+    "ClosingFile",
+    "Suspended",
+    "ShuttingDown",
+    "Stopped",
+    "All"
+};
 
-#ifndef LogInfo
-    /* coverity[misra_c_2012_rule_2_2_violation] */
-    static const char * pOtaEventStrings[ OtaAgentEventMax ] =
-    {
-        "Start",
-        "StartSelfTest",
-        "RequestJobDocument",
-        "ReceivedJobDocument",
-        "CreateFile",
-        "RequestFileBlock",
-        "ReceivedFileBlock",
-        "RequestTimer",
-        "CloseFile",
-        "Suspend",
-        "Resume",
-        "UserAbort",
-        "Shutdown"
-    };
-#endif /* ifndef LogInfo */
+
+
+/* coverity[misra_c_2012_rule_2_2_violation] */
+static const char * pOtaEventStrings[ OtaAgentEventMax ] =
+{
+    "Start",
+    "StartSelfTest",
+    "RequestJobDocument",
+    "ReceivedJobDocument",
+    "CreateFile",
+    "RequestFileBlock",
+    "ReceivedFileBlock",
+    "RequestTimer",
+    "CloseFile",
+    "Suspend",
+    "Resume",
+    "UserAbort",
+    "Shutdown"
+};
+
 
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];
 static uint8_t pProtocolBuffer[ 20 ];
@@ -2770,6 +2770,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
+
+    ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
+    ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
 
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )
