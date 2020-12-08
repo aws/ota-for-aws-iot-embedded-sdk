@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_interface_private.h
+ * @brief Contains function definitions and structures for data and control interfaces.
+ */
+
 #ifndef __AWS_IOT_OTA_INTERFACE__H__
 #define __AWS_IOT_OTA_INTERFACE__H__
 

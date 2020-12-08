@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_os_interface.h
+ * @brief Contains OS interface statuses, type definitions and structures to store interface routines.
+ */
+
 #ifndef _OTA_OS_INTERFACE_H_
 #define _OTA_OS_INTERFACE_H_
 

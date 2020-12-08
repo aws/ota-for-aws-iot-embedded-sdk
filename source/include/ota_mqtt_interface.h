@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_mqtt_interface.h
+ * @brief Contains OTA MQTT Statuses, function type definitions and mqtt interface structure.
+ */
+
 #ifndef _OTA_MQTT_INTERFACE_H_
 #define _OTA_MQTT_INTERFACE_H_
 

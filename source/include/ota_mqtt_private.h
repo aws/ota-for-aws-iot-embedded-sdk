@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_http_private.h
+ * @brief Contains function definitions of routines for OTA download and control using MQTT data plane.
+ */
+
 #ifndef __AWS_IOT_OTA_MQTT__H__
 #define __AWS_IOT_OTA_MQTT__H__
 

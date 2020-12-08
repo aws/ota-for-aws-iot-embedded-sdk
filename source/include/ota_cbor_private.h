@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_cbor_private.h
+ * @brief Function declarations and field declarations for ota_cbor.c.
+ */
+
 #ifndef __OTAC_BOR__H__
 #define __OTAC_BOR__H__
 

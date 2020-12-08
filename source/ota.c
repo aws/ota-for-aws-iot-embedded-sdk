@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota.c
+ * @brief Implementation of the AWS IoT Over-The-Air Updates Client Library.
+ */
+
 /* Standard library includes. */
 #include <stddef.h>
 #include <string.h>

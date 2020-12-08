@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_http_interface.h
+ * @brief Contains OTA HTTP Statuses, function type definitions and http interface structure.
+ */
+
 #ifndef _OTA_HTTP_INTERFACE_H_
 #define _OTA_HTTP_INTERFACE_H_
 

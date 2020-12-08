@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_platform_interface.h
+ * @brief Contains PAL interface statuses, type definitions and structure to store interface routines.
+ */
+
 #ifndef _OTA_PLATFORM_INTERFACE_
 #define _OTA_PLATFORM_INTERFACE_
 
