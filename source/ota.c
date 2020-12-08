@@ -305,8 +305,6 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-
-
 /* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
  * disabled when running static analysis. So it's a false positive. */
 /* coverity[misra_c_2012_rule_2_2_violation] */
@@ -326,8 +324,6 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-
-
 /* coverity[misra_c_2012_rule_2_2_violation] */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
@@ -345,7 +341,6 @@ static const char * pOtaEventStrings[ OtaAgentEventMax ] =
     "UserAbort",
     "Shutdown"
 };
-
 
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];
 static uint8_t pProtocolBuffer[ 20 ];
