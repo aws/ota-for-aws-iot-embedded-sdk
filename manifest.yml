@@ -4,7 +4,7 @@ description: |
   "Client library for using the AWS Over-The-Air update service on embedded devices.\n"
 dependencies:
   - name : "coreJSON"
-    version: "v1.0.0"
+    version: "v2.0.0"
     repository:
       type: "git"
       url: "https://github.com/FreeRTOS/coreJSON.git"
