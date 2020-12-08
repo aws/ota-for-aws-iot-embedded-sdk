@@ -211,6 +211,7 @@ json
 lf
 li
 linux
+loginfo
 logpath
 longjmp
 malloc
@@ -302,6 +303,7 @@ otapalimagestateinvalid
 otapalimagestatependingcommit
 otapalimagestateunknown
 otapalimagestatevalid
+otapalsuberr
 otatimer
 otatimercallback
 otatimerid
@@ -372,12 +374,14 @@ pjobtopic
 pjobtopicgetnext
 pjobtopicnotifynext
 pjson
+pkey
 plaintext
 platfrom
 plblockid
 plblocksize
 plisthead
 pmessagebuffer
+pmodelparam
 pmsg
 pmsgbuffer
 pnetworkcontext
