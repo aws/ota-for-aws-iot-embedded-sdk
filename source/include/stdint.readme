@@ -3,7 +3,7 @@
 
 /*******************************************************************************
  * THIS IS NOT A FULL stdint.h IMPLEMENTATION - It only contains the definitions
- * necessary to build the coreMQTT code.  It is provided to allow coreMQTT to be
+ * necessary to build the OTA code.  It is provided to allow OTA to be
  * built using compilers that do not provide their own stdint.h definition.
  *
  * To use this file:
