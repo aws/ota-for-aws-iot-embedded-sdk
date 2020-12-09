@@ -1,9 +1,3 @@
-# Changelog for AWS IoT OTA
-
+# AWS IoT Over-the-Air (OTA) Update library
 ## v2.0.0 (December 2020)
-
-### Updates
- - [#pr](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/52) <Placeholder>
-
-### Other
- - [#pr](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/74) <Placeholder>.
+This is the first release of the AWS IoT Over-the-Air (OTA) Update library in this repository. You can use the OTA library with your chosen MQTT library, HTTP library, and operating system (e.g. Linux, FreeRTOS).

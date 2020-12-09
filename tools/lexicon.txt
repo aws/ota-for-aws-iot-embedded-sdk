@@ -34,6 +34,7 @@ bool
 bootloader
 br
 buf
+buffersizebytes
 bufferused
 bytesreceived
 bytessent
@@ -426,6 +427,7 @@ poutputlen
 pparam
 pparamadd
 ppayload
+ppayloadparts
 ppayloadsize
 pprivatekeypath
 pprotocol
@@ -501,7 +503,6 @@ sizeof
 sleeptimems
 sni
 snihostname
-snprintf
 sockaddr
 sockets_invalid_parameter
 socketstatus
@@ -657,3 +658,4 @@ otapaloutofmemory
 otapalnullfilecontext
 otaerractivatefailed
 cpu
+numblocksrequest
