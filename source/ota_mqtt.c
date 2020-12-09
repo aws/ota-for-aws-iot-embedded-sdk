@@ -365,7 +365,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         MQTT_API_THINGS,
         NULL, /* Thing Name not available at compile time, initialized below */
-        MQTT_API_JOBS_NEXT_GET,
+        MQTT_API_JOBS_NEXT_GET_ACCEPTED,
         NULL
     };
 
