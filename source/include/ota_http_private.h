@@ -25,7 +25,7 @@
 
 /**
  * @file ota_http_private.h
- * @brief Contains function definitions of routines for OTA download using HTTP data plane.
+ * @brief Contains definitions of routines for OTA download using HTTP data plane.
  */
 
 #ifndef __OTA_HTTP__H__

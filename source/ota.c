@@ -117,11 +117,11 @@ static OtaDataInterface_t otaDataInterface;
  * reboot the system and perform a self test phase. If the close or signature check fails, abort
  * the file transfer and return the result and any available details to the caller.
  *
- * @param pFileContext Information of file to be streamed.
- * @param pRawMsg Raw job document.
- * @param messageSize Length of document.
- * @param pCloseResult Result of closing file in PAL.
- * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageSize Length of document.
+ * @param[in] pCloseResult Result of closing file in PAL.
+ * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
                                        const uint8_t * pRawMsg,
@@ -131,11 +131,11 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
 /**
  * @brief Validate the incoming data block and store it in the file context.
  *
- * @param pFileContext Information of file to be streamed.
- * @param uBlockIndex Incoming block index.
- * @param uBlockSize Incoming block size.
- * @param pCloseResult Result of closing file in PAL.
- * @param pPayload Data from the block.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] uBlockIndex Incoming block index.
+ * @param[in] uBlockSize Incoming block size.
+ * @param[out] pCloseResult Result of closing file in PAL.
+ * @param[in] pPayload Data from the block.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
@@ -147,8 +147,8 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 /**
  * @brief Free the resources allocated for data ingestion and close the file handle.
  *
- * @param pFileContext Information of file to be streamed.
- * @param pCloseResult Result of closing file in PAL.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pCloseResult Result of closing file in PAL.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 
@@ -161,8 +161,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
  * We received an OTA update job message from the job service so process
  * the message and update the file context.
  *
- * @param pRawMsg Raw job document.
- * @param messageLength length of document.
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageLength length of document.
  * @return OtaFileContext_t* Information of file to be streamed.
  */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
@@ -171,8 +171,8 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 /**
  * @brief Validate JSON document and the DocModel.
  *
- * @param pJson JSON job document.
- * @param messageLength  Length of the job document.
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength  Length of the job document.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 
@@ -182,10 +182,10 @@ static DocParseErr_t validateJSON( const char * pJson,
 /**
  * @brief Store the parameter from the json to the offset specified by the document model.
  *
- * @param docParam Structure to store the details of keys and where to store them.
- * @param pContextBase Start of file context.
- * @param pValueInJson Pointer to the value of the key in JSON buffer.
- * @param valueLength Length of the value.
+ * @param[in] docParam Structure to store the details of keys and where to store them.
+ * @param[in] pContextBase Start of file context.
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
@@ -196,9 +196,9 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 /**
  * @brief Extract the desired fields from the JSON document based on the specified document model.
  *
- * @param pJson JSON job document.
- * @param messageLength  Length of the job document.
- * @param pDocModel Details of expected parameters in the job doc.
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength  Length of the job document.
+ * @param[in] pDocModel Details of expected parameters in the job doc.
  * @return DocParseErr_t DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t parseJSONbyModel( const char * pJson,
@@ -208,9 +208,9 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 /**
  * @brief Decode the base64 encoded file signature key from the job document and store it in file context.
  *
- * @param pValueInJson Pointer to the value of the key in JSON buffer.
- * @param valueLength Length of the value.
- * @param pParamAdd Pointer to the location where the value is stored.
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
+ * @param[out] pParamAdd Pointer to the location where the value is stored.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
@@ -220,11 +220,11 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
 /**
  * @brief Extract the value from json and store it into the allocated memory.
  *
- * @param pKey Name of the Key to extract.
- * @param pValueInJson Pointer to the value of the key in JSON buffer.
- * @param valueLength Length of the value.
- * @param pParamAdd Pointer to the location where the value is stored.
- * @param pParamSizeAdd Size required to store the param.
+ * @param[in] pKey Name of the Key to extract.
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
+ * @param[out] pParamAdd Pointer to the location where the value is stored.
+ * @param[in] pParamSizeAdd Size required to store the param.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t extractAndStoreArray( const char * pKey,
@@ -236,8 +236,8 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
 /**
  * @brief Check if all the required parameters for job document are extracted from the JSON.
  *
- * @param pModelParam Structure to store the details of keys and where to store them.
- * @param pDocModel Details of expected parameters in the job doc.
+ * @param[in] pModelParam Structure to store the details of keys and where to store them.
+ * @param[in] pDocModel Details of expected parameters in the job doc.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
@@ -246,19 +246,19 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
 /**
  * @brief Validate the version of the update received.
  *
- * @param pFileContext Information of file to be streamed.
- * @return OtaErr_t
+ * @param[in] pFileContext Information of file to be streamed.
+ * @return OtaErr_t OtaErrNone if successful, other error codes if failure.
  */
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
 /**
  * @brief Check if the JSON can be parsed through a custom callback if initial parsing fails.
  *
- * @param pJson JSON job document.
- * @param messageLength Length of the job document.
- * @param pFileContext Information of file to be streamed.
- * @param pFinalFile File that stores all extracted params.
- * @return OtaJobParseErr_t
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength Length of the job document.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @return OtaJobParseErr_t OtaJobParseErrNone if successful, other error codes if failure.
  */
 static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        uint32_t messageLength,
@@ -268,10 +268,10 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
 /**
  * @brief Check if the incoming job document is not conflicting with current job status.
  *
- * @param pFileContext Information of file to be streamed.
- * @param pFinalFile File that stores all extracted params.
- * @param pUpdateJob Represents if the job is accepted.
- * @return OtaJobParseErr_t
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @param[out] pUpdateJob Represents if the job is accepted.
+ * @return OtaJobParseErr_t OtaErrNone if successful, other error codes if failure.
  */
 static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                                                OtaFileContext_t ** pFinalFile,
@@ -280,10 +280,10 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 /**
  * @brief Check if all the file context params are valid and initialize resources for the job transfer.
  *
- * @param pFileContext Information of file to be streamed.
- * @param pFinalFile File that stores all extracted params.
- * @param pUpdateJob Represents if the job is accepted.
- * @return OtaJobParseErr_t
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @param[out] pUpdateJob Represents if the job is accepted.
+ * @return OtaJobParseErr_t OtaJobParseErrNone if successful, other error codes if failure.
  */
 static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              OtaFileContext_t ** pFinalFile,
@@ -292,9 +292,9 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 /**
  * @brief Parse the OTA job document, validate and return the populated OTA context if valid.
  *
- * @param pJson JSON job document.
- * @param messageLength Length of the job document.
- * @param pUpdateJob Represents if the job is accepted.
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength Length of the job document.
+ * @param[in] pUpdateJob Represents if the job is accepted.
  * @return OtaFileContext_t* File context to store file information.
  */
 static OtaFileContext_t * parseJobDoc( const char * pJson,
@@ -304,9 +304,9 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 /**
  * @brief Validate block index and block size of the data block.
  *
- * @param pFileContext Information of file to be streamed.
- * @param blockIndex Block index of incoming data block.
- * @param blockSize Block size of incoming data block.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] blockIndex Block index of incoming data block.
+ * @param[in] blockSize Block size of incoming data block.
  * @return true if successful, false otherwise.
  */
 static bool validateDataBlock( const OtaFileContext_t * pFileContext,
@@ -316,25 +316,25 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
 /**
  * @brief Decode and ingest the incoming data block.
  *
- * @param pFileContext Information of file to be streamed.
- * @param pRawMsg Raw job document.
- * @param messageSize Length of document.
- * @param pPayload Data stored in the document.
- * @param blockSize Block size of incoming data block.
- * @param blockIndex Block index of incoming data block.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageSize Length of document.
+ * @param[in] pPayload Data stored in the document.
+ * @param[out] blockSize Block size of incoming data block.
+ * @param[out] blockIndex Block index of incoming data block.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
-                                               uint32_t * blockSize,
-                                               uint32_t * blockIndex );
+                                               uint32_t * pBlockSize,
+                                               uint32_t * pBlockIndex );
 
 /**
  * @brief Close an open OTA file context and free it.
  *
- * @param pFileContext Information of file to be streamed.
+ * @param[in] pFileContext Information of file to be streamed.
  * @return true if successful, false otherwise.
  */
 static bool otaClose( OtaFileContext_t * const pFileContext );
@@ -342,15 +342,15 @@ static bool otaClose( OtaFileContext_t * const pFileContext );
 /**
  * @brief OTA Timer callback.
  *
- * @param otaTimerId Reference to the timer to use.
+ * @param[in] otaTimerId Reference to the timer to use.
  */
 static void otaTimerCallback( OtaTimerId_t otaTimerId );
 
 /**
  * @brief Internal function to set the image state including an optional reason code.
  *
- * @param stateToSet State to set.
- * @param reasonToSet Reason to set.
+ * @param[in] stateToSet State to set.
+ * @param[in] reasonToSet Reason to set.
  * @return OtaErr_t OtaErrNone if successful, other codes on failure.
  */
 static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
@@ -359,8 +359,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 /**
  * @brief Internal function to update the job status to the jobs service from current image state.
  *
- * @param state State to set.
- * @param subReason Reason for status.
+ * @param[in] state State to set.
+ * @param[in] subReason Reason for status.
  * @return OtaErr_t OtaErrNone if successful, other codes on failure.
  */
 static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
@@ -379,11 +379,11 @@ static void dataHandlerCleanup( IngestResult_t result );
 /**
  * @brief Prepare the document model for use by sanity checking the initialization parameters and detecting all required parameters.
  *
- * @param pDocModel Details of expected parameters in the job doc.
- * @param pBodyDef Structure to store the details of keys and where to store them.
- * @param contextBaseAddr Start of file context.
- * @param contextSize Size of file context.
- * @param numJobParams Number of parameters to be extracted.
+ * @param[inout] pDocModel Details of expected parameters in the job doc.
+ * @param[in] pBodyDef Structure to store the details of keys and where to store them.
+ * @param[in] contextBaseAddr Start of file context.
+ * @param[in] contextSize Size of file context.
+ * @param[in] numJobParams Number of parameters to be extracted.
  * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
@@ -395,7 +395,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
 /**
  * @brief Initialize buffers for storing the file attributes.
  *
- * @param pOtaBuffer OTA Application buffers.
+ * @param[out] pOtaBuffer OTA Application buffers.
  */
 static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer );
 
@@ -407,7 +407,7 @@ static void initializeLocalBuffers( void );
 /**
  * @brief Search the state transition table for the entry based on current state and incoming event.
  *
- * @param pEventMsg Incoming event information.
+ * @param[in] pEventMsg Incoming event information.
  * @return uint32_t Index of the transition.
  */
 static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg );
@@ -422,7 +422,7 @@ static OtaErr_t processValidFileContext( void );
 /**
  * @brief Validate update version when receiving job doc in self test state.
  *
- * @param pFileContext Stores file information
+ * @param[in] pFileContext Stores file information.
  */
 static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext );
 
@@ -443,14 +443,14 @@ static bool inSelftest( void );
 /**
  * @brief Function to handle events that were unexpected in the current state.
  *
- * @param pEventMsg Stores information of the event.
+ * @param[in] pEventMsg Stores information of the event.
  */
 static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
 /**
  * @brief Free or clear multiple buffers used in the file context.
  *
- * @param pFileContext Information of file to be streamed.
+ * @param[in] pFileContext Information of file to be streamed.
  */
 static void freeFileContextMem( OtaFileContext_t * const pFileContext );
 
@@ -2438,8 +2438,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
-                                               uint32_t * blockSize,
-                                               uint32_t * blockIndex )
+                                               uint32_t * pBlockSize,
+                                               uint32_t * pBlockIndex )
 {
     IngestResult_t eIngestResult = IngestResultUninitialized;
     int32_t lFileId = 0;
@@ -2493,8 +2493,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
         }
         else
         {
-            *blockIndex = ( uint32_t ) sBlockIndex;
-            *blockSize = ( uint32_t ) sBlockSize;
+            *pBlockIndex = ( uint32_t ) sBlockIndex;
+            *pBlockSize = ( uint32_t ) sBlockSize;
         }
     }
     else
