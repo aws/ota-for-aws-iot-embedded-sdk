@@ -43,7 +43,7 @@
 /* OTA data protocol constants. */
 #define OTA_DATA_OVER_MQTT        0x00000001 /*!< Specify data over mqtt. */
 #define OTA_DATA_OVER_HTTP        0x00000002 /*!< Specify data over http. */
-#define OTA_DATA_NUM_PROTOCOLS    ( 2U ) /*!< Number of protocols supported. */
+#define OTA_DATA_NUM_PROTOCOLS    ( 2U )     /*!< Number of protocols supported. */
 
 
 /**

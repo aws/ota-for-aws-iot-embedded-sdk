@@ -493,5 +493,5 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
 /* @[declare_ota_osstatus_strerror] */
 const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
 /* @[declare_ota_osstatus_strerror] */
- 
+
 #endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */
