@@ -42,16 +42,15 @@ digraph ota_dependencies
 @enddot
 
 Currently, the OTA library has the following dependencies:
-- The MQTT library for communicating with AWS OTA services and streaming services.
-- The HTTP library for communicating with Amazon S3 (Simple Storage Service).
-
+-coreJSON
+-tinyCBOR
 
 @section ota_memory_requirements Memory Requirements
 @brief Memory requirements of the OTA library.
 
 <table>
     <tr>
-        <td colspan="4"><center><b>Code size of coreMQTT library files (sizes generated with [GCC for ARM Cortex-M toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2020-q2-update))</b></center></td>
+        <td colspan="4"><center><b>Code size of OTA library files (sizes generated with [GCC for ARM Cortex-M toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2020-q2-update))</b></center></td>
     </tr>
     <tr>
         <td><b>File</b></td>
