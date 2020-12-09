@@ -35,6 +35,7 @@
 #include <stdint.h>
 
 /**
+ * @ingroup ota_struct_types
  * @brief Application version structure.
  *
  */
@@ -61,9 +62,9 @@ typedef struct
         #endif /* if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN ) */
         uint32_t unsignedVersion32;
         int32_t signedVersion32;
-    } u; /*!< Version based on configuration in big endian or little endian. */
+    } u; /*!< @brief Version based on configuration in big endian or little endian. */
 } AppVersion32_t;
 
-extern const AppVersion32_t appFirmwareVersion; /*!< Making the version number available globally through external linkage. */
+extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
 
 #endif /* ifndef _IOT_APPVERSION32_H_ */

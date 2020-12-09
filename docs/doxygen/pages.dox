@@ -45,6 +45,27 @@ Currently, the OTA library has the following dependencies:
 - The MQTT library for communicating with AWS OTA services and streaming services.
 - The HTTP library for communicating with Amazon S3 (Simple Storage Service).
 
+
+@section ota_memory_requirements Memory Requirements
+@brief Memory requirements of the OTA library.
+
+<table>
+    <tr>
+        <td colspan="4"><center><b>Code size of coreMQTT library files (sizes generated with [GCC for ARM Cortex-M toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2020-q2-update))</b></center></td>
+    </tr>
+    <tr>
+        <td><b>File</b></td>
+        <td><b>No Optimization (asserts enabled)</b></td>
+        <td><b>With -O1 Optimization (asserts disabled)</b></td>
+        <td><b>With -Os Optimization (asserts disabled)</b></td>
+    </tr>
+    <tr>
+        <td>ota.c</td>
+        <td>13.6K</td>
+        <td>6.9K</td>
+        <td>6.3K</td>
+    </tr>
+</table>
 */
 
 /**
@@ -354,4 +375,32 @@ The primary data protocol is the preferred protocol selected for OTA data operat
 @configpossible OTA_DATA_OVER_MQTT , OTA_DATA_OVER_HTTP <br>
 @configrecommended  As per application requirement for preferred protocol. <br>
 @configdefault OTA_DATA_OVER_MQTT
+
+/**
+@defgroup ota_enum_types Enumerated Types
+@brief Enumerated types of the OTA library
+*/
+
+/**
+@defgroup ota_callback_types Callback Types
+@brief Callback function pointer types of the OTA library
+*/
+
+/**
+@defgroup ota_struct_types Parameter Structures
+@brief Structures passed as parameters to [OTA library functions](@ref ota_functions)
+
+These structures are passed as parameters to library functions. Documentation for these structures will state the functions associated with each parameter structure and the purpose of each member.
+*/
+
+/**
+@defgroup ota_basic_types Basic Types
+@brief Primitive types of the OTA library.
+*/
+
+/**
+@defgroup ota_constants Constants
+@brief Constants defined in the OTA library
+*/
+
 */

@@ -320,8 +320,8 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
  * @param[in] pRawMsg Raw job document.
  * @param[in] messageSize Length of document.
  * @param[in] pPayload Data stored in the document.
- * @param[out] blockSize Block size of incoming data block.
- * @param[out] blockIndex Block index of incoming data block.
+ * @param[out] pBlockSize Block size of incoming data block.
+ * @param[out] pBlockIndex Block index of incoming data block.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
