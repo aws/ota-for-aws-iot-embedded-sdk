@@ -36,6 +36,7 @@ bool
 bootloader
 br
 buf
+buffersizebytes
 bufferused
 bytesreceived
 bytessent
@@ -265,6 +266,7 @@ nextjittermax
 nextstate
 noninfringement
 numblocks
+numblocksrequest
 numjobparams
 nummodelparams
 numofblocksrequested
@@ -506,6 +508,7 @@ pparam
 pparamadd
 pparamsizeadd
 ppayload
+ppayloadparts
 ppayloadsize
 pprivatekeypath
 pprotocol
@@ -595,7 +598,6 @@ sizeof
 sleeptimems
 sni
 snihostname
-snprintf
 sockaddr
 sockets_invalid_parameter
 socketstatus

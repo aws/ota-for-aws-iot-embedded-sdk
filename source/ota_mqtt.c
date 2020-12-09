@@ -46,10 +46,10 @@
 #include "ota_appversion32.h"
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN           "rdy" /*!< Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN                   "rdy"            /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE    128U /*!< Max length of a job status message to the service. */
+#define OTA_STATUS_MSG_MAX_SIZE            128U         /*!< Max length of a job status message to the service. */
 
 /**
  *  @addtogroup ota_mqtt_topic_strings
@@ -58,31 +58,39 @@
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
  *  @{
  */
-static const char pOtaJobsGetNextTopicTemplate[] = "$aws/things/%s/jobs/$next/get";                                         /*!< Topic template to request next job. */
-static const char pOtaJobsGetNextAcceptedTopicTemplate[] = "$aws/things/%s/jobs/$next/get/accepted";                        /*!< Topic template for getting next job. */
-static const char pOtaJobsNotifyNextTopicTemplate[] = "$aws/things/%s/jobs/notify-next";                                    /*!< Topic template to notify next . */
-static const char pOtaJobStatusTopicTemplate[] = "$aws/things/%s/jobs/%s/update";                                           /*!< Topic template to update the current job. */
-static const char pOtaStreamDataTopicTemplate[] = "$aws/things/%s/streams/%s/data/cbor";                                    /*!< Topic template to receive data over a stream. */
-static const char pOtaGetStreamTopicTemplate[] = "$aws/things/%s/streams/%s/get/cbor";                                      /*!< Topic template to request next data over a stream. */
-static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                              /*!< Used to specify client token id to authenticate job. */
-static const char pOtaJobStatusStatusTemplate[] = "{\"status\":\"%s\",\"statusDetails\":{";                                 /*!< Used to specify the status of the current job. */
-static const char pOtaJobStatusReceiveDetailsTemplate[] = "\"%s\":\"%u/%u\"}}";                                             /*!< Tail of the job receive status. */
-static const char pOtaJobStatusSelfTestDetailsTemplate[] = "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}"; /*!< Tail os self test job status. */
-static const char pOtaJobStatusReasonStrTemplate[] = "\"reason\":\"%s: 0x%08x\"}}";                                         /*!< Tail template to report job failure string. */
-static const char pOtaJobStatusSucceededStrTemplate[] = "\"reason\":\"%s v%u.%u.%u\"}}";                                    /*!< Tail template to report job succeeded. */
-static const char pOtaJobStatusReasonValTemplate[] = "\"reason\":\"0x%08x: 0x%08x\"}}";                                     /*!< Tail template to report job failure error code. */
-static const char pOtaStringReceive[] = "receive";                                                                          /*!< Used to build the job receive template. */
+#define MQTT_API_THINGS                    "$aws/things/"             /*!< Topic prefix for thing APIs. */
+#define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"          /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NEXT_GET_ACCEPTED    "/jobs/$next/get/accepted" /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NOTIFY_NEXT          "/jobs/notify-next"        /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS                      "/jobs/"                   /*!< Job API identifier. */
+#define MQTT_API_UPDATE                    "/update"                  /*!< Job API identifier. */
+#define MQTT_API_STREAMS                   "/streams/"                /*!< Stream API identifier. */
+#define MQTT_API_DATA_CBOR                 "/data/cbor"               /*!< Stream API suffix. */
+#define MQTT_API_GET_CBOR                  "/get/cbor"                /*!< Stream API suffix. */
+
+/* NOTE: The format specifiers in this string are placeholders only; the lengths of these
+ * strings are used to calculate buffer sizes.
+ */
+static const char pOtaJobsGetNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NEXT_GET;                  /*!< Topic template to request next job. */
+static const char pOtaJobsGetNextAcceptedTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NEXT_GET_ACCEPTED; /*!< Topic template for getting next job. */
+static const char pOtaJobsNotifyNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NOTIFY_NEXT;            /*!< Topic template to notify next . */
+static const char pOtaJobStatusTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS "%s"MQTT_API_UPDATE;         /*!< Topic template to update the current job. */
+static const char pOtaStreamDataTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_DATA_CBOR;  /*!< Topic template to receive data over a stream. */
+static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_GET_CBOR;    /*!< Topic template to request next data over a stream. */
+
+static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                  /*!< Used to specify client token id to authenticate job. */
+static const char pOtaStringReceive[] = "receive";                                                              /*!< Used to build the job receive template. */
 /** @}*/
 
-/** We map all of the above status cases to one of these 4 status strings.
+/** We map all of the above status cases to one of these status strings.
  * These are the only strings that are supported by the Job Service. You
  * shall not change them to arbitrary strings or the job will not change
  * states.
  * */
-static const char pOtaStringInProgress[] = "IN_PROGRESS"; /*!< The job document has be received on the device and update is in progress. */
-static const char pOtaStringFailed[] = "FAILED";          /*!< OTA update failed due to an error. */
-static const char pOtaStringSucceeded[] = "SUCCEEDED";    /*!< OTA update succeeded. */
-static const char pOtaStringRejected[] = "REJECTED";      /*!< The job was rejected due to invalid parameters. */
+#define JOBS_API_STATUS_IN_PROGRESS    "IN_PROGRESS" /*!< The job document has be received on the device and update is in progress. */
+#define JOBS_API_STATUS_FAILED         "FAILED"      /*!< OTA update failed due to an error. */
+#define JOBS_API_STATUS_SUCCEEDED      "SUCCEEDED"   /*!< OTA update succeeded. */
+#define JOBS_API_STATUS_REJECTED       "REJECTED"    /*!< The job was rejected due to invalid parameters. */
 
 /**
  * @brief List of all the status cases a job can be in.
@@ -90,11 +98,11 @@ static const char pOtaStringRejected[] = "REJECTED";      /*!< The job was rejec
  */
 static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
 {
-    pOtaStringInProgress,
-    pOtaStringFailed,
-    pOtaStringSucceeded,
-    pOtaStringRejected,
-    pOtaStringFailed, /* eJobStatus_FailedWithVal */
+    "{\"status\":\""JOBS_API_STATUS_IN_PROGRESS "\",\"statusDetails\":{",
+    "{\"status\":\""JOBS_API_STATUS_FAILED "\",\"statusDetails\":{",
+    "{\"status\":\""JOBS_API_STATUS_SUCCEEDED "\",\"statusDetails\":{",
+    "{\"status\":\""JOBS_API_STATUS_REJECTED "\",\"statusDetails\":{",
+    "{\"status\":\""JOBS_API_STATUS_FAILED "\",\"statusDetails\":{", /* eJobStatus_FailedWithVal */
 };
 
 /**
@@ -104,6 +112,17 @@ static const char * pOtaJobStatusStrings[ NumJobStatusMappings ] =
  *
  */
 static const char * pOtaJobReasonStrings[ NumJobReasons ] = { "", "ready", "active", "accepted", "rejected", "aborted" };
+
+/**
+ * @brief These are used for both decimal and hex string conversions.
+ */
+static const char asciiDigits[] =
+{
+    '0', '1', '2', '3',
+    '4', '5', '6', '7',
+    '8', '9', 'a', 'b',
+    'c', 'd', 'e', 'f',
+};
 
 /* Maximum lengths for constants used in the ota_mqtt_topic_strings templates.
  * These are used to calculate the static size of buffers used to store MQTT
@@ -197,7 +216,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
  * @param[in] pMsgBuffer Buffer to populate.
  * @param[in] msgBufferSize Size of the message.
  * @param[in] status Status of the operation.
- * @param[in] reason Reason for failure or the new firmware version .
+ * @param[in] reason Reason for failure or the new firmware version.
  * @param[in] subReason Error code due to which the operation failed.
  * @return uint32_t Size of the message.
  */
@@ -206,6 +225,124 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              int32_t reason,
                                              int32_t subReason );
+
+/**
+ * @brief Build a string from a set of strings
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
+ * @param[in] strings NULL-terminated array of string pointers.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilder( char * pBuffer,
+                             size_t bufferSizeBytes,
+                             const char * strings[] );
+
+/**
+ * @brief Build a string with the decimal representation of a uint32_t value.
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
+ * @param[in] value The uint32_t value to convert.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          size_t bufferSizeBytes,
+                                          uint32_t value );
+
+/**
+ * @brief Build a string with the hex representation of a uint32_t value.
+ *
+ * @param[in] pBuffer Buffer to place the output string in.
+ * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
+ * @param[in] value The uint32_t value to convert.
+ * @return size_t Length of the output string, not including the terminator.
+ */
+static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      size_t bufferSizeBytes,
+                                      uint32_t value );
+
+static size_t stringBuilder( char * pBuffer,
+                             size_t bufferSizeBytes,
+                             const char * strings[] )
+{
+    size_t curLen = 0;
+    int i;
+
+    pBuffer[ 0 ] = '\0';
+
+    for( i = 0; strings[ i ] != NULL; i++ )
+    {
+        size_t thisLength = strlen( strings[ i ] );
+
+        /* Assert if there is not enough buffer space. */
+
+        assert( thisLength + curLen + 1 <= bufferSizeBytes );
+
+        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
+        curLen += thisLength;
+    }
+
+    return curLen;
+}
+
+static size_t stringBuilderUInt32Decimal( char * pBuffer,
+                                          size_t bufferSizeBytes,
+                                          uint32_t value )
+{
+    char workBuf[ U32_MAX_LEN ];
+    char * pCur = workBuf;
+    char * pDest = pBuffer;
+    size_t size = 0;
+
+    /* Assert if there is not enough buffer space. */
+
+    assert( bufferSizeBytes >= U32_MAX_LEN );
+
+    while( value )
+    {
+        *pCur++ = asciiDigits[ ( value % 10 ) ];
+        value /= 10;
+    }
+
+    while( pCur > workBuf )
+    {
+        pDest[ size++ ] = *--pCur;
+    }
+
+    pDest[ size++ ] = '\0';
+    return size;
+}
+
+static size_t stringBuilderUInt32Hex( char * pBuffer,
+                                      size_t bufferSizeBytes,
+                                      uint32_t value )
+{
+    char workBuf[ U32_MAX_LEN ];
+    char * pCur = workBuf;
+    char * pDest = pBuffer;
+    size_t size = 0;
+    int i;
+
+    /* Assert if there is not enough buffer space. */
+
+    assert( bufferSizeBytes >= U32_MAX_LEN );
+
+    /* Render all 8 digits, including leading zeros. */
+    for( i = 0; i < 8; i++ )
+    {
+        *pCur++ = asciiDigits[ value & 0xf ];
+        value >>= 4;
+    }
+
+    while( pCur > workBuf )
+    {
+        pDest[ size++ ] = *--pCur;
+    }
+
+    pDest[ size++ ] = '\0';
+    return size;
+}
 
 /*
  * Subscribe to the OTA job notification topics.
@@ -221,26 +358,24 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     static char pJobTopicGetNext[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     static char pJobTopicNotifyNext[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
 
+    /* NULL-terminated list of topic string components */
+    const char * topicStringParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below */
+        MQTT_API_JOBS_NEXT_GET,
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
 
-    /* Build and subscribe to the first topic. */
+    topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
 
-    /* MISRA rule 21.6 prohibits use of all functions from stdio.h because they have undefined
-     * behaviors. We are only using snprintf here, and have checked no undefined behaviors can
-     * occur because,
-     * - the destination buffer size is pre-calculated to make sure it's large enough.
-     * - the destination buffer are static in this file and format buffer comes from job document,
-     *   they will never overlap.
-     * - we only use %s, %u and %x specifiers. No precision is specified, and no length modifier is
-     *   used.
-     * - we enabled compiler warnings to ensure number of arguments and their types are matching.
-     * - we enabled undefined behavior sanitizer in our unit tests.
-     */
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    topicLen = ( uint16_t ) snprintf( pJobTopicGetNext,
-                                      sizeof( pJobTopicGetNext ),
-                                      pOtaJobsGetNextAcceptedTopicTemplate,
-                                      pAgentCtx->pThingName );
+    /* Build and subscribe to the first topic. */
+    topicLen = ( uint16_t ) stringBuilder(
+        pJobTopicGetNext,
+        sizeof( pJobTopicGetNext ),
+        topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) );
@@ -267,12 +402,12 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
 
     if( mqttStatus == OtaMqttSuccess )
     {
-        /* Build and subscribe to the second topic. */
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        topicLen = ( uint16_t ) snprintf( pJobTopicNotifyNext,
-                                          sizeof( pJobTopicNotifyNext ),
-                                          pOtaJobsNotifyNextTopicTemplate,
-                                          pAgentCtx->pThingName );
+        /* Build and subscribe to the second topic. Only the last part of the topic string changes. */
+        topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
+        topicLen = ( uint16_t ) stringBuilder(
+            pJobTopicGetNext,
+            sizeof( pJobTopicGetNext ),
+            topicStringParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
@@ -312,17 +447,29 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
 
+    /* NULL-terminated list of topic string parts. */
+    const char * topicStringParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_STREAMS,
+        NULL, /* Stream Name not available at compile time, initialized below. */
+        MQTT_API_DATA_CBOR,
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
 
+    topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    topicStringParts[ 3 ] = ( const char * ) pFileContext->pStreamName;
+
     /* Try to build the dynamic data stream topic and unsubscribe from it. */
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    topicLen = ( uint16_t ) snprintf( pOtaRxStreamTopic,
-                                      sizeof( pOtaRxStreamTopic ),
-                                      pOtaStreamDataTopicTemplate,
-                                      pAgentCtx->pThingName,
-                                      ( const char * ) pFileContext->pStreamName );
+    topicLen = ( uint16_t ) stringBuilder(
+        pOtaRxStreamTopic,
+        sizeof( pOtaRxStreamTopic ),
+        topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
@@ -362,14 +509,24 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     char pJobTopic[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     uint16_t topicLen = 0;
 
+    /* NULL-terminated list of topic string parts. */
+    const char * topicStringParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_JOBS_NOTIFY_NEXT,
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    topicLen = ( uint16_t ) snprintf( pJobTopic,
-                                      sizeof( pJobTopic ),
-                                      pOtaJobsNotifyNextTopicTemplate,
-                                      pAgentCtx->pThingName );
+
+    topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    topicLen = ( uint16_t ) stringBuilder(
+        pJobTopic,
+        sizeof( pJobTopic ),
+        topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
@@ -395,11 +552,13 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     if( mqttStatus == OtaMqttSuccess )
     {
         /* Try to unsubscribe from the second of two job topics. */
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        topicLen = ( uint16_t ) snprintf( pJobTopic,
-                                          sizeof( pJobTopic ),
-                                          pOtaJobsGetNextAcceptedTopicTemplate,
-                                          pAgentCtx->pThingName );
+        /* Only the last part of the topic string changes here. */
+
+        topicStringParts[ 2 ] = MQTT_API_JOBS_NEXT_GET_ACCEPTED;
+        topicLen = ( uint16_t ) stringBuilder(
+            pJobTopic,
+            sizeof( pJobTopic ),
+            topicStringParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
@@ -435,23 +594,35 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                              uint8_t qos )
 {
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
-    uint32_t topicLen = 0;
+    size_t topicLen = 0;
 
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
     char pTopicBuffer[ TOPIC_JOB_STATUS_BUFFER_SIZE ];
+    /* NULL-terminated list of topic string parts. */
+    const char * topicStringParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_JOBS,
+        NULL, /* Active Job Name not available at compile time, initialized below. */
+        MQTT_API_UPDATE,
+        NULL
+    };
 
     assert( pAgentCtx != NULL );
     /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
     assert( pMsg != NULL );
 
     /* Build the dynamic job status topic . */
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    topicLen = ( uint32_t ) snprintf( pTopicBuffer,
-                                      sizeof( pTopicBuffer ),
-                                      pOtaJobStatusTopicTemplate,
-                                      pAgentCtx->pThingName,
-                                      pAgentCtx->pActiveJobName );
+
+    topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    topicStringParts[ 3 ] = ( const char * ) pAgentCtx->pActiveJobName;
+
+    topicLen = stringBuilder(
+        pTopicBuffer,
+        sizeof( pTopicBuffer ),
+        topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
@@ -491,10 +662,27 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              const OtaFileContext_t * pOTAFileCtx )
 {
+    char receivedString[ U32_MAX_LEN + 1 ];
+    char numBlocksString[ U32_MAX_LEN + 1 ];
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
-    uint32_t msgTailSize = 0;
+
+    /* NULL-terminated list of JSON payload components */
+    /* NOTE: this must conform to the following format, do not add spaces, etc. */
+    /*       "\"%s\":\"%u/%u\"}}" */
+
+    const char * payloadStringParts[] =
+    {
+        NULL, /* Job status is not available at compile time, initialized below. */
+        pOtaStringReceive,
+        ":",
+        NULL, /* Received string is not available at compile time, initialized below. */
+        "/",
+        NULL, /* # blocks string is not available at compile time, initialized below. */
+        "}}",
+        NULL
+    };
 
     assert( pMsgBuffer != NULL );
     /* This function is only called when a file is received, so it can't be NULL. */
@@ -503,26 +691,22 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
+    payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
+    payloadStringParts[ 3 ] = receivedString;
+    payloadStringParts[ 5 ] = numBlocksString;
+
+    ( void ) stringBuilderUInt32Decimal( receivedString, sizeof( receivedString ), received );
+    ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), received );
+
     if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgSize = ( uint32_t ) snprintf( pMsgBuffer,
-                                         msgBufferSize,
-                                         pOtaJobStatusStatusTemplate,
-                                         pOtaJobStatusStrings[ status ] );
+        msgSize = ( uint32_t ) stringBuilder(
+            pMsgBuffer,
+            msgBufferSize,
+            payloadStringParts );
+
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
-
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
-                                             msgBufferSize - msgSize,
-                                             pOtaJobStatusReceiveDetailsTemplate,
-                                             pOtaStringReceive,
-                                             received,
-                                             numBlocks );
-        msgSize += msgTailSize;
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -534,28 +718,37 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                                int32_t reason )
 {
     uint32_t msgSize = 0;
-    uint32_t msgTailSize = 0;
+
+    /* NULL-terminated list of JSON payload components */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"%s\":\"%s\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x%x\"}}" */
+    char versionString[ U32_MAX_LEN + 1 ];
+    const char * pPayloadStringParts[] =
+    {
+        NULL, /* Job status string not available at compile time, initialized below. */
+        "\"",
+        OTA_JSON_SELF_TEST_KEY_ONLY,
+        "\":\"",
+        NULL, /* Job reason string not available at compile time, initialized below. */
+        "\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"0x",
+        NULL, /* Version string not available at compile time, initialized below. */
+        "\"}}",
+        NULL
+    };
 
     assert( pMsgBuffer != NULL );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
-                                     msgBufferSize,
-                                     pOtaJobStatusStatusTemplate,
-                                     pOtaJobStatusStrings[ status ] );
-    /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
+    ( void ) stringBuilderUInt32Hex( versionString, sizeof( versionString ), appFirmwareVersion.u.unsignedVersion32 );
+    pPayloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
+    pPayloadStringParts[ 4 ] = pOtaJobReasonStrings[ reason ];
+    pPayloadStringParts[ 6 ] = versionString;
 
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
-                                         msgBufferSize - msgSize,
-                                         pOtaJobStatusSelfTestDetailsTemplate,
-                                         OTA_JSON_SELF_TEST_KEY_ONLY,
-                                         pOtaJobReasonStrings[ reason ],
-                                         appFirmwareVersion.u.unsignedVersion32 );
-    msgSize += msgTailSize;
-    /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
+    msgSize = ( uint32_t ) stringBuilder(
+        pMsgBuffer,
+        msgBufferSize,
+        pPayloadStringParts );
+
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     return msgSize;
 }
@@ -567,17 +760,69 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              int32_t subReason )
 {
     uint32_t msgSize = 0;
-    uint32_t msgTailSize = 0;
+    char reasonString[ U32_MAX_LEN + 1 ];
+    char subReasonString[ U32_MAX_LEN + 1 ];
+    char versionMajorString[ U32_MAX_LEN + 1 ];
+    char versionMinorString[ U32_MAX_LEN + 1 ];
+    char versionBuildString[ U32_MAX_LEN + 1 ];
+    AppVersion32_t newVersion;
+
+    /* NULL-terminated list of payload string parts */
+    /* NOTE: this must conform to the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"0x%08x: 0x%08x\"}}" */
+
+    const char * pPayloadPartsStatusFailedWithValue[] =
+    {
+        NULL, /* Job status string not available at compile time, initialized below. */
+        "\"reason\":\"0x",
+        NULL, /* Reason string not available at compile time, initialized below. */
+        ": 0x",
+        NULL, /* Sub-Reason string not available at compile time, initialized below. */
+        "\"}}",
+        NULL
+    };
+    /* NULL-terminated list of payload string parts */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"%s v%u.%u.%u\"}}" */
+    const char * pPayloadPartsStatusSucceeded[] =
+    {
+        NULL, /* Job status string not available at compile time, initialized below. */
+        "\"reason\":\"",
+        NULL, /*  Reason string not available at compile time, initialized below. */
+        "  v",
+        NULL, /* Version major string not available at compile time, initialized below. */
+        ".",
+        NULL, /* Version minor string not available at compile time, initialized below. */
+        ".",
+        NULL, /* Version build string not available at compile time, initialized below. */
+        "\"}}",
+        NULL
+    };
+
+    /* NULL-terminated list of payload string parts */
+    /* NOTE: this must agree with the following format, do not add spaces, etc. */
+    /*       "\"reason\":\"%s: 0x%08x\"}}" */
+    const char * pPayloadPartsStatusOther[] =
+    {
+        NULL, /* Job status string not available at compile time, initialized below. */
+        "\"reason\":\"",
+        NULL, /*  Reason string not available at compile time, initialized below. */
+        ": 0x",
+        NULL, /* Sub-Reason string not available at compile time, initialized below. */
+        "\"}}",
+        NULL
+    };
+    const char ** pPayloadParts;
 
     assert( pMsgBuffer != NULL );
 
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    msgSize = ( uint32_t ) snprintf( pMsgBuffer,
-                                     msgBufferSize,
-                                     pOtaJobStatusStatusTemplate,
-                                     pOtaJobStatusStrings[ status ] );
-    /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
+    newVersion.u.signedVersion32 = subReason;
+
+    ( void ) stringBuilderUInt32Hex( reasonString, sizeof( reasonString ), ( uint32_t ) reason );
+    ( void ) stringBuilderUInt32Hex( subReasonString, sizeof( subReasonString ), ( uint32_t ) subReason );
+    ( void ) stringBuilderUInt32Decimal( versionMajorString, sizeof( versionMajorString ), newVersion.u.x.major );
+    ( void ) stringBuilderUInt32Decimal( versionMinorString, sizeof( versionMinorString ), newVersion.u.x.minor );
+    ( void ) stringBuilderUInt32Decimal( versionBuildString, sizeof( versionBuildString ), newVersion.u.x.build );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -585,15 +830,10 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     if( status == JobStatusFailedWithVal )
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
-                                             msgBufferSize - msgSize,
-                                             pOtaJobStatusReasonValTemplate,
-                                             reason,
-                                             subReason );
-        msgSize += msgTailSize;
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
+        pPayloadParts = pPayloadPartsStatusFailedWithValue;
+        pPayloadParts[ 0 ] = pOtaJobStatusStrings[ status ];
+        pPayloadParts[ 2 ] = reasonString;
+        pPayloadParts[ 4 ] = subReasonString;
     }
 
     /* If the status update is for "Succeeded," we are identifying the version
@@ -603,38 +843,28 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     else if( status == JobStatusSucceeded )
     {
-        AppVersion32_t newVersion;
-
-        newVersion.u.unsignedVersion32 = ( uint32_t ) subReason;
-
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
-                                             msgBufferSize - msgSize,
-                                             pOtaJobStatusSucceededStrTemplate,
-                                             pOtaJobReasonStrings[ reason ],
-                                             newVersion.u.x.major,
-                                             newVersion.u.x.minor,
-                                             newVersion.u.x.build );
-        msgSize += msgTailSize;
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
+        pPayloadParts = pPayloadPartsStatusSucceeded;
+        pPayloadParts[ 0 ] = pOtaJobStatusStrings[ status ];
+        pPayloadParts[ 2 ] = pOtaJobReasonStrings[ reason ];
+        pPayloadParts[ 4 ] = versionMajorString;
+        pPayloadParts[ 6 ] = versionMinorString;
+        pPayloadParts[ 8 ] = versionBuildString;
     }
-
-    /* Status updates that are NOT "InProgress" or "Succeeded" or "FailedWithVal" map status and
-     * reason codes to a string plus a sub-reason code.
-     */
     else
     {
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgTailSize = ( uint32_t ) snprintf( &pMsgBuffer[ msgSize ],
-                                             msgBufferSize - msgSize,
-                                             pOtaJobStatusReasonStrTemplate,
-                                             pOtaJobReasonStrings[ reason ],
-                                             subReason );
-        msgSize += msgTailSize;
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgTailSize > 0U ) && ( msgSize < msgBufferSize ) );
+        pPayloadParts = pPayloadPartsStatusOther;
+        pPayloadParts[ 0 ] = pOtaJobStatusStrings[ status ];
+        pPayloadParts[ 2 ] = pOtaJobReasonStrings[ reason ];
+        pPayloadParts[ 4 ] = subReasonString;
     }
+
+    msgSize = ( uint32_t ) stringBuilder(
+        pMsgBuffer,
+        msgBufferSize,
+        pPayloadParts );
+
+    /* The buffer is static and the size is calculated to fit. */
+    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     return msgSize;
 }
@@ -649,18 +879,46 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
     char pJobTopic[ TOPIC_GET_NEXT_BUFFER_SIZE ];
-    static uint32_t reqCounter = 0;
-    OtaErr_t otaError = OtaErrRequestJobFailed;
-    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
-    uint32_t msgSize = 0;
-    uint16_t topicLen = 0;
 
     /* The following buffer is big enough to hold a dynamically constructed
      * $next/get job message. It contains a client token that is used to track
      * how many requests have been made. */
     char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ];
 
+    static uint32_t reqCounter = 0;
+    OtaErr_t otaError = OtaErrRequestJobFailed;
+    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
+    uint32_t msgSize = 0;
+    uint16_t topicLen = 0;
+
+    /* NULL-terminated list of topic string parts. */
+    const char * pTopicParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_JOBS_NEXT_GET,
+        NULL
+    };
+    char reqCounterString[ U32_MAX_LEN + 1 ];
+    /* NULL-terminated list of payload parts */
+    /* NOTE: this must agree with pOtaGetNextJobMsgTemplate, do not add spaces, etc. */
+    const char * pPayloadParts[] =
+    {
+        "{\"clientToken\":\"",
+        NULL, /* Request counter string not available at compile time, initialized below. */
+        ":",
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        "\"}",
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
+
+    pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    pPayloadParts[ 1 ] = reqCounterString;
+    pPayloadParts[ 3 ] = ( const char * ) pAgentCtx->pThingName;
+
+    ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
@@ -668,21 +926,21 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
     if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        msgSize = ( uint32_t ) snprintf( pMsg,
-                                         sizeof( pMsg ),
-                                         pOtaGetNextJobMsgTemplate,
-                                         reqCounter,
-                                         pAgentCtx->pThingName );
+
+        msgSize = ( uint32_t ) stringBuilder(
+            pMsg,
+            sizeof( pMsg ),
+            pPayloadParts );
+
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
 
         reqCounter++;
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        topicLen = ( uint16_t ) snprintf( pJobTopic,
-                                          sizeof( pJobTopic ),
-                                          pOtaJobsGetNextTopicTemplate,
-                                          pAgentCtx->pThingName );
+
+        topicLen = ( uint16_t ) stringBuilder(
+            pJobTopic,
+            sizeof( pJobTopic ),
+            pTopicParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
@@ -790,16 +1048,27 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
     uint16_t topicLen = 0;
     const OtaFileContext_t * pFileContext = NULL;
 
+    /* NULL-terminated list of topic string parts. */
+    const char * pTopicParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_STREAMS,
+        NULL, /* Stream Name not available at compile time, initialized below. */
+        MQTT_API_DATA_CBOR,
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
+    pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    pTopicParts[ 3 ] = ( const char * ) pFileContext->pStreamName;
 
-    /* coverity[misra_c_2012_rule_21_6_violation] */
-    topicLen = ( uint16_t ) snprintf( pRxStreamTopic,
-                                      sizeof( pRxStreamTopic ),
-                                      pOtaStreamDataTopicTemplate,
-                                      pAgentCtx->pThingName,
-                                      ( const char * ) pFileContext->pStreamName );
+    topicLen = ( uint16_t ) stringBuilder(
+        pRxStreamTopic,
+        sizeof( pRxStreamTopic ),
+        pTopicParts );
 
     /* The buffer is static and the size is calculated to fit. */
     assert( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
@@ -849,10 +1118,24 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     char pTopicBuffer[ TOPIC_GET_STREAM_BUFFER_SIZE ];
     const OtaFileContext_t * pFileContext = NULL;
 
+    /* NULL-terminated list of topic string parts. */
+    const char * pTopicParts[] =
+    {
+        MQTT_API_THINGS,
+        NULL, /* Thing Name not available at compile time, initialized below. */
+        MQTT_API_STREAMS,
+        NULL, /* Stream Name not available at compile time, initialized below. */
+        MQTT_API_GET_CBOR,
+        NULL
+    };
+
     assert( pAgentCtx != NULL );
 
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
+
+    pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
+    pTopicParts[ 3 ] = ( const char * ) pFileContext->pStreamName;
 
     /* Reset number of blocks requested. */
     pAgentCtx->numOfBlocksToReceive = otaconfigMAX_NUM_BLOCKS_REQUEST;
@@ -876,12 +1159,11 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         msgSizeToPublish = ( uint32_t ) msgSizeFromStream;
 
         /* Try to build the dynamic data REQUEST topic to publish to. */
-        /* coverity[misra_c_2012_rule_21_6_violation] */
-        topicLen = ( uint32_t ) snprintf( pTopicBuffer,
-                                          sizeof( pTopicBuffer ),
-                                          pOtaGetStreamTopicTemplate,
-                                          pAgentCtx->pThingName,
-                                          ( const char * ) pFileContext->pStreamName );
+
+        topicLen = ( uint32_t ) stringBuilder(
+            pTopicBuffer,
+            sizeof( pTopicBuffer ),
+            pTopicParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
