@@ -372,7 +372,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         MQTT_API_THINGS,
         NULL, /* Thing Name not available at compile time, initialized below */
-        MQTT_API_JOBS_NEXT_GET,
+        MQTT_API_JOBS_NEXT_GET_ACCEPTED,
         NULL
     };
 
@@ -414,8 +414,8 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         /* Build and subscribe to the second topic. Only the last part of the topic string changes. */
         topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
         topicLen = ( uint16_t ) stringBuilder(
-            pJobTopicGetNext,
-            sizeof( pJobTopicGetNext ),
+            pJobTopicNotifyNext,
+            sizeof( pJobTopicNotifyNext ),
             topicStringParts );
 
         /* The buffer is static and the size is calculated to fit. */
