@@ -46,17 +46,19 @@ typedef struct
         #if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN )
             struct version
             {
-                uint16_t build;
-                uint8_t minor;
-                uint8_t major;
-            } x; /*!< @brief Version number of the firmware. */
+                uint16_t build; /*!< @brief Build of the firmware (Z in firmware version Z.Y.X). */
+                uint8_t minor;  /*!< @brief Minor version number of the firmware (Y in firmware version Z.Y.X). */
+
+                uint8_t major;  /*!< @brief Major version number of the firmware (X in firmware version Z.Y.X). */
+            } x;                /*!< @brief Version number of the firmware. */
         #elif ( defined( __BYTE_ORDER__ ) && defined( __ORDER_BIG_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ) || ( __big_endian__ == 1 ) || ( __BYTE_ORDER == __BIG_ENDIAN )
             struct version
             {
-                uint8_t major;
-                uint8_t minor;
-                uint16_t build;
-            } x; /*!< @brief Version number of the firmware. */
+                uint8_t major;  /*!< @brief Major version number of the firmware (X in firmware version X.Y.Z). */
+                uint8_t minor;  /*!< @brief Minor version number of the firmware (Y in firmware version X.Y.Z). */
+
+                uint16_t build; /*!< @brief Build of the firmware (Z in firmware version X.Y.Z). */
+            } x;                /*!< @brief Version number of the firmware. */
         #else /* if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN ) */
         #error "Unable to determine byte order!"
         #endif /* if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN ) */
