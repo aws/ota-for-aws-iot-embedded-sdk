@@ -130,15 +130,6 @@ Note: HTTPS will only be used for file download from S3 pre-signed url , for con
 @image html ota_design_http.png
 */
 
-/**
-@page ota_demo Demo
-@brief The OTA demo demonstrates usage of the OTA library.
-
-The OTA Demo provides a simple example to demonstrate complete Over-The-Air update process. The OTA demo demonstrates creating an MQTT connection, initializing the OTA Library and logging OTA statistics when OTA is in process. The demo also provides an example on detecting network disconnect to suspend OTA Agent, try re-connecting with exponential delay with jitter and resume OTA operation when connection succeeds.
-
-The OTA demo configurations are demo specific configurations and must be updated when integrating as per the application requirements from the default values.
-More about OTA Demo configurations at @subpage ota_demo_config
-*/
 
 /**
 @page ota_functions Functions
