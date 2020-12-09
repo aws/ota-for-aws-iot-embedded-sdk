@@ -210,8 +210,8 @@ typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
  * The user may register a callback function when initializing the OTA Agent. This
  * callback will be called when the OTA agent cannot parse a job document.
  *
- * @param[in] pcJSON Pointer to the json document received by the OTA agent
- * @param[in] ulMsgLen Length of the json document received by the agent
+ * @param[in] pcJSON Pointer to the json document received by the OTA agent.
+ * @param[in] ulMsgLen Length of the json document received by the agent.
  */
 typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
                                                      uint32_t ulMsgLen );
