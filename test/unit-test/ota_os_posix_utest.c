@@ -106,11 +106,7 @@ void test_OTA_posix_SendAndRecvEvent( void )
  */
 void test_OTA_posix_InvalidEventQueue( void )
 {
-    OtaEventMsg_t otaEventToSend = { 0 };
-    OtaEventMsg_t otaEventToRecv = { 0 };
     OtaErr_t result = OtaErrUninitialized;
-
-    otaEventToSend.eventId = OtaAgentEventRequestJobDocument;
 
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );

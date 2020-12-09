@@ -116,7 +116,6 @@ void tearDown( void )
 void test_OTA_JobParsing_Valid_Parse_Job_Doc( void )
 {
     bool updateJob;
-    JSONStatus_t result;
     OtaFileContext_t * pFileContext = parseJobDoc( JOB_PARSING_VALID_JSON, JOB_PARSING_VALID_JSON_LENGTH, &updateJob );
 
     TEST_ASSERT_NOT_NULL( pFileContext );
