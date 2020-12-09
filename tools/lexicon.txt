@@ -200,6 +200,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+inout
 inprogress
 inselftesthandler
 int
