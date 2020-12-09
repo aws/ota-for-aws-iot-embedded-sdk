@@ -822,6 +822,9 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         /* Reset the request momentum. */
         otaAgent.requestMomentum = 0;
 
+        /* Reset the OTA statistics. */
+        ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
+
         eventMsg.eventId = OtaAgentEventRequestFileBlock;
 
         if( OTA_SignalEvent( &eventMsg ) == false )
@@ -944,6 +947,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         /* File receive is complete and authenticated. Update the job status with the self_test ready identifier. */
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonSigCheckPassed, 0 );
         dataHandlerCleanup( result );
+
+        /* Last file block processed, increment the statistics. */
+        otaAgent.statistics.otaPacketsProcessed++;
     }
     else if( result < IngestResultFileComplete )
     {
@@ -963,6 +969,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
+            /* File block processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsProcessed++;
+
             /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
             /* We're actively receiving a file so update the job status as needed. */
@@ -1310,21 +1319,24 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err = DocParseErrNone;
-    char * pStringCopy = NULL;
 
     /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
     char ** pCharPtr = pParamAdd;
 
-    if( *pCharPtr == NULL )
-    {
-        /* Malloc memory for a copy of the value string plus a zero terminator. */
-        pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
+    ( void ) pKey; /* For suppressing compiler-warning: unused variable. */
 
-        if( pStringCopy != NULL )
+    if( *pParamSizeAdd == 0 )
+    {
+        /* Free previously allocated buffer. */
+        if( *pCharPtr != NULL )
         {
-            *pCharPtr = pStringCopy;
+            otaAgent.pOtaInterface->os.mem.free( *pCharPtr );
         }
-        else
+
+        /* Malloc memory for a copy of the value string plus a zero terminator. */
+        *pCharPtr = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
+
+        if( *pCharPtr == NULL )
         {
             /* Stop processing on error. */
             err = DocParseErrOutOfMemory;
@@ -1346,11 +1358,6 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                         pKey,
                         valueLength ) );
         }
-        else
-        {
-            pStringCopy = *pCharPtr;
-            err = DocParseErrNone;
-        }
     }
 
     if( err == DocParseErrNone )
@@ -1359,12 +1366,12 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
         ( void ) memcpy( *pCharPtr, pValueInJson, valueLength );
 
         /* Zero terminate the new string. */
-        pStringCopy[ valueLength ] = '\0';
+        ( *pCharPtr )[ valueLength ] = '\0';
 
         LogInfo( ( "Extracted parameter: "
                    "[key: value]=[%s: %s]",
                    pKey,
-                   pStringCopy ) );
+                   *pCharPtr ) );
     }
 
     return err;
@@ -1444,6 +1451,8 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
     DocParseErr_t err = DocParseErrNone;
     uint32_t missingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap )
                              ^ pDocModel->paramsRequiredBitmap;
+
+    ( void ) pModelParam; /* For suppressing compiler-warning: unused variable. */
 
     if( missingParams != 0U )
     {
@@ -2322,6 +2331,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     OtaPalMainStatus_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr;
 
+    ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
+
     if( pFileContext->blocksRemaining == 0U )
     {
         LogInfo( ( "Received final block of the update." ) );
@@ -2505,6 +2516,9 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
             /* Let the application know to release buffer.*/
             otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
 
+            /* File block was not processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsDropped++;
+
             break;
 
         default:
@@ -2624,15 +2638,23 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     bool retVal = false;
     OtaOsStatus_t err = OtaOsSuccess;
 
-    /*
-     * Send event to back of the queue.
-     */
+    /* Check if file block received and update statistics.*/
+    if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+    {
+        otaAgent.statistics.otaPacketsReceived++;
+    }
+
     err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
 
     if( err == OtaOsSuccess )
     {
         retVal = true;
         LogDebug( ( "Added event message to OTA event queue." ) );
+
+        if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+        {
+            otaAgent.statistics.otaPacketsQueued++;
+        }
     }
     else
     {
@@ -2641,6 +2663,11 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
                     "send returned error: "
                     "OtaOsStatus_t=%s",
                     OTA_OsStatus_strerror( err ) ) );
+
+        if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+        {
+            otaAgent.statistics.otaPacketsDropped++;
+        }
     }
 
     return retVal;
@@ -2754,6 +2781,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
+
+    ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
+    ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
 
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )
