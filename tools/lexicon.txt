@@ -282,6 +282,20 @@ ota
 ota_mqtt_component
 otaagent
 otaagenteventclosefile
+otaagenteventcreatefile
+otaagenteventcreatefile
+otaagenteventmax
+otaagenteventreceivedfileblock
+otaagenteventreceivedjobdocument
+otaagenteventrequestfileblock
+otaagenteventrequestjobdocument
+otaagenteventrequesttimer
+otaagenteventresume
+otaagenteventshutdown
+otaagenteventstart
+otaagenteventstartselftest
+otaagenteventsuspend
+otaagenteventuserabort
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
@@ -409,6 +423,7 @@ parsejsonbymodel
 pauthscheme
 pblockbitmap
 pblockid
+pblockindex
 pblocksize
 pbodydef
 pbuffer
@@ -435,6 +450,7 @@ pdecodememory
 pdest
 pdestoffset
 pdestsizeoffset
+pdocmodel
 pdocmodel
 pem
 pencodeddata

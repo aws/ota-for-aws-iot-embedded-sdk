@@ -101,13 +101,13 @@
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS             ( 21 )
+#define OTA_NUM_JOB_PARAMS     ( 21 )
 
 /**
  * @brief Maximum size of the Job ID.
  *
  */
-#define OTA_JOB_ID_MAX_SIZE            ( 72UL + 1UL )
+#define OTA_JOB_ID_MAX_SIZE    ( 72UL + 1UL )
 
 /**
  * @ingroup ota_constants
@@ -117,7 +117,7 @@
 #define kOTA_MaxSignatureSize           256 /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
 
 /**
- * 
+ *
  * @brief Keys in OTA job doc.
  *
  * The OTA job document contains parameters that are required for us to build the
@@ -340,10 +340,10 @@ typedef enum OtaImageState
  */
 typedef enum OtaPalImageState
 {
-    OtaPalImageStateUnknown = 0, /*!< @brief The initial state of the OTA PAL Image. */
+    OtaPalImageStateUnknown = 0,   /*!< @brief The initial state of the OTA PAL Image. */
     OtaPalImageStatePendingCommit, /*!< @brief OTA PAL Image awaiting update. */
-    OtaPalImageStateValid, /*!< @brief OTA PAL Image is valid. */
-    OtaPalImageStateInvalid /*!< @brief OTA PAL Image is invalid. */
+    OtaPalImageStateValid,         /*!< @brief OTA PAL Image is valid. */
+    OtaPalImageStateInvalid        /*!< @brief OTA PAL Image is invalid. */
 } OtaPalImageState_t;
 
 /**
@@ -354,20 +354,20 @@ typedef enum OtaPalImageState
  */
 typedef enum OtaEvent
 {
-    OtaAgentEventStart = 0, /*!< @brief Start the OTA state machine */
-    OtaAgentEventStartSelfTest, /*!< @brief Event to trigger self test. */
-    OtaAgentEventRequestJobDocument, /*!< @brief Event for requesting job document. */
+    OtaAgentEventStart = 0,           /*!< @brief Start the OTA state machine */
+    OtaAgentEventStartSelfTest,       /*!< @brief Event to trigger self test. */
+    OtaAgentEventRequestJobDocument,  /*!< @brief Event for requesting job document. */
     OtaAgentEventReceivedJobDocument, /*!< @brief Event when job document is received. */
-    OtaAgentEventCreateFile, /*!< @brief Event to create a file. */
-    OtaAgentEventRequestFileBlock, /*!< @brief Event to request file blocks. */
-    OtaAgentEventReceivedFileBlock,/*!< @brief Event to trigger when file block is received. */
-    OtaAgentEventRequestTimer, /*!< @brief Event to request event timer. */
-    OtaAgentEventCloseFile, /*!< @brief Event to trigger closing file. */
-    OtaAgentEventSuspend, /*!< @brief Event to suspend ota task */
-    OtaAgentEventResume, /*!< @brief Event to resume suspended task */
-    OtaAgentEventUserAbort, /*!< @brief Event triggered by user to stop agent. */
-    OtaAgentEventShutdown, /*!< @brief Event to trigger ota shutdown */
-    OtaAgentEventMax /*!< @brief Last event specifier */
+    OtaAgentEventCreateFile,          /*!< @brief Event to create a file. */
+    OtaAgentEventRequestFileBlock,    /*!< @brief Event to request file blocks. */
+    OtaAgentEventReceivedFileBlock,   /*!< @brief Event to trigger when file block is received. */
+    OtaAgentEventRequestTimer,        /*!< @brief Event to request event timer. */
+    OtaAgentEventCloseFile,           /*!< @brief Event to trigger closing file. */
+    OtaAgentEventSuspend,             /*!< @brief Event to suspend ota task */
+    OtaAgentEventResume,              /*!< @brief Event to resume suspended task */
+    OtaAgentEventUserAbort,           /*!< @brief Event triggered by user to stop agent. */
+    OtaAgentEventShutdown,            /*!< @brief Event to trigger ota shutdown */
+    OtaAgentEventMax                  /*!< @brief Last event specifier */
 } OtaEvent_t;
 
 /**

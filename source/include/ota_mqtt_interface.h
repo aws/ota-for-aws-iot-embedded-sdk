@@ -111,7 +111,7 @@ typedef OtaMqttStatus_t ( * OtaMqttPublish_t )( const char * const pacTopic,
 
 /**
  * @ingroup ota_struct_types
- * @brief OTA Event Interface structure. 
+ * @brief OTA Event Interface structure.
  */
 typedef struct OtaMqttInterface
 {
