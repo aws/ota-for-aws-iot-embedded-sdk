@@ -228,6 +228,7 @@ lastupdatedat
 lf
 li
 linux
+loginfo
 logpath
 longjmp
 malloc
@@ -393,6 +394,7 @@ otapalrxfiletoolarge
 otapalsignaturecheckfailed
 otapalsuccess
 otapaluninitialized
+otapalsuberr
 otatimer
 otatimercallback
 otatimerid
@@ -490,7 +492,9 @@ pnumpadding
 pnumwhitespace
 popensslcredentials
 posix
+potaagentstatestrings
 potabuffer
+potaeventstrings
 potafilectx
 potafiles
 potafiles

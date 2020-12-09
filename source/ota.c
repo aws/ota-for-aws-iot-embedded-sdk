@@ -1532,6 +1532,8 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
     /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
     char ** pCharPtr = pParamAdd;
 
+    ( void ) pKey; /* For suppressing compiler-warning: unused variable. */
+
     if( *pParamSizeAdd == 0 )
     {
         /* Free previously allocated buffer. */
@@ -1658,6 +1660,8 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
     DocParseErr_t err = DocParseErrNone;
     uint32_t missingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap )
                              ^ pDocModel->paramsRequiredBitmap;
+
+    ( void ) pModelParam; /* For suppressing compiler-warning: unused variable. */
 
     if( missingParams != 0U )
     {
@@ -2518,6 +2522,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     OtaPalMainStatus_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr;
 
+    ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
+
     if( pFileContext->blocksRemaining == 0U )
     {
         LogInfo( ( "Received final block of the update." ) );
@@ -2958,6 +2964,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
+
+    ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
+    ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
 
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )

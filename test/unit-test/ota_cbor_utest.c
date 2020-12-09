@@ -78,7 +78,7 @@ void test_OTA_CborEncodeStreamRequest()
 
     int i;
 
-    for( i = 0; i < sizeof( expectedData ); ++i )
+    for( i = 0; i < ( int ) sizeof( expectedData ); ++i )
     {
         TEST_ASSERT_EQUAL( expectedData[ i ], cborWork[ i ] );
     }
@@ -99,7 +99,7 @@ void test_OTA_CborDecodeStreamResponse()
     int i = 0;
 
     /* Test OTA_CBOR_Decode_GetStreamResponseMessage( ). */
-    for( i = 0; i < sizeof( blockPayload ); i++ )
+    for( i = 0; i < ( int ) sizeof( blockPayload ); i++ )
     {
         blockPayload[ i ] = i % UINT8_MAX;
     }
@@ -129,7 +129,7 @@ void test_OTA_CborDecodeStreamResponse()
         TEST_ASSERT_EQUAL( OTA_FILE_BLOCK_SIZE, blockSize );
         TEST_ASSERT_EQUAL( OTA_FILE_BLOCK_SIZE, payloadSize );
 
-        for( i = 0; i < sizeof( blockPayload ); i++ )
+        for( i = 0; i < ( int ) sizeof( blockPayload ); i++ )
         {
             TEST_ASSERT_EQUAL( blockPayload[ i ], decodedPayload[ i ] );
         }
