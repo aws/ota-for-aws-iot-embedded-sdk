@@ -60,9 +60,9 @@ Currently, the OTA library has the following dependencies:
     </tr>
     <tr>
         <td>ota.c</td>
-        <td>13.6K</td>
-        <td>6.9K</td>
-        <td>6.3K</td>
+        <td>71.8K</td>
+        <td>35.4k</td>
+        <td>29.1K</td>
     </tr>
 </table>
 */
