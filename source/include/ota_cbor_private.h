@@ -28,8 +28,8 @@
  * @brief Function declarations and field declarations for ota_cbor.c.
  */
 
-#ifndef __OTAC_BOR__H__
-#define __OTAC_BOR__H__
+#ifndef OTA_CBOR_H
+#define OTA_CBOR_H
 
 /**
  * Message field definitions, per the server specification. These are
@@ -75,4 +75,4 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested );
 
-#endif /* ifndef __OTACBOR__H__ */
+#endif /* ifndef OTA_CBOR_H */

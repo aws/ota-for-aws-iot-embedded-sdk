@@ -28,8 +28,8 @@
  * @brief Contains function definitions and structures for data and control interfaces.
  */
 
-#ifndef __AWS_IOT_OTA_INTERFACE__H__
-#define __AWS_IOT_OTA_INTERFACE__H__
+#ifndef OTA_INTERFACE_PRIVATE_H
+#define OTA_INTERFACE_PRIVATE_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -108,4 +108,4 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
 
-#endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */
+#endif /* ifndef OTA_INTERFACE_PRIVATE_H */

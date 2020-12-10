@@ -28,8 +28,8 @@
  * @brief Contains OTA MQTT Statuses, function type definitions and mqtt interface structure.
  */
 
-#ifndef _OTA_MQTT_INTERFACE_H_
-#define _OTA_MQTT_INTERFACE_H_
+#ifndef OTA_MQTT_INTERFACE_H
+#define OTA_MQTT_INTERFACE_H
 
 /* Standard library includes. */
 #include <stddef.h>
@@ -120,4 +120,4 @@ typedef struct OtaMqttInterface
     OtaMqttPublish_t publish;         /*!< @brief Interface for publishing MQTT messages. */
 } OtaMqttInterface_t;
 
-#endif /* ifndef _OTA_MQTT_INTERFACE_H_ */
+#endif /* ifndef OTA_MQTT_INTERFACE_H */
