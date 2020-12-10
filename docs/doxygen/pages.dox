@@ -72,85 +72,85 @@ Currently, the OTA library has the following dependencies:
     </tr>
     <tr>
         <td>ota.c</td>
-        <td>18918</td>
+        <td>18.9k</td>
         <td>636</td>
         <td>382</td>
-        <td>11273</td>
+        <td>11.3k</td>
         <td>308</td>
         <td>382</td>
-        <td>9521</td>
+        <td>9.5k</td>
         <td>308</td>
         <td>380</td>
     </tr>
     <tr>
         <td>ota_interface.c</td>
-        <td>693</td>
+        <td>0.7k</td>
         <td>0</td>
         <td>0</td>
-        <td>145</td>
+        <td>0.1k</td>
         <td>0</td>
         <td>0</td>
-        <td>146</td>
+        <td>0.1k</td>
         <td>0</td>
         <td>0</td>
     </tr>
     <tr>
         <td>ota_base64.c</td>
-        <td>2732</td>
+        <td>2.7k</td>
         <td>0</td>
         <td>0</td>
-        <td>956</td>
+        <td>1k</td>
         <td>0</td>
         <td>0</td>
-        <td>892</td>
+        <td>0.9k</td>
         <td>0</td>
         <td>0</td>
     </tr>
     <tr>
         <td>ota_mqtt.c</td>
-        <td>8453</td>
+        <td>8.5k</td>
         <td>44</td>
         <td>348</td>
-        <td>3375</td>
+        <td>3.4k</td>
         <td>0</td>
         <td>348</td>
-        <td>3141</td>
+        <td>3.1k</td>
         <td>0</td>
         <td>347</td>
     </tr>
     <tr>
         <td>ota_cbor.c</td>
-        <td>2524</td>
+        <td>2.5k</td>
         <td>0</td>
         <td>0</td>
-        <td>1066</td>
+        <td>1.1k</td>
         <td>0</td>
         <td>0</td>
-        <td>1000</td>
+        <td>1k</td>
         <td>0</td>
         <td>0</td>
     </tr>
     <tr>
         <td>ota_http.c</td>
-        <td>1553</td>
+        <td>1.6k</td>
         <td>0</td>
         <td>4</td>
-        <td>477</td>
+        <td>0.5k</td>
         <td>0</td>
         <td>4</td>
-        <td>463</td>
+        <td>0.5k</td>
         <td>0</td>
         <td>4</td>
     </tr>
     <tr>
         <td><b>Total estimates →</b></td>
-        <td>34873</td>
+        <td>34.9k</td>
         <td>680</td>
         <td>734</td>
-        <td>17292</td>
+        <td>17.4k</td>
         <td>308</td>
         <td>734</td>
-        <td>15163</td>
+        <td>15.1k</td>
         <td>308</td>
         <td>731</td>
     </tr>
