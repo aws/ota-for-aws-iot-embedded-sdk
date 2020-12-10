@@ -2607,3 +2607,9 @@ ALIASES += paramfor="<b>Parameter for:</b> "
 
 # Alias for parameter structure initializers.
 ALIASES += initializer{2}="All instances of #\1 should be initialized with #\2.^^"
+
+#Alias for the OTA PAL interface definition
+ALIASES += otapalpage="@page ota_pal_interface OTA PAL Interface"
+
+#Alias for the OTA PAL interface overview
+ALIASES += otapalsectionoverview="@section ota_pal_interface_overview OTA PAL Overview"
