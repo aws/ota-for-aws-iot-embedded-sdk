@@ -137,7 +137,7 @@ jobs:
           set +me
           shopt -s lastpipe
           found=0
-          git ls-files | while read f; do [[ -f $f ]] && grep -H '[[:blank:]]$' $f && let found++; done
+          git ls-files | xargs file | sed -n '/ASCII/s/:.*//p' | while read f; do [[ -f $f ]] && grep -H '[[:blank:]]$' $f && let found++; done
           (( found > 0 )) && echo 'Files have trailing whitespace.'
           exit $found
 
