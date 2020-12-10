@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_platform_interface.h
+ * @brief Contains PAL interface statuses, type definitions and structure to store interface routines.
+ */
+
 #ifndef OTA_PLATFORM_INTERFACE
 #define OTA_PLATFORM_INTERFACE
 
@@ -39,26 +44,27 @@ typedef uint32_t   OtaPalStatus_t;
 typedef uint32_t   OtaPalSubStatus_t;
 
 /**
+ * @ingroup ota_enum_types
  * @brief The OTA platform interface main status.
  */
 typedef enum OtaPalMainStatus
 {
-    OtaPalSuccess = 0,          /*!< OTA platform interface success. */
-    OtaPalUninitialized = 0xe0, /*!< Result is not yet initialized from PAL. */
-    OtaPalOutOfMemory,          /*!< Out of memory. */
-    OtaPalNullFileContext,      /*!< The PAL is called with a NULL file context. */
-    OtaPalSignatureCheckFailed, /*!< The signature check failed for the specified file. */
-    OtaPalRxFileCreateFailed,   /*!< The PAL failed to create the OTA receive file. */
-    OtaPalRxFileTooLarge,       /*!< The OTA receive file is too big for the platform to support. */
-    OtaPalBootInfoCreateFailed, /*!< The PAL failed to create the OTA boot info file. */
-    OtaPalBadSignerCert,        /*!< The signer certificate was not readable or zero length. */
-    OtaPalBadImageState,        /*!< The specified OTA image state was out of range. */
-    OtaPalAbortFailed,          /*!< Error trying to abort the OTA. */
-    OtaPalRejectFailed,         /*!< Error trying to reject the OTA image. */
-    OtaPalCommitFailed,         /*!< The acceptance commit of the new OTA image failed. */
-    OtaPalActivateFailed,       /*!< The activation of the new OTA image failed. */
-    OtaPalFileAbort,            /*!< Error in low level file abort. */
-    OtaPalFileClose             /*!< Error in low level file close. */
+    OtaPalSuccess = 0,          /*!< @brief OTA platform interface success. */
+    OtaPalUninitialized = 0xe0, /*!< @brief Result is not yet initialized from PAL. */
+    OtaPalOutOfMemory,          /*!< @brief Out of memory. */
+    OtaPalNullFileContext,      /*!< @brief The PAL is called with a NULL file context. */
+    OtaPalSignatureCheckFailed, /*!< @brief The signature check failed for the specified file. */
+    OtaPalRxFileCreateFailed,   /*!< @brief The PAL failed to create the OTA receive file. */
+    OtaPalRxFileTooLarge,       /*!< @brief The OTA receive file is too big for the platform to support. */
+    OtaPalBootInfoCreateFailed, /*!< @brief The PAL failed to create the OTA boot info file. */
+    OtaPalBadSignerCert,        /*!< @brief The signer certificate was not readable or zero length. */
+    OtaPalBadImageState,        /*!< @brief The specified OTA image state was out of range. */
+    OtaPalAbortFailed,          /*!< @brief Error trying to abort the OTA. */
+    OtaPalRejectFailed,         /*!< @brief Error trying to reject the OTA image. */
+    OtaPalCommitFailed,         /*!< @brief The acceptance commit of the new OTA image failed. */
+    OtaPalActivateFailed,       /*!< @brief The activation of the new OTA image failed. */
+    OtaPalFileAbort,            /*!< @brief Error in low level file abort. */
+    OtaPalFileClose             /*!< @brief Error in low level file close. */
 } OtaPalMainStatus_t;
 
 /**
@@ -129,7 +135,8 @@ typedef OtaPalStatus_t ( * OtaPalAbort_t )( OtaFileContext_t * const pFileContex
  */
 typedef OtaPalStatus_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFileContext );
 
-/* @brief Authenticate and close the underlying receive file in the specified OTA context.
+/**
+ * @brief Authenticate and close the underlying receive file in the specified OTA context.
  *
  * @note The input OtaFileContext_t pFileContext is checked for NULL by the OTA agent before this
  * function is called. This function is called only at the end of block ingestion.
@@ -256,7 +263,8 @@ typedef OtaPalStatus_t ( * OtaPalSetPlatformImageState_t )( OtaFileContext_t * c
 typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t ) ( OtaFileContext_t * const pFileContext );
 
 /**
- *  OTA pal Interface structure.
+ * @ingroup ota_struct_types
+ * @brief OTA pal Interface structure.
  */
 typedef struct OtaPalInterface
 {
@@ -264,14 +272,14 @@ typedef struct OtaPalInterface
      * OTA platform abstraction layer interfaces, which is used to abort an OTA update. So it's a
      * false positive. */
     /* coverity[misra_c_2012_rule_21_8_violation] */
-    OtaPalAbort_t abort;                                 /*!< Abort an OTA transfer. */
-    OtaPalCreateFileForRx_t createFile;                  /*!< Create a new receive file. */
-    OtaPalCloseFile_t closeFile;                         /*!< Authenticate and close the receive file. */
-    OtaPalWriteBlock_t writeBlock;                       /*!< Write a block of data to the specified file at the given offset. */
-    OtaPalActivateNewImage_t activate;                   /*!< Activate the file received over-the-air. */
-    OtaPalResetDevice_t reset;                           /*!< Reset the device. */
-    OtaPalSetPlatformImageState_t setPlatformImageState; /*!< Set the state of the OTA update image. */
-    OtaPalGetPlatformImageState_t getPlatformImageState; /*!< Get the state of the OTA update image. */
+    OtaPalAbort_t abort;                                 /*!< @brief Abort an OTA transfer. */
+    OtaPalCreateFileForRx_t createFile;                  /*!< @brief Create a new receive file. */
+    OtaPalCloseFile_t closeFile;                         /*!< @brief Authenticate and close the receive file. */
+    OtaPalWriteBlock_t writeBlock;                       /*!< @brief Write a block of data to the specified file at the given offset. */
+    OtaPalActivateNewImage_t activate;                   /*!< @brief Activate the file received over-the-air. */
+    OtaPalResetDevice_t reset;                           /*!< @brief Reset the device. */
+    OtaPalSetPlatformImageState_t setPlatformImageState; /*!< @brief Set the state of the OTA update image. */
+    OtaPalGetPlatformImageState_t getPlatformImageState; /*!< @brief Get the state of the OTA update image. */
 } OtaPalInterface_t;
 
 #endif /* ifndef OTA_PLATFORM_INTERFACE */

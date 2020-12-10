@@ -23,8 +23,13 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef AWS_IOT_OTA_INTERFACE__H
-#define AWS_IOT_OTA_INTERFACE__H
+/**
+ * @file ota_interface_private.h
+ * @brief Contains function definitions and structures for data and control interfaces.
+ */
+
+#ifndef OTA_INTERFACE_PRIVATE_H
+#define OTA_INTERFACE_PRIVATE_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -33,12 +38,12 @@
 /* General Constants. */
 
 /* OTA control protocol constants. */
-#define OTA_CONTROL_OVER_MQTT     0x00000001
+#define OTA_CONTROL_OVER_MQTT     0x00000001 /*!< Specify control over mqtt. */
 
 /* OTA data protocol constants. */
-#define OTA_DATA_OVER_MQTT        0x00000001
-#define OTA_DATA_OVER_HTTP        0x00000002
-#define OTA_DATA_NUM_PROTOCOLS    ( 2U )
+#define OTA_DATA_OVER_MQTT        0x00000001 /*!< Specify data over mqtt. */
+#define OTA_DATA_OVER_HTTP        0x00000002 /*!< Specify data over http. */
+#define OTA_DATA_NUM_PROTOCOLS    ( 2U )     /*!< Number of protocols supported. */
 
 
 /**
@@ -103,4 +108,4 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
 
-#endif /* ifndef AWS_IOT_OTA_INTERFACE__H */
+#endif /* ifndef OTA_INTERFACE_PRIVATE_H */

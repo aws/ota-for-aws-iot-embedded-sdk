@@ -23,15 +23,31 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_os_interface.h
+ * @brief Contains OS interface statuses, type definitions and structures to store interface routines.
+ */
+
 #ifndef OTA_OS_INTERFACE_H
 #define OTA_OS_INTERFACE_H
 
 struct OtaEventContext;
+
+/**
+ * @brief Type definition for Event Context.
+ */
 typedef struct OtaEventContext   OtaEventContext_t;
 
 struct OtaTimerContext;
+
+/**
+ * @brief Type definition for Timer Context.
+ */
 typedef struct OtaTimerContext   OtaTimerContext_t;
 
+/**
+ * @brief Enumeration for tracking multiple timers.
+ */
 typedef enum
 {
     OtaRequestTimer = 0,
@@ -40,20 +56,21 @@ typedef enum
 } OtaTimerId_t;
 
 /**
+ * @ingroup ota_enum_types
  * @brief The OTA OS interface return status.
  */
 typedef enum OtaOsStatus
 {
-    OtaOsSuccess = 0,                    /*!< OTA OS interface success. */
-    OtaOsEventQueueCreateFailed = 0x80U, /*!< Failed to create the event queue. */
-    OtaOsEventQueueSendFailed,           /*!< Posting event message to the event queue failed. */
-    OtaOsEventQueueReceiveFailed,        /*!< Failed to receive from the event queue. */
-    OtaOsEventQueueDeleteFailed,         /*!< Failed to delete the event queue. */
-    OtaOsTimerCreateFailed,              /*!< Failed to create the timer. */
-    OtaOsTimerStartFailed,               /*!< Failed to create the timer. */
-    OtaOsTimerRestartFailed,             /*!< Failed to restart the timer. */
-    OtaOsTimerStopFailed,                /*!< Failed to stop the timer. */
-    OtaOsTimerDeleteFailed               /*!< Failed to delete the timer. */
+    OtaOsSuccess = 0,                    /*!< @brief OTA OS interface success. */
+    OtaOsEventQueueCreateFailed = 0x80U, /*!< @brief Failed to create the event queue. */
+    OtaOsEventQueueSendFailed,           /*!< @brief Posting event message to the event queue failed. */
+    OtaOsEventQueueReceiveFailed,        /*!< @brief Failed to receive from the event queue. */
+    OtaOsEventQueueDeleteFailed,         /*!< @brief Failed to delete the event queue. */
+    OtaOsTimerCreateFailed,              /*!< @brief Failed to create the timer. */
+    OtaOsTimerStartFailed,               /*!< @brief Failed to create the timer. */
+    OtaOsTimerRestartFailed,             /*!< @brief Failed to restart the timer. */
+    OtaOsTimerStopFailed,                /*!< @brief Failed to stop the timer. */
+    OtaOsTimerDeleteFailed               /*!< @brief Failed to delete the timer. */
 } OtaOsStatus_t;
 
 /**
@@ -202,29 +219,32 @@ typedef void * ( * OtaMalloc_t ) ( size_t size );
 typedef void ( * OtaFree_t ) ( void * ptr );
 
 /**
- *  OTA Event Interface structure.
+ * @ingroup ota_struct_types
+ * OTA Event Interface structure.
  */
 typedef struct OtaEventInterface
 {
-    OtaInitEvent_t init;               /*!< Initialization event. */
-    OtaSendEvent_t send;               /*!< Send data. */
-    OtaReceiveEvent_t recv;            /*!< Receive data. */
-    OtaDeinitEvent_t deinit;           /*!< Deinitialize event. */
-    OtaEventContext_t * pEventContext; /*!< Event context to store event information. */
+    OtaInitEvent_t init;               /*!< @brief Initialization event. */
+    OtaSendEvent_t send;               /*!< @brief Send data. */
+    OtaReceiveEvent_t recv;            /*!< @brief Receive data. */
+    OtaDeinitEvent_t deinit;           /*!< @brief Deinitialize event. */
+    OtaEventContext_t * pEventContext; /*!< @brief Event context to store event information. */
 } OtaEventInterface_t;
 
 /**
- *  OTA Retry Timer Interface.
+ * @ingroup ota_struct_types
+ * @brief OTA Retry Timer Interface.
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;   /*!< Timer start state. */
-    OtaStopTimer_t stop;     /*!< Timer stop state. */
-    OtaDeleteTimer_t delete; /*!< Delete timer. */
+    OtaStartTimer_t start;   /*!< @brief Timer start state. */
+    OtaStopTimer_t stop;     /*!< @brief Timer stop state. */
+    OtaDeleteTimer_t delete; /*!< @brief Delete timer. */
 } OtaTimerInterface_t;
 
 /**
- *  OTA memory allocation interface.
+ * @ingroup ota_struct_types
+ * @brief OTA memory allocation interface.
  */
 typedef struct OtaMallocInterface
 {
@@ -232,19 +252,20 @@ typedef struct OtaMallocInterface
      * defining the interface here. On FreeRTOS this is implemented with pvPortMalloc and vPortFree,
      * and on Linux it's implemented with standard C malloc and free. This is a false positive. */
     /* coverity[misra_c_2012_rule_21_3_violation] */
-    OtaMalloc_t malloc; /*!< OTA memory allocate interface. */
+    OtaMalloc_t malloc; /*!< @brief OTA memory allocate interface. */
     /* coverity[misra_c_2012_rule_21_3_violation] */
-    OtaFree_t free;     /*!< OTA memory deallocate interface. */
+    OtaFree_t free;     /*!< @brief OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 
 /**
+ * @ingroup ota_struct_types
  * @brief  OTA OS Interface.
  */
 typedef struct OtaOSInterface
 {
-    OtaEventInterface_t event; /*!< OTA Event interface. */
-    OtaTimerInterface_t timer; /*!< OTA Timer interface. */
-    OtaMallocInterface_t mem;  /*!< OTA memory interface. */
+    OtaEventInterface_t event; /*!< @brief OTA Event interface. */
+    OtaTimerInterface_t timer; /*!< @brief OTA Timer interface. */
+    OtaMallocInterface_t mem;  /*!< @brief OTA memory interface. */
 } OtaOSInterface_t;
 
 #endif /* ifndef OTA_OS_INTERFACE_H */

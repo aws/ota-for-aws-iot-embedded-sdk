@@ -42,9 +42,29 @@ digraph ota_dependencies
 @enddot
 
 Currently, the OTA library has the following dependencies:
-- The MQTT library for communicating with AWS OTA services and streaming services.
-- The HTTP library for communicating with Amazon S3 (Simple Storage Service).
+-coreJSON
+-tinyCBOR
 
+@section ota_memory_requirements Memory Requirements
+@brief Memory requirements of the OTA library.
+
+<table>
+    <tr>
+        <td colspan="4"><center><b>Code size of OTA library files (sizes generated with [GCC for ARM Cortex-M toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2020-q2-update))</b></center></td>
+    </tr>
+    <tr>
+        <td><b>File</b></td>
+        <td><b>No Optimization (asserts enabled)</b></td>
+        <td><b>With -O1 Optimization (asserts disabled)</b></td>
+        <td><b>With -Os Optimization (asserts disabled)</b></td>
+    </tr>
+    <tr>
+        <td>ota.c</td>
+        <td>13.6K</td>
+        <td>6.9K</td>
+        <td>6.3K</td>
+    </tr>
+</table>
 */
 
 /**
@@ -110,14 +130,85 @@ Note: HTTPS will only be used for file download from S3 pre-signed url , for con
 @image html ota_design_http.png
 */
 
+
 /**
-@page ota_demo Demo
-@brief The OTA demo demonstrates usage of the OTA library.
+@page ota_functions Functions
+@brief API functions of the OTA library:<br><br>
+@subpage ota_init_function <br>
+@subpage ota_shutdown_function <br>
+@subpage ota_getstate_function <br>
+@subpage ota_activatenewimage_function <br>
+@subpage ota_setimagestate_function <br>
+@subpage ota_getimagestate_function <br>
+@subpage ota_checkforupdate_function <br>
+@subpage ota_suspend_function <br>
+@subpage ota_resume_function <br>
+@subpage otaagenttask_function <br>
+@subpage ota_getstatistics_function <br>
+@subpage ota_err_strerror_function <br>
+@subpage ota_jobparse_strerror_function <br>
+@subpage ota_palstatus_strerror_function <br>
+@subpage ota_osstatus_strerror_function <br>
 
-The OTA Demo provides a simple example to demonstrate complete Over-The-Air update process. The OTA demo demonstrates creating an MQTT connection, initializing the OTA Library and logging OTA statistics when OTA is in process. The demo also provides an example on detecting network disconnect to suspend OTA Agent, try re-connecting with exponential delay with jitter and resume OTA operation when connection succeeds.
+@page ota_init_function OTA_Init
+@snippet ota.h declare_ota_init
+@copydoc OTA_Init
 
-The OTA demo configurations are demo specific configurations and must be updated when integrating as per the application requirements from the default values.
-More about OTA Demo configurations at @subpage ota_demo_config
+@page ota_shutdown_function OTA_Shutdown
+@snippet ota.h declare_ota_shutdown
+@copydoc OTA_Shutdown
+
+@page ota_getstate_function OTA_GetState
+@snippet ota.h declare_ota_getstate
+@copydoc OTA_GetState
+
+@page ota_activatenewimage_function OTA_ActivateNewImage
+@snippet ota.h declare_ota_activatenewimage
+@copydoc OTA_ActivateNewImage
+
+@page ota_setimagestate_function OTA_SetImageState
+@snippet ota.h declare_ota_setimagestate
+@copydoc OTA_SetImageState
+
+@page ota_getimagestate_function OTA_GetImageState
+@snippet ota.h declare_ota_getimagestate
+@copydoc OTA_GetImageState
+
+@page ota_checkforupdate_function OTA_CheckForUpdate
+@snippet ota.h declare_ota_checkforupdate
+@copydoc OTA_CheckForUpdate
+
+@page ota_suspend_function OTA_Suspend
+@snippet ota.h declare_ota_suspend
+@copydoc OTA_Suspend
+
+@page ota_resume_function OTA_Resume
+@snippet ota.h declare_ota_resume
+@copydoc OTA_Resume
+
+@page otaagenttask_function otaAgentTask
+@snippet ota.h declare_otaagenttask
+@copydoc otaAgentTask
+
+@page ota_getstatistics_function OTA_GetStatistics
+@snippet ota.h declare_ota_getstatistics
+@copydoc OTA_GetStatistics
+
+@page ota_err_strerror_function OTA_Err_strerror
+@snippet ota.h declare_ota_err_strerror
+@copydoc OTA_Err_strerror
+
+@page ota_jobparse_strerror_function OTA_JobParse_strerror
+@snippet ota.h declare_ota_jobparse_strerror
+@copydoc OTA_JobParse_strerror
+
+@page ota_palstatus_strerror_function OTA_PalStatus_strerror
+@snippet ota.h declare_ota_palstatus_strerror
+@copydoc OTA_PalStatus_strerror
+
+@page ota_osstatus_strerror_function OTA_OsStatus_strerror
+@snippet ota.h declare_ota_osstatus_strerror
+@copydoc OTA_OsStatus_strerror
 */
 
 /**
@@ -274,4 +365,33 @@ The primary data protocol is the preferred protocol selected for OTA data operat
 @configpossible OTA_DATA_OVER_MQTT , OTA_DATA_OVER_HTTP <br>
 @configrecommended  As per application requirement for preferred protocol. <br>
 @configdefault OTA_DATA_OVER_MQTT
+
+/**
+@defgroup ota_enum_types Enumerated Types
+@brief Enumerated types of the OTA library
+*/
+
+/**
+@defgroup ota_callback_types Callback Types
+@brief Callback function pointer types of the OTA library
+*/
+
+/**
+@defgroup ota_struct_types Parameter Structures
+@brief Structures passed as parameters to [OTA library functions](@ref ota_functions)
+
+These structures are passed as parameters to library functions. Documentation for these structures will state the functions associated with each parameter structure and the purpose of each member.
+*/
+
+/**
+@defgroup ota_basic_types Basic Types
+@brief Primitive types of the OTA library.
+*/
+
+/**
+@defgroup ota_constants Constants
+@brief Constants defined in the OTA library
+*/
+
+
 */
