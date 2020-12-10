@@ -28,8 +28,8 @@
  * @brief Structure to represent the application build version.
  */
 
-#ifndef _IOT_APPVERSION32_H_
-#define _IOT_APPVERSION32_H_
+#ifndef IOT_APPVERSION32_H
+#define IOT_APPVERSION32_H
 
 /* Standard includes. */
 #include <stdint.h>
@@ -69,4 +69,4 @@ typedef struct
 
 extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
 
-#endif /* ifndef _IOT_APPVERSION32_H_ */
+#endif /* ifndef IOT_APPVERSION32_H */

@@ -28,8 +28,8 @@
  * @brief OTA Agent Interface
  */
 
-#ifndef _AWS_IOT_OTA_AGENT_H_
-#define _AWS_IOT_OTA_AGENT_H_
+#ifndef OTA_H
+#define OTA_H
 
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
@@ -486,4 +486,4 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
 const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
 /* @[declare_ota_osstatus_strerror] */
 
-#endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */
+#endif /* ifndef OTA_H */
