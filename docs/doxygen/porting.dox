@@ -1,0 +1,22 @@
+/**
+@page ota_porting Porting Guide
+@brief Guide for porting OTA to a new platform.
+
+A port to a new platform must provide the following components:
+1. [Ports for PAL](@ref ota_porting_pal)
+2. [OS Interface](@ref ota_porting_os)
+3. [MQTT Interface](@ref ota_porting_mqtt)
+4. [HTTP Interface](@ref ota_porting_http)
+
+@section ota_porting_pal OTA PAL requirements:
+@brief OTA PAL requirements
+
+@section ota_porting_os OTA OS requirements:
+@brief OTA OS requirements
+
+@section ota_porting_mqtt OTA MQTT requirements:
+@brief OTA MQTT requirements
+
+@section ota_porting_http OTA HTTP requirements:
+@brief OTA HTTP requirements
+*/

@@ -23,8 +23,13 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __OTA_HTTP__H__
-#define __OTA_HTTP__H__
+/**
+ * @file ota_http_private.h
+ * @brief Contains definitions of routines for OTA download using HTTP data plane.
+ */
+
+#ifndef OTA_HTTP_H
+#define OTA_HTTP_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -105,4 +110,4 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
  */
 const char * OTA_HTTP_strerror( OtaHttpStatus_t status );
 
-#endif /* ifndef __OTA_HTTP__H__ */
+#endif /* ifndef OTA_HTTP_H */

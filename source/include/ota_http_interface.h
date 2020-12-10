@@ -23,22 +23,28 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _OTA_HTTP_INTERFACE_H_
-#define _OTA_HTTP_INTERFACE_H_
+/**
+ * @file ota_http_interface.h
+ * @brief Contains OTA HTTP Statuses, function type definitions and http interface structure.
+ */
+
+#ifndef OTA_HTTP_INTERFACE_H
+#define OTA_HTTP_INTERFACE_H
 
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
 
 /**
+ * @ingroup ota_enum_types
  * @brief The OTA HTTP interface return status.
  */
 typedef enum OtaHttpStatus
 {
-    OtaHttpSuccess = 0,       /*!< OTA HTTP interface success. */
-    OtaHttpInitFailed = 0xc0, /*!< Error initializing the HTTP connection. */
-    OtaHttpDeinitFailed,      /*!< Error deinitializing the HTTP connection. */
-    OtaHttpRequestFailed      /*!< Error sending the HTTP request. */
+    OtaHttpSuccess = 0,       /*!< @brief OTA HTTP interface success. */
+    OtaHttpInitFailed = 0xc0, /*!< @brief Error initializing the HTTP connection. */
+    OtaHttpDeinitFailed,      /*!< @brief Error deinitializing the HTTP connection. */
+    OtaHttpRequestFailed      /*!< @brief Error sending the HTTP request. */
 } OtaHttpStatus_t;
 
 /**
@@ -79,14 +85,15 @@ typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
 typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
 
 /**
+ * @ingroup ota_struct_types
  * @brief OTA Event Interface structure.
  *
  */
 typedef struct OtaHttpInterface
 {
-    ota_HttpInit_t init;       /*!< Reference to HTTP initialization. */
-    ota_HttpRequest_t request; /*!< Reference to HTTP data request. */
-    ota_HttpDeinit deinit;     /*!< Reference to HTTP deinitialize. */
+    ota_HttpInit_t init;       /*!< @brief Reference to HTTP initialization. */
+    ota_HttpRequest_t request; /*!< @brief Reference to HTTP data request. */
+    ota_HttpDeinit deinit;     /*!< @brief Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
-#endif /* ifndef _OTA_HTTP_INTERFACE_H_ */
+#endif /* ifndef OTA_HTTP_INTERFACE_H */

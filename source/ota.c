@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota.c
+ * @brief Implementation of the AWS IoT Over-The-Air Updates Client Library.
+ */
+
 /* Standard library includes. */
 #include <stddef.h>
 #include <string.h>
@@ -66,11 +71,15 @@
 /* Include firmware version struct definition. */
 #include "ota_appversion32.h"
 
-/* Offset helper. */
+
+/**
+ * @brief Offset helper.
+ */
 #define U16_OFFSET( type, member )    ( ( uint16_t ) offsetof( type, member ) )
 
-/* OTA event handler definition. */
-
+/**
+ * @brief OTA event handler definition.
+ */
 typedef OtaErr_t ( * OtaEventHandler_t )( const OtaEventData_t * pEventMsg );
 
 /**
@@ -86,182 +95,386 @@ typedef struct OtaStateTableEntry
     OtaState_t nextState;      /**< New state to be triggered*/
 } OtaStateTableEntry_t;
 
-/* OTA control interface. */
-
+/**
+ * @brief OTA control interface.
+ */
 static OtaControlInterface_t otaControlInterface;
 
-/* OTA data interface. */
-
+/**
+ * @brief OTA data interface.
+ */
 static OtaDataInterface_t otaDataInterface;
 
 /* OTA agent private function prototypes. */
 
-/* Called when the OTA agent receives a file data block message. */
-
+/**
+ * @brief Ingest a data block.
+ *
+ * A block of file data was received by the application via some configured communication protocol.
+ * If it looks like it is in range, write it to persistent storage. If it's the last block we're
+ * expecting, close the file and perform the final signature check on it. If the close and signature
+ * check are OK, let the caller know so it can be used by the system. Firmware updates generally
+ * reboot the system and perform a self test phase. If the close or signature check fails, abort
+ * the file transfer and return the result and any available details to the caller.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageSize Length of document.
+ * @param[in] pCloseResult Result of closing file in PAL.
+ * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
+ */
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
                                        const uint8_t * pRawMsg,
                                        uint32_t messageSize,
                                        OtaPalStatus_t * pCloseResult );
 
-/* Validate the incoming data block and store it in the file context. */
-
+/**
+ * @brief Validate the incoming data block and store it in the file context.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] uBlockIndex Incoming block index.
+ * @param[in] uBlockSize Incoming block size.
+ * @param[out] pCloseResult Result of closing file in PAL.
+ * @param[in] pPayload Data from the block.
+ * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
+ */
 static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                         uint32_t uBlockIndex,
                                         uint32_t uBlockSize,
                                         OtaPalStatus_t * pCloseResult,
                                         uint8_t * pPayload );
 
-/* Free the resources allocated for data ingestion and close the file handle. */
+/**
+ * @brief Free the resources allocated for data ingestion and close the file handle.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pCloseResult Result of closing file in PAL.
+ * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
+ */
 
 static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                                               OtaPalStatus_t * pCloseResult );
 
-/* Called to update the filecontext structure from the job. */
-
+/**
+ * @brief Get the File Context From Job Document.
+ *
+ * We received an OTA update job message from the job service so process
+ * the message and update the file context.
+ *
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageLength length of document.
+ * @return OtaFileContext_t* Information of file to be streamed.
+ */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                                                  uint32_t messageLength );
 
-/* Validate JSON document */
+/**
+ * @brief Validate JSON document and the DocModel.
+ *
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength  Length of the job document.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 
 static DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 
-/* Store the parameter from the json to the offset specified by the document model. */
-
+/**
+ * @brief Store the parameter from the json to the offset specified by the document model.
+ *
+ * @param[in] docParam Structure to store the details of keys and where to store them.
+ * @param[in] pContextBase Start of file context.
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 static DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        void * pContextBase,
                                        const char * pValueInJson,
                                        size_t valueLength );
 
-/* Parse a JSON document using the specified document model. */
-
+/**
+ * @brief Extract the desired fields from the JSON document based on the specified document model.
+ *
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength  Length of the job document.
+ * @param[in] pDocModel Details of expected parameters in the job doc.
+ * @return DocParseErr_t DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 static DocParseErr_t parseJSONbyModel( const char * pJson,
                                        uint32_t messageLength,
                                        JsonDocModel_t * pDocModel );
 
-/* Decode the signature key from the job document and store it.*/
-
+/**
+ * @brief Decode the base64 encoded file signature key from the job document and store it in file context.
+ *
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
+ * @param[out] pParamAdd Pointer to the location where the value is stored.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd );
 
-/* Extract the value from json and store it into the allocated memory. */
-
+/**
+ * @brief Extract the value from json and store it into the allocated memory.
+ *
+ * @param[in] pKey Name of the Key to extract.
+ * @param[in] pValueInJson Pointer to the value of the key in JSON buffer.
+ * @param[in] valueLength Length of the value.
+ * @param[out] pParamAdd Pointer to the location where the value is stored.
+ * @param[in] pParamSizeAdd Size required to store the param.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            const char * pValueInJson,
                                            size_t valueLength,
                                            void * pParamAdd,
                                            uint32_t * pParamSizeAdd );
 
-/* Check if all the required parameters for the job are present in the JSON. */
-
+/**
+ * @brief Check if all the required parameters for job document are extracted from the JSON.
+ *
+ * @param[in] pModelParam Structure to store the details of keys and where to store them.
+ * @param[in] pDocModel Details of expected parameters in the job doc.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
+ */
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
                                                     const JsonDocModel_t * pDocModel );
 
-/* Validate the version of the update received. */
-
+/**
+ * @brief Validate the version of the update received.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @return OtaErr_t OtaErrNone if successful, other error codes if failure.
+ */
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
-/* Check if the JSON can be parsed through a custom callback if initial parsing fails. */
-
+/**
+ * @brief Check if the JSON can be parsed through a custom callback if initial parsing fails.
+ *
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength Length of the job document.
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @return OtaJobParseErr_t OtaJobParseErrNone if successful, other error codes if failure.
+ */
 static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        uint32_t messageLength,
                                                        OtaFileContext_t * pFileContext,
                                                        OtaFileContext_t ** pFinalFile );
 
-/* Check if the incoming job document is not conflicting with current job status. */
-
+/**
+ * @brief Check if the incoming job document is not conflicting with current job status.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @param[out] pUpdateJob Represents if the job is accepted.
+ * @return OtaJobParseErr_t OtaErrNone if successful, other error codes if failure.
+ */
 static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                                                OtaFileContext_t ** pFinalFile,
                                                bool * pUpdateJob );
 
-/* Check if all the file context params are valid and initialize resources for the job transfer */
-
+/**
+ * @brief Check if all the file context params are valid and initialize resources for the job transfer.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[out] pFinalFile File that stores all extracted params.
+ * @param[out] pUpdateJob Represents if the job is accepted.
+ * @return OtaJobParseErr_t OtaJobParseErrNone if successful, other error codes if failure.
+ */
 static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              OtaFileContext_t ** pFinalFile,
                                              bool * pUpdateJob );
 
-/* Parse the OTA job document, validate and return the populated OTA context if valid. */
-
+/**
+ * @brief Parse the OTA job document, validate and return the populated OTA context if valid.
+ *
+ * @param[in] pJson JSON job document.
+ * @param[in] messageLength Length of the job document.
+ * @param[in] pUpdateJob Represents if the job is accepted.
+ * @return OtaFileContext_t* File context to store file information.
+ */
 static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob );
 
-/* Validate block index and block size of the data block. */
-
+/**
+ * @brief Validate block index and block size of the data block.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] blockIndex Block index of incoming data block.
+ * @param[in] blockSize Block size of incoming data block.
+ * @return true if successful, false otherwise.
+ */
 static bool validateDataBlock( const OtaFileContext_t * pFileContext,
                                uint32_t blockIndex,
                                uint32_t blockSize );
 
-/* Decode and ingest the incoming data block.*/
-
+/**
+ * @brief Decode and ingest the incoming data block.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @param[in] pRawMsg Raw job document.
+ * @param[in] messageSize Length of document.
+ * @param[in] pPayload Data stored in the document.
+ * @param[out] pBlockSize Block size of incoming data block.
+ * @param[out] pBlockIndex Block index of incoming data block.
+ * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
+ */
 static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
-                                               uint32_t * uBlockSize,
-                                               uint32_t * uBlockIndex );
+                                               uint32_t * pBlockSize,
+                                               uint32_t * pBlockIndex );
 
-/* Close an open OTA file context and free it. */
-
+/**
+ * @brief Close an open OTA file context and free it.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ * @return true if successful, false otherwise.
+ */
 static bool otaClose( OtaFileContext_t * const pFileContext );
 
+/**
+ * @brief OTA Timer callback.
+ *
+ * @param[in] otaTimerId Reference to the timer to use.
+ */
+static void otaTimerCallback( OtaTimerId_t otaTimerId );
 
-/* Internal function to set the image state including an optional reason code. */
-
+/**
+ * @brief Internal function to set the image state including an optional reason code.
+ *
+ * @param[in] stateToSet State to set.
+ * @param[in] reasonToSet Reason to set.
+ * @return OtaErr_t OtaErrNone if successful, other codes on failure.
+ */
 static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 
-/* A helper function to cleanup resources during OTA agent shutdown. */
+/**
+ * @brief Internal function to update the job status to the jobs service from current image state.
+ *
+ * @param[in] state State to set.
+ * @param[in] subReason Reason for status.
+ * @return OtaErr_t OtaErrNone if successful, other codes on failure.
+ */
+static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
+                                               int32_t subReason );
 
+/**
+ * @brief  A helper function to cleanup resources during OTA agent shutdown.
+ */
 static void agentShutdownCleanup( void );
 
-/* A helper function to cleanup resources when data ingestion is complete. */
-
+/**
+ * @brief A helper function to cleanup resources when data ingestion is complete.
+ */
 static void dataHandlerCleanup( IngestResult_t result );
 
-/*
- * Prepare the document model for use by sanity checking the initialization parameters
- * and detecting all required parameters.
+/**
+ * @brief Prepare the document model for use by sanity checking the initialization parameters and detecting all required parameters.
+ *
+ * @param[inout] pDocModel Details of expected parameters in the job doc.
+ * @param[in] pBodyDef Structure to store the details of keys and where to store them.
+ * @param[in] contextBaseAddr Start of file context.
+ * @param[in] contextSize Size of file context.
+ * @param[in] numJobParams Number of parameters to be extracted.
+ * @return DocParseErr_t DocParseErrNone if successful, JSON document parser errors.
  */
-
 static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    const JsonDocParam_t * pBodyDef,
                                    void * contextBaseAddr,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
-/* Check if the platform is in self-test. */
+/**
+ * @brief Initialize buffers for storing the file attributes.
+ *
+ * @param[out] pOtaBuffer OTA Application buffers.
+ */
+static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer );
 
+/**
+ * @brief Initialize jobId and protocol buffers.
+ */
+static void initializeLocalBuffers( void );
+
+/**
+ * @brief Search the state transition table for the entry based on current state and incoming event.
+ *
+ * @param[in] pEventMsg Incoming event information.
+ * @return uint32_t Index of the transition.
+ */
+static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg );
+
+/**
+ * @brief Initiate download if not in self-test else reboot
+ *
+ * @return OtaErr_t OtaErrNone if successful.
+ */
+static OtaErr_t processValidFileContext( void );
+
+/**
+ * @brief Validate update version when receiving job doc in self test state.
+ *
+ * @param[in] pFileContext Stores file information.
+ */
+static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext );
+
+/**
+ * @brief Handle invalid file context.
+ *
+ * @return OtaErr_t OtaErrNone if job parsing is handled.
+ */
+static OtaErr_t processNullFileContext( void );
+
+/**
+ * @brief Check if the platform is in self-test
+ *
+ * @return true if in self-test, else false.
+ */
 static bool inSelftest( void );
 
-/* Function to handle events that were unexpected in the current state. */
-
+/**
+ * @brief Function to handle events that were unexpected in the current state.
+ *
+ * @param[in] pEventMsg Stores information of the event.
+ */
 static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
-/* Free or clear multiple buffers used in the file context. */
+/**
+ * @brief Free or clear multiple buffers used in the file context.
+ *
+ * @param[in] pFileContext Information of file to be streamed.
+ */
 static void freeFileContextMem( OtaFileContext_t * const pFileContext );
 
 /* OTA state event handler functions. */
 
-static OtaErr_t startHandler( const OtaEventData_t * pEventData );
-static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
-static OtaErr_t processJobHandler( const OtaEventData_t * pEventData );
-static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData );
-static OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
-static OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
-static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
-static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
-static OtaErr_t closeFileHandler( const OtaEventData_t * pEventData );
-static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData );
-static OtaErr_t suspendHandler( const OtaEventData_t * pEventData );
-static OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
-static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
+static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
+static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );      /*!< Initiate a request for a job. */
+static OtaErr_t processJobHandler( const OtaEventData_t * pEventData );      /*!< Update file context from job document. */
+static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData );      /*!< Handle self test. */
+static OtaErr_t initFileHandler( const OtaEventData_t * pEventData );        /*!< Initialize and handle file transfer. */
+static OtaErr_t processDataHandler( const OtaEventData_t * pEventData );     /*!< Process incoming data blocks. */
+static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );     /*!< Request for data blocks. */
+static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );        /*!< Shutdown OTA and cleanup. */
+static OtaErr_t closeFileHandler( const OtaEventData_t * pEventData );       /*!< Close file opened for download. */
+static OtaErr_t userAbortHandler( const OtaEventData_t * pEventData );       /*!< Handle user interrupt to abort task. */
+static OtaErr_t suspendHandler( const OtaEventData_t * pEventData );         /*!< Handle suspend event for OTA agent. */
+static OtaErr_t resumeHandler( const OtaEventData_t * pEventData );          /*!< Resume from a suspended state. */
+static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData ); /*!< Upon receiving a new job document cancel current job if present and initiate new download. */
 static void executeHandler( uint32_t index,
-                            const OtaEventMsg_t * const pEventMsg );
+                            const OtaEventMsg_t * const pEventMsg );         /*!< Execute the handler for selected index from the transition table. */
 
-/* This is THE OTA agent context and initialization state. */
-
+/**
+ * @brief This is THE OTA agent context and initialization state.
+ */
 static OtaAgentContext_t otaAgent =
 {
     OtaAgentStateStopped, /* state */
@@ -281,6 +494,9 @@ static OtaAgentContext_t otaAgent =
     NULL                  /* customJobCallback */
 };
 
+/**
+ * @brief Transition table for the OTA state machine.
+ */
 static OtaStateTableEntry_t otaTransitionTable[] =
 {
     /*STATE ,                              EVENT ,                               ACTION ,               NEXT STATE                         */
@@ -308,6 +524,7 @@ static OtaStateTableEntry_t otaTransitionTable[] =
 /* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
  * disabled when running static analysis. So it's a false positive. */
 /* coverity[misra_c_2012_rule_2_2_violation] */
+/*!< String set to represent the States of the OTA agent. */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
     "Init",
@@ -325,6 +542,7 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 };
 
 /* coverity[misra_c_2012_rule_2_2_violation] */
+/*!< String set to represent the Events for the OTA agent. */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
     "Start",
@@ -342,9 +560,9 @@ static const char * pOtaEventStrings[ OtaAgentEventMax ] =
     "Shutdown"
 };
 
-static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];
-static uint8_t pProtocolBuffer[ 20 ];
-static Sig256_t sig256Buffer;
+static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ]; /*!< Buffer to store job name. */
+static uint8_t pProtocolBuffer[ 20 ];                 /*!< Buffer to store data protocol. */
+static Sig256_t sig256Buffer;                         /*!< Buffer to store key file signature. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
@@ -378,9 +596,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
     }
 }
 
-/*
- * This is a private function which checks if the platform is in self-test.
- */
+
 static bool inSelftest( void )
 {
     bool selfTest = false;
@@ -1312,21 +1528,24 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err = DocParseErrNone;
-    char * pStringCopy = NULL;
 
     /* For string and array, pParamAdd should be pointing to a uint8_t pointer. */
     char ** pCharPtr = pParamAdd;
 
-    if( *pCharPtr == NULL )
-    {
-        /* Malloc memory for a copy of the value string plus a zero terminator. */
-        pStringCopy = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
+    ( void ) pKey; /* For suppressing compiler-warning: unused variable. */
 
-        if( pStringCopy != NULL )
+    if( *pParamSizeAdd == 0 )
+    {
+        /* Free previously allocated buffer. */
+        if( *pCharPtr != NULL )
         {
-            *pCharPtr = pStringCopy;
+            otaAgent.pOtaInterface->os.mem.free( *pCharPtr );
         }
-        else
+
+        /* Malloc memory for a copy of the value string plus a zero terminator. */
+        *pCharPtr = otaAgent.pOtaInterface->os.mem.malloc( valueLength + 1U );
+
+        if( *pCharPtr == NULL )
         {
             /* Stop processing on error. */
             err = DocParseErrOutOfMemory;
@@ -1348,11 +1567,6 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                         pKey,
                         valueLength ) );
         }
-        else
-        {
-            pStringCopy = *pCharPtr;
-            err = DocParseErrNone;
-        }
     }
 
     if( err == DocParseErrNone )
@@ -1361,12 +1575,12 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
         ( void ) memcpy( *pCharPtr, pValueInJson, valueLength );
 
         /* Zero terminate the new string. */
-        pStringCopy[ valueLength ] = '\0';
+        ( *pCharPtr )[ valueLength ] = '\0';
 
         LogInfo( ( "Extracted parameter: "
                    "[key: value]=[%s: %s]",
                    pKey,
-                   pStringCopy ) );
+                   *pCharPtr ) );
     }
 
     return err;
@@ -1446,6 +1660,8 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
     DocParseErr_t err = DocParseErrNone;
     uint32_t missingParams = ( pDocModel->paramsReceivedBitmap & pDocModel->paramsRequiredBitmap )
                              ^ pDocModel->paramsRequiredBitmap;
+
+    ( void ) pModelParam; /* For suppressing compiler-warning: unused variable. */
 
     if( missingParams != 0U )
     {
@@ -1911,8 +2127,9 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     return err;
 }
 
-/* This is the OTA job document model describing the parameters, their types, destination and how to extract. */
-
+/**
+ * @brief This is the OTA job document model describing the parameters, their types, destination and how to extract.
+ */
 static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 {
     { OTA_JSON_CLIENT_TOKEN_KEY,    OTA_JOB_PARAM_OPTIONAL, OTA_DONT_STORE_PARAM,         OTA_DONT_STORE_PARAM,  ModelParamTypeStringInDoc },
@@ -2022,13 +2239,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     return pFinalFile;
 }
 
-
-/* getFileContextFromJob
- *
- * We received an OTA update job message from the job service so process
- * the message and update the file context.
- */
-
+/* Called to update the filecontext structure from the job. */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                                                  uint32_t messageLength )
 {
@@ -2231,8 +2442,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
-                                               uint32_t * uBlockSize,
-                                               uint32_t * uBlockIndex )
+                                               uint32_t * pBlockSize,
+                                               uint32_t * pBlockIndex )
 {
     IngestResult_t eIngestResult = IngestResultUninitialized;
     int32_t lFileId = 0;
@@ -2286,8 +2497,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
         }
         else
         {
-            *uBlockIndex = ( uint32_t ) sBlockIndex;
-            *uBlockSize = ( uint32_t ) sBlockSize;
+            *pBlockIndex = ( uint32_t ) sBlockIndex;
+            *pBlockSize = ( uint32_t ) sBlockSize;
         }
     }
     else
@@ -2310,6 +2521,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
     OtaPalMainStatus_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr;
+
+    ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
 
     if( pFileContext->blocksRemaining == 0U )
     {
@@ -2369,16 +2582,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     return eIngestResult;
 }
 
-/*
- * ingestDataBlock
- *
- * A block of file data was received by the application via some configured communication protocol.
- * If it looks like it is in range, write it to persistent storage. If it's the last block we're
- * expecting, close the file and perform the final signature check on it. If the close and signature
- * check are OK, let the caller know so it can be used by the system. Firmware updates generally
- * reboot the system and perform a self test phase. If the close or signature check fails, abort
- * the file transfer and return the result and any available details to the caller.
- */
+/* Called when the OTA agent receives a file data block message. */
+
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
                                        const uint8_t * pRawMsg,
                                        uint32_t messageSize,
@@ -2759,6 +2964,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
+
+    ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
+    ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
 
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )

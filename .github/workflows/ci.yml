@@ -19,9 +19,9 @@ jobs:
           submodules: true
       - name: Check warnings
         run: |
-          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG'
-          cmake --build build 2>&1 | grep -E "[0-9]+:[0-9]+: warning:" | tee warnings.txt
-          if [[ "$(wc -l < warnings.txt)" = "0" ]]; then exit 0; else exit 1; fi
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG' \
+          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror'
+          cmake --build build
 
   complexity:
     runs-on: ubuntu-latest
@@ -134,14 +134,12 @@ jobs:
         run: find . -iname "*.[hc]" -exec uncrustify --check -c tools/uncrustify.cfg {} +
       - name: Check For Trailing Whitespace
         run: |
-          set +e
-          grep --exclude="README.md" -rnI -e "[[:blank:]]$" .
-          if [ "$?" = "0" ]; then
-            echo "Files have trailing whitespace."
-            exit 1
-          else
-            exit 0
-          fi
+          set +me
+          shopt -s lastpipe
+          found=0
+          git ls-files | xargs file | sed -n '/ASCII/s/:.*//p' | while read f; do [[ -f $f ]] && grep -H '[[:blank:]]$' $f && let found++; done
+          (( found > 0 )) && echo 'Files have trailing whitespace.'
+          exit $found
 
   git-secrets:
     runs-on: ubuntu-latest

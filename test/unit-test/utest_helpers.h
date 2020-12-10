@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _UTEST_HELPERS_
-#define _UTEST_HELPERS_
+#ifndef UTEST_HELPERS
+#define UTEST_HELPERS
 
 #include <cbor.h>
 
@@ -39,4 +39,4 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
                                       size_t blockPayloadSize,
                                       size_t * pEncodedSize );
 
-#endif /* ifndef _UTEST_HELPERS_ */
+#endif /* ifndef UTEST_HELPERS */

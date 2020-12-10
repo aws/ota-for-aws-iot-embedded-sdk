@@ -29,13 +29,14 @@
  * shared by other OTA modules and testing files.
  */
 
-#ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
-#define _AWS_IOT_OTA_AGENT_INTERNAL_H_
+#ifndef OTA_PRIVATE_H
+#define OTA_PRIVATE_H
 
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* OTA_DO_NOT_USE_CUSTOM_CONFIG allows building the OTA library
  * without a custom config. If a custom config is provided, the
@@ -49,47 +50,44 @@
 #include "ota_config_defaults.h"
 
 /**
- * @cond DOXYGEN_IGNORE
- * Doxygen should ignore this section.
+ * @addtogroup ota_constants
+ * @{
  */
-
-/* bool is defined in only C99+. */
-#if defined( __cplusplus ) || ( defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) ) || \
-    ( defined( _MSC_VER ) && ( _MSC_VER >= 1800 ) )
-    #include <stdbool.h>
-#elif !defined( bool )
-    #define bool     int8_t
-    #define false    ( int8_t ) 0
-    #define true     ( int8_t ) 1
-#endif
-/** @endcond */
-
 /* General constants. */
-#define LOG2_BITS_PER_BYTE           3U                                                   /*!< Log base 2 of bits per byte. */
-#define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /*!< Number of bits in a byte. This is used by the block bitmap implementation. */
-#define OTA_FILE_BLOCK_SIZE          ( ( uint32_t ) 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) /*!< Data section size of the file data block message (excludes the header). */
-#define OTA_MAX_FILES                1U                                                   /*!< [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
-#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /*!< Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
-#define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< Maximum size of the message */
-#define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< Maximum size of the S3 presigned URL */
-#define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< The starting state of a group of erased blocks in the Rx block bitmap. */
+#define LOG2_BITS_PER_BYTE           3U                                                   /*!< @brief Log base 2 of bits per byte. */
+#define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /*!< @brief Number of bits in a byte. This is used by the block bitmap implementation. */
+#define OTA_FILE_BLOCK_SIZE          ( ( uint32_t ) 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) /*!< @brief Data section size of the file data block message (excludes the header). */
+#define OTA_MAX_FILES                1U                                                   /*!< @brief [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
+#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /*!< @brief Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
+#define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
+#define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
+#define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
 #ifdef configOTA_NUM_MSG_Q_ENTRIES
     #define OTA_NUM_MSG_Q_ENTRIES    configOTA_NUM_MSG_Q_ENTRIES
 #else
     #define OTA_NUM_MSG_Q_ENTRIES    20U                   /*!< Maximum number of entries in the OTA message queue. */
 #endif
+/** @} */
 
+/**
+ * @addtogroup ota_constants
+ * @{
+ */
 /* Job document parser constants. */
-#define OTA_MAX_JSON_TOKENS         64U                                                                         /*!< Number of JSON tokens supported in a single parser call. */
-#define OTA_MAX_JSON_STR_LEN        256U                                                                        /*!< Limit our JSON string compares to something small to avoid going into the weeds. */
-#define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< The parameter list is backed by a 32 bit longword bitmap by design. */
-#define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< Used to denote a required document model parameter. */
-#define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< Used to denote an optional document model parameter. */
-#define OTA_DONT_STORE_PARAM        0xffff                                                                      /*!< If destOffset in the model is 0xffffffff, do not store the value. */
-#define OTA_STORE_NESTED_JSON       0x1fffU                                                                     /*!< Store the reference to a nested JSON in a separate pointer */
-#define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< Header is 19 bytes.*/
+#define OTA_MAX_JSON_TOKENS         64U                                                                         /*!< @brief Number of JSON tokens supported in a single parser call. */
+#define OTA_MAX_JSON_STR_LEN        256U                                                                        /*!< @brief Limit our JSON string compares to something small to avoid going into the weeds. */
+#define OTA_DOC_MODEL_MAX_PARAMS    32U                                                                         /*!< @brief The parameter list is backed by a 32 bit longword bitmap by design. */
+#define OTA_JOB_PARAM_REQUIRED      true                                                                        /*!< @brief Used to denote a required document model parameter. */
+#define OTA_JOB_PARAM_OPTIONAL      false                                                                       /*!< @brief Used to denote an optional document model parameter. */
+#define OTA_DONT_STORE_PARAM        0xffff                                                                      /*!< @brief If destOffset in the model is 0xffffffff, do not store the value. */
+#define OTA_STORE_NESTED_JSON       0x1fffU                                                                     /*!< @brief Store the reference to a nested JSON in a separate pointer */
+#define OTA_DATA_BLOCK_SIZE         ( ( 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) + OTA_REQUEST_URL_MAX_SIZE + 30 ) /*!< @brief Header is 19 bytes.*/
+/** @} */
 
-
+/**
+ * @addtogroup ota_constants
+ * @{
+ */
 /* OTA Agent task event flags. */
 #define OTA_EVT_MASK_JOB_MSG_READY     0x00000001UL                                                                                                                               /*!< Event flag for OTA Job message ready. */
 #define OTA_EVT_MASK_DATA_MSG_READY    0x00000002UL                                                                                                                               /*!< Event flag for OTA Data message ready. */
@@ -97,60 +95,65 @@
 #define OTA_EVT_MASK_REQ_TIMEOUT       0x00000008UL                                                                                                                               /*!< Event flag indicating the request timer has timed out. */
 #define OTA_EVT_MASK_USER_ABORT        0x000000016UL                                                                                                                              /*!< Event flag to indicate user initiated OTA abort. */
 #define OTA_EVT_MASK_ALL_EVENTS        ( OTA_EVT_MASK_JOB_MSG_READY | OTA_EVT_MASK_DATA_MSG_READY | OTA_EVT_MASK_SHUTDOWN | OTA_EVT_MASK_REQ_TIMEOUT | OTA_EVT_MASK_USER_ABORT )  /*!< Event flag to mask indicate all events.*/
+/** @} */
 
 /**
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS             ( 21 )
+#define OTA_NUM_JOB_PARAMS     ( 21 )
 
 /**
  * @brief Maximum size of the Job ID.
  *
  */
-#define OTA_JOB_ID_MAX_SIZE            ( 72UL + 1UL )
+#define OTA_JOB_ID_MAX_SIZE    ( 72UL + 1UL )
 
 /**
- * @ingroup ota_datatypes_struct_constants
+ * @ingroup ota_constants
  * @brief A composite cryptographic signature structure able to hold our largest supported signature.
  */
 
 #define kOTA_MaxSignatureSize           256 /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
 
 /**
+ *
  * @brief Keys in OTA job doc.
  *
  * The OTA job document contains parameters that are required for us to build the
  * stream request message and manage the OTA process. Including info like file name,
  * size, attributes, etc. The following value specifies the number of parameters
  * that are included in the job document model although some may be optional.
+ * @addtogroup ota_constants
+ * @{
  */
-#define OTA_JSON_SEPARATOR              "."                                                        /*!< Separator used to define nested keys. */
-#define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"                                              /*!< Client token. */
-#define OTA_JSON_TIMESTAMP_KEY          "timestamp"                                                /*!< Used to calculate timeout and time spent on the operation. */
-#define OTA_JSON_EXECUTION_KEY          "execution"                                                /*!< Contains job execution parameters . */
-#define OTA_JSON_JOB_ID_KEY             OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobId"          /*!< Name of the job. */
-#define OTA_JSON_STATUS_DETAILS_KEY     OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "statusDetails"  /*!< Current status of the job. */
-#define OTA_JSON_SELF_TEST_KEY          OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "self_test" /*!< Specifies if the platform and service is is selftest. */
-#define OTA_JSON_UPDATED_BY_KEY         OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "updatedBy" /*!< Parameter to specify update status. */
-#define OTA_JSON_UPDATED_BY_KEY_ONLY    "updatedBy"                                                /*!< Specifies if the platform and service is is selftest. Not searched in sub fields. */
-#define OTA_JSON_SELF_TEST_KEY_ONLY     "self_test"                                                /*!< Parameter to specify update status. Not searched in sub fields. */
-#define OTA_JSON_JOB_DOC_KEY            OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobDocument"    /*!< Parameters that specify the nature of the job. */
-#define OTA_JSON_OTA_UNIT_KEY           OTA_JSON_JOB_DOC_KEY OTA_JSON_SEPARATOR "afr_ota"          /*!< afr-ota. */
-#define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"       /*!< Protocols over which the download can take place. */
-#define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"           /*!< Parameters for specifying file configurations. */
-#define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"      /*!< Name of the stream used for download. */
-#define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< Path to store the image on the device. */
-#define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< Size of the file to be downloaded. */
-#define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< Used to identify the file in case of multiple file downloads. */
-#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< Additional file attributes. */
-#define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"                                                 /*!< Location of the certificate on the device to find code signing. */
-#define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"                                          /*!< S3 bucket presigned url to fetch the image from . */
-#define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"                                              /*!< Authentication scheme for downloading a the image over HTTP. */
-#define OTA_JSON_FILETYPE_KEY           "fileType"                                                 /*!< Used to identify the file in case of multi file type support. */
+#define OTA_JSON_SEPARATOR              "."                                                        /*!< @brief Separator used to define nested keys. */
+#define OTA_JSON_CLIENT_TOKEN_KEY       "clientToken"                                              /*!< @brief Client token. */
+#define OTA_JSON_TIMESTAMP_KEY          "timestamp"                                                /*!< @brief Used to calculate timeout and time spent on the operation. */
+#define OTA_JSON_EXECUTION_KEY          "execution"                                                /*!< @brief Contains job execution parameters . */
+#define OTA_JSON_JOB_ID_KEY             OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobId"          /*!< @brief Name of the job. */
+#define OTA_JSON_STATUS_DETAILS_KEY     OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "statusDetails"  /*!< @brief Current status of the job. */
+#define OTA_JSON_SELF_TEST_KEY          OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "self_test" /*!< @brief Specifies if the platform and service is is selftest. */
+#define OTA_JSON_UPDATED_BY_KEY         OTA_JSON_STATUS_DETAILS_KEY OTA_JSON_SEPARATOR "updatedBy" /*!< @brief Parameter to specify update status. */
+#define OTA_JSON_UPDATED_BY_KEY_ONLY    "updatedBy"                                                /*!< @brief Specifies if the platform and service is is selftest. Not searched in sub fields. */
+#define OTA_JSON_SELF_TEST_KEY_ONLY     "self_test"                                                /*!< @brief Parameter to specify update status. Not searched in sub fields. */
+#define OTA_JSON_JOB_DOC_KEY            OTA_JSON_EXECUTION_KEY OTA_JSON_SEPARATOR "jobDocument"    /*!< @brief Parameters that specify the nature of the job. */
+#define OTA_JSON_OTA_UNIT_KEY           OTA_JSON_JOB_DOC_KEY OTA_JSON_SEPARATOR "afr_ota"          /*!< @brief afr-ota. */
+#define OTA_JSON_PROTOCOLS_KEY          OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "protocols"       /*!< @brief Protocols over which the download can take place. */
+#define OTA_JSON_FILE_GROUP_KEY         OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "files"           /*!< @brief Parameters for specifying file configurations. */
+#define OTA_JSON_STREAM_NAME_KEY        OTA_JSON_OTA_UNIT_KEY OTA_JSON_SEPARATOR "streamname"      /*!< @brief Name of the stream used for download. */
+#define OTA_JSON_FILE_PATH_KEY          "filepath"                                                 /*!< @brief Path to store the image on the device. */
+#define OTA_JSON_FILE_SIZE_KEY          "filesize"                                                 /*!< @brief Size of the file to be downloaded. */
+#define OTA_JSON_FILE_ID_KEY            "fileid"                                                   /*!< @brief Used to identify the file in case of multiple file downloads. */
+#define OTA_JSON_FILE_ATTRIBUTE_KEY     "attr"                                                     /*!< @brief Additional file attributes. */
+#define OTA_JSON_FILE_CERT_NAME_KEY     "certfile"                                                 /*!< @brief Location of the certificate on the device to find code signing. */
+#define OTA_JSON_UPDATE_DATA_URL_KEY    "update_data_url"                                          /*!< @brief S3 bucket presigned url to fetch the image from . */
+#define OTA_JSON_AUTH_SCHEME_KEY        "auth_scheme"                                              /*!< @brief Authentication scheme for downloading a the image over HTTP. */
+#define OTA_JSON_FILETYPE_KEY           "fileType"                                                 /*!< @brief Used to identify the file in case of multi file type support. */
+/** @} */
 
 /**
- * @ingroup ota_private_datatypes_enums
+ * @ingroup ota_private_enum_types
  * @brief Data ingest results.
  *
  * The negative error codes represent actual error in ingesting the data block whereas the positive error codes
@@ -175,7 +178,7 @@ typedef enum
 } IngestResult_t;
 
 /**
- * @ingroup ota_private_datatypes_enums
+ * @ingroup ota_private_enum_types
  * @brief Generic JSON document parser errors.
  *
  */
@@ -201,7 +204,7 @@ typedef enum
 } DocParseErr_t;
 
 /**
- * @ingroup ota_private_datatypes_enums
+ * @ingroup ota_private_enum_types
  * @brief Document model parameter types used by the JSON document parser.
  *
  */
@@ -218,7 +221,7 @@ typedef enum
 } ModelParamType_t;
 
 /**
- * @ingroup ota_private_datatypes_enums
+ * @ingroup ota_private_enum_types
  * @brief Gives the status of the job parsing operation.
  *
  */
@@ -232,7 +235,12 @@ typedef enum
     NumJobStatusMappings
 } OtaJobStatus_t;
 
-enum
+/**
+ * @ingroup ota_private_enum_types
+ * @brief Gives the reason to set for job parsing operation.
+ *
+ */
+typedef enum
 {
     JobReasonReceiving = 0,  /* Update progress status. */
     JobReasonSigCheckPassed, /* Set status details to Self Test Ready. */
@@ -241,10 +249,10 @@ enum
     JobReasonRejected,       /* Set job state to Failed. */
     JobReasonAborted,        /* Set job state to Failed. */
     NumJobReasons
-};
+} OtaJobReason_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief JSON document parameter to store the details of keys and where to store them.
  *
  * This is a document parameter structure used by the document model. It determines
@@ -264,7 +272,7 @@ typedef struct
 } JsonDocParam_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief JSON document model to store the details of parameters expected in the job document.
  *
  * The document model is currently limited to 32 parameters per the implementation,
@@ -287,7 +295,7 @@ typedef struct
 } JsonDocModel_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief This is the OTA statistics structure to hold useful info.
  */
 typedef struct OtaAgentStatistics
@@ -299,7 +307,7 @@ typedef struct OtaAgentStatistics
 } OtaAgentStatistics_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA Image states.
  *
  * After an OTA update image is received and authenticated, it is logically moved to
@@ -315,67 +323,67 @@ typedef struct OtaAgentStatistics
  */
 typedef enum OtaImageState
 {
-    OtaImageStateUnknown = 0,  /*!< The initial state of the OTA MCU Image. */
-    OtaImageStateTesting = 1,  /*!< The state of the OTA MCU Image post successful download and reboot. */
-    OtaImageStateAccepted = 2, /*!< The state of the OTA MCU Image post successful download and successful self_test. */
-    OtaImageStateRejected = 3, /*!< The state of the OTA MCU Image when the job has been rejected. */
-    OtaImageStateAborted = 4,  /*!< The state of the OTA MCU Image after a timeout publish to the stream request fails.
+    OtaImageStateUnknown = 0,  /*!< @brief The initial state of the OTA MCU Image. */
+    OtaImageStateTesting = 1,  /*!< @brief The state of the OTA MCU Image post successful download and reboot. */
+    OtaImageStateAccepted = 2, /*!< @brief The state of the OTA MCU Image post successful download and successful self_test. */
+    OtaImageStateRejected = 3, /*!< @brief The state of the OTA MCU Image when the job has been rejected. */
+    OtaImageStateAborted = 4,  /*!< @brief The state of the OTA MCU Image after a timeout publish to the stream request fails.
                                 *   Also if the OTA MCU image is aborted in the middle of a stream. */
     OtaLastImageState = OtaImageStateAborted
 } OtaImageState_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA Platform Image State.
  *
  * The image state set by platform implementation.
  */
 typedef enum OtaPalImageState
 {
-    OtaPalImageStateUnknown = 0,
-    OtaPalImageStatePendingCommit,
-    OtaPalImageStateValid,
-    OtaPalImageStateInvalid
+    OtaPalImageStateUnknown = 0,   /*!< @brief The initial state of the OTA PAL Image. */
+    OtaPalImageStatePendingCommit, /*!< @brief OTA PAL Image awaiting update. */
+    OtaPalImageStateValid,         /*!< @brief OTA PAL Image is valid. */
+    OtaPalImageStateInvalid        /*!< @brief OTA PAL Image is invalid. */
 } OtaPalImageState_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA Agent Events.
  *
  * The events sent to OTA agent.
  */
 typedef enum OtaEvent
 {
-    OtaAgentEventStart = 0,
-    OtaAgentEventStartSelfTest,
-    OtaAgentEventRequestJobDocument,
-    OtaAgentEventReceivedJobDocument,
-    OtaAgentEventCreateFile,
-    OtaAgentEventRequestFileBlock,
-    OtaAgentEventReceivedFileBlock,
-    OtaAgentEventRequestTimer,
-    OtaAgentEventCloseFile,
-    OtaAgentEventSuspend,
-    OtaAgentEventResume,
-    OtaAgentEventUserAbort,
-    OtaAgentEventShutdown,
-    OtaAgentEventMax
+    OtaAgentEventStart = 0,           /*!< @brief Start the OTA state machine */
+    OtaAgentEventStartSelfTest,       /*!< @brief Event to trigger self test. */
+    OtaAgentEventRequestJobDocument,  /*!< @brief Event for requesting job document. */
+    OtaAgentEventReceivedJobDocument, /*!< @brief Event when job document is received. */
+    OtaAgentEventCreateFile,          /*!< @brief Event to create a file. */
+    OtaAgentEventRequestFileBlock,    /*!< @brief Event to request file blocks. */
+    OtaAgentEventReceivedFileBlock,   /*!< @brief Event to trigger when file block is received. */
+    OtaAgentEventRequestTimer,        /*!< @brief Event to request event timer. */
+    OtaAgentEventCloseFile,           /*!< @brief Event to trigger closing file. */
+    OtaAgentEventSuspend,             /*!< @brief Event to suspend ota task */
+    OtaAgentEventResume,              /*!< @brief Event to resume suspended task */
+    OtaAgentEventUserAbort,           /*!< @brief Event triggered by user to stop agent. */
+    OtaAgentEventShutdown,            /*!< @brief Event to trigger ota shutdown */
+    OtaAgentEventMax                  /*!< @brief Last event specifier */
 } OtaEvent_t;
 
 /**
- * @ingroup ota_datatypes_structs
+ * @ingroup ota_struct_types
  * @brief OTA File Signature info.
  *
  * File key signature information to verify the authenticity of the incoming file
  */
 typedef struct
 {
-    uint16_t size;                         /*!< Size, in bytes, of the signature. */
-    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< The binary signature data. */
+    uint16_t size;                         /*!< @brief Size, in bytes, of the signature. */
+    uint8_t data[ kOTA_MaxSignatureSize ]; /*!< @brief The binary signature data. */
 } Sig256_t;
 
 /**
- * @ingroup ota_datatypes_structs
+ * @ingroup ota_struct_types
  * @brief OTA File Context Information.
  *
  * Information about an OTA Update file that is to be streamed. This structure is filled in from a
@@ -383,41 +391,41 @@ typedef struct
  */
 typedef struct OtaFileContext
 {
-    uint8_t * pFilePath;          /*!< Update file pathname. */
-    uint16_t filePathMaxSize;     /*!< Maximum size of the update file path */
+    uint8_t * pFilePath;          /*!< @brief Update file pathname. */
+    uint16_t filePathMaxSize;     /*!< @brief Maximum size of the update file path */
     #if defined( WIN32 ) || defined( __linux__ )
-        FILE * pFile;             /*!< File type is stdio FILE structure after file is open for write. */
+        FILE * pFile;             /*!< @brief File type is stdio FILE structure after file is open for write. */
     #else
-        uint8_t * pFile;          /*!< File type is RAM/Flash image pointer after file is open for write. */
+        uint8_t * pFile;          /*!< @brief File type is RAM/Flash image pointer after file is open for write. */
     #endif
-    uint32_t fileSize;            /*!< The size of the file in bytes. */
-    uint32_t blocksRemaining;     /*!< How many blocks remain to be received (a code optimization). */
-    uint32_t fileAttributes;      /*!< Flags specific to the file being received (e.g. secure, bundle, archive). */
-    uint32_t serverFileID;        /*!< The file is referenced by this numeric ID in the OTA job. */
-    uint8_t * pJobName;           /*!< The job name associated with this file from the job service. */
-    uint16_t jobNameMaxSize;      /*!< Maximum size of the job name. */
-    uint8_t * pStreamName;        /*!< The stream associated with this file from the OTA service. */
-    uint16_t streamNameMaxSize;   /*!< Maximum size of the stream name. */
-    uint8_t * pRxBlockBitmap;     /*!< Bitmap of blocks received (for deduplicating and missing block request). */
-    uint16_t blockBitmapMaxSize;  /*!< Maximum size of the block bitmap. */
-    uint8_t * pCertFilepath;      /*!< Pathname of the certificate file used to validate the receive file. */
-    uint16_t certFilePathMaxSize; /*!< Maximum certificate path size. */
-    uint8_t * pUpdateUrlPath;     /*!< Url for the file. */
-    uint16_t updateUrlMaxSize;    /*!< Maximum size of the url. */
-    uint8_t * pAuthScheme;        /*!< Authorization scheme. */
-    uint16_t authSchemeMaxSize;   /*!< Maximum size of the auth scheme. */
-    uint32_t updaterVersion;      /*!< Used by OTA self-test detection, the version of Firmware that did the update. */
-    bool isInSelfTest;            /*!< True if the job is in self test mode. */
-    uint8_t * pProtocols;         /*!< Authorization scheme. */
-    uint16_t protocolMaxSize;     /*!< Maximum size of the  supported protocols string. */
-    uint8_t * pDecodeMem;         /*!< Decode memory. */
-    uint32_t decodeMemMaxSize;    /*!< Maximum size of the decode memory. */
-    uint32_t fileType;            /*!< The file type id set when creating the OTA job. */
-    Sig256_t * pSignature;        /*!< Pointer to the file's signature structure. */
+    uint32_t fileSize;            /*!< @brief The size of the file in bytes. */
+    uint32_t blocksRemaining;     /*!< @brief How many blocks remain to be received (a code optimization). */
+    uint32_t fileAttributes;      /*!< @brief Flags specific to the file being received (e.g. secure, bundle, archive). */
+    uint32_t serverFileID;        /*!< @brief The file is referenced by this numeric ID in the OTA job. */
+    uint8_t * pJobName;           /*!< @brief The job name associated with this file from the job service. */
+    uint16_t jobNameMaxSize;      /*!< @brief Maximum size of the job name. */
+    uint8_t * pStreamName;        /*!< @brief The stream associated with this file from the OTA service. */
+    uint16_t streamNameMaxSize;   /*!< @brief Maximum size of the stream name. */
+    uint8_t * pRxBlockBitmap;     /*!< @brief Bitmap of blocks received (for deduplicating and missing block request). */
+    uint16_t blockBitmapMaxSize;  /*!< @brief Maximum size of the block bitmap. */
+    uint8_t * pCertFilepath;      /*!< @brief Pathname of the certificate file used to validate the receive file. */
+    uint16_t certFilePathMaxSize; /*!< @brief Maximum certificate path size. */
+    uint8_t * pUpdateUrlPath;     /*!< @brief Url for the file. */
+    uint16_t updateUrlMaxSize;    /*!< @brief Maximum size of the url. */
+    uint8_t * pAuthScheme;        /*!< @brief Authorization scheme. */
+    uint16_t authSchemeMaxSize;   /*!< @brief Maximum size of the auth scheme. */
+    uint32_t updaterVersion;      /*!< @brief Used by OTA self-test detection, the version of Firmware that did the update. */
+    bool isInSelfTest;            /*!< @brief True if the job is in self test mode. */
+    uint8_t * pProtocols;         /*!< @brief Authorization scheme. */
+    uint16_t protocolMaxSize;     /*!< @brief Maximum size of the  supported protocols string. */
+    uint8_t * pDecodeMem;         /*!< @brief Decode memory. */
+    uint32_t decodeMemMaxSize;    /*!< @brief Maximum size of the decode memory. */
+    uint32_t fileType;            /*!< @brief The file type id set when creating the OTA job. */
+    Sig256_t * pSignature;        /*!< @brief Pointer to the file's signature structure. */
 } OtaFileContext_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief  The OTA Agent event and data structures.
  */
 
@@ -429,7 +437,7 @@ typedef struct OtaEventData
 } OtaEventData_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief Stores information about the event message.
  *
  */
@@ -451,4 +459,4 @@ typedef struct OtaEventMsg
  */
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
 
-#endif /* ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_ */
+#endif /* ifndef OTA_PRIVATE_H */

@@ -23,8 +23,13 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_IOT_OTA_MQTT__H__
-#define __AWS_IOT_OTA_MQTT__H__
+/**
+ * @file ota_mqtt_private.h
+ * @brief Contains function definitions of routines for OTA download and control using MQTT data plane.
+ */
+
+#ifndef OTA_MQTT_H
+#define OTA_MQTT_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -152,4 +157,4 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
  */
 const char * OTA_MQTT_strerror( OtaMqttStatus_t status );
 
-#endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */
+#endif /* ifndef OTA_MQTT_H */

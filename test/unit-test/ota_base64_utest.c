@@ -162,14 +162,14 @@ void tearDown( void )
  */
 void test_OTA_base64Decode_ValidTwoPaddingSymbols( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_TWO_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_TWO_PADDING_ENCODED,
                            BASE64_VALID_DATA_TWO_PADDING_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -183,14 +183,14 @@ void test_OTA_base64Decode_ValidTwoPaddingSymbols( void )
  */
 void test_OTA_base64Decode_ValidOnePaddingSymbol( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_ONE_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ONE_PADDING_ENCODED,
                            BASE64_VALID_DATA_ONE_PADDING_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -204,14 +204,14 @@ void test_OTA_base64Decode_ValidOnePaddingSymbol( void )
  */
 void test_OTA_base64Decode_ValidNoPaddingSymbols( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_ZERO_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ZERO_PADDING_ENCODED,
                            BASE64_VALID_DATA_ZERO_PADDING_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -225,7 +225,7 @@ void test_OTA_base64Decode_ValidNoPaddingSymbols( void )
  */
 void test_OTA_base64Decode_ValidNoOptionalPadding( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
@@ -233,7 +233,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_TWO_PADDING_REMOVED_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_TWO_PADDING_REMOVED_ENCODED,
                            BASE64_VALID_DATA_TWO_PADDING_REMOVED_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -246,7 +246,7 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_ONE_PADDING_REMOVED_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ONE_PADDING_REMOVED_ENCODED,
                            BASE64_VALID_DATA_ONE_PADDING_REMOVED_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -260,14 +260,14 @@ void test_OTA_base64Decode_ValidNoOptionalPadding( void )
  */
 void test_OTA_base64Decode_ValidDataContainsLF( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_LF_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_LF_ENCODED,
                            BASE64_VALID_DATA_LF_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -281,14 +281,14 @@ void test_OTA_base64Decode_ValidDataContainsLF( void )
  */
 void test_OTA_base64Decode_ValidDataContainsCRLF( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_CRLF_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_CRLF_ENCODED,
                            BASE64_VALID_DATA_CRLF_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -303,14 +303,14 @@ void test_OTA_base64Decode_ValidDataContainsCRLF( void )
  */
 void test_OTA_base64Decode_ValidDecodeBufferExactSize( void )
 {
-    char pDecodedResultBuffer[ BASE64_VALID_DATA_DECODED_LEN ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_VALID_DATA_DECODED_LEN ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_VALID_DATA_DECODED_LEN,
                            &resultLen,
-                           BASE64_VALID_DATA_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -324,7 +324,7 @@ void test_OTA_base64Decode_ValidDecodeBufferExactSize( void )
  */
 void test_OTA_base64Decode_ValidWhitespace( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     size_t resultLen = 0;
     int result = 0;
 
@@ -333,7 +333,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_WHITESPACE_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_WHITESPACE_ENCODED,
                            BASE64_VALID_DATA_WHITESPACE_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -347,7 +347,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_PADDING_WHITESPACE_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_PADDING_WHITESPACE_ENCODED,
                            BASE64_VALID_DATA_PADDING_WHITESPACE_ENCODED_LEN );
 
     TEST_ASSERT_EQUAL_INT( Base64Success, result );
@@ -361,7 +361,7 @@ void test_OTA_base64Decode_ValidWhitespace( void )
  */
 void test_OTA_base64Decode_InvalidNullInputs( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -370,7 +370,7 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
     result = base64Decode( NULL,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_VALID_DATA_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64NullPointerInput, result );
 
@@ -381,7 +381,7 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            NULL,
-                           BASE64_VALID_DATA_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64NullPointerInput, result );
 
@@ -403,7 +403,7 @@ void test_OTA_base64Decode_InvalidNullInputs( void )
  */
 void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -411,7 +411,7 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_ONE_EXCESS_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_ONE_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_ONE_EXCESS_PADDING_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 
@@ -421,7 +421,7 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_TWO_EXCESS_PADDING_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 
@@ -431,7 +431,7 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED,
                            BASE64_INVALID_DATA_THREE_EXCESS_PADDING_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidPaddingSymbol, result );
 }
@@ -444,8 +444,8 @@ void test_OTA_base64Decode_InvalidThreePaddingSymbols( void )
  */
 void test_OTA_base64Decode_InvalidNonBase64Symbols( void )
 {
-    char pModifiedEncodedData[ BASE64_VALID_DATA_ENCODED_LEN ] = BASE64_VALID_DATA_ENCODED;
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pModifiedEncodedData[ BASE64_VALID_DATA_ENCODED_LEN ] = BASE64_VALID_DATA_ENCODED;
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0, i = 0, numInvalidSymbols = 0;
     size_t resultLen = 0;
 
@@ -498,7 +498,7 @@ void test_OTA_base64Decode_InvalidNonBase64Symbols( void )
  */
 void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -506,7 +506,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED,
                            BASE64_INVALID_DATA_TWO_NON_ZERO_PADDING_BITS_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64NonZeroPadding, result );
 
@@ -516,7 +516,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED,
                            BASE64_INVALID_DATA_FOUR_NON_ZERO_PADDING_BITS_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64NonZeroPadding, result );
 }
@@ -528,7 +528,7 @@ void test_OTA_base64Decode_InvalidNonZeroPaddingBits( void )
  */
 void test_OTA_base64Decode_InvalidWhitespace( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -537,7 +537,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_WHITESPACE_AT_FRONT_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_WHITESPACE_AT_FRONT_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_AT_FRONT_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
@@ -548,7 +548,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_WHITESPACE_AT_MIDDLE_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_WHITESPACE_AT_MIDDLE_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_AT_MIDDLE_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
@@ -559,7 +559,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_WHITESPACE_BEFORE_PADDING_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_WHITESPACE_BEFORE_PADDING_ENCODED,
                            BASE64_INVALID_DATA_WHITESPACE_BEFORE_PADDING_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 }
@@ -572,7 +572,7 @@ void test_OTA_base64Decode_InvalidWhitespace( void )
  */
 void test_OTA_base64Decode_InvalidInputSize( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -580,7 +580,7 @@ void test_OTA_base64Decode_InvalidInputSize( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_IMPOSSIBLY_SMALL_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_IMPOSSIBLY_SMALL_ENCODED,
                            BASE64_INVALID_DATA_IMPOSSIBLY_SMALL_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidInputSize, result );
 }
@@ -593,7 +593,7 @@ void test_OTA_base64Decode_InvalidInputSize( void )
 void test_OTA_base64Decode_InvalidDecodeBufferSize( void )
 {
     /* This buffer size is one less than what's required to store the result. */
-    char pDecodedResultBuffer[ BASE64_VALID_DATA_DECODED_LEN - 1U ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_VALID_DATA_DECODED_LEN - 1U ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -602,7 +602,7 @@ void test_OTA_base64Decode_InvalidDecodeBufferSize( void )
     result = base64Decode( pDecodedResultBuffer,
                            ( BASE64_VALID_DATA_DECODED_LEN - 1U ),
                            &resultLen,
-                           BASE64_VALID_DATA_ENCODED,
+                           ( const uint8_t * ) BASE64_VALID_DATA_ENCODED,
                            BASE64_VALID_DATA_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidBufferSize, result );
 }
@@ -614,7 +614,7 @@ void test_OTA_base64Decode_InvalidDecodeBufferSize( void )
  */
 void test_OTA_base64Decode_InvalidEncodedDataLength( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -624,7 +624,7 @@ void test_OTA_base64Decode_InvalidEncodedDataLength( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED,
                            BASE64_INVALID_DATA_IMPOSSIBLE_LENGTH_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidInputSize, result );
 }
@@ -636,7 +636,7 @@ void test_OTA_base64Decode_InvalidEncodedDataLength( void )
  */
 void test_OTA_base64Decode_InvalidPaddingPlacement( void )
 {
-    char pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
+    uint8_t pDecodedResultBuffer[ BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE ] = { 0 };
     int result = 0;
     size_t resultLen = 0;
 
@@ -644,7 +644,7 @@ void test_OTA_base64Decode_InvalidPaddingPlacement( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_PADDING_AT_FRONT_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_PADDING_AT_FRONT_ENCODED,
                            BASE64_INVALID_DATA_PADDING_AT_FRONT_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 
@@ -654,7 +654,7 @@ void test_OTA_base64Decode_InvalidPaddingPlacement( void )
     result = base64Decode( pDecodedResultBuffer,
                            BASE64_DEFAULT_TEST_DECODING_BUFFER_SIZE,
                            &resultLen,
-                           BASE64_INVALID_DATA_PADDING_AT_MIDDLE_ENCODED,
+                           ( const uint8_t * ) BASE64_INVALID_DATA_PADDING_AT_MIDDLE_ENCODED,
                            BASE64_INVALID_DATA_PADDING_AT_MIDDLE_ENCODED_LEN );
     TEST_ASSERT_EQUAL_INT( Base64InvalidSymbolOrdering, result );
 }
