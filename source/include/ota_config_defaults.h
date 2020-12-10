@@ -35,8 +35,8 @@
  * macro SHOULD NOT be set.
  */
 
-#ifndef OTA_CONFIG_DEFAULTS_H_
-#define OTA_CONFIG_DEFAULTS_H_
+#ifndef OTA_CONFIG_DEFAULTS_H
+#define OTA_CONFIG_DEFAULTS_H
 
 /**
  * @brief Log base 2 of the size of the file data block message (excluding the
@@ -298,4 +298,4 @@
     #define LogDebug( message )
 #endif
 
-#endif /* ifndef OTA_CONFIG_DEFAULTS_H_ */
+#endif /* ifndef OTA_CONFIG_DEFAULTS_H */

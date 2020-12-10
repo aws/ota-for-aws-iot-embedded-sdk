@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _OTA_OS_INTERFACE_H_
-#define _OTA_OS_INTERFACE_H_
+#ifndef OTA_OS_INTERFACE_H
+#define OTA_OS_INTERFACE_H
 
 struct OtaEventContext;
 typedef struct OtaEventContext   OtaEventContext_t;
@@ -247,4 +247,4 @@ typedef struct OtaOSInterface
     OtaMallocInterface_t mem;  /*!< OTA memory interface. */
 } OtaOSInterface_t;
 
-#endif /* ifndef _OTA_OS_INTERFACE_H_ */
+#endif /* ifndef OTA_OS_INTERFACE_H */

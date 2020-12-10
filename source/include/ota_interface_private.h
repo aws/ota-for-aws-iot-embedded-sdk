@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_IOT_OTA_INTERFACE__H__
-#define __AWS_IOT_OTA_INTERFACE__H__
+#ifndef AWS_IOT_OTA_INTERFACE__H
+#define AWS_IOT_OTA_INTERFACE__H
 
 /* OTA includes. */
 #include "ota.h"
@@ -103,4 +103,4 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
 
-#endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */
+#endif /* ifndef AWS_IOT_OTA_INTERFACE__H */

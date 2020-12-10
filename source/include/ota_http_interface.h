@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef _OTA_HTTP_INTERFACE_H_
-#define _OTA_HTTP_INTERFACE_H_
+#ifndef OTA_HTTP_INTERFACE_H
+#define OTA_HTTP_INTERFACE_H
 
 /* Standard library includes. */
 #include <stddef.h>
@@ -89,4 +89,4 @@ typedef struct OtaHttpInterface
     ota_HttpDeinit deinit;     /*!< Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
-#endif /* ifndef _OTA_HTTP_INTERFACE_H_ */
+#endif /* ifndef OTA_HTTP_INTERFACE_H */

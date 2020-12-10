@@ -23,8 +23,8 @@
  * http://www.FreeRTOS.org
  */
 
-#ifndef __OTA_HTTP__H__
-#define __OTA_HTTP__H__
+#ifndef OTA_HTTP__H
+#define OTA_HTTP__H
 
 /* OTA includes. */
 #include "ota.h"
@@ -105,4 +105,4 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
  */
 const char * OTA_HTTP_strerror( OtaHttpStatus_t status );
 
-#endif /* ifndef __OTA_HTTP__H__ */
+#endif /* ifndef OTA_HTTP__H */

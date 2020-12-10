@@ -29,8 +29,8 @@
  * shared by other OTA modules and testing files.
  */
 
-#ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_
-#define _AWS_IOT_OTA_AGENT_INTERNAL_H_
+#ifndef OTA_PRIVATE_H
+#define OTA_PRIVATE_H
 
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
@@ -436,4 +436,4 @@ typedef struct OtaEventMsg
  */
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
 
-#endif /* ifndef _AWS_IOT_OTA_AGENT_INTERNAL_H_ */
+#endif /* ifndef OTA_PRIVATE_H */

@@ -28,8 +28,8 @@
  * @brief Function declarations and error codes for ota_base64.c.
  */
 
-#ifndef __OTA_BASE64_PRIVATE__H__
-#define __OTA_BASE64_PRIVATE__H__
+#ifndef OTA_BASE64_PRIVATE_H
+#define OTA_BASE64_PRIVATE_H
 
 /* Standard includes. */
 #include <stdint.h>
@@ -105,4 +105,4 @@ Base64Status_t base64Decode( uint8_t * pDest,
                              const uint8_t * pEncodedData,
                              const size_t encodedLen );
 
-#endif /* ifndef __OTA_BASE64_PRIVATE__H__ */
+#endif /* ifndef OTA_BASE64_PRIVATE_H */
