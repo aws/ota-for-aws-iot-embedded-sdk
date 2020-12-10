@@ -69,9 +69,9 @@ Currently, the OTA library has the following dependencies:
 
 /**
 @page ota_design Design
-@brief Architecture behind the OTA library.
+@brief Architecture of the OTA library.
 
-@image html ota_design_high_level.png
+@image html ota_architecture.png
 
 @section ota_design_library_configs OTA Library Configurations
 
@@ -212,75 +212,27 @@ Note: HTTPS will only be used for file download from S3 pre-signed url , for con
 */
 
 /**
-@configpage{ota_demo,OTA demo}
+@page ota_config Configurations
+@brief Configurations of the OTA Library.
+<!-- @par configpagestyle allows the @section titles to be styled according to style.css -->
+@par configpagestyle
 
-@section OTA_DEMO_CONNECTION_TIMEOUT_MS
+Some configuration settings are C pre-processor constants, and some are function-like macros for logging. They can be set with a `#define` in the config file (**ota_config.h**) or by using a compiler option such as -D in gcc.
 
-The configuration is the timeout for MQTT connection in milliseconds, if the MQTT connection is not established within this time, the MQTT connect function returns IOT_MQTT_TIMEOUT error code.
-
-@configdefault `2000`
-
-@section OTA_DEMO_KEEP_ALIVE_SECONDS
-
-The maximum time interval in seconds that is permitted to elapse between the point a which the MQTT client finishes transmitting one control packet and the point it start sending the next. In the absence of control packet a PINGREQ  is sent. The broker must disconnect a client that does not send a message or a PINGREQ packet in one and a half times the keep alive interval.
-
-@image html ota_config_keep_alive.png
-
-@configdefault `120`
-
-@section OTA_DEMO_TASK_DELAY_SECONDS
-
-The delay used in the main OTA Demo task loop to periodically output the OTA statistics like number of packets received, dropped, processed and queued per connection.
-
-@configdefault `1`
-
-@section OTA_DEMO_CONN_RETRY_BASE_INTERVAL_SECONDS
-
-The base interval in seconds for retrying network connection if disconnect is detected. Every next retry will be double this base interval time up to a maximum time interval OTA_DEMO_CONN_RETRY_MAX_INTERVAL_SECONDS.
-
-@configdefault `4`
-
-@section OTA_DEMO_CONN_RETRY_MAX_INTERVAL_SECONDS
-
-The maximum interval in seconds for retrying network connection, if the retry interval reaches this maximum value it will no longer increase exponentially.
-
-@configdefault `360`
-*/
-
-/**
-@configpage{ota,OTA library}
+@section OTA_DO_NOT_USE_CUSTOM_CONFIG
+@copydoc OTA_DO_NOT_USE_CUSTOM_CONFIG
 
 @section otaconfigSTACK_SIZE
-
-The configuration parameter specifies the size of the stack that will be allocated to the task being created (the size is specified in words, not bytes!). The amount of stack required is dependent on the application specific parameters, for more information Link (https://www.freertos.org/FAQMem.html#StackSize)
-
-@configpossible Stack depth multiplied by the stack width must not exceed the maximum value that can be contained in a variable of type size_t <br>
-@configrecommended As per platform requirement. <br>
-@configdefault Varies by port.
+@copydoc otaconfigSTACK_SIZE
 
 @section otaconfigAGENT_PRIORITY
-
-The OTA agents task priority. Normally it runs at a relatively lower priority and can be adjusted based on application requirements. For more information Link (https://www.freertos.org/RTOS-task-priority.html).
-
-@configpossible  0 to ( configMAX_PRIORITIES – 1 ) <br>
-@configrecommended As per application requirement. <br>
-@configdefault tskIDLE_PRIORITY ( 0 )
+@copydoc otaconfigAGENT_PRIORITY
 
 @section otaconfigLOG2_FILE_BLOCK_SIZE
-
-The OTA file is downloaded in blocks and this configuration defines the size of each file block. The parameter is log base 2 of the size of the file block (excluding the header).
-
-@configpossible 8 to 16 ( 256 to 64 KB ) <br>
-@configrecommended 8 to 12  ( 256 to 4 KB ) <br>
-@configdefault 10 ( 1 KB )
+@copydoc otaconfigLOG2_FILE_BLOCK_SIZE
 
 @section otaconfigMAX_NUM_BLOCKS_REQUEST
-
-The maximum number of file data blocks requested from OTA streaming service if using MQTT or from S3 if HTTP is selected for file download. This configuration parameter is sent with data requests and represents the maximum number of data blocks the service will send in response. The maximum limit for this must be calculated from the maximum data response limit per request (128 KB from service) divided by the block size. For example if block size is set as 1 KB then the maximum number of data blocks that we can request is 128/1 = 128 blocks. Configure this parameter to this maximum limit or lower based on how many data blocks response is expected for each data requests.
-
-@configpossible 1 to ( 128/Block Size) <br>
-@configrecommended As per platform/network. <br>
-@configdefault 1
+@copydoc otaconfigMAX_NUM_BLOCKS_REQUEST
 
 Following two diagrams compare otaconfigLOG2_FILE_BLOCK_SIZE set to 10 (1 KB) and 12 (4 KB) with otaconfigMAX_NUM_BLOCKS_REQUEST set to maximum i.e 128 and 32 respectively.
 
@@ -295,76 +247,48 @@ Following two diagrams compare otaconfigLOG2_FILE_BLOCK_SIZE set to 10 (1 KB) an
 @image html ota_config_block_size_12.png
 
 @section otaconfigSELF_TEST_RESPONSE_WAIT_MS
-
-This is the timeout in milliseconds to wait for the self test phase to succeed before the device resets and rolls back to the version from which it was being updated. The basic default self-test is to update the job status in service for in progress job to success state. The timer can be set depending on the application requirement to perform any additional self-tests.
-
-@configpossible The timer period must be greater than 0. <br>
-@configrecommended As per application requirement. <br>
-@configdefault 16000 msec
+@copydoc otaconfigSELF_TEST_RESPONSE_WAIT_MS
 
 @section otaconfigFILE_REQUEST_WAIT_MS
-
-The timeout for requesting the file blocks from the service if the requested blocks are not received. This timer is reset whenever a data block is received from the service so OTA Agent will only send the request message after being idle for this amount of time. The timer must be set as per application requirement, for example for devices with slower network this timer value can be higher.
-
-@configpossible The timer period must be greater than 0. <br>
-@configrecommended As per application requirement. <br>
-@configdefault 10000
+@copydoc otaconfigFILE_REQUEST_WAIT_MS
 
 @section otaconfigMAX_THINGNAME_LEN
-
-The maximum allowed length of the thing name used by the OTA agent. AWS IoT requires Thing names to be unique for each device that connects to the broker. Likewise, the OTA agent requires the developer to construct and pass in the Thing name when initializing the OTA agent. The agent uses this size to allocate static storage for the Thing name used in all OTA base topics. Namely `$aws/things/<thingName>`
-
-@configpossible Minimum length of 1. Maximum length of 128. <br>
-@configrecommended As per solution requirement for Thing Name lengths. <br>
-@configdefault 64
+@copydoc otaconfigMAX_THINGNAME_LEN
 
 @section otaconfigMAX_NUM_REQUEST_MOMENTUM
-
-The maximum number of requests allowed to send without a response before we abort. This configuration parameter sets the maximum number of times the requests are made over the selected communication channel before aborting and returning error.
-
-@configpossible The momentum must be greater than 0. <br>
-@configrecommended As per application and network requirement for retries. <br>
-@configdefault 32
+@copydoc otaconfigMAX_NUM_REQUEST_MOMENTUM
 
 @section otaconfigMAX_NUM_OTA_DATA_BUFFERS
+@copydoc otaconfigMAX_NUM_OTA_DATA_BUFFERS
 
-The number of data buffers reserved by the OTA agent. This configurations parameter sets the maximum number of static data buffers used by the OTA agent for job document and file data blocks received.
+@section otaconfigOTA_UPDATE_STATUS_FREQUENCY
+@copydoc otaconfigOTA_UPDATE_STATUS_FREQUENCY
 
-@configpossible The number of buffers must be greater than or equal to 1. <br>
-@configrecommended 2 <br>
-@configdefault 4 for Windows Simulator Port
+@section otaconfigAllowDowngrade
+@copydoc otaconfigAllowDowngrade
 
-@section otaconfigENABLED_CONTROL_PROTOCOL
+@section configENABLED_CONTROL_PROTOCOL
+@copydoc configENABLED_CONTROL_PROTOCOL
 
-This configurations parameter sets the default protocol for all the OTA control operations like requesting OTA job, updating the job status etc.
+@section configENABLED_DATA_PROTOCOLS
+@copydoc configENABLED_DATA_PROTOCOLS
 
-<b>Note</b>: Only MQTT is supported at this time for control operations.
+@section configOTA_PRIMARY_DATA_PROTOCOL
+@copydoc configOTA_PRIMARY_DATA_PROTOCOL
 
-@configpossible OTA_CONTROL_OVER_MQTT <br>
-@configrecommended  OTA_CONTROL_OVER_MQTT <br>
-@configdefault OTA_CONTROL_OVER_MQTT
+@section mqtt_logerror LogError
+@copydoc LogError
 
-@section otaconfigENABLED_DATA_PROTOCOLS
+@section mqtt_logwarn LogWarn
+@copydoc LogWarn
 
-This configurations parameter enables the protocols selected for the data operations like requesting file blocks from the service. Note - Both MQTT and HTTP is supported for data transfer. This configuration parameter can be set to following -
+@section mqtt_loginfo LogInfo
+@copydoc LogInfo
 
-<ul>
-  <li>Enable data over MQTT - ( OTA_DATA_OVER_MQTT )</li>
-  <li>Enable data over HTTP - ( OTA_DATA_OVER_HTTP)</li>
-  <li>Enable data over both MQTT & HTTP - ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )</li>
-</ul>
+@section mqtt_logdebug LogDebug
+@copydoc LogDebug
+*/
 
-@configpossible OTA_DATA_OVER_MQTT , OTA_DATA_OVER_HTTP, OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP <br>
-@configrecommended  As per application requirement for supported protocol. <br>
-@configdefault OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP
-
-@section otaconfigOTA_PRIMARY_DATA_PROTOCOL
-
-The primary data protocol is the preferred protocol selected for OTA data operations. Primary data protocol will be the protocol used for downloading file if more than one protocol is selected while creating OTA job.
-
-@configpossible OTA_DATA_OVER_MQTT , OTA_DATA_OVER_HTTP <br>
-@configrecommended  As per application requirement for preferred protocol. <br>
-@configdefault OTA_DATA_OVER_MQTT
 
 /**
 @defgroup ota_enum_types Enumerated Types
