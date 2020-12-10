@@ -36,6 +36,7 @@
 #include <stdlib.h>
 
 /**
+ * ota_enum_types
  * @brief The Base64 functionality return status.
  */
 typedef enum Base64Status

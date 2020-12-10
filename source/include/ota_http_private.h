@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_http_private.h
+ * @brief Contains definitions of routines for OTA download using HTTP data plane.
+ */
+
 #ifndef __OTA_HTTP__H__
 #define __OTA_HTTP__H__
 

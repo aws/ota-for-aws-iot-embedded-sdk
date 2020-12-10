@@ -52,11 +52,9 @@
 #define OTA_STATUS_MSG_MAX_SIZE            128U         /*!< Max length of a job status message to the service. */
 
 /**
- *  @addtogroup ota_mqtt_topic_strings
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
- *  @{
  */
 #define MQTT_API_THINGS                    "$aws/things/"             /*!< Topic prefix for thing APIs. */
 #define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"          /*!< Topic suffix for job API. */
@@ -80,7 +78,6 @@ static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_ST
 
 static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                  /*!< Used to specify client token id to authenticate job. */
 static const char pOtaStringReceive[] = "receive";                                                              /*!< Used to build the job receive template. */
-/** @}*/
 
 /** We map all of the above status cases to one of these status strings.
  * These are the only strings that are supported by the Job Service. You

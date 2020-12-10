@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_mqtt_interface.h
+ * @brief Contains OTA MQTT Statuses, function type definitions and mqtt interface structure.
+ */
+
 #ifndef _OTA_MQTT_INTERFACE_H_
 #define _OTA_MQTT_INTERFACE_H_
 
@@ -31,14 +36,15 @@
 #include <stdint.h>
 
 /**
+ * @ingroup ota_enum_types
  * @brief The OTA MQTT interface return status.
  */
 typedef enum OtaMqttStatus
 {
-    OtaMqttSuccess = 0,          /*!< OTA MQTT interface success. */
-    OtaMqttPublishFailed = 0xa0, /*!< Attempt to publish a MQTT message failed. */
-    OtaMqttSubscribeFailed,      /*!< Failed to subscribe to a topic. */
-    OtaMqttUnsubscribeFailed     /*!< Failed to unsubscribe from a topic. */
+    OtaMqttSuccess = 0,          /*!< @brief OTA MQTT interface success. */
+    OtaMqttPublishFailed = 0xa0, /*!< @brief Attempt to publish a MQTT message failed. */
+    OtaMqttSubscribeFailed,      /*!< @brief Failed to subscribe to a topic. */
+    OtaMqttUnsubscribeFailed     /*!< @brief Failed to unsubscribe from a topic. */
 } OtaMqttStatus_t;
 
 /**
@@ -104,13 +110,14 @@ typedef OtaMqttStatus_t ( * OtaMqttPublish_t )( const char * const pacTopic,
                                                 uint8_t ucQos );
 
 /**
- *  OTA Event Interface structure.
+ * @ingroup ota_struct_types
+ * @brief OTA Event Interface structure.
  */
 typedef struct OtaMqttInterface
 {
-    OtaMqttSubscribe_t subscribe;     /*!< Interface for subscribing to Mqtt topics. */
-    OtaMqttUnsubscribe_t unsubscribe; /*!< interface for unsubscribing to MQTT topics. */
-    OtaMqttPublish_t publish;         /*!< Interface for publishing MQTT messages. */
+    OtaMqttSubscribe_t subscribe;     /*!< @brief Interface for subscribing to Mqtt topics. */
+    OtaMqttUnsubscribe_t unsubscribe; /*!< @brief interface for unsubscribing to MQTT topics. */
+    OtaMqttPublish_t publish;         /*!< @brief Interface for publishing MQTT messages. */
 } OtaMqttInterface_t;
 
 #endif /* ifndef _OTA_MQTT_INTERFACE_H_ */
