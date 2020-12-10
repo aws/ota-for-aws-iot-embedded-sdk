@@ -6,7 +6,7 @@ This library is distributed under the [MIT Open Source License](LICENSE).
 
 This library has gone through code quality checks including verification that no function has a [GNU Complexity](https://www.gnu.org/software/complexity/manual/complexity.html) score over 8. This library has also undergone static code analysis from [Coverity static analysis](https://scan.coverity.com/).
 
-See memory requirements for this library here. (TODO: Add a link to the memory req doxygen)
+See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
 
 ### AWS IoT Over-the-Air (OTA) Updates Config File
 
