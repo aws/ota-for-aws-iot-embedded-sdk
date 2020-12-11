@@ -2149,25 +2149,19 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
     {
         case OtaJobParseErrUpdateCurrentJob:
 
-            /* Check if job name is available */
-            if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
-            {
-                LogInfo( ( "Update received for current job: "
-                           "OtaJobParseErr_t=%s, Job name=%s",
-                           OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-            }
+            LogInfo( ( "Update received for current job: "
+                       "OtaJobParseErr_t=%s, Job name=%s",
+                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
 
             break;
 
         case OtaJobParseErrNone:
 
-            /* Check if job name is available */
-            if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
-            {
-                LogInfo( ( "Job parsing sccess: "
-                           "OtaJobParseErr_t=%s, Job name=%s",
-                           OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-            }
+
+            LogInfo( ( "Job parsing sccess: "
+                       "OtaJobParseErr_t=%s, Job name=%s",
+                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
             break;
 
