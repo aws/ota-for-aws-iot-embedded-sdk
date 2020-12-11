@@ -412,6 +412,20 @@ OtaErr_t OTA_Resume( void );
 void otaAgentTask( void * pUnused );
 /* @[declare_otaagenttask] */
 
+
+/**
+ * @brief Signal event to the OTA Agent task.
+ *
+ * This function adds the event to the back of event queue and used
+ * by internal OTA modules to signal agent task.
+ *
+ * @param[in] pEventMsg Event to be added to the queue
+ * @return true If operation is successful, false If the event can not be added
+ */
+/* @[declare_ota_signalevent] */
+bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
+/* @[declare_ota_signalevent] */
+
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */
 /*---------------------------------------------------------------------------*/
