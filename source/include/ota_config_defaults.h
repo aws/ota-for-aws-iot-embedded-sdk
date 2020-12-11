@@ -35,6 +35,50 @@
 #ifndef OTA_CONFIG_DEFAULTS_H
 #define OTA_CONFIG_DEFAULTS_H
 
+/* The macro definition for OTA_DO_NOT_USE_CUSTOM_CONFIG is for Doxygen
+ * documentation only. */
+
+/**
+ * @brief Define this macro to build the OTA library without the custom config
+ * file ota_config.h.
+ *
+ * Without the custom config, the OTA library builds with
+ * default values of config macros defined in ota_config_defaults.h file.
+ *
+ * If a custom config is provided, then OTA_DO_NOT_USE_CUSTOM_CONFIG should not
+ * be defined.
+ */
+#ifdef DOXYGEN
+    #define OTA_DO_NOT_USE_CUSTOM_CONFIG
+#endif
+
+/**
+ * @brief The number of words allocated to the stack for the OTA agent.
+ *
+ * The configuration parameter specifies the size of the stack that will be allocated
+ * to the task being created (the size is specified in words, not bytes!). The amount
+ * of stack required is dependent on the application specific parameters,
+ * for more information [Link](https://www.freertos.org/FAQMem.html#StackSize)
+ *
+ * <b>Possible values:</b> Any positive 32 bit integer. <br>
+ * <b>Default value:</b> Varies by platform
+ */
+#ifndef otaconfigSTACK_SIZE
+    #define otaconfigSTACK_SIZE    "Please set otaconfigSTACK_SIZE"
+#endif
+
+/**
+ * @brief The OTA agent task priority. Normally it runs at a low priority.
+ *
+ * For more information [Link](https://www.freertos.org/RTOS-task-priority.html).
+ *
+ * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES – 1 ) <br>
+ * <b>Default value:</b> Varies by platform.
+ */
+#ifndef otaconfigAGENT_PRIORITY
+    #define otaconfigAGENT_PRIORITY    "Please set otaconfigAGENT_PRIORITY"
+#endif
+
 /**
  * @brief Log base 2 of the size of the file data block message (excluding the
  * header).
@@ -171,7 +215,8 @@
  *
  * @note This configurations parameter sets the default protocol for all the
  * OTA control operations like requesting OTA job, updating the job status etc.
- * Only MQTT is supported at this time for control operations.
+ *
+ * @note Only MQTT is supported at this time for control operations.
  *
  * <b>Possible values:</b> OTA_CONTROL_OVER_MQTT <br>
  * <b>Default value:</b> 'OTA_CONTROL_OVER_MQTT'
