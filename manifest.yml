@@ -1,7 +1,7 @@
 name : "ota-for-aws-iot-embedded-sdk"
-version: "v2.0.0"
+version: "v2.0.0 (Release Candidate)"
 description: |
-  "Client library for using the AWS Over-The-Air update service on embedded devices.\n"
+  "Client library for using the AWS Over-the-air Update service on embedded devices.\n"
 dependencies:
   - name : "coreJSON"
     version: "v2.0.0"
