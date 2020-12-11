@@ -20,6 +20,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file ota_os_posix.h
+ * @brief Function declarations for the example OTA OS Functional interface for
+ * POSIX.
+ */
+
 #ifndef _OTA_OS_POSIX_H_
 #define _OTA_OS_POSIX_H_
 

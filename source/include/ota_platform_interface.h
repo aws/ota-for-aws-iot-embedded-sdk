@@ -31,6 +31,31 @@
 #include "ota_private.h"
 
 /**
+ * @otapalpage
+ * @brief The OTA PAL interface definition.
+ *
+ * @otapalsectionoverview
+ *
+ * The OTA PAL interface is a set of APIs that must be implemented for the
+ * device using the OTA library. These device specific implementation for the
+ * OTA PAL is provided to the library in the user application. These functions
+ * are used by the library to store, manage, and authenticate downloads.
+ *
+ * The OTA PAL interface is defined in @ref ota_platform_interface.h.
+ * <br>
+ *
+ * The functions that must be implemented are:<br>
+ * - [OTA PAL Abort](@ref OtaPalAbort_t)
+ * - [OTA PAL Create File](@ref OtaPalCreateFileForRx_t)
+ * - [OTA PAL Close File](@ref OtaPalCloseFile_t)
+ * - [OTA PAL Write Block](@ref OtaPalWriteBlock_t)
+ * - [OTA PAL Activate New Image](@ref OtaPalActivateNewImage_t)
+ * - [OTA PAL Reset Device](@ref OtaPalResetDevice_t)
+ * - [OTA PAL Set Platform Image State](@ref OtaPalSetPlatformImageState_t)
+ * - [OTA PAL Get Platform Image State](@ref OtaPalGetPlatformImageState_t)
+ */
+
+/**
  * @brief The OTA platform interface return status. Composed of main and sub status.
  */
 typedef uint32_t   OtaPalStatus_t;

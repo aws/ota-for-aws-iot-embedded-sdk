@@ -20,6 +20,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file ota_os_freertos.h
+ * @brief Function declarations for the example OTA OS Functional interface for
+ * FreeRTOS.
+ */
+
 #ifndef _OTA_OS_FREERTOS_H_
 #define _OTA_OS_FREERTOS_H_
 

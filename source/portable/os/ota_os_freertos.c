@@ -20,6 +20,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file ota_os_freertos.c
+ * @brief Example implementation of the OTA OS Functional Interface for
+ * FreeRTOS.
+ */
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "timers.h"

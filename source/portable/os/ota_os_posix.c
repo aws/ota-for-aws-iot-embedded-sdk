@@ -20,6 +20,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file ota_os_posix.c
+ * @brief Example implementation of the OTA OS Functional Interface for POSIX.
+ */
+
 /* Standard Includes.*/
 #include <stdlib.h>
 #include <string.h>
