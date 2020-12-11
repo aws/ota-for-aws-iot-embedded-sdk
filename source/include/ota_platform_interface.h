@@ -43,8 +43,8 @@
  * device using the OTA library. These device specific implementation for the
  * OTA PAL is provided to the library in the user application. These functions
  * are used by the library to store, manage, and authenticate downloads.
- * 
- * The OTA PAL interface is defined in @ref ota_platform_interface.h. 
+ *
+ * The OTA PAL interface is defined in @ref ota_platform_interface.h.
  * <br>
  *
  * The functions that must be implemented are:<br>

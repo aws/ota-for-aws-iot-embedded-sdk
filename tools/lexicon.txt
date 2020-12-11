@@ -361,6 +361,8 @@ otamqttsubscribefailed
 otamqttsuccess
 otamqttunsubscribefailed
 otanumoftimers
+otaosfipage
+otaosfisectionoverview
 otaoseventqueuecreatefailed
 otaoseventqueuedeletefailed
 otaoseventqueuereceivefailed
@@ -389,9 +391,11 @@ otapalimagestateunknown
 otapalimagestatevalid
 otapalnullfilecontext
 otapaloutofmemory
+otapalpage
 otapalrejectfailed
 otapalrxfilecreatefailed
 otapalrxfiletoolarge
+otapalsectionoverview
 otapalsignaturecheckfailed
 otapalsuccess
 otapaluninitialized
