@@ -94,7 +94,7 @@ typedef enum OtaHttpStatus
  * @return              OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
+typedef OtaHttpStatus_t ( * OtaHttpInit_t ) ( char * pUrl );
 
 /**
  * @brief Request file block over Http.
@@ -108,7 +108,7 @@ typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
  * @return             OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
+typedef OtaHttpStatus_t ( * OtaHttpRequest_t )  ( uint32_t rangeStart,
                                                    uint32_t rangeEnd );
 
 /**
@@ -119,7 +119,7 @@ typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  *
  * @return        OtaHttpSuccess if success , other error code on failure.
  */
-typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
+typedef OtaHttpStatus_t ( * OtaHttpDeinit )( void );
 
 /**
  * @ingroup ota_struct_types
@@ -128,9 +128,9 @@ typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
  */
 typedef struct OtaHttpInterface
 {
-    ota_HttpInit_t init;       /*!< @brief Reference to HTTP initialization. */
-    ota_HttpRequest_t request; /*!< @brief Reference to HTTP data request. */
-    ota_HttpDeinit deinit;     /*!< @brief Reference to HTTP deinitialize. */
+    OtaHttpInit_t init;       /*!< @brief Reference to HTTP initialization. */
+    OtaHttpRequest_t request; /*!< @brief Reference to HTTP data request. */
+    OtaHttpDeinit deinit;     /*!< @brief Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
 #endif /* ifndef OTA_HTTP_INTERFACE_H */

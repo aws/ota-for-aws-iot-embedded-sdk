@@ -199,20 +199,20 @@ The OTA HTTP API used by the OTA library is defined in @ref ota_http_interface.h
 
 A library must implement functions corresponding to the following function pointers:
 
-- [OTA HTTP Initialize](@ref ota_HttpInit_t): A function to initialize the http connection with a given Pre-signed URL.
+- [OTA HTTP Initialize](@ref OtaHttpInit_t): A function to initialize the http connection with a given Pre-signed URL.
 @code
-OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
+OtaHttpStatus_t ( * OtaHttpInit_t ) ( char * pUrl );
 @endcode
 
-- [OTA HTTP Request](@ref ota_HttpRequest_t): A function to request a data block in a given range.
+- [OTA HTTP Request](@ref OtaHttpRequest_t): A function to request a data block in a given range.
 @code
-OtaHttpStatus_t ( * ota_HttpRequest_t )  (  uint32_t rangeStart,
+OtaHttpStatus_t ( * OtaHttpRequest_t )  (  uint32_t rangeStart,
                                             uint32_t rangeEnd );
 @endcode
 
-- [OTA HTTP De-initialize](@ref ota_HttpDeinit): A function to de-initialize the http connection.
+- [OTA HTTP De-initialize](@ref OtaHttpDeinit): A function to de-initialize the http connection.
 @code
-OtaHttpStatus_t ( * ota_HttpDeinit )( void );
+OtaHttpStatus_t ( * OtaHttpDeinit )( void );
 @endcode
 
 */
