@@ -48,13 +48,11 @@ git submodule update --checkout --init --recursive test/unit-test/CMock
 
 ## Reference examples
 
-Please refer to the demos of the AWS IoT Over-the-air Updates library in the following locations for reference examples on POSIX and FreeRTOS platforms:
+Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for a reference example on POSIX:
 
 | Platform | Location |
 | :-: | :-: |
 | POSIX | [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota) |
-| FreeRTOS | [FreeRTOS/FreeRTOS](https://github.com/FreeRTOS/FreeRTOS/tree/master/FreeRTOS-Plus/Demo/AWS/ota) |
-
 ## Porting
 
 In order to support AWS IoT Over-the-air Updates on your device, it is necessary to provide the following components:
