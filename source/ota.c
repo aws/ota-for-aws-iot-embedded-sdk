@@ -2051,7 +2051,11 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
             LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
         }
 
-        /* All reject cases must reset the device. */
+        /* Application callback for self-test failure.*/
+        otaAgent.OtaAppCallback( OtaJobEventSelfTestFailed, NULL );
+
+        /* Handle self-test failure in the platform specific implementation,
+         * example, reset the device in case of firmware upgrade. */
         ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
     }
 }
