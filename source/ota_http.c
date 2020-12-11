@@ -116,7 +116,8 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 }
 
 /*
- * Decode a cbor encoded fileblock received from streaming service.
+ * HTTP file block does not need to decode the block, only increment
+ * number of blocks received.
  */
 OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,

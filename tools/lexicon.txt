@@ -343,6 +343,7 @@ otaerrupdatejobstatusfailed
 otaerruserabort
 otaeventtorecv
 otaeventtosend
+otahttpdeinit
 otahttpdeinitfailed
 otahttpinitfailed
 otahttppage
