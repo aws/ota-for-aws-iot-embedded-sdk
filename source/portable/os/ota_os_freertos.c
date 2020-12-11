@@ -23,6 +23,12 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_os_freertos.c
+ * @brief Example implementation of the OTA OS Functional Interface for
+ * FreeRTOS.
+ */
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "timers.h"

@@ -23,6 +23,11 @@
  * http://www.FreeRTOS.org
  */
 
+/**
+ * @file ota_os_posix.c
+ * @brief Example implementation of the OTA OS Functional Interface for POSIX.
+ */
+
 /* Standard Includes.*/
 #include <stdlib.h>
 #include <string.h>

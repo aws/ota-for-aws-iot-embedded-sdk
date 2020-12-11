@@ -2613,3 +2613,9 @@ ALIASES += otapalpage="@page ota_pal_interface OTA PAL Interface"
 
 #Alias for the OTA PAL interface overview
 ALIASES += otapalsectionoverview="@section ota_pal_interface_overview OTA PAL Overview"
+
+#Alias for the OTA OS Functional Interface definition
+ALIASES += otaosfipage="@page ota_os_functional_interface OTA OS Functional Interface"
+
+#Alias for the OTA OS Functional Interface overview
+ALIASES += otaosfisectionoverview="@section ota_os_functional_interface_overview OTA OS Functional Interface"
