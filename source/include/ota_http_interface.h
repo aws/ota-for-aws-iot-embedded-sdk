@@ -109,7 +109,7 @@ typedef OtaHttpStatus_t ( * OtaHttpInit_t ) ( char * pUrl );
  */
 
 typedef OtaHttpStatus_t ( * OtaHttpRequest_t )  ( uint32_t rangeStart,
-                                                   uint32_t rangeEnd );
+                                                  uint32_t rangeEnd );
 
 /**
  * @brief Deinit OTA Http interface.
