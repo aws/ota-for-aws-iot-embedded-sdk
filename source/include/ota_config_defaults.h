@@ -35,8 +35,8 @@
  * macro SHOULD NOT be set.
  */
 
-#ifndef OTA_CONFIG_DEFAULTS_H_
-#define OTA_CONFIG_DEFAULTS_H_
+#ifndef OTA_CONFIG_DEFAULTS_H
+#define OTA_CONFIG_DEFAULTS_H
 
 /* The macro definition for OTA_DO_NOT_USE_CUSTOM_CONFIG is for Doxygen
  * documentation only. */
@@ -343,4 +343,4 @@
     #define LogDebug( message )
 #endif
 
-#endif /* ifndef OTA_CONFIG_DEFAULTS_H_ */
+#endif /* ifndef OTA_CONFIG_DEFAULTS_H */

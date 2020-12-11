@@ -28,8 +28,8 @@
  * @brief Contains PAL interface statuses, type definitions and structure to store interface routines.
  */
 
-#ifndef _OTA_PLATFORM_INTERFACE_
-#define _OTA_PLATFORM_INTERFACE_
+#ifndef OTA_PLATFORM_INTERFACE
+#define OTA_PLATFORM_INTERFACE
 
 #include "ota_private.h"
 
@@ -282,4 +282,4 @@ typedef struct OtaPalInterface
     OtaPalGetPlatformImageState_t getPlatformImageState; /*!< @brief Get the state of the OTA update image. */
 } OtaPalInterface_t;
 
-#endif /* ifndef _OTA_PLATFORM_INTERFACE_ */
+#endif /* ifndef OTA_PLATFORM_INTERFACE */
