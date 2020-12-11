@@ -596,7 +596,7 @@ static void otaDeinit()
 
 static void * pthreadOtaAgentTask( void * params )
 {
-    otaAgentTask( params );
+    OTA_EventProcessingTask( params );
     return NULL;
 }
 
