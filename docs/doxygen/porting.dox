@@ -35,7 +35,7 @@ OtaPalStatus_t ( * OtaPalCloseFile_t )(
 @endcode
 - [OTA PAL Write Block](@ref OtaPalWriteBlock_t): A function to write a block of data to the specified file at the given offset.
 @code
-int16_t ( * OtaPalWriteBlock_t )( 
+int16_t ( * OtaPalWriteBlock_t )(
     OtaFileContext_t * const pFileContext,
     uint32_t offset,
     uint8_t * const pData,
