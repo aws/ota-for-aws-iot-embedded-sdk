@@ -444,16 +444,4 @@ typedef struct OtaEventMsg
     OtaEvent_t eventId;          /*!< Identifier for the event. */
 } OtaEventMsg_t;
 
-/**
- * @brief Signal event to the OTA Agent task.
- *
- * This function adds the event to the back of event queue and used
- * by internal OTA modules to signal agent task.
- *
- * @param[in] pEventMsg Event to be added to the queue
- * @return true If operation is successful
- * @return false If the event can not be added
- */
-bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
-
 #endif /* ifndef OTA_PRIVATE_H */

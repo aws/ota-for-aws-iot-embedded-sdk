@@ -1,9 +1,9 @@
 /**
 @mainpage
 @anchor ota
-@brief OTA (over-the-air) library.<br><br>
+@brief AWS IoT Over-the-air Update Library (Release Candidate).<br><br>
 
-The FreeRTOS over-the-air (OTA) client library enables you to manage the notification of a newly available update, download the update, and perform cryptographic verification of the firmware update. Using the over-the-air (OTA) client library, you can logically separate firmware updates from the application running on your devices. The over-the-air (OTA) client library can share a network connection with the application, saving memory in resource-constrained devices. In addition, the over-the-air (OTA) client library lets you define application-specific logic for testing, committing, or rolling back a firmware update. The library supports different application protocols like Message Queuing Telemetry Transport (MQTT) and Hypertext Transfer Protocol (HTTP) and provides various configuration options you can fine tune depending on network type and conditions.
+AWS IoT Over-the-air Update library enables you to manage the notification of a newly available update, download the update, and perform cryptographic verification of the firmware update. Using the Over-the-air (OTA) client library, you can logically separate firmware updates from the application running on your devices. The Over-the-air (OTA) client library can share a network connection with the application, saving memory in resource-constrained devices. In addition, the OTA library lets you define application-specific logic for testing, committing, or rolling back a firmware update. The library supports different application protocols like Message Queuing Telemetry Transport (MQTT) and Hypertext Transfer Protocol (HTTP) and provides various configuration options you can fine tune depending on network type and conditions.
 
 The major functions that this library’s APIs provide are –
 
@@ -13,10 +13,12 @@ The major functions that this library’s APIs provide are –
 - Run a self-test before activating the received update to ensure the functional validity of the update.
 - Update the status of the device.
 
+@see [Functions](@ref ota_functions) for more information.
+
 AWS services can be used with this library to manage various cloud related topics such as sending firmware updates, monitoring large numbers of devices across multiple regions, reducing the blast radius of faulty deployments, and verifying the security of updates.
 
-@dependencies{ota,OTA library}
-@dot "OTA direct dependencies"
+@section ota_dependencies OTA Dependencies
+@dot "OTA Dependencies"
 digraph ota_dependencies
 {
     node[shape=box, fontname=Helvetica, fontsize=10, style=filled];
@@ -26,24 +28,52 @@ digraph ota_dependencies
 
     subgraph
     {
-        node[fillcolor="#cc00ccff"];
-        mqtt[label="MQTT"];
+        node[fillcolor="#aed8a9ff"];
+        mqtt[label="MQTT interface"];
     }
     subgraph
     {
         node[fillcolor="#aed8a9ff"];
         rank = same;
-        http[label="HTTP"];
+        http[label="HTTP interface"];
+    }
+    subgraph
+    {
+        node[fillcolor="#aed8a9ff"];
+        rank = same;
+        pal[label="PAL interface"];
+    }
+    subgraph
+    {
+        node[fillcolor="#aed8a9ff"];
+        rank = same;
+        os[label="OS interface"];
+    }
+    subgraph
+    {
+        node[fillcolor="#cc00ccff"];
+        rank = same;
+        cbor[label="tinyCBOR"];
+    }
+    subgraph
+    {
+        node[fillcolor="#cc00ccff"];
+        rank = same;
+        json[label="coreJSON"];
     }
 
-    ota -> mqtt;
+    ota -> mqtt[style="dashed"];
     ota -> http[label=" if data over http enabled", style="dashed"];
+    ota -> pal[style="dashed"];
+    ota -> os[style="dashed"];
+    ota -> cbor[label="For decoding data streams"];
+    ota -> json[label="For Job Parsing"];
 }
 @enddot
 
-Currently, the OTA library has the following dependencies:
--coreJSON
--tinyCBOR
+Currently, the OTA library has the following direct dependencies:
+    - [coreJSON](https://github.com/FreeRTOS/coreJSON): To parse the JSON Job document received for the update.
+    - [tinyCBOR](https://github.com/intel/tinycbor.git): To decode the encoded data stream which contains the file blocks.
 
 @section ota_memory_requirements Memory Requirements
 @brief Memory requirements of the OTA library.
@@ -171,7 +201,7 @@ For more details on OTA configuration at @ref ota_config
 
 @section ota_design_library OTA Library
 
-The OTA library provides OTA Agent APIs for application development and OTA PAL(Platform Layer Abstraction) APIs for platform specific functionality required for the OTA process. The OTA library components consists of the OTA Agent task, AWS Jobs and Streaming service support over MQTT/HTTP protocol.
+The OTA library provides OTA Agent APIs for application development. The OTA library components consists of the OTA Agent task which contains the OTA state machine, AWS Jobs and Streaming service support over MQTT/HTTP protocol. The library defines interfaces for Platform Abstraction Layer (PAL), Operating System, MQTT, and HTTP to enable the user to work with 3rd party libraries and various devices.
 
 @subsection ota_design_agent_api OTA Agent API’s
 
@@ -181,11 +211,34 @@ The OTA Agent APIs provides the programming interface to the application for OTA
 
 The OTA platform abstraction layer provides APIs for the portable platform specific functionality of the OTA library. This includes the platform specific file storage , certificate storage , crypto verification, bootloader flags and other platform drivers. Example of OTA Pal port is for the FreeRTOS Windows Simulator.
 
-More information about the abstraction layer and porting can be found here (https://docs.aws.amazon.com/freertos/latest/portingguide/afr-porting-ota.html).
+@see [Porting documentation for PAL](@ref ota_porting_pal) for more information.
+
+@subsection ota_design_os OTA OS Functional Abstraction
+
+OTA Library can be ported to run in a variety of embedded C–based environments (e.g. real-time OS, embedded Linux). OTA Library uses queue for managing events in a state machine and timers for enabling timeouts for self test and file download. The memory allocation wrapper functions should be provided with signature similar to the standard c library malloc and free functions. 
+
+@image html ota_design_os.png
+
+@see [Porting documentation for OS](@ref ota_porting_os) for more information.
+
+@subsection ota_design_mqtt OTA MQTT interface
+The OTA library can be used with any 3rd party MQTT library. To enable this a set of function pointers for MQTT functionality (Publish, Subscribe and Unsubscribe) are be used within OTA library code. These function pointers are depicted as MQTT Interface.
+
+@see [Porting documentation for MQTT](@ref ota_porting_mqtt) for more information.
+
+@subsection ota_design_http OTA HTTP interface
+The OTA library can be used with any 3rd party HTTP library. To enable this a set of function pointers for HTTP functionality (Init, RequestData and DeInit) are be used within OTA library code. These function pointers are depicted as HTTP Interface.
+
+@see [Porting documentation for HTTP](@ref ota_porting_http) for more information.
+
+@subsection ota_design_memory OTA Memory Allocation
+OTA Library requires allocation memory for storing the Job and file decoding and download. OTA library uses user buffer provided by OTA Demo for storing data, but if those are not sufficient then OTA library will try to allocate dynamically using the memory abstraction functions defined by the OS Functional layer.
 
 @subsection ota_design_agent_task OTA Agent Task
 
 The OTA Agent task is started when the OTA Library is initialized. The core functionality is implemented in the task as a state machine and can receive internal/external events. Depending on the type of event and the state , event handlers are called which can result in state transitions as defined in the transition table.
+
+@see [OTA Agent Task](@ref otaagenttask_function) for more information.
 
 @section ota_design_job_parser Job Parser
 
@@ -203,21 +256,12 @@ The OTA Library uses AWS IoT jobs service and has an inbuilt job parsing functio
 
 More about the AWS IoT Jobs here (https://docs.aws.amazon.com/iot/latest/developerguide/iot-jobs.html).
 
-@subsection ota_design_control_data_protocols OTA Control and Data Protocols
+@section ota_design_control_data_protocols OTA Control and Data Protocols
 
 The OTA Library operations with respect to the AWS IoT Job service can be divided into control ( Job notification, status updates, abort etc.) and data (file download). The current implementation supports MQTT protocol for control as well as data operations. HTTP is supported for data operations only i.e downloading the update file from a pre-signed URL shared in the job document. The file download protocol is selected when creating the OTA job and the OTA configuration on device has preferred protocol in case multiple protocols are selected.
 
-@section ota_design_operation Operation diagram
+@note HTTPS will only be used for file download from S3 pre-signed url , for control messages to the AWS cloud service it will use MQTT.
 
-The following diagram shows the workflow of OTA operation when MQTT protocol is selected for control as well as file download and AWS cloud services are used.
-
-@image html ota_design_mqtt.png
-
-The following diagram shows the workflow of OTA operation when HTTP protocol is selected for file download and AWS cloud services are used.
-
-Note: HTTPS will only be used for file download from S3 pre-signed url , for control messages to the AWS cloud service it will use MQTT.
-
-@image html ota_design_http.png
 */
 
 
@@ -233,6 +277,7 @@ Note: HTTPS will only be used for file download from S3 pre-signed url , for con
 @subpage ota_checkforupdate_function <br>
 @subpage ota_suspend_function <br>
 @subpage ota_resume_function <br>
+@subpage ota_signalevent_function <br>
 @subpage otaagenttask_function <br>
 @subpage ota_getstatistics_function <br>
 @subpage ota_err_strerror_function <br>
@@ -275,6 +320,10 @@ Note: HTTPS will only be used for file download from S3 pre-signed url , for con
 @page ota_resume_function OTA_Resume
 @snippet ota.h declare_ota_resume
 @copydoc OTA_Resume
+
+@page ota_signalevent_function OTA_SignalEvent
+@snippet ota.h declare_ota_signalevent
+@copydoc OTA_SignalEvent
 
 @page otaagenttask_function otaAgentTask
 @snippet ota.h declare_otaagenttask
