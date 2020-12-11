@@ -2153,11 +2153,9 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                        "OtaJobParseErr_t=%s, Job name=%s",
                        OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
-
             break;
 
         case OtaJobParseErrNone:
-
 
             LogInfo( ( "Job parsing sccess: "
                        "OtaJobParseErr_t=%s, Job name=%s",
@@ -2183,34 +2181,26 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 
             /* If job parsing failed AND there's a job ID, update the job state to FAILED with
              * a reason code.  Without a job ID, we can't update the status in the job service. */
-            if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
+            LogError( ( "Failed to parse the job document after parsing the job name: "
+                        "OtaJobParseErr_t=%s, Job name=%s",
+                        OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
+            /* Assume control of the job name from the context. */
+            ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
+
+            otaErr = otaControlInterface.updateJobStatus( &otaAgent,
+                                                          JobStatusFailedWithVal,
+                                                          ( int32_t ) OtaErrJobParserError,
+                                                          ( int32_t ) err );
+
+            if( otaErr != OtaErrNone )
             {
-                LogError( ( "Failed to parse the job document after parsing the job name: "
-                            "OtaJobParseErr_t=%s, Job name=%s",
-                            OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-
-                /* Assume control of the job name from the context. */
-                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
-
-                otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                              JobStatusFailedWithVal,
-                                                              ( int32_t ) OtaErrJobParserError,
-                                                              ( int32_t ) err );
-
-                if( otaErr != OtaErrNone )
-                {
-                    LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                                OTA_Err_strerror( otaErr ) ) );
-                }
-
-                /* We don't need the job name memory anymore since we're done with this job. */
-                ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                            OTA_Err_strerror( otaErr ) ) );
             }
-            else
-            {
-                LogError( ( "Failed to parse job document: OtaJobParseErr_t=%s",
-                            OTA_JobParse_strerror( err ) ) );
-            }
+
+            /* We don't need the job name memory anymore since we're done with this job. */
+            ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
 }
 
