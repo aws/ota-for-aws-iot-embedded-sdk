@@ -158,10 +158,11 @@ typedef enum OtaJobParseErr
  */
 typedef enum OtaJobEvent
 {
-    OtaJobEventActivate = 0,  /*!< @brief OTA receive is authenticated and ready to activate. */
-    OtaJobEventFail = 1,      /*!< @brief OTA receive failed. Unable to use this update. */
-    OtaJobEventStartTest = 2, /*!< @brief OTA job is now in self test, perform user tests. */
-    OtaJobEventProcessed = 3, /*!< @brief OTA event is processed. */
+    OtaJobEventActivate = 0,       /*!< @brief OTA receive is authenticated and ready to activate. */
+    OtaJobEventFail = 1,           /*!< @brief OTA receive failed. Unable to use this update. */
+    OtaJobEventStartTest = 2,      /*!< @brief OTA job is now in self test, perform user tests. */
+    OtaJobEventProcessed = 3,      /*!< @brief OTA event queued by OTA_SignalEvent is processed. */
+    OtaJobEventSelfTestFailed = 4, /*!< @brief OTA self-test failed for current job. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
