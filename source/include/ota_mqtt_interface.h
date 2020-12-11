@@ -43,18 +43,18 @@
  *
  * The OTA MQTT interface is a set of APIs that must be implemented by
  * a library to enable the OTA library to connect to AWS IoT and manage
- * notification and request data. The OTA library uses MQTT PUBLISH 
+ * notification and request data. The OTA library uses MQTT PUBLISH
  * messages to inform AWS IoT about the job status and receives notifications
  * and datablock over `job` and `stream` topics.
- * 
- * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h. 
+ *
+ * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h.
  * <br>
  *
  * The functions that must be implemented are:<br>
  * - [OTA MQTT Subscribe](@ref OtaMqttSubscribe_t)
  * - [OTA MQTT Unsubscribe](@ref OtaMqttSubscribe_t)
  * - [OTA MQTT Publish](@ref OtaMqttSubscribe_t)
- * 
+ *
  * These functions can be grouped into the structure `OtaMqttInterface_t`
  * and passed to @ref OtaInterfaces_t to represent the MQTT interface.
  * @code{c}
@@ -62,14 +62,14 @@
  * mqttInterface.subscribe = mqttSubscribe;
  * mqttInterface.unsubscribe = mqttUnsubscribe;
  * mqttInterface.publish = mqttPublish;
- * 
+ *
  *  ....
- * 
+ *
  * OtaInterfaces_t otaInterfaces;
  * otaInterfaces.mqtt = mqttInterface
- * 
+ *
  *  ....
- * 
+ *
  * OTA_Init( &otaBuffer,
  *           &otaInterfaces,
  *           ( CLIENT_IDENTIFIER ),

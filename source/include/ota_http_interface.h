@@ -44,15 +44,15 @@
  * The OTA MQTT interface is a set of APIs that must be implemented by
  * a library to enable the OTA library to download a file block by
  * connecting to a pre-signed url and fetching data blocks.
- * 
- * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h. 
+ *
+ * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h.
  * <br>
  *
  * The functions that must be implemented are:<br>
  * - [OTA MQTT Subscribe](@ref OtaMqttSubscribe_t)
  * - [OTA MQTT Unsubscribe](@ref OtaMqttSubscribe_t)
  * - [OTA MQTT Publish](@ref OtaMqttSubscribe_t)
- * 
+ *
  * These functions can be grouped into the structure `OtaHttpInterface_t`
  * and passed to @ref OtaInterfaces_t to represent the MQTT interface.
  * @code{c}
@@ -60,18 +60,18 @@
  * httpInterface.init = httpInit;
  * httpInterface.request = httpRequest;
  * httpInterface.deinit = httpDeinit;
- * 
+ *
  *  .....
- * 
+ *
  * OtaInterfaces_t otaInterfaces;
  * otaInterfaces.http = httpInterface
- * 
+ *
  *  .....
- * 
+ *
  * OTA_Init( &otaBuffer,
  *           &otaInterfaces,
  *           ( CLIENT_IDENTIFIER ),
- *           otaAppCallback ) 
+ *           otaAppCallback )
  * @endcode
  */
 

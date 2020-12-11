@@ -57,29 +57,29 @@
 
 /**
  * @brief The number of words allocated to the stack for the OTA agent.
- * 
+ *
  * The configuration parameter specifies the size of the stack that will be allocated
- * to the task being created (the size is specified in words, not bytes!). The amount 
- * of stack required is dependent on the application specific parameters, 
+ * to the task being created (the size is specified in words, not bytes!). The amount
+ * of stack required is dependent on the application specific parameters,
  * for more information [Link](https://www.freertos.org/FAQMem.html#StackSize)
- * 
+ *
  * <b>Possible values:</b> Any positive 32 bit integer. <br>
  * <b>Default value:</b> Varies by platform
  */
 #ifndef otaconfigSTACK_SIZE
-    #define otaconfigSTACK_SIZE                    "Please set otaconfigSTACK_SIZE"
+    #define otaconfigSTACK_SIZE    "Please set otaconfigSTACK_SIZE"
 #endif
 
 /**
  * @brief The OTA agent task priority. Normally it runs at a low priority.
- * 
+ *
  * For more information [Link](https://www.freertos.org/RTOS-task-priority.html).
- * 
+ *
  * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES – 1 ) <br>
  * <b>Default value:</b> Varies by platform.
  */
 #ifndef otaconfigAGENT_PRIORITY
-    #define otaconfigAGENT_PRIORITY                    "Please set otaconfigAGENT_PRIORITY"
+    #define otaconfigAGENT_PRIORITY    "Please set otaconfigAGENT_PRIORITY"
 #endif
 
 /**
@@ -218,7 +218,7 @@
  *
  * @note This configurations parameter sets the default protocol for all the
  * OTA control operations like requesting OTA job, updating the job status etc.
- * 
+ *
  * @note Only MQTT is supported at this time for control operations.
  *
  * <b>Possible values:</b> OTA_CONTROL_OVER_MQTT <br>
