@@ -2270,7 +2270,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
     }
 
-    /* Hanlde job parsing error. */
+    /* Handle job parsing error. */
     handleJobParsingError( pFileContext, err );
 
     /* If we failed, close the open files. */
