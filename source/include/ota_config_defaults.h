@@ -64,10 +64,10 @@
  * for more information [Link](https://www.freertos.org/FAQMem.html#StackSize)
  * 
  * <b>Possible values:</b> Any positive 32 bit integer. <br>
- * <b>Default value:</b> `2048`
+ * <b>Default value:</b> Varies by platform
  */
 #ifndef otaconfigSTACK_SIZE
-    #define otaconfigSTACK_SIZE                    10000U
+    #define otaconfigSTACK_SIZE                    "Please set otaconfigSTACK_SIZE"
 #endif
 
 /**
@@ -76,10 +76,10 @@
  * For more information [Link](https://www.freertos.org/RTOS-task-priority.html).
  * 
  * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES – 1 ) <br>
- * <b>Default value:</b> tskIDLE_PRIORITY ( 0 )
+ * <b>Default value:</b> Varies by platform.
  */
 #ifndef otaconfigAGENT_PRIORITY
-    #define otaconfigAGENT_PRIORITY                    tskIDLE_PRIORITY
+    #define otaconfigAGENT_PRIORITY                    "Please set otaconfigAGENT_PRIORITY"
 #endif
 
 /**

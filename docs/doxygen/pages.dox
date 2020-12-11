@@ -276,16 +276,16 @@ Following two diagrams compare otaconfigLOG2_FILE_BLOCK_SIZE set to 10 (1 KB) an
 @section configOTA_PRIMARY_DATA_PROTOCOL
 @copydoc configOTA_PRIMARY_DATA_PROTOCOL
 
-@section mqtt_logerror LogError
+@section ota_logerror LogError
 @copydoc LogError
 
-@section mqtt_logwarn LogWarn
+@section ota_logwarn LogWarn
 @copydoc LogWarn
 
-@section mqtt_loginfo LogInfo
+@section ota_loginfo LogInfo
 @copydoc LogInfo
 
-@section mqtt_logdebug LogDebug
+@section ota_logdebug LogDebug
 @copydoc LogDebug
 */
 

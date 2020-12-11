@@ -2607,3 +2607,15 @@ ALIASES += paramfor="<b>Parameter for:</b> "
 
 # Alias for parameter structure initializers.
 ALIASES += initializer{2}="All instances of #\1 should be initialized with #\2.^^"
+
+#Alias for the OTA MQTT interface definition
+ALIASES += otamqttpage="@page ota_mqtt_interface OTA MQTT Interface"
+
+#Alias for the OTA MQTT interface overview
+ALIASES += otamqttsectionoverview="@section ota_mqtt_interface_overview OTA MQTT Overview"
+
+#Alias for the OTA HTTP interface definition
+ALIASES += otahttppage="@page ota_http_interface OTA HTTP Interface"
+
+#Alias for the OTA HTTP interface overview
+ALIASES += otahttpsectionoverview="@section ota_http_interface_overview OTA HTTP Overview"
