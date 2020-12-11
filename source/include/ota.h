@@ -405,13 +405,19 @@ OtaErr_t OTA_Resume( void );
 /* @[declare_ota_resume] */
 
 /**
- * @brief OTA agent task function.
+ * @brief OTA agent event processing loop.
+ *
+ * This is the main event loop to handle events for OTA update and needs to be called by
+ * the application task. This loop will continue to handle and execute events received for
+ * OTA Update until this tasks is terminated by the application.
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
+ * This can be a function pointer that executes as the first routine when the
+ * event loop starts.
  */
-/* @[declare_otaagenttask] */
-void otaAgentTask( void * pUnused );
-/* @[declare_otaagenttask] */
+/* @[declare_ota_eventprocessingtask] */
+void OTA_EventProcessingTask( void * pUnused );
+/* @[declare_ota_eventprocessingtask] */
 
 
 /**

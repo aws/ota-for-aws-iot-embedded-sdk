@@ -2767,7 +2767,8 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-void otaAgentTask( void * pUnused )
+/* Event Processing loop to run the OTA state machine. */
+void OTA_EventProcessingTask( void * pUnused )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;
