@@ -451,6 +451,16 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
  */
 static void freeFileContextMem( OtaFileContext_t * const pFileContext );
 
+/**
+ * @brief Handle job parsing error.
+ *
+ * @param[in] pFileContext Pointer to the file context.
+ *
+ * @param[in] err Parsing error of type OtaJobParseErr_t.
+ */
+static void handleJobParsingError( const OtaFileContext_t * pFileContext,
+                                   OtaJobParseErr_t err );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -2128,6 +2138,88 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     return err;
 }
 
+static void handleJobParsingError( const OtaFileContext_t * pFileContext,
+                                   OtaJobParseErr_t err )
+{
+    OtaErr_t otaErr = OtaErrNone;
+
+    assert( pFileContext != NULL );
+
+    switch( err )
+    {
+        case OtaJobParseErrUpdateCurrentJob:
+
+            /* Check if job name is available */
+            if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
+            {
+                LogInfo( ( "Update received for current job: "
+                           "OtaJobParseErr_t=%s, Job name=%s",
+                           OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+            }
+
+            break;
+
+        case OtaJobParseErrNone:
+
+            /* Check if job name is available */
+            if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
+            {
+                LogInfo( ( "Job parsing sccess: "
+                           "OtaJobParseErr_t=%s, Job name=%s",
+                           OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+            }
+
+            break;
+
+        case OtaJobParseErrNoActiveJobs:
+            LogInfo( ( "No active job available in received job document: "
+                       "OtaJobParseErr_t=%s",
+                       OTA_JobParse_strerror( err ) ) );
+            break;
+
+        case OtaJobParseErrBusyWithExistingJob:
+
+            LogInfo( ( "Busy processing existing job: "
+                       "OtaJobParseErr_t=%s, Job name=%s",
+                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
+            break;
+
+        default:
+
+            /* If job parsing failed AND there's a job ID, update the job state to FAILED with
+             * a reason code.  Without a job ID, we can't update the status in the job service. */
+            if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
+            {
+                LogError( ( "Failed to parse the job document after parsing the job name: "
+                            "OtaJobParseErr_t=%s, Job name=%s",
+                            OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
+                /* Assume control of the job name from the context. */
+                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
+
+                otaErr = otaControlInterface.updateJobStatus( &otaAgent,
+                                                              JobStatusFailedWithVal,
+                                                              ( int32_t ) OtaErrJobParserError,
+                                                              ( int32_t ) err );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                                OTA_Err_strerror( otaErr ) ) );
+                }
+
+                /* We don't need the job name memory anymore since we're done with this job. */
+                ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+            }
+            else
+            {
+                LogError( ( "Failed to parse job document: OtaJobParseErr_t=%s",
+                            OTA_JobParse_strerror( err ) ) );
+            }
+    }
+}
+
 /**
  * @brief This is the OTA job document model describing the parameters, their types, destination and how to extract.
  */
@@ -2164,7 +2256,6 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob )
 {
-    OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     DocParseErr_t parseError = DocParseErrNone;
     OtaFileContext_t * pFinalFile = NULL;
@@ -2195,39 +2286,8 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
     }
 
-    if( err != OtaJobParseErrNone )
-    {
-        /* If job parsing failed AND there's a job ID, update the job state to FAILED with
-         * a reason code.  Without a job ID, we can't update the status in the job service. */
-        if( strlen( ( const char * ) pFileContext->pJobName ) > 0u )
-        {
-            LogError( ( "Failed to parse the job document after parsing the job name: "
-                        "OtaJobParseErr_t=%s, Job name=%s",
-                        OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-
-            /* Assume control of the job name from the context. */
-            ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
-
-            otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                          JobStatusFailedWithVal,
-                                                          ( int32_t ) OtaErrJobParserError,
-                                                          ( int32_t ) err );
-
-            if( otaErr != OtaErrNone )
-            {
-                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                            OTA_Err_strerror( otaErr ) ) );
-            }
-
-            /* We don't need the job name memory anymore since we're done with this job. */
-            ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
-        }
-        else
-        {
-            LogError( ( "Failed to parse job document: OtaJobParseErr_t=%s",
-                        OTA_JobParse_strerror( err ) ) );
-        }
-    }
+    /* Hanlde job parsing error. */
+    handleJobParsingError( pFileContext, err );
 
     /* If we failed, close the open files. */
     if( pFinalFile == NULL )
