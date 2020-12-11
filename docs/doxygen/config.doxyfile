@@ -2631,4 +2631,3 @@ ALIASES += otahttppage="@page ota_http_interface OTA HTTP Interface"
 
 #Alias for the OTA HTTP interface overview
 ALIASES += otahttpsectionoverview="@section ota_http_interface_overview OTA HTTP Overview"
-
