@@ -359,6 +359,7 @@ otajobeventactivate
 otajobeventfail
 otajobeventprocessed
 otajobeventstarttest
+otajobeventselftestfailed
 otajobparseerrbadmodelinitparams
 otajobparseerrbusywithexistingjob
 otajobparseerrnoactivejobs
