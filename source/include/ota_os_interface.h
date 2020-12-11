@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,18 +18,55 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
 /**
  * @file ota_os_interface.h
- * @brief Contains OS interface statuses, type definitions and structures to store interface routines.
+ * @brief Contains OTA OS Functional Interface statuses, type definitions and
+ * structures to store interface routines.
  */
 
 #ifndef OTA_OS_INTERFACE_H
 #define OTA_OS_INTERFACE_H
+
+
+/**
+ * @otaosfipage
+ * @brief The OTA OS Functional Interface definition.
+ *
+ * @otaosfisectionoverview
+ *
+ * The OTA OS Functional interface is a set of APIs that must be implemented
+ * for the device using the OTA library. The function implementations for this
+ * interface are provided to the OTA library in the user application. The OTA
+ * library calls the function implementations to perform functionalities that
+ * are typically provided by an operating system. This includes managing
+ * events, timers, and memory allocation. While these are typically provided by
+ * operating systems, an operating system is not required. Any implementation
+ * of these functionalities that meet the requirements of the interface will
+ * work.
+ *
+ * The OTA OS Functional Interface is defined in @ref ota_os_interface.h.
+ * <br>
+ *
+ * The functions that must be implemented are:<br>
+ * - [OTA OS Functional Interface Initialize Event Mechanism](@ref OtaInitEvent_t)
+ * - [OTA OS Functional Interface Send Event](@ref OtaSendEvent_t)
+ * - [OTA OS Functional Interface Receive Event](@ref OtaReceiveEvent_t)
+ * - [OTA OS Functional Interface Deinitialize Event](@ref OtaDeinitEvent_t)
+ * - [OTA OS Functional Interface Timer Callback](@ref OtaTimerCallback_t)
+ * - [OTA OS Functional Interface Start Timer](@ref OtaStartTimer_t)
+ * - [OTA OS Functional Interface Stop Timer](@ref OtaStopTimer_t)
+ * - [OTA OS Functional Interface Delete Timer](@ref OtaDeleteTimer_t)
+ * - [OTA OS Functional Interface Malloc](@ref OtaMalloc_t)
+ * - [OTA OS Functional Interface Free](@ref OtaFree_t)
+ *
+ * An example implementation for the OTA OS Functional Interface for FreeRTOS
+ * can be found in the files ota_os_freertos.c and ota_os_freertos.h.
+ *
+ * An example implementation for the OTA OS Functional Interface for POSIX can
+ * be found in the files ota_os_posix.c and ota_os_posix.h.
+ */
 
 struct OtaEventContext;
 
@@ -149,7 +186,7 @@ typedef void ( * OtaTimerCallback_t )( OtaTimerId_t otaTimerId );
 /**
  * @brief Start timer.
  *
- * This function starts the timer or resets it if it is already started.
+ * This function starts the timer or resets it if it has already started.
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *
@@ -182,7 +219,7 @@ typedef OtaOsStatus_t ( * OtaStopTimer_t ) ( OtaTimerId_t otaTimerId );
 /**
  * @brief Delete a timer.
  *
- * This function deletes a timer for POSIX platforms.
+ * This function deletes a timer.
  *
  * @param[otaTimerId]       Timer ID of type otaTimerId_t
  *

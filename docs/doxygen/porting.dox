@@ -23,10 +23,138 @@ The following optional logging macros are used throughout the library:
  - @ref LogDebug
 
 @section ota_porting_pal OTA PAL requirements:
-@brief OTA PAL requirements
+@brief The OTA library relies on portable abstraction layer (PAL) callbacks that must be implemented to store the download as it is streamed.
 
-@section ota_porting_os OTA OS requirements:
-@brief OTA OS requirements
+@see [OTA PAL documentation](@ref ota_pal_interface)
+
+The OTA PAL interface used by the OTA library is defined in @ref ota_platform_interface.h.
+A port must implement functions corresponding to the following function pointers:
+- [OTA PAL Abort](@ref OtaPalAbort_t): A function to abort access to an existing open file.
+@code
+OtaPalStatus_t ( * OtaPalAbort_t )(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+- [OTA PAL Create File](@ref OtaPalCreateFileForRx_t): A function to create a new file for receiving data chunks.
+@code
+OtaPalStatus_t (* OtaPalCreateFileForRx_t)(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+- [OTA PAL Close File](@ref OtaPalCloseFile_t): A function to authenticate and close a file used for receiving data.
+@code
+OtaPalStatus_t ( * OtaPalCloseFile_t )(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+- [OTA PAL Write Block](@ref OtaPalWriteBlock_t): A function to write a block of data to the specified file at the given offset.
+@code
+int16_t ( * OtaPalWriteBlock_t )(
+    OtaFileContext_t * const pFileContext,
+    uint32_t offset,
+    uint8_t * const pData,
+    uint32_t blockSize
+);
+@endcode
+- [OTA PAL Activate New Image](@ref OtaPalActivateNewImage_t): A function to activate the newest device image received via OTA.
+@code
+typedef OtaPalStatus_t ( * OtaPalActivateNewImage_t )(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+- [OTA PAL Reset Device](@ref OtaPalResetDevice_t): A function to reset the device and cause a reboot of the system.
+@code
+OtaPalStatus_t ( * OtaPalResetDevice_t )(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+- [OTA PAL Set Platform Image State](@ref OtaPalSetPlatformImageState_t): A function to set the state of the OTA update image.
+@code
+OtaPalStatus_t ( * OtaPalSetPlatformImageState_t )(
+    OtaFileContext_t * const pFileContext,
+    OtaImageState_t eState
+);
+@endcode
+- [OTA PAL Get Platform Image State](@ref OtaPalGetPlatformImageState_t): A function to get the state of the OTA update image.
+@code
+typedef OtaPalImageState_t ( * OtaPalGetPlatformImageState_t )(
+    OtaFileContext_t * const pFileContext
+);
+@endcode
+
+@section ota_porting_os OTA OS Functional Interface requirements:
+@brief The OTA library relies on several functionalities that are commonly provided by operating systems. This includes timers, events, and memory allocation. This interface must be implemented to provide these functionalities to the OTA library.
+
+@see [OTA OS Functional Interface documentation](@ref ota_os_functional_interface_overview)
+The OTA OS Functional Interface used by the OTA library is defined in @ref ota_os_interface.h.
+A port must implement functions corresponding to the following function pointers:
+- [OTA OS Functional Interface Initialize Event Mechanism](@ref OtaInitEvent_t): A function to initialize the mechanism used to manage OTA events.
+@code
+OtaOsStatus_t ( * OtaInitEvent_t )(
+    OtaEventContext_t * pEventCtx
+);
+@endcode
+- [OTA OS Functional Interface Send Event](@ref OtaSendEvent_t): A function to send an event to the OTA library event handler.
+@code
+OtaOsStatus_t ( * OtaSendEvent_t )(
+    OtaEventContext_t * pEventCtx,
+    const void * pEventMsg,
+    unsigned int timeout
+);
+@endcode
+- [OTA OS Functional Interface Receive Event](@ref OtaReceiveEvent_t): A function to receive the next event from the pending OTA events.
+@code
+OtaOsStatus_t ( * OtaReceiveEvent_t )(
+    OtaEventContext_t * pEventCtx,
+    void * pEventMsg,
+    uint32_t timeout
+);
+@endcode
+- [OTA OS Functional Interface Deinitialize Event](@ref OtaDeinitEvent_t): A function to deinitialize the OTA events mechanism and free any recources used.
+@code
+OtaOsStatus_t ( * OtaDeinitEvent_t )(
+    OtaEventContext_t * pEventCtx
+);
+@endcode
+- [OTA OS Functional Interface Timer Callback](@ref OtaTimerCallback_t): A function that notifies the OTA library that a timer has triggered. This function must be called when one of the timers trigger.
+@code
+void ( * OtaTimerCallback_t )(
+    OtaTimerId_t otaTimerId
+);
+@endcode
+- [OTA OS Functional Interface Start Timer](@ref OtaStartTimer_t): A function to start a timer or reset it if it has already started.
+@code
+OtaOsStatus_t ( * OtaStartTimer_t )(
+    OtaTimerId_t otaTimerId,
+    const char * const pTimerName,
+    const uint32_t timeout,
+    OtaTimerCallback_t callback
+);
+@endcode
+- [OTA OS Functional Interface Stop Timer](@ref OtaStopTimer_t): A function to stop a timer.
+@code
+OtaOsStatus_t ( * OtaStopTimer_t )(
+    OtaTimerId_t otaTimerId
+);
+@endcode
+- [OTA OS Functional Interface Delete Timer](@ref OtaDeleteTimer_t): A function to delete a timer.
+@code
+OtaOsStatus_t ( * OtaDeleteTimer_t )(
+    OtaTimerId_t otaTimerId
+);
+@endcode
+- [OTA OS Functional Interface Malloc](@ref OtaMalloc_t): A function to allocate the requested memory and return a pointer to it.
+@code
+void * ( * OtaMalloc_t )(
+    size_t size
+);
+@endcode
+- [OTA OS Functional Interface Free](@ref OtaFree_t): A function to deallocate the memory previously allocated by a call to a allocation function of type OtaMalloc_t.
+@code
+void ( * OtaFree_t )(
+    void * ptr
+);
+@endcode
 
 @section ota_porting_mqtt OTA MQTT requirements:
 @brief The OTA library relies on a MQTT library to manage control and data operations.
