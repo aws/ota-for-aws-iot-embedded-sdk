@@ -3,10 +3,24 @@
 @brief Guide for porting OTA to a new platform.
 
 A port to a new platform must provide the following components:
-1. [Ports for PAL](@ref ota_porting_pal)
-2. [OS Interface](@ref ota_porting_os)
-3. [MQTT Interface](@ref ota_porting_mqtt)
-4. [HTTP Interface](@ref ota_porting_http)
+1. [Configuration Macros](@ref ota_porting_config)
+2. [Ports for PAL](@ref ota_porting_pal)
+3. [OS Interface](@ref ota_porting_os)
+4. [MQTT Interface](@ref ota_porting_mqtt)
+5. [HTTP Interface](@ref ota_porting_http)
+
+@section ota_porting_config Configuration Macros
+@brief Settings that must be set as macros in the config header `ota_config.h`, or passed in as compiler options.
+
+@note If a custom configuration header `ota_config.h` is not provided, then the @ref OTA_DO_NOT_USE_CUSTOM_CONFIG macro must be defined.
+
+@see [Configurations](@ref ota_config)
+
+The following optional logging macros are used throughout the library:
+ - @ref LogError
+ - @ref LogWarn
+ - @ref LogInfo
+ - @ref LogDebug
 
 @section ota_porting_pal OTA PAL requirements:
 @brief The OTA library relies on portable abstraction layer (PAL) callbacks that must be implemented to store the download as it is streamed.
@@ -143,8 +157,62 @@ void ( * OtaFree_t )(
 @endcode
 
 @section ota_porting_mqtt OTA MQTT requirements:
-@brief OTA MQTT requirements
+@brief The OTA library relies on a MQTT library to manage control and data operations.
+
+The OTA library needs to connect to AWS IoT using MQTT PUBLISH messages to receive notifications and file blocks. This is done by Subscribing to different notification topics.
+
+@see [OTA MQTT documentation](@ref ota_mqtt_interface)
+
+The OTA MQTT API used by the OTA library is defined in @ref ota_mqtt_interface.h.
+A library must implement functions corresponding to the following function pointers:
+
+- [OTA MQTT Subscribe](@ref OtaMqttSubscribe_t): A function that is used to subscribe to a given topic filter and QoS.
+@code
+OtaMqttStatus_t ( * OtaMqttSubscribe_t ) (  const char * pTopicFilter,
+                                            uint16_t topicFilterLength,
+                                            uint8_t ucQoS );
+@endcode
+
+- [OTA MQTT Unsubscribe](@ref OtaMqttSubscribe_t): A function that is used to unsubscribe from a given topic filter using provided QoS.
+@code
+OtaMqttStatus_t ( * OtaMqttUnsubscribe_t ) (const char * pTopicFilter,
+                                            uint16_t topicFilterLength,
+                                            uint8_t ucQoS );
+@endcode
+
+- [OTA MQTT Publish](@ref OtaMqttSubscribe_t): A function that is used to publish a message to a given topic filter and QoS.
+@code
+OtaMqttStatus_t ( * OtaMqttSubscribe_t ) (  const char * pTopicFilter,
+                                            uint16_t topicFilterLength,
+                                            uint8_t ucQoS );
+@endcode
+
 
 @section ota_porting_http OTA HTTP requirements:
-@brief OTA HTTP requirements
+@brief The OTA library relies on a HTTP library to manage data operations.
+
+To download a datablock over http, OTA library needs to connect to a pre-signed URL and request data blocks to download the update.
+
+@see [OTA MQTT documentation](@ref ota_mqtt_interface)
+
+The OTA HTTP API used by the OTA library is defined in @ref ota_http_interface.h.
+
+A library must implement functions corresponding to the following function pointers:
+
+- [OTA HTTP Initialize](@ref ota_HttpInit_t): A function to initialize the http connection with a given Pre-signed URL.
+@code
+OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
+@endcode
+
+- [OTA HTTP Request](@ref ota_HttpRequest_t): A function to request a data block in a given range.
+@code
+OtaHttpStatus_t ( * ota_HttpRequest_t )  (  uint32_t rangeStart,
+                                            uint32_t rangeEnd );
+@endcode
+
+- [OTA HTTP De-initialize](@ref ota_HttpDeinit): A function to de-initialize the http connection.
+@code
+OtaHttpStatus_t ( * ota_HttpDeinit )( void );
+@endcode
+
 */

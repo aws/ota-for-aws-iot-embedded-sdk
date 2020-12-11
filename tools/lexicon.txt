@@ -82,6 +82,7 @@ currblock
 currentstate
 customjobcallback
 cwd
+datablock
 datacallback
 datalength
 decodememmaxsize
@@ -136,6 +137,7 @@ executionnumber
 expectedstatus
 expectedtype
 failedwithval
+faqmem
 fclose
 fd
 fileattributes
@@ -175,6 +177,10 @@ github
 hostnamelength
 html
 http
+httpdeinit
+httpinit
+httpinterface
+httprequest
 https
 iblocksize
 ifndef
@@ -249,6 +255,10 @@ mockoseventsendthenstop
 modelparamtype
 modelparamtypestringindoc
 mqtt
+mqttinterface
+mqttpublish
+mqttsubscribe
+mqttunsubscribe
 msec
 msgbuffersize
 msgsize
@@ -304,6 +314,7 @@ otaagentstateready
 otaagentstatestopped
 otaagentstatestopped
 otaappcallback
+otabuffer
 otaclose
 otaconfigallowdowngrade
 otacontrolinterface
@@ -334,13 +345,16 @@ otaeventtorecv
 otaeventtosend
 otahttpdeinitfailed
 otahttpinitfailed
+otahttppage
 otahttprequestfailed
+otahttpsectionoverview
 otahttpsuccess
 otaimagestateaborted
 otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterfaces
 otajobeventactivate
 otajobeventfail
 otajobeventprocessed
@@ -356,7 +370,9 @@ otajobparseerrunknown
 otajobparseerrupdatecurrentjob
 otajobparseerrzerofilesize
 otalastimagestate
+otamqttpage
 otamqttpublishfailed
+otamqttsectionoverview
 otamqttsubscribefailed
 otamqttsuccess
 otamqttunsubscribefailed
@@ -397,9 +413,9 @@ otapalrxfilecreatefailed
 otapalrxfiletoolarge
 otapalsectionoverview
 otapalsignaturecheckfailed
+otapalsuberr
 otapalsuccess
 otapaluninitialized
-otapalsuberr
 otatimer
 otatimercallback
 otatimerid
@@ -629,6 +645,7 @@ socketstatus
 srand
 src
 ssl
+stacksize
 starthandler
 startselftesttimer
 startselftimer
