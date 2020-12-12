@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Common V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,9 +18,6 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
 /**
@@ -28,13 +25,14 @@
  * @brief Structure to represent the application build version.
  */
 
-#ifndef _IOT_APPVERSION32_H_
-#define _IOT_APPVERSION32_H_
+#ifndef IOT_APPVERSION32_H
+#define IOT_APPVERSION32_H
 
 /* Standard includes. */
 #include <stdint.h>
 
 /**
+ * @ingroup ota_struct_types
  * @brief Application version structure.
  *
  */
@@ -45,25 +43,27 @@ typedef struct
         #if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN )
             struct version
             {
-                uint16_t build;
-                uint8_t minor;
-                uint8_t major;
-            } x;
+                uint16_t build; /*!< @brief Build of the firmware (Z in firmware version Z.Y.X). */
+                uint8_t minor;  /*!< @brief Minor version number of the firmware (Y in firmware version Z.Y.X). */
+
+                uint8_t major;  /*!< @brief Major version number of the firmware (X in firmware version Z.Y.X). */
+            } x;                /*!< @brief Version number of the firmware. */
         #elif ( defined( __BYTE_ORDER__ ) && defined( __ORDER_BIG_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ) || ( __big_endian__ == 1 ) || ( __BYTE_ORDER == __BIG_ENDIAN )
             struct version
             {
-                uint8_t major;
-                uint8_t minor;
-                uint16_t build;
-            } x;
+                uint8_t major;  /*!< @brief Major version number of the firmware (X in firmware version X.Y.Z). */
+                uint8_t minor;  /*!< @brief Minor version number of the firmware (Y in firmware version X.Y.Z). */
+
+                uint16_t build; /*!< @brief Build of the firmware (Z in firmware version X.Y.Z). */
+            } x;                /*!< @brief Version number of the firmware. */
         #else /* if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN ) */
         #error "Unable to determine byte order!"
         #endif /* if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN ) */
         uint32_t unsignedVersion32;
         int32_t signedVersion32;
-    } u; /*!< Version based on configuration in big endian or little endian. */
+    } u; /*!< @brief Version based on configuration in big endian or little endian. */
 } AppVersion32_t;
 
-extern const AppVersion32_t appFirmwareVersion; /*!< Making the version number available globally through external linkage. */
+extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
 
-#endif /* ifndef _IOT_APPVERSION32_H_ */
+#endif /* ifndef IOT_APPVERSION32_H */

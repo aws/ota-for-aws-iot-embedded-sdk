@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,27 +18,72 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
-#ifndef _OTA_MQTT_INTERFACE_H_
-#define _OTA_MQTT_INTERFACE_H_
+/**
+ * @file ota_mqtt_interface.h
+ * @brief Contains OTA MQTT Statuses, function type definitions and mqtt interface structure.
+ */
+
+#ifndef OTA_MQTT_INTERFACE_H
+#define OTA_MQTT_INTERFACE_H
 
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
 
 /**
+ * @otamqttpage
+ * @brief The OTA PAL interface definition.
+ *
+ * @otamqttsectionoverview
+ *
+ * The OTA MQTT interface is a set of APIs that must be implemented by
+ * a library to enable the OTA library to connect to AWS IoT and manage
+ * notification and request data. The OTA library uses MQTT PUBLISH
+ * messages to inform AWS IoT about the job status and receives notifications
+ * and datablock over `job` and `stream` topics.
+ *
+ * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h.
+ * <br>
+ *
+ * The functions that must be implemented are:<br>
+ * - [OTA MQTT Subscribe](@ref OtaMqttSubscribe_t)
+ * - [OTA MQTT Unsubscribe](@ref OtaMqttSubscribe_t)
+ * - [OTA MQTT Publish](@ref OtaMqttSubscribe_t)
+ *
+ * These functions can be grouped into the structure `OtaMqttInterface_t`
+ * and passed to @ref OtaInterfaces_t to represent the MQTT interface.
+ * @code{c}
+ * OtaMqttInterface_t mqttInterface;
+ * mqttInterface.subscribe = mqttSubscribe;
+ * mqttInterface.unsubscribe = mqttUnsubscribe;
+ * mqttInterface.publish = mqttPublish;
+ *
+ *  ....
+ *
+ * OtaInterfaces_t otaInterfaces;
+ * otaInterfaces.mqtt = mqttInterface
+ *
+ *  ....
+ *
+ * OTA_Init( &otaBuffer,
+ *           &otaInterfaces,
+ *           ( CLIENT_IDENTIFIER ),
+ *           otaAppCallback )
+ * @endcode
+ */
+
+/**
+ * @ingroup ota_enum_types
  * @brief The OTA MQTT interface return status.
  */
 typedef enum OtaMqttStatus
 {
-    OtaMqttSuccess = 0,          /*!< OTA MQTT interface success. */
-    OtaMqttPublishFailed = 0xa0, /*!< Attempt to publish a MQTT message failed. */
-    OtaMqttSubscribeFailed,      /*!< Failed to subscribe to a topic. */
-    OtaMqttUnsubscribeFailed     /*!< Failed to unsubscribe from a topic. */
+    OtaMqttSuccess = 0,          /*!< @brief OTA MQTT interface success. */
+    OtaMqttPublishFailed = 0xa0, /*!< @brief Attempt to publish a MQTT message failed. */
+    OtaMqttSubscribeFailed,      /*!< @brief Failed to subscribe to a topic. */
+    OtaMqttUnsubscribeFailed     /*!< @brief Failed to unsubscribe from a topic. */
 } OtaMqttStatus_t;
 
 /**
@@ -104,13 +149,14 @@ typedef OtaMqttStatus_t ( * OtaMqttPublish_t )( const char * const pacTopic,
                                                 uint8_t ucQos );
 
 /**
- *  OTA Event Interface structure.
+ * @ingroup ota_struct_types
+ * @brief OTA Event Interface structure.
  */
 typedef struct OtaMqttInterface
 {
-    OtaMqttSubscribe_t subscribe;     /*!< Interface for subscribing to Mqtt topics. */
-    OtaMqttUnsubscribe_t unsubscribe; /*!< interface for unsubscribing to MQTT topics. */
-    OtaMqttPublish_t publish;         /*!< Interface for publishing MQTT messages. */
+    OtaMqttSubscribe_t subscribe;     /*!< @brief Interface for subscribing to Mqtt topics. */
+    OtaMqttUnsubscribe_t unsubscribe; /*!< @brief interface for unsubscribing to MQTT topics. */
+    OtaMqttPublish_t publish;         /*!< @brief Interface for publishing MQTT messages. */
 } OtaMqttInterface_t;
 
-#endif /* ifndef _OTA_MQTT_INTERFACE_H_ */
+#endif /* ifndef OTA_MQTT_INTERFACE_H */

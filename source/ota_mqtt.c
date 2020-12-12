@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,9 +18,6 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
 /**
@@ -52,11 +49,9 @@
 #define OTA_STATUS_MSG_MAX_SIZE            128U         /*!< Max length of a job status message to the service. */
 
 /**
- *  @addtogroup ota_mqtt_topic_strings
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
- *  @{
  */
 #define MQTT_API_THINGS                    "$aws/things/"             /*!< Topic prefix for thing APIs. */
 #define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"          /*!< Topic suffix for job API. */
@@ -80,7 +75,6 @@ static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_ST
 
 static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                  /*!< Used to specify client token id to authenticate job. */
 static const char pOtaStringReceive[] = "receive";                                                              /*!< Used to build the job receive template. */
-/** @}*/
 
 /** We map all of the above status cases to one of these status strings.
  * These are the only strings that are supported by the Job Service. You
@@ -365,7 +359,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         MQTT_API_THINGS,
         NULL, /* Thing Name not available at compile time, initialized below */
-        MQTT_API_JOBS_NEXT_GET,
+        MQTT_API_JOBS_NEXT_GET_ACCEPTED,
         NULL
     };
 
@@ -407,8 +401,8 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         /* Build and subscribe to the second topic. Only the last part of the topic string changes. */
         topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
         topicLen = ( uint16_t ) stringBuilder(
-            pJobTopicGetNext,
-            sizeof( pJobTopicGetNext ),
+            pJobTopicNotifyNext,
+            sizeof( pJobTopicNotifyNext ),
             topicStringParts );
 
         /* The buffer is static and the size is calculated to fit. */

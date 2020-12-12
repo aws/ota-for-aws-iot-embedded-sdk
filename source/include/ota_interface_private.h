@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,13 +18,15 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_IOT_OTA_INTERFACE__H__
-#define __AWS_IOT_OTA_INTERFACE__H__
+/**
+ * @file ota_interface_private.h
+ * @brief Contains function definitions and structures for data and control interfaces.
+ */
+
+#ifndef OTA_INTERFACE_PRIVATE_H
+#define OTA_INTERFACE_PRIVATE_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -33,12 +35,12 @@
 /* General Constants. */
 
 /* OTA control protocol constants. */
-#define OTA_CONTROL_OVER_MQTT     0x00000001
+#define OTA_CONTROL_OVER_MQTT     0x00000001 /*!< Specify control over mqtt. */
 
 /* OTA data protocol constants. */
-#define OTA_DATA_OVER_MQTT        0x00000001
-#define OTA_DATA_OVER_HTTP        0x00000002
-#define OTA_DATA_NUM_PROTOCOLS    ( 2U )
+#define OTA_DATA_OVER_MQTT        0x00000001 /*!< Specify data over mqtt. */
+#define OTA_DATA_OVER_HTTP        0x00000002 /*!< Specify data over http. */
+#define OTA_DATA_NUM_PROTOCOLS    ( 2U )     /*!< Number of protocols supported. */
 
 
 /**
@@ -103,4 +105,4 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
 
-#endif /* ifndef __AWS_IOT_OTA_INTERFACE__H__ */
+#endif /* ifndef OTA_INTERFACE_PRIVATE_H */

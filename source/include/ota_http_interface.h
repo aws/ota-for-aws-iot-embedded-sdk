@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,27 +18,70 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
-#ifndef _OTA_HTTP_INTERFACE_H_
-#define _OTA_HTTP_INTERFACE_H_
+/**
+ * @file ota_http_interface.h
+ * @brief Contains OTA HTTP Statuses, function type definitions and http interface structure.
+ */
+
+#ifndef OTA_HTTP_INTERFACE_H
+#define OTA_HTTP_INTERFACE_H
 
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
 
 /**
+ * @otahttppage
+ * @brief The OTA PAL interface definition.
+ *
+ * @otahttpsectionoverview
+ *
+ * The OTA MQTT interface is a set of APIs that must be implemented by
+ * a library to enable the OTA library to download a file block by
+ * connecting to a pre-signed url and fetching data blocks.
+ *
+ * The OTA MQTT interface is defined in @ref ota_mqtt_interface.h.
+ * <br>
+ *
+ * The functions that must be implemented are:<br>
+ * - [OTA MQTT Subscribe](@ref OtaMqttSubscribe_t)
+ * - [OTA MQTT Unsubscribe](@ref OtaMqttSubscribe_t)
+ * - [OTA MQTT Publish](@ref OtaMqttSubscribe_t)
+ *
+ * These functions can be grouped into the structure `OtaHttpInterface_t`
+ * and passed to @ref OtaInterfaces_t to represent the MQTT interface.
+ * @code{c}
+ * OtaHttpInterface_t httpInterface;
+ * httpInterface.init = httpInit;
+ * httpInterface.request = httpRequest;
+ * httpInterface.deinit = httpDeinit;
+ *
+ *  .....
+ *
+ * OtaInterfaces_t otaInterfaces;
+ * otaInterfaces.http = httpInterface
+ *
+ *  .....
+ *
+ * OTA_Init( &otaBuffer,
+ *           &otaInterfaces,
+ *           ( CLIENT_IDENTIFIER ),
+ *           otaAppCallback )
+ * @endcode
+ */
+
+/**
+ * @ingroup ota_enum_types
  * @brief The OTA HTTP interface return status.
  */
 typedef enum OtaHttpStatus
 {
-    OtaHttpSuccess = 0,       /*!< OTA HTTP interface success. */
-    OtaHttpInitFailed = 0xc0, /*!< Error initializing the HTTP connection. */
-    OtaHttpDeinitFailed,      /*!< Error deinitializing the HTTP connection. */
-    OtaHttpRequestFailed      /*!< Error sending the HTTP request. */
+    OtaHttpSuccess = 0,       /*!< @brief OTA HTTP interface success. */
+    OtaHttpInitFailed = 0xc0, /*!< @brief Error initializing the HTTP connection. */
+    OtaHttpDeinitFailed,      /*!< @brief Error deinitializing the HTTP connection. */
+    OtaHttpRequestFailed      /*!< @brief Error sending the HTTP request. */
 } OtaHttpStatus_t;
 
 /**
@@ -51,7 +94,7 @@ typedef enum OtaHttpStatus
  * @return              OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
+typedef OtaHttpStatus_t ( * OtaHttpInit_t ) ( char * pUrl );
 
 /**
  * @brief Request file block over Http.
@@ -65,8 +108,8 @@ typedef OtaHttpStatus_t ( * ota_HttpInit_t ) ( char * pUrl );
  * @return             OtaHttpSuccess if success , other error code on failure.
  */
 
-typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
-                                                   uint32_t rangeEnd );
+typedef OtaHttpStatus_t ( * OtaHttpRequest_t )  ( uint32_t rangeStart,
+                                                  uint32_t rangeEnd );
 
 /**
  * @brief Deinit OTA Http interface.
@@ -76,17 +119,18 @@ typedef OtaHttpStatus_t ( * ota_HttpRequest_t )  ( uint32_t rangeStart,
  *
  * @return        OtaHttpSuccess if success , other error code on failure.
  */
-typedef OtaHttpStatus_t ( * ota_HttpDeinit )( void );
+typedef OtaHttpStatus_t ( * OtaHttpDeinit )( void );
 
 /**
+ * @ingroup ota_struct_types
  * @brief OTA Event Interface structure.
  *
  */
 typedef struct OtaHttpInterface
 {
-    ota_HttpInit_t init;       /*!< Reference to HTTP initialization. */
-    ota_HttpRequest_t request; /*!< Reference to HTTP data request. */
-    ota_HttpDeinit deinit;     /*!< Reference to HTTP deinitialize. */
+    OtaHttpInit_t init;       /*!< @brief Reference to HTTP initialization. */
+    OtaHttpRequest_t request; /*!< @brief Reference to HTTP data request. */
+    OtaHttpDeinit deinit;     /*!< @brief Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
 
-#endif /* ifndef _OTA_HTTP_INTERFACE_H_ */
+#endif /* ifndef OTA_HTTP_INTERFACE_H */

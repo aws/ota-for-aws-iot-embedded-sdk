@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,13 +18,15 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
-#ifndef __AWS_IOT_OTA_MQTT__H__
-#define __AWS_IOT_OTA_MQTT__H__
+/**
+ * @file ota_mqtt_private.h
+ * @brief Contains function definitions of routines for OTA download and control using MQTT data plane.
+ */
+
+#ifndef OTA_MQTT_H
+#define OTA_MQTT_H
 
 /* OTA includes. */
 #include "ota.h"
@@ -152,4 +154,4 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
  */
 const char * OTA_MQTT_strerror( OtaMqttStatus_t status );
 
-#endif /* ifndef __AWS_IOT_OTA_MQTT__H__ */
+#endif /* ifndef OTA_MQTT_H */

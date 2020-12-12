@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,9 +18,6 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
 /**
@@ -28,8 +25,8 @@
  * @brief OTA Agent Interface
  */
 
-#ifndef _AWS_IOT_OTA_AGENT_H_
-#define _AWS_IOT_OTA_AGENT_H_
+#ifndef OTA_H
+#define OTA_H
 
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
@@ -68,43 +65,39 @@ extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 /*-------------------------- OTA enumerated types --------------------------*/
 
 /**
- * @enums{ota,OTA library}
- */
-
-/**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief The OTA API return status.
  * OTA agent error codes are in the upper 8 bits of the 32 bit OTA error word, OtaErr_t.
  */
 typedef enum OtaErr
 {
-    OtaErrNone = 0,               /*!< No error occurred during the operation. */
-    OtaErrUninitialized,          /*!< The error code has not yet been set by a logic path. */
-    OtaErrPanic,                  /*!< Unrecoverable Firmware error. Probably should log error and reboot. */
-    OtaErrInvalidArg,             /*!< API called with invalid argument. */
-    OtaErrAgentStopped,           /*!< Returned when operations are performed that requires OTA Agent running & its stopped. */
-    OtaErrSignalEventFailed,      /*!< Failed to send event to OTA state machine. */
-    OtaErrRequestJobFailed,       /*!< Failed to request the job document. */
-    OtaErrInitFileTransferFailed, /*!< Failed to update the OTA job status. */
-    OtaErrRequestFileBlockFailed, /*!< Failed to request file block. */
-    OtaErrCleanupControlFailed,   /*!< Failed to clean up the control plane. */
-    OtaErrCleanupDataFailed,      /*!< Failed to clean up the data plane. */
-    OtaErrUpdateJobStatusFailed,  /*!< Failed to update the OTA job status. */
-    OtaErrJobParserError,         /*!< An error occurred during job document parsing. See reason sub-code. */
-    OtaErrInvalidDataProtocol,    /*!< Job does not have a valid protocol for data transfer. */
-    OtaErrMomentumAbort,          /*!< Too many OTA stream requests without any response. */
-    OtaErrDowngradeNotAllowed,    /*!< Firmware version is older than the previous version. */
-    OtaErrSameFirmwareVersion,    /*!< Firmware version is the same as previous. New firmware could have failed to commit. */
-    OtaErrImageStateMismatch,     /*!< The OTA job was in Self Test but the platform image state was not. Possible tampering. */
-    OtaErrNoActiveJob,            /*!< Attempt to set final image state without an active job. */
-    OtaErrUserAbort,              /*!< User aborted the active OTA. */
-    OtaErrFailedToEncodeCbor,     /*!< Failed to encode CBOR object for requesting data block from streaming service. */
-    OtaErrFailedToDecodeCbor,     /*!< Failed to decode CBOR object from streaming service response. */
-    OtaErrActivateFailed          /*!< Failed to activate the new image. */
+    OtaErrNone = 0,               /*!< @brief No error occurred during the operation. */
+    OtaErrUninitialized,          /*!< @brief The error code has not yet been set by a logic path. */
+    OtaErrPanic,                  /*!< @brief Unrecoverable Firmware error. Probably should log error and reboot. */
+    OtaErrInvalidArg,             /*!< @brief API called with invalid argument. */
+    OtaErrAgentStopped,           /*!< @brief Returned when operations are performed that requires OTA Agent running & its stopped. */
+    OtaErrSignalEventFailed,      /*!< @brief Failed to send event to OTA state machine. */
+    OtaErrRequestJobFailed,       /*!< @brief Failed to request the job document. */
+    OtaErrInitFileTransferFailed, /*!< @brief Failed to update the OTA job status. */
+    OtaErrRequestFileBlockFailed, /*!< @brief Failed to request file block. */
+    OtaErrCleanupControlFailed,   /*!< @brief Failed to clean up the control plane. */
+    OtaErrCleanupDataFailed,      /*!< @brief Failed to clean up the data plane. */
+    OtaErrUpdateJobStatusFailed,  /*!< @brief Failed to update the OTA job status. */
+    OtaErrJobParserError,         /*!< @brief An error occurred during job document parsing. See reason sub-code. */
+    OtaErrInvalidDataProtocol,    /*!< @brief Job does not have a valid protocol for data transfer. */
+    OtaErrMomentumAbort,          /*!< @brief Too many OTA stream requests without any response. */
+    OtaErrDowngradeNotAllowed,    /*!< @brief Firmware version is older than the previous version. */
+    OtaErrSameFirmwareVersion,    /*!< @brief Firmware version is the same as previous. New firmware could have failed to commit. */
+    OtaErrImageStateMismatch,     /*!< @brief The OTA job was in Self Test but the platform image state was not. Possible tampering. */
+    OtaErrNoActiveJob,            /*!< @brief Attempt to set final image state without an active job. */
+    OtaErrUserAbort,              /*!< @brief User aborted the active OTA. */
+    OtaErrFailedToEncodeCbor,     /*!< @brief Failed to encode CBOR object for requesting data block from streaming service. */
+    OtaErrFailedToDecodeCbor,     /*!< @brief Failed to decode CBOR object from streaming service response. */
+    OtaErrActivateFailed          /*!< @brief Failed to activate the new image. */
 } OtaErr_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA Agent states.
  *
  * The current state of the OTA Task (OTA Agent).
@@ -129,25 +122,25 @@ typedef enum OtaState
 } OtaState_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA job document parser error codes.
  */
 typedef enum OtaJobParseErr
 {
-    OtaJobParseErrUnknown = -1,        /* The error code has not yet been set by a logic path. */
-    OtaJobParseErrNone = 0,            /* Signifies no error has occurred. */
-    OtaJobParseErrBusyWithExistingJob, /* We're busy with a job but received a new job document. */
-    OtaJobParseErrNullJob,             /* A null job was reported (no job ID). */
-    OtaJobParseErrUpdateCurrentJob,    /* We're already busy with the reported job ID. */
-    OtaJobParseErrZeroFileSize,        /* Job document specified a zero sized file. This is not allowed. */
-    OtaJobParseErrNonConformingJobDoc, /* The job document failed to fulfill the model requirements. */
-    OtaJobParseErrBadModelInitParams,  /* There was an invalid initialization parameter used in the document model. */
-    OtaJobParseErrNoContextAvailable,  /* There was not an OTA context available. */
-    OtaJobParseErrNoActiveJobs         /* No active jobs are available in the service. */
+    OtaJobParseErrUnknown = -1,        /* @brief The error code has not yet been set by a logic path. */
+    OtaJobParseErrNone = 0,            /* @brief Signifies no error has occurred. */
+    OtaJobParseErrBusyWithExistingJob, /* @brief We're busy with a job but received a new job document. */
+    OtaJobParseErrNullJob,             /* @brief A null job was reported (no job ID). */
+    OtaJobParseErrUpdateCurrentJob,    /* @brief We're already busy with the reported job ID. */
+    OtaJobParseErrZeroFileSize,        /* @brief Job document specified a zero sized file. This is not allowed. */
+    OtaJobParseErrNonConformingJobDoc, /* @brief The job document failed to fulfill the model requirements. */
+    OtaJobParseErrBadModelInitParams,  /* @brief There was an invalid initialization parameter used in the document model. */
+    OtaJobParseErrNoContextAvailable,  /* @brief There was not an OTA context available. */
+    OtaJobParseErrNoActiveJobs         /* @brief No active jobs are available in the service. */
 } OtaJobParseErr_t;
 
 /**
- * @ingroup ota_datatypes_enums
+ * @ingroup ota_enum_types
  * @brief OTA Job callback events.
  *
  * After an OTA update image is received and authenticated, the agent calls the user
@@ -165,21 +158,18 @@ typedef enum OtaJobParseErr
  */
 typedef enum OtaJobEvent
 {
-    OtaJobEventActivate = 0,  /*!< OTA receive is authenticated and ready to activate. */
-    OtaJobEventFail = 1,      /*!< OTA receive failed. Unable to use this update. */
-    OtaJobEventStartTest = 2, /*!< OTA job is now in self test, perform user tests. */
-    OtaJobEventProcessed = 3, /*!< OTA event is processed. */
+    OtaJobEventActivate = 0,       /*!< @brief OTA receive is authenticated and ready to activate. */
+    OtaJobEventFail = 1,           /*!< @brief OTA receive failed. Unable to use this update. */
+    OtaJobEventStartTest = 2,      /*!< @brief OTA job is now in self test, perform user tests. */
+    OtaJobEventProcessed = 3,      /*!< @brief OTA event queued by OTA_SignalEvent is processed. */
+    OtaJobEventSelfTestFailed = 4, /*!< @brief OTA self-test failed for current job. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
 /*------------------------- OTA callbacks --------------------------*/
 
 /**
- * @functionpointers{ota,OTA library}
- */
-
-/**
- * @ingroup ota_datatypes_functionpointers
+ * @ingroup ota_callback_types
  * @brief OTA update complete callback function typedef.
  *
  * The user may register a callback function when initializing the OTA Agent. This
@@ -212,14 +202,14 @@ typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
                                    const void * pData );
 
 /**
- * @ingroup ota_datatypes_functionpointers
+ * @ingroup ota_callback_types
  * @brief Custom Job callback function typedef.
  *
  * The user may register a callback function when initializing the OTA Agent. This
  * callback will be called when the OTA agent cannot parse a job document.
  *
- * @param[in] pcJSON Pointer to the json document received by the OTA agent
- * @param[in] ulMsgLen Length of the json document received by the agent
+ * @param[in] pcJSON Pointer to the json document received by the OTA agent.
+ * @param[in] ulMsgLen Length of the json document received by the agent.
  */
 typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
                                                      uint32_t ulMsgLen );
@@ -228,7 +218,7 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
 
 
 /**
- * @ingroup ota_datatypes_structs
+ * @ingroup ota_struct_types
  * @brief OTA Interface for referencing different components.
  *
  * Information about the different interfaces used to initialize
@@ -236,38 +226,38 @@ typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
  */
 typedef struct OtaInterface
 {
-    OtaOSInterface_t os;     /*!< OS interface to store event, timers and memory operations. */
-    OtaMqttInterface_t mqtt; /*!< MQTT interface that references the publish subscribe methods and callbacks. */
-    OtaHttpInterface_t http; /*!< HTTP interface to request data. */
-    OtaPalInterface_t pal;   /*!< OTA PAL callback structure. */
+    OtaOSInterface_t os;     /*!< @brief OS interface to store event, timers and memory operations. */
+    OtaMqttInterface_t mqtt; /*!< @brief MQTT interface that references the publish subscribe methods and callbacks. */
+    OtaHttpInterface_t http; /*!< @brief HTTP interface to request data. */
+    OtaPalInterface_t pal;   /*!< @brief OTA PAL callback structure. */
 } OtaInterfaces_t;
 
 /**
- * @ingroup ota_datatypes_structs
+ * @ingroup ota_struct_types
  * @brief OTA Application Buffer size information.
  *
  * File key signature information to verify the authenticity of the incoming file
  */
 typedef struct OtaAppBuffer
 {
-    uint8_t * pUpdateFilePath;   /*!< Path to store the files. */
-    uint16_t updateFilePathsize; /*!< Maximum size of the file path. */
-    uint8_t * pCertFilePath;     /*!< Path to certificate file. */
-    uint16_t certFilePathSize;   /*!< Maximum size of the certificate file path. */
-    uint8_t * pStreamName;       /*!< Name of stream to download the files. */
-    uint16_t streamNameSize;     /*!< Maximum size of the stream name. */
-    uint8_t * pDecodeMemory;     /*!< Place to store the decoded files. */
-    uint32_t decodeMemorySize;   /*!< Maximum size of the decoded files buffer. */
-    uint8_t * pFileBitmap;       /*!< Bitmap of the parameters received. */
-    uint16_t fileBitmapSize;     /*!< Maximum size of the bitmap. */
-    uint8_t * pUrl;              /*!< Presigned url to download files from S3. */
-    uint16_t urlSize;            /*!< Maximum size of the URL. */
-    uint8_t * pAuthScheme;       /*!< Authentication scheme used to validate download. */
-    uint16_t authSchemeSize;     /*!< Maximum size of the auth scheme. */
+    uint8_t * pUpdateFilePath;   /*!< @brief Path to store the files. */
+    uint16_t updateFilePathsize; /*!< @brief Maximum size of the file path. */
+    uint8_t * pCertFilePath;     /*!< @brief Path to certificate file. */
+    uint16_t certFilePathSize;   /*!< @brief Maximum size of the certificate file path. */
+    uint8_t * pStreamName;       /*!< @brief Name of stream to download the files. */
+    uint16_t streamNameSize;     /*!< @brief Maximum size of the stream name. */
+    uint8_t * pDecodeMemory;     /*!< @brief Place to store the decoded files. */
+    uint32_t decodeMemorySize;   /*!< @brief Maximum size of the decoded files buffer. */
+    uint8_t * pFileBitmap;       /*!< @brief Bitmap of the parameters received. */
+    uint16_t fileBitmapSize;     /*!< @brief Maximum size of the bitmap. */
+    uint8_t * pUrl;              /*!< @brief Presigned url to download files from S3. */
+    uint16_t urlSize;            /*!< @brief Maximum size of the URL. */
+    uint8_t * pAuthScheme;       /*!< @brief Authentication scheme used to validate download. */
+    uint16_t authSchemeSize;     /*!< @brief Maximum size of the auth scheme. */
 } OtaAppBuffer_t;
 
 /**
- * @ingroup ota_private_datatypes_structs
+ * @ingroup ota_private_struct_types
  * @brief  The OTA agent is a singleton today. The structure keeps it nice and organized.
  */
 
@@ -308,10 +298,12 @@ typedef struct OtaAgentContext
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
  */
+/* @[declare_ota_init] */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
+/* @[declare_ota_init] */
 
 /**
  * @brief Signal to the OTA Agent to shut down.
@@ -326,14 +318,18 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
  */
+/* @[declare_ota_shutdown] */
 OtaState_t OTA_Shutdown( uint32_t ticksToWait );
+/* @[declare_ota_shutdown] */
 
 /**
  * @brief Get the current state of the OTA agent.
  *
  * @return The current state of the OTA agent.
  */
+/* @[declare_ota_getstate] */
 OtaState_t OTA_GetState( void );
+/* @[declare_ota_getstate] */
 
 /**
  * @brief Activate the newest MCU image received via OTA.
@@ -346,7 +342,9 @@ OtaState_t OTA_GetState( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_activatenewimage] */
 OtaErr_t OTA_ActivateNewImage( void );
+/* @[declare_ota_activatenewimage] */
 
 /**
  * @brief Set the state of the current MCU image.
@@ -360,7 +358,9 @@ OtaErr_t OTA_ActivateNewImage( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_setimagestate] */
 OtaErr_t OTA_SetImageState( OtaImageState_t state );
+/* @[declare_ota_setimagestate] */
 
 /**
  * @brief Get the state of the currently running MCU image.
@@ -370,7 +370,9 @@ OtaErr_t OTA_SetImageState( OtaImageState_t state );
  *
  * @return The state of the current context's OTA image.
  */
+/* @[declare_ota_getimagestate] */
 OtaImageState_t OTA_GetImageState( void );
+/* @[declare_ota_getimagestate] */
 
 /**
  * @brief Request for the next available OTA job from the job service.
@@ -378,7 +380,9 @@ OtaImageState_t OTA_GetImageState( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_checkforupdate] */
 OtaErr_t OTA_CheckForUpdate( void );
+/* @[declare_ota_checkforupdate] */
 
 /**
  * @brief Suspend OTA agent operations .
@@ -386,7 +390,9 @@ OtaErr_t OTA_CheckForUpdate( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_suspend] */
 OtaErr_t OTA_Suspend( void );
+/* @[declare_ota_suspend] */
 
 /**
  * @brief Resume OTA agent operations .
@@ -394,14 +400,38 @@ OtaErr_t OTA_Suspend( void );
  * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
  * list above.
  */
+/* @[declare_ota_resume] */
 OtaErr_t OTA_Resume( void );
+/* @[declare_ota_resume] */
 
 /**
- * @brief OTA agent task function.
+ * @brief OTA agent event processing loop.
+ *
+ * This is the main event loop to handle events for OTA update and needs to be called by
+ * the application task. This loop will continue to handle and execute events received for
+ * OTA Update until this tasks is terminated by the application.
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
+ * This can be a function pointer that executes as the first routine when the
+ * event loop starts.
  */
-void otaAgentTask( void * pUnused );
+/* @[declare_ota_eventprocessingtask] */
+void OTA_EventProcessingTask( void * pUnused );
+/* @[declare_ota_eventprocessingtask] */
+
+
+/**
+ * @brief Signal event to the OTA Agent task.
+ *
+ * This function adds the event to the back of event queue and used
+ * by internal OTA modules to signal agent task.
+ *
+ * @param[in] pEventMsg Event to be added to the queue
+ * @return true If operation is successful, false If the event can not be added
+ */
+/* @[declare_ota_signalevent] */
+bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
+/* @[declare_ota_signalevent] */
 
 /*---------------------------------------------------------------------------*/
 /*							Statistics API									 */
@@ -426,7 +456,9 @@ void otaAgentTask( void * pUnused );
  *
  * @return OtaErrNone if the statistics can be received successfully.
  */
+/* @[declare_ota_getstatistics] */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
+/* @[declare_ota_getstatistics] */
 
 /**
  * @brief Error code to string conversion for OTA errors.
@@ -435,9 +467,9 @@ OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
  *
  * @return The string representation of the error.
  */
-/* @[declare_ota_error_strerror] */
+/* @[declare_ota_err_strerror] */
 const char * OTA_Err_strerror( OtaErr_t err );
-/* @[declare_ota_error_strerror] */
+/* @[declare_ota_err_strerror] */
 
 /**
  * @brief Error code to string conversion for OTA Job Parsing errors.
@@ -446,7 +478,9 @@ const char * OTA_Err_strerror( OtaErr_t err );
  *
  * @return The string representation of the error.
  */
+/* @[declare_ota_jobparse_strerror] */
 const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
+/* @[declare_ota_jobparse_strerror] */
 
 /**
  * @brief Status code to string conversion for OTA PAL status.
@@ -455,7 +489,9 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err );
  *
  * @return The string representation of the status.
  */
+/* @[declare_ota_palstatus_strerror] */
 const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
+/* @[declare_ota_palstatus_strerror] */
 
 /**
  * @brief Status code to string conversion for OTA OS status.
@@ -464,6 +500,8 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
  *
  * @return The string representation of the status.
  */
+/* @[declare_ota_osstatus_strerror] */
 const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
+/* @[declare_ota_osstatus_strerror] */
 
-#endif /* ifndef _AWS_IOT_OTA_AGENT_H_ */
+#endif /* ifndef OTA_H */

@@ -32,19 +32,19 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "ota-for-aws-iot-embedded-sdk"
+PROJECT_NAME           = "AWS IoT Over-the-air Update"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "v1.0.0"
+PROJECT_NUMBER         = "v2.0.0 (Release Candidate)"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "ota-for-aws-iot-embedded-sdk 1.0.0 Client Library"
+PROJECT_BRIEF          = "Client library for AWS IoT OTA"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -2607,3 +2607,27 @@ ALIASES += paramfor="<b>Parameter for:</b> "
 
 # Alias for parameter structure initializers.
 ALIASES += initializer{2}="All instances of #\1 should be initialized with #\2.^^"
+
+#Alias for the OTA PAL interface definition
+ALIASES += otapalpage="@page ota_pal_interface OTA PAL Interface"
+
+#Alias for the OTA PAL interface overview
+ALIASES += otapalsectionoverview="@section ota_pal_interface_overview OTA PAL Overview"
+
+#Alias for the OTA OS Functional Interface definition
+ALIASES += otaosfipage="@page ota_os_functional_interface OTA OS Functional Interface"
+
+#Alias for the OTA OS Functional Interface overview
+ALIASES += otaosfisectionoverview="@section ota_os_functional_interface_overview OTA OS Functional Interface"
+
+#Alias for the OTA MQTT interface definition
+ALIASES += otamqttpage="@page ota_mqtt_interface OTA MQTT Interface"
+
+#Alias for the OTA MQTT interface overview
+ALIASES += otamqttsectionoverview="@section ota_mqtt_interface_overview OTA MQTT Overview"
+
+#Alias for the OTA HTTP interface definition
+ALIASES += otahttppage="@page ota_http_interface OTA HTTP Interface"
+
+#Alias for the OTA HTTP interface overview
+ALIASES += otahttpsectionoverview="@section ota_http_interface_overview OTA HTTP Overview"

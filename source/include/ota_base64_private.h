@@ -1,5 +1,5 @@
 /*
- * FreeRTOS OTA V2.0.0
+ * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -18,9 +18,6 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * http://aws.amazon.com/freertos
- * http://www.FreeRTOS.org
  */
 
 /**
@@ -28,14 +25,15 @@
  * @brief Function declarations and error codes for ota_base64.c.
  */
 
-#ifndef __OTA_BASE64_PRIVATE__H__
-#define __OTA_BASE64_PRIVATE__H__
+#ifndef OTA_BASE64_PRIVATE_H
+#define OTA_BASE64_PRIVATE_H
 
 /* Standard includes. */
 #include <stdint.h>
 #include <stdlib.h>
 
 /**
+ * ota_enum_types
  * @brief The Base64 functionality return status.
  */
 typedef enum Base64Status
@@ -105,4 +103,4 @@ Base64Status_t base64Decode( uint8_t * pDest,
                              const uint8_t * pEncodedData,
                              const size_t encodedLen );
 
-#endif /* ifndef __OTA_BASE64_PRIVATE__H__ */
+#endif /* ifndef OTA_BASE64_PRIVATE_H */
