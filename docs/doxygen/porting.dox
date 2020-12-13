@@ -110,7 +110,7 @@ OtaOsStatus_t ( * OtaReceiveEvent_t )(
     uint32_t timeout
 );
 @endcode
-- [OTA OS Functional Interface Deinitialize Event](@ref OtaDeinitEvent_t): A function to deinitialize the OTA events mechanism and free any recources used.
+- [OTA OS Functional Interface Deinitialize Event](@ref OtaDeinitEvent_t): A function to deinitialize the OTA events mechanism and free any resources used.
 @code
 OtaOsStatus_t ( * OtaDeinitEvent_t )(
     OtaEventContext_t * pEventCtx
@@ -210,7 +210,7 @@ OtaHttpStatus_t ( * OtaHttpRequest_t )  (  uint32_t rangeStart,
                                             uint32_t rangeEnd );
 @endcode
 
-- [OTA HTTP De-initialize](@ref OtaHttpDeinit): A function to de-initialize the http connection.
+- [OTA HTTP Deinitialize](@ref OtaHttpDeinit): A function to deinitialize the http connection.
 @code
 OtaHttpStatus_t ( * OtaHttpDeinit )( void );
 @endcode
