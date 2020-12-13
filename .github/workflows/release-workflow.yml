@@ -24,7 +24,7 @@ jobs:
             git config --global user.name "Release Workflow"
       - name: Tag Commit and Push to remote
         run: |
-          git tag ${{ github.event.inputs.version_number }} -a -m "OTA for AWS IoT Embedded SDK ${{ github.event.inputs.version_number }}"
+          git tag ${{ github.event.inputs.version_number }} -a -m "AWS IoT Over-the-air Update Library ${{ github.event.inputs.version_number }}"
           git push origin --tags
       - name: Verify tag on remote
         run: |
@@ -95,7 +95,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.version_number }}
           release_name: ${{ github.event.inputs.version_number }}
-          body: Release ${{ github.event.inputs.version_number }} of OTA for AWS IoT Embedded SDK.
+          body: Release ${{ github.event.inputs.version_number }} of AWS IoT Over-the-air Update Library.
           draft: false
           prerelease: false
       - name: Download ZIP artifact
