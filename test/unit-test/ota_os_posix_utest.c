@@ -95,10 +95,6 @@ void test_OTA_posix_SendAndRecvEvent( void )
 
 /**
  * @brief Test that the event queue operations do not succeed for invalid operations.
- *
- * TODO: 1. need to use timed send or O_NONBLOCK to test event recv failure
- * 2. Since the queue is unlinked and other params are not variable, can not test init fail
- * 3. Need to set O_NONBLOCK flag for testing send failure
  */
 void test_OTA_posix_InvalidEventQueue( void )
 {
