@@ -74,7 +74,7 @@ static const char pOtaStreamDataTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_S
 static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_GET_CBOR;    /*!< Topic template to request next data over a stream. */
 
 static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                  /*!< Used to specify client token id to authenticate job. */
-static const char pOtaStringReceive[] = "receive";                                                              /*!< Used to build the job receive template. */
+static const char pOtaStringReceive[] = "\"receive\"";                                                          /*!< Used to build the job receive template. */
 
 /** We map all of the above status cases to one of these status strings.
  * These are the only strings that are supported by the Job Service. You
@@ -672,11 +672,11 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     {
         NULL, /* Job status is not available at compile time, initialized below. */
         pOtaStringReceive,
-        ":",
+        ":\"",
         NULL, /* Received string is not available at compile time, initialized below. */
         "/",
         NULL, /* # blocks string is not available at compile time, initialized below. */
-        "}}",
+        "\"}}",
         NULL
     };
 
@@ -687,15 +687,17 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
-    payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
-    payloadStringParts[ 3 ] = receivedString;
-    payloadStringParts[ 5 ] = numBlocksString;
-
-    ( void ) stringBuilderUInt32Decimal( receivedString, sizeof( receivedString ), received );
-    ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), received );
-
-    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) /* Output a status update once in a while. */
+    /* Output a status update once in a while. */
+    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U )
     {
+        payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
+        payloadStringParts[ 3 ] = receivedString;
+        payloadStringParts[ 5 ] = numBlocksString;
+
+        ( void ) stringBuilderUInt32Decimal( receivedString, sizeof( receivedString ), received );
+        ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), received );
+
+
         msgSize = ( uint32_t ) stringBuilder(
             pMsgBuffer,
             msgBufferSize,
