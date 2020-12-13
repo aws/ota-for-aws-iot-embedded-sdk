@@ -19,7 +19,6 @@ auth
 authschememaxsize
 authschemesize
 aws
-aws-iot-device-sdk-embedded-c
 backoff
 backoffdelay
 basedefs
@@ -58,10 +57,12 @@ clienttoken
 closefile
 closefilehandler
 cmock
+colspan
 com
 completecallback
 cond
 config
+configpagestyle
 configassert
 configs
 connectsuccessindex
@@ -70,6 +71,8 @@ constantspage
 contextbase
 contextbaseaddr
 contextsize
+copydoc
+corejson
 coremqtt
 couldn
 coverity
@@ -78,6 +81,8 @@ cr
 createfile
 createfileforrx
 crt
+crypto
+css
 currblock
 currentstate
 customjobcallback
@@ -92,11 +97,13 @@ defaultcustomjobcallback
 defaultcustomjobcallback
 defaultotacompletecallback
 defaultotacompletecallback
+defgroup
 deinit
 deinitialize
 deinitializing
 destlen
 destoffset
+developerguide
 didn
 dns
 docmodel
@@ -125,6 +132,7 @@ encodedlen
 encodedsize
 endcode
 endcond
+enddot
 endian
 endif
 enum
@@ -154,7 +162,10 @@ filepathmaxsize
 filepaths
 filesize
 filetype
+fillcolor
 fixme
+fontname
+fontsize
 fopen
 freertos
 freertos.org
@@ -163,6 +174,7 @@ functionpage
 functionpointers
 functionspage
 functiontofail
+gcc
 getaddrinfo
 getagentstate
 getcwd
@@ -174,6 +186,7 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+helvetica
 hostnamelength
 html
 http
@@ -210,6 +223,7 @@ inout
 inprogress
 inselftesthandler
 int
+intel
 ioffset
 iot
 ip
@@ -235,9 +249,13 @@ lastupdatedat
 lf
 li
 linux
+logdebug
+logerror
 loginfo
 logpath
+logwarn
 longjmp
+mainpage
 malloc
 maxattempts
 maxfragmentlength
@@ -610,6 +628,7 @@ recv
 recvtimeout
 recvtimeoutms
 repo
+requestdata
 requestdatahandler
 requestfileblock
 requestjob
@@ -621,6 +640,8 @@ resumehandler
 retryutilsretriesexhausted
 retryutilssuccess
 retvalue
+rm
+rollout
 rsa
 rtos
 rx
@@ -669,6 +690,7 @@ sys
 tcp
 tcpsocket
 tcpsocketcontext
+td
 testclient
 thingname
 thisisaclienttoken
@@ -677,15 +699,18 @@ timeinseconds
 timerhandle
 timespec
 timestampfromjob
+tinycbor
 tls
 tlscontext
 tlsrecv
 tlssend
 todo
+toolchain
 topicfilter
 topicfilterlength
 topiclen
 tq
+tr
 transportcallback
 transportinterface
 transportpage
