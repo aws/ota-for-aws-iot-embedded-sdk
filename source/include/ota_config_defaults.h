@@ -268,7 +268,7 @@
  * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
  * reference POSIX implementation of the logging macros, refer to the ota
  * default config file, and the logging-stack in demos folder of the
- * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main).
  *
  * <b>Default value</b>: Error logging is turned off, and no code is generated
  * for calls to the macro in the OTA library on compilation.
@@ -289,7 +289,7 @@
  * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
  * reference POSIX implementation of the logging macros, refer to the ota
  * default config file, and the logging-stack in demos folder of the
- * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main).
  *
  * <b>Default value</b>: Warning logging is turned off, and no code is
  * generated for calls to the macro in the OTA library on compilation.
@@ -310,7 +310,7 @@
  * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
  * reference POSIX implementation of the logging macros, refer to the ota
  * default config file, and the logging-stack in demos folder of the
- * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main).
  *
  * <b>Default value</b>: Info logging is turned off, and no code is
  * generated for calls to the macro in the OTA library on compilation.
@@ -331,7 +331,7 @@
  * wrapped in double parentheses to be ISO C89/C90 standard compliant. For a
  * reference POSIX implementation of the logging macros, refer to the ota
  * default config file, and the logging-stack in demos folder of the
- * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/master).
+ * [AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main).
  *
  * <b>Default value</b>: Debug logging is turned off, and no code is
  * generated for calls to the macro in the OTA library on compilation.
