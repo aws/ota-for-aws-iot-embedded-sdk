@@ -80,55 +80,47 @@ Currently, the OTA library has the following direct dependencies:
 
 <table>
     <tr>
-        <td colspan="4"><center><b>Code size of OTA library files (sizes generated with [GCC for ARM Cortex-M toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2020-q2-update))</b></center></td>
+        <td colspan="3"><center><b>Code size of AWS IoT OTA (example generated with GCC for ARM Cortex-M)</b></center></td>
     </tr>
     <tr>
         <td><b>File</b></td>
-        <td colspan="1"><b>No Optimization (asserts enabled)</b></td>
-        <td colspan="1"><b>With -O1 Optimization (asserts disabled)</b></td>
-        <td colspan="1"><b>With -Os Optimization (asserts disabled)</b></td>
+        <td><center><b>With -O1 Optimization</b></center></td>
+        <td><center><b>With -Os Optimization</b></center></td>
     </tr>
     <tr>
         <td>ota.c</td>
-        <td>19.9k</td>
-        <td>12.0k</td>
-        <td>10.2k</td>
+        <td><center>7.5K</center></td>
+        <td><center>6.6K</center></td>
     </tr>
     <tr>
         <td>ota_interface.c</td>
-        <td>0.7k</td>
-        <td>0.1k</td>
-        <td>0.1k</td>
+        <td><center>0.1K</center></td>
+        <td><center>0.1K</center></td>
     </tr>
     <tr>
         <td>ota_base64.c</td>
-        <td>2.7k</td>
-        <td>1.0k</td>
-        <td>0.9k</td>
+        <td><center>0.6K</center></td>
+        <td><center>0.6K</center></td>
     </tr>
     <tr>
         <td>ota_mqtt.c</td>
-        <td>8.9k</td>
-        <td>3.7k</td>
-        <td>3.4k</td>
+        <td><center>2.3K</center></td>
+        <td><center>2.2K</center></td>
     </tr>
     <tr>
         <td>ota_cbor.c</td>
-        <td>2.5k</td>
-        <td>1.1k</td>
-        <td>1.0k</td>
+        <td><center>0.7K</center></td>
+        <td><center>0.6K</center></td>
     </tr>
     <tr>
         <td>ota_http.c</td>
-        <td>1.6k</td>
-        <td>0.5k</td>
-        <td>0.5k</td>
+        <td><center>0.3K</center></td>
+        <td><center>0.3K</center></td>
     </tr>
     <tr>
         <td><b>Total estimates</b></td>
-        <td>36.3k</td>
-        <td>18.4k</td>
-        <td>16.1k</td>
+        <td><center><b>11.5K</b></center></td>
+        <td><center><b>10.4K</b></center></td>
     </tr>
 </table>
  */
