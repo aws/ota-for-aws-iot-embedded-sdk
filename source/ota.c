@@ -954,6 +954,9 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     OtaErr_t retVal = OtaErrNone;
     OtaFileContext_t * pOtaFileContext = NULL;
 
+    /* Clear the self test flag before parsing job document.*/
+    otaAgent.fileContext.isInSelfTest = false;
+
     /*
      * Parse the job document and update file information in the file context.
      */
@@ -1416,6 +1419,9 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext )
             pFileContext->pAuthScheme = NULL;
         }
     }
+
+    /* Clear the self test flag.*/
+    otaAgent.fileContext.isInSelfTest = false;
 }
 
 /* Close an existing OTA file context and free its resources. */
