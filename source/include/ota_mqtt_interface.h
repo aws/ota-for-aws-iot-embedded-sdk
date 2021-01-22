@@ -146,7 +146,7 @@ typedef OtaMqttStatus_t ( * OtaMqttPublish_t )( const char * const pacTopic,
                                                 uint16_t usTopicLen,
                                                 const char * pcMsg,
                                                 uint32_t ulMsgSize,
-                                                uint8_t ucQos );
+                                                uint8_t ucQoS );
 
 /**
  * @ingroup ota_struct_types
