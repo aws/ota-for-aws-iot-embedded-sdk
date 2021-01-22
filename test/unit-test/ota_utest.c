@@ -1381,7 +1381,12 @@ void test_OTA_ReceiveFileBlockEmpty()
     otaEvent.pEventData = &eventBuffer;
     otaEvent.pEventData->dataLength = 0;
     OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    /* Process the event for receiving the block to trigger digesting it. */
+    receiveAndProcessOtaEvent();
+    /* Process the event generated after failing to decode the block. The
+     * expected result is that we close the file and begin waiting for a new
+     * job document. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -1400,7 +1405,10 @@ void test_OTA_ReceiveFileBlockTooLarge()
     otaEvent.pEventData = &eventBuffer;
     otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE + 1;
     OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    /* Process the event for receiving the block to trigger digesting it. */
+    receiveAndProcessOtaEvent();
+    /* Process the event generated after failing to decode the block. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -1456,6 +1464,8 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
         remainingBytes -= OTA_FILE_BLOCK_SIZE;
     }
 
+    /* Process all of the events for receiving an MQTT message. */
+    processEntireQueue();
     /* OTA agent should complete the update and go back to waiting for job state. */
     otaWaitForState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
