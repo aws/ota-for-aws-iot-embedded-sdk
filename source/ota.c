@@ -2811,13 +2811,61 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-/* Event Processing loop to run the OTA state machine. */
-void OTA_EventProcessingTask( void * pUnused )
+/* This function should only be called by OTA_EventProcessingTask(). This is
+ * required so that the unit tests can set the OTA Agent to ready without
+ * calling OTA_EventProcessingTask. */
+void setAgentToReady( void )
+{
+    otaAgent.state = OtaAgentStateReady;
+}
+
+void receiveAndProcessOtaEvent( void )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;
     uint32_t transitionTableLen = ( uint32_t ) ( sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] ) );
 
+    if( otaAgent.pOtaInterface == NULL)
+    {
+        LogError(("Failed to receive event: OS Interface not set"));
+    }
+    /*
+     * Receive the next event form the OTA event queue to process.
+     */
+    if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+    {
+        /*
+         * Search transition index if available in the table.
+         */
+        i = searchTransition( &eventMsg );
+
+        if( i < transitionTableLen )
+        {
+            LogDebug( ( "Found valid event handler for state transition: "
+                        "State=[%s], "
+                        "Event=[%s]",
+                        pOtaAgentStateStrings[ otaAgent.state ],
+                        pOtaEventStrings[ eventMsg.eventId ] ) );
+
+            /*
+             * Execute the handler function.
+             */
+            executeHandler( i, &eventMsg );
+        }
+
+        if( i == transitionTableLen )
+        {
+            /*
+             * Handle unexpected events.
+             */
+            handleUnexpectedEvents( &eventMsg );
+        }
+    }
+}
+
+/* Event Processing loop to run the OTA state machine. */
+void OTA_EventProcessingTask( void * pUnused )
+{
     ( void ) pUnused;
 
     /*
@@ -2827,38 +2875,7 @@ void OTA_EventProcessingTask( void * pUnused )
 
     while( otaAgent.state != OtaAgentStateStopped )
     {
-        /*
-         * Receive the next event form the OTA event queue to process.
-         */
-        if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
-        {
-            /*
-             * Search transition index if available in the table.
-             */
-            i = searchTransition( &eventMsg );
-
-            if( i < transitionTableLen )
-            {
-                LogDebug( ( "Found valid event handler for state transition: "
-                            "State=[%s], "
-                            "Event=[%s]",
-                            pOtaAgentStateStrings[ otaAgent.state ],
-                            pOtaEventStrings[ eventMsg.eventId ] ) );
-
-                /*
-                 * Execute the handler function.
-                 */
-                executeHandler( i, &eventMsg );
-            }
-
-            if( i == transitionTableLen )
-            {
-                /*
-                 * Handle unexpected events.
-                 */
-                handleUnexpectedEvents( &eventMsg );
-            }
-        }
+        receiveAndProcessOtaEvent();
     }
 }
 
