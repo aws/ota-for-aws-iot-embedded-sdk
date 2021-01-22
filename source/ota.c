@@ -2811,9 +2811,7 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-/* This function should only be called by OTA_EventProcessingTask(). This is
- * required so that the unit tests can set the OTA Agent to ready without
- * calling OTA_EventProcessingTask. */
+/* This function should only be called by OTA_EventProcessingTask(). */
 void setAgentToReady( void )
 {
     otaAgent.state = OtaAgentStateReady;
@@ -2871,7 +2869,7 @@ void OTA_EventProcessingTask( void * pUnused )
     /*
      * OTA Agent is ready to receive and process events so update the state to ready.
      */
-    otaAgent.state = OtaAgentStateReady;
+    setAgentToReady();
 
     while( otaAgent.state != OtaAgentStateStopped )
     {

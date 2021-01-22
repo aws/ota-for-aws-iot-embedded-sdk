@@ -33,7 +33,6 @@
 
 /* 3rdparty includes. */
 #include <unistd.h>
-#include <pthread.h>
 #include "unity.h"
 
 /* OTA includes. */
@@ -246,10 +245,6 @@ static OtaOsStatus_t mockOSEventReceive( OtaEventContext_t * unused_1,
     {
         err = OtaOsEventQueueReceiveFailed;
     }
-
-    /* Sleep for 10 ms to lower the CPU usage. This also makes sure we have chance to test state
-     * transition happened inside OTA agent. */
-    usleep( 10000 );
 
     return err;
 }
@@ -597,55 +592,6 @@ static void otaDeinit()
     processEntireQueue();
 }
 
-static void * pthreadOtaAgentTask( void * params )
-{
-    OTA_EventProcessingTask( params );
-    return NULL;
-}
-
-static void otaStartAgentTask()
-{
-    /* This is typically where the task that processes events would be created.
-     * For the purpose of unit testing, we don't want to have multithreading.
-     * So instead of creating the task, we are just going to set the agent to
-     * the ready state and then call the event processing step manually. */
-    setAgentToReady();
-}
-
-static void otaWaitForStateWithTimeout( OtaState_t state,
-                                        int milliseconds )
-{
-    while( milliseconds > 0 && state != OTA_GetState() )
-    {
-        usleep( 1000 );
-        milliseconds--;
-    }
-}
-
-//TODO replace this function with direct call to process event
-static void otaWaitForState( OtaState_t state )
-{
-    //otaWaitForStateWithTimeout( state, otaDefaultWait );
-    receiveAndProcessOtaEvent();
-}
-
-static void otaWaitForEmptyEventWithTimeout( int milliseconds )
-{
-    while( milliseconds > 0 && otaEventQueueEnd != otaEventQueue )
-    {
-        usleep( 1000 );
-        milliseconds--;
-    }
-
-    /* Delay for 100 ms to make sure the event handler is finished. */
-    usleep( 100000 );
-}
-
-static void otaWaitForEmptyEvent()
-{
-    otaWaitForEmptyEventWithTimeout( otaDefaultWait );
-}
-
 static void otaReceiveJobDocument()
 {
     TEST_ASSERT_NOT_EQUAL( NULL, pOtaJobDoc );
@@ -660,165 +606,84 @@ static void otaReceiveJobDocument()
     OTA_SignalEvent( &otaEvent );
 }
 
-/* Jump to any state in OTA agent. Event send interface must be set to mockOSEventSendThenStop to
- * prevent OTA internal state transition. */
-static void otaGoToStateWithTimeout( OtaState_t state,
-                                     int timeout_ms )
-{
-    OtaEventMsg_t otaEvent = { 0 };
-
-    if( state == OTA_GetState() )
-    {
-        return;
-    }
-
-    if( OtaAgentStateStopped == OTA_GetState() )
-    {
-        otaInitDefault();
-    }
-
-    /* Default to the MQTT job doc. */
-    if( pOtaJobDoc == NULL )
-    {
-        pOtaJobDoc = JOB_DOC_A;
-    }
-
-    switch( state )
-    {
-        case OtaAgentStateInit:
-
-            /* Nothing needs to be done here since we should either be in init state already or
-             * we are in other running states. */
-            break;
-
-        case OtaAgentStateReady:
-            otaStartAgentTask();
-            break;
-
-        case OtaAgentStateRequestingJob:
-            otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
-            otaEvent.eventId = OtaAgentEventStart;
-            OTA_SignalEvent( &otaEvent );
-            break;
-
-        case OtaAgentStateWaitingForJob:
-            otaGoToStateWithTimeout( OtaAgentStateRequestingJob, timeout_ms );
-            otaEvent.eventId = OtaAgentEventRequestJobDocument;
-            OTA_SignalEvent( &otaEvent );
-            break;
-
-        case OtaAgentStateCreatingFile:
-            otaGoToStateWithTimeout( OtaAgentStateWaitingForJob, timeout_ms );
-            otaReceiveJobDocument();
-            break;
-
-        case OtaAgentStateRequestingFileBlock:
-            otaGoToStateWithTimeout( OtaAgentStateCreatingFile, timeout_ms );
-            otaEvent.eventId = OtaAgentEventCreateFile;
-            OTA_SignalEvent( &otaEvent );
-            break;
-
-        case OtaAgentStateWaitingForFileBlock:
-            otaGoToStateWithTimeout( OtaAgentStateRequestingFileBlock, timeout_ms );
-            otaEvent.eventId = OtaAgentEventRequestFileBlock;
-            OTA_SignalEvent( &otaEvent );
-            break;
-
-        case OtaAgentStateSuspended:
-            otaGoToStateWithTimeout( OtaAgentStateReady, timeout_ms );
-            OTA_Suspend();
-            break;
-
-        default:
-            break;
-    }
-
-    otaWaitForState( state );
-    mockOSEventReset( NULL );
-}
-
-static void goToState( OtaState_t state )
-{
-    OtaEventMsg_t otaEvent = { 0 };
-
-    if( state == OTA_GetState() )
-    {
-        return;
-    }
-
-    if( OtaAgentStateStopped == OTA_GetState() )
-    {
-        otaInitDefault();
-    }
-
-    /* Default to the MQTT job doc. */
-    if( pOtaJobDoc == NULL )
-    {
-        pOtaJobDoc = JOB_DOC_A;
-    }
-
-    switch( state )
-    {
-        case OtaAgentStateInit:
-            /* Nothing needs to be done here since we should either be in init state already or
-             * we are in other running states. */
-            break;
-
-        case OtaAgentStateReady:
-            otaStartAgentTask();
-            break;
-
-        case OtaAgentStateRequestingJob:
-            goToState( OtaAgentStateReady );
-            otaEvent.eventId = OtaAgentEventStart;
-            OTA_SignalEvent( &otaEvent );
-            receiveAndProcessOtaEvent();
-            break;
-
-        case OtaAgentStateWaitingForJob:
-            goToState( OtaAgentStateRequestingJob );
-            otaEvent.eventId = OtaAgentEventRequestJobDocument;
-            OTA_SignalEvent( &otaEvent );
-            receiveAndProcessOtaEvent();
-            break;
-
-        case OtaAgentStateCreatingFile:
-            goToState( OtaAgentStateWaitingForJob );
-            otaReceiveJobDocument();
-            receiveAndProcessOtaEvent();
-            break;
-
-        case OtaAgentStateRequestingFileBlock:
-            goToState( OtaAgentStateCreatingFile );
-            otaEvent.eventId = OtaAgentEventCreateFile;
-            OTA_SignalEvent( &otaEvent );
-            receiveAndProcessOtaEvent();
-            break;
-
-        case OtaAgentStateWaitingForFileBlock:
-            goToState( OtaAgentStateRequestingFileBlock );
-            otaEvent.eventId = OtaAgentEventRequestFileBlock;
-            OTA_SignalEvent( &otaEvent );
-            receiveAndProcessOtaEvent();
-            break;
-
-        case OtaAgentStateSuspended:
-            goToState( OtaAgentStateReady );
-            OTA_Suspend();
-            receiveAndProcessOtaEvent();
-            break;
-
-        default:
-            break;
-    }
-
-    mockOSEventReset( NULL );
-}
-
+/* Jump to any state in OTA agent. The event send interface must be set to
+ * mockOSEventSendThenStop to prevent any OTA internal state transitions. */
 static void otaGoToState( OtaState_t state )
 {
-    //otaGoToStateWithTimeout( state, otaDefaultWait );
-    goToState( state );
+    OtaEventMsg_t otaEvent = { 0 };
+
+    if( state == OTA_GetState() )
+    {
+        return;
+    }
+
+    if( OtaAgentStateStopped == OTA_GetState() )
+    {
+        otaInitDefault();
+    }
+
+    /* Default to the MQTT job doc. */
+    if( pOtaJobDoc == NULL )
+    {
+        pOtaJobDoc = JOB_DOC_A;
+    }
+
+    switch( state )
+    {
+        case OtaAgentStateInit:
+            /* Nothing needs to be done here since we should either be in init state already or
+             * we are in other running states. */
+            break;
+
+        case OtaAgentStateReady:
+            setAgentToReady();
+            break;
+
+        case OtaAgentStateRequestingJob:
+            otaGoToState( OtaAgentStateReady );
+            otaEvent.eventId = OtaAgentEventStart;
+            OTA_SignalEvent( &otaEvent );
+            receiveAndProcessOtaEvent();
+            break;
+
+        case OtaAgentStateWaitingForJob:
+            otaGoToState( OtaAgentStateRequestingJob );
+            otaEvent.eventId = OtaAgentEventRequestJobDocument;
+            OTA_SignalEvent( &otaEvent );
+            receiveAndProcessOtaEvent();
+            break;
+
+        case OtaAgentStateCreatingFile:
+            otaGoToState( OtaAgentStateWaitingForJob );
+            otaReceiveJobDocument();
+            receiveAndProcessOtaEvent();
+            break;
+
+        case OtaAgentStateRequestingFileBlock:
+            otaGoToState( OtaAgentStateCreatingFile );
+            otaEvent.eventId = OtaAgentEventCreateFile;
+            OTA_SignalEvent( &otaEvent );
+            receiveAndProcessOtaEvent();
+            break;
+
+        case OtaAgentStateWaitingForFileBlock:
+            otaGoToState( OtaAgentStateRequestingFileBlock );
+            otaEvent.eventId = OtaAgentEventRequestFileBlock;
+            OTA_SignalEvent( &otaEvent );
+            receiveAndProcessOtaEvent();
+            break;
+
+        case OtaAgentStateSuspended:
+            otaGoToState( OtaAgentStateReady );
+            OTA_Suspend();
+            receiveAndProcessOtaEvent();
+            break;
+
+        default:
+            break;
+    }
+
+    mockOSEventReset( NULL );
 }
 
 void setUp()
@@ -837,10 +702,6 @@ void tearDown()
     memset( pOtaFileBuffer, 0, OTA_TEST_FILE_SIZE );
     otaInterfaceDefault();
     otaDeinit();
-    //commenting this out because there are no events in the queue. If some
-    //tests run the path that puts an event in the queue, then I'll have to add
-    //something to either process all remaining signals or to only process if the queue isn't empty
-    //otaWaitForState( OtaAgentStateStopped );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -914,7 +775,6 @@ void test_OTA_StartWhenReady()
     otaEvent.eventId = OtaAgentEventStart;
     OTA_SignalEvent( &otaEvent );
     receiveAndProcessOtaEvent();
-    //otaWaitForState( OtaAgentStateRequestingJob );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
@@ -953,7 +813,7 @@ void test_OTA_SuspendWhenReady()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OtaErrNone, OTA_Suspend() );
-    otaWaitForState( OtaAgentStateSuspended );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
 
@@ -985,7 +845,7 @@ void test_OTA_ResumeWhenSuspended()
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
-    otaWaitForState( OtaAgentStateRequestingJob );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
@@ -1036,7 +896,7 @@ void test_OTA_CheckForUpdate()
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 
     TEST_ASSERT_EQUAL( OtaErrNone, OTA_CheckForUpdate() );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -1216,7 +1076,7 @@ void test_OTA_ProcessJobDocumentInvalidProtocol()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateCreatingFile );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 }
 
@@ -1228,7 +1088,7 @@ void test_OTA_ProcessJobDocumentValidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateCreatingFile );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 }
 
@@ -1266,7 +1126,7 @@ static void otaInitFileTransfer()
 
     otaEvent.eventId = OtaAgentEventCreateFile;
     OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateRequestingFileBlock );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
 }
 
@@ -1332,7 +1192,7 @@ static void otaRequestFileBlock()
 
     otaEvent.eventId = OtaAgentEventRequestFileBlock;
     OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForFileBlock );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 }
 
@@ -1509,7 +1369,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
     /* Process all of the events for receiving an MQTT message. */
     processEntireQueue();
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
@@ -1592,8 +1452,8 @@ static void invokeSelfTestHandler()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateCreatingFile );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    receiveAndProcessOtaEvent();
+    receiveAndProcessOtaEvent();
 }
 
 void test_OTA_SelfTestJob()
@@ -1661,7 +1521,7 @@ void test_OTA_ReceiveNewJobDocWhileInProgress()
     /* Sending another job document should cause OTA agent to abort current update. */
     pOtaJobDoc = JOB_DOC_B;
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateRequestingJob );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
