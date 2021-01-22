@@ -1284,6 +1284,7 @@ void test_OTA_InitFileTransferHttp()
 
 void test_OTA_InitFileTransferRetryFail()
 {
+    uint32_t i = 0U;
     /* Use HTTP data transfer so we can intentionally fail the init transfer. */
     pOtaJobDoc = JOB_DOC_HTTP;
 
@@ -1302,9 +1303,23 @@ void test_OTA_InitFileTransferRetryFail()
     /* After receiving a valid job document, OTA agent should first transit to creating file state.
      * Then keep calling init file transfer until failed, which should then shutdown itself. */
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateCreatingFile );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
-    otaWaitForState( OtaAgentStateStopped );
+
+    /* Make the maximum number of failures based on the momentum parameter. */
+    for( i = 0U; i < otaconfigMAX_NUM_REQUEST_MOMENTUM; ++i )
+    {
+        receiveAndProcessOtaEvent();
+        TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    }
+
+    /* Make another attempt after already reaching the maximum number of
+     * allowable attempts, which generates a shutdown event. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+
+    /* Shutdown the OTA Agent after processing the event. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -1341,6 +1356,8 @@ void test_OTA_RequestFileBlockHttpOneBlock()
 
 void test_OTA_RequestFileBlockRetryFail()
 {
+    uint32_t i = 0;
+
     /* Use HTTP data transfer so we can intentionally fail the file block request. */
     pOtaJobDoc = JOB_DOC_HTTP;
 
@@ -1358,10 +1375,35 @@ void test_OTA_RequestFileBlockRetryFail()
 
     /* After receiving a valid job document and starts file transfer, OTA agent should first transit
      * to requesting file block state. Then keep calling request file block until failed. */
+
+    /* Receive the job document. */
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateRequestingFileBlock );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+
+    /* Successfully initialize the file transfer. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
-    otaWaitForState( OtaAgentStateStopped );
+
+    /* Request a file block and fail the maximum number of times. */
+    for( i = 0; i < otaconfigMAX_NUM_REQUEST_MOMENTUM; ++i )
+    {
+        receiveAndProcessOtaEvent();
+        TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+    }
+
+    /* The timer triggers as we check for the number of attempts so far. The
+     * number of attempts is at the maximum already so we also create a
+     * shutdown event. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    /* Process the timer event. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    /* Process the shutdown event. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -1522,7 +1564,7 @@ void test_OTA_ReceiveFileBlockCompleteHttp()
     }
 
     /* OTA agent should complete the update and go back to waiting for job state. */
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    processEntireQueue();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Check if received complete file. */
@@ -1641,13 +1683,21 @@ static void refreshWithJobDoc( const char * initJobDoc,
      * to request job doc again and transit to waiting for job state. */
     otaEvent.eventId = OtaAgentEventRequestJobDocument;
     OTA_SignalEvent( &otaEvent );
-    otaWaitForState( OtaAgentStateWaitingForJob );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     /* Now send the new job doc, OTA agent should abort current job and start the new job. */
     pOtaJobDoc = newJobDoc;
     otaReceiveJobDocument();
-    otaWaitForState( OtaAgentStateWaitingForFileBlock );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+
+    /* Request file block. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    /* Wait for the file block. */
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 }
 
