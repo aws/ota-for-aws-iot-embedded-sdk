@@ -548,10 +548,20 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-/* Helper functions used by the processing loop for OTA events. These need to 
- * be public so they can be called by the unit tests. These functions should
- * not be called by the user application. */
+/**
+ * @brief Private helper function used by the processing loop for OTA events to
+ * set the OTA Agent state machine into the ready state. This function needs to
+ * be public so that it can be called by the unit tests directly. This function
+ * should not be called by the user application.
+ */
 void setAgentToReady( void );
+
+/**
+ * @brief Private helper function for receiving the next available OTA Event
+ * from the event queue. This function should only be called by the
+ * OTA_EventProcessingTask function. This function needs to be public so that
+ * it can be called by the unit tests directly.
+ */
 void receiveAndProcessOtaEvent( void );
 
 /* coverity[misra_c_2012_rule_2_2_violation] */
