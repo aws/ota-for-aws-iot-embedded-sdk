@@ -548,6 +548,9 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
+void setAgentToReady( void );
+void receiveAndProcessOtaEvent( void );
+
 /* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the Events for the OTA agent. */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
