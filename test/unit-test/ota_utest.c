@@ -110,7 +110,6 @@ static uint8_t pUserBuffer[ OTA_APP_BUFFER_SIZE ];
 static OtaEventMsg_t otaEventQueue[ OTA_NUM_MSG_Q_ENTRIES ];
 static OtaEventMsg_t * otaEventQueueEnd = otaEventQueue;
 static OtaEventData_t eventBuffer;
-static pthread_mutex_t eventLock;
 static bool eventIgnore;
 
 /* OTA File handle and buffer. */
