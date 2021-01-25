@@ -548,6 +548,9 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
+/* Helper functions used by the processing loop for OTA events. These need to 
+ * be public so they can be called by the unit tests. These functions should
+ * not be called by the user application. */
 void setAgentToReady( void );
 void receiveAndProcessOtaEvent( void );
 
@@ -2814,7 +2817,6 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-/* This function should only be called by OTA_EventProcessingTask(). */
 void setAgentToReady( void )
 {
     otaAgent.state = OtaAgentStateReady;
