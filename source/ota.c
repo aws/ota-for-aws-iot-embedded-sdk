@@ -1910,10 +1910,18 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                               JobStatusSucceeded,
                                                               JobReasonAccepted,
                                                               0 );
-
-                /* Everything looks OK. Set final context structure to start OTA. */
-                **pFinalFile = *pFileContext;
-                LogInfo( ( "Job document parsed from external callback" ) );
+															  
+				if( otaErr != OtaErrNone )
+				{
+					LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                    OTA_Err_strerror( otaErr ) ) );
+				}
+				else
+				{
+					/* Everything looks OK. Set final context structure to start OTA. */
+					**pFinalFile = *pFileContext;
+					LogInfo( ( "Job document parsed from external callback" ) );
+				}
 
                 /* We don't need the job name memory anymore since we're done with this job. */
                 ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
@@ -1942,12 +1950,6 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                 err = OtaJobParseErrNonConformingJobDoc;
             }
         }
-    }
-
-    if( otaErr != OtaErrNone )
-    {
-        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                    OTA_Err_strerror( otaErr ) ) );
     }
 
     return err;
@@ -3006,7 +3008,8 @@ static void initializeLocalBuffers( void )
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
-                   OtaAppCallback_t OtaAppCallback )
+                   OtaAppCallback_t OtaAppCallback,
+				   OtaCustomJobCallback_t OtaCustomJobCallback )
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
@@ -3044,6 +3047,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 
         /* Initialize ota application callback.*/
         otaAgent.OtaAppCallback = OtaAppCallback;
+		
+		/* Initialize ota custom job callback.*/
+        otaAgent.OtaAppCallback = OtaCustomJobCallback;
 
         /*
          * The current OTA image state as set by the OTA agent.

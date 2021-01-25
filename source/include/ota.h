@@ -294,6 +294,7 @@ typedef struct OtaAgentContext
  * @param[in] pThingName A pointer to a C string holding the Thing name.
  * @param[in] OtaAppCallback Static callback function for when an OTA job is complete. This function will have
  * input of the state of the OTA image after download and during self-test.
+ * @param[in] OtaCustomJobCallback The custom job callback function to be called when custom job parsing is required.
  * @return OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
@@ -302,7 +303,8 @@ typedef struct OtaAgentContext
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
                    OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
-                   OtaAppCallback_t OtaAppCallback );
+                   OtaAppCallback_t OtaAppCallback,
+                   OtaCustomJobCallback_t OtaCustomJobCallback );
 /* @[declare_ota_init] */
 
 /**
