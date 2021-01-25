@@ -205,6 +205,7 @@ static OtaOsStatus_t mockOSEventSend( OtaEventContext_t * unused_1,
     {
         return OtaOsEventQueueSendFailed;
     }
+
     const OtaEventMsg_t * pOtaEvent = pEventMsg;
 
     otaEventQueueEnd->eventId = pOtaEvent->eventId;
@@ -567,7 +568,7 @@ static void processEntireQueue()
     {
         return;
     }
-    
+
     while( otaEventQueueEnd != otaEventQueue )
     {
         receiveAndProcessOtaEvent();
@@ -634,6 +635,7 @@ static void otaGoToState( OtaState_t state )
     switch( state )
     {
         case OtaAgentStateInit:
+
             /* Nothing needs to be done here since we should either be in init state already or
              * we are in other running states. */
             break;
@@ -1148,6 +1150,7 @@ void test_OTA_InitFileTransferHttp()
 void test_OTA_InitFileTransferRetryFail()
 {
     uint32_t i = 0U;
+
     /* Use HTTP data transfer so we can intentionally fail the init transfer. */
     pOtaJobDoc = JOB_DOC_HTTP;
 
@@ -1288,6 +1291,7 @@ void test_OTA_ReceiveFileBlockEmpty()
     OTA_SignalEvent( &otaEvent );
     /* Process the event for receiving the block to trigger digesting it. */
     receiveAndProcessOtaEvent();
+
     /* Process the event generated after failing to decode the block. The
      * expected result is that we close the file and begin waiting for a new
      * job document. */

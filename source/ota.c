@@ -2838,10 +2838,11 @@ void receiveAndProcessOtaEvent( void )
     uint32_t i = 0;
     uint32_t transitionTableLen = ( uint32_t ) ( sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] ) );
 
-    if( otaAgent.pOtaInterface == NULL)
+    if( otaAgent.pOtaInterface == NULL )
     {
-        LogError(("Failed to receive event: OS Interface not set"));
+        LogError( ( "Failed to receive event: OS Interface not set" ) );
     }
+
     /*
      * Receive the next event form the OTA event queue to process.
      */
