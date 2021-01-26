@@ -7,18 +7,18 @@ set(project_name "aws_ota")
 # ================= Create the library under test here (edit) ==================
 
 
-set( OTA_MOCK_BASE "${CMAKE_BINARY_DIR}/ota_temp" )
+set( OTA_C_TMP_BASE "${CMAKE_BINARY_DIR}/ota" )
 
 # Strip static constraints so unit tests may call internal functions
 execute_process( COMMAND sed "s/^static //"
                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                  INPUT_FILE "${MODULE_ROOT_DIR}/source/ota.c"
-                 OUTPUT_FILE ${OTA_MOCK_BASE}.c
+                 OUTPUT_FILE ${OTA_C_TMP_BASE}.c
 )
 
 # list the files you would like to test here
 list(APPEND real_source_files
-    ${OTA_MOCK_BASE}.c
+    ${OTA_C_TMP_BASE}.c
     "${MODULE_ROOT_DIR}/source/ota_interface.c"
     "${MODULE_ROOT_DIR}/source/ota_base64.c"
     "${MODULE_ROOT_DIR}/source/ota_mqtt.c"
