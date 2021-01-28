@@ -464,9 +464,9 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 /**
  * @brief Receive and process the next available event from the event queue.
  *
- * Each event is processed based on the behavior defined in the global
- * otaTransitionTable. The state of the OTA state machine will be updated and
- * the corresponding event handler will be called.
+ * Each event is processed based on the behavior defined in the OTA transition
+ * table. The state of the OTA state machine will be updated and the
+ * corresponding event handler will be called.
  */
 static void receiveAndProcessOtaEvent( void );
 
