@@ -121,8 +121,11 @@ static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
 
-/* Global variable defined in ota.c. */
+/* Global static variable defined in ota.c for managing the state machine. */
 extern OtaAgentContext_t otaAgent;
+
+/* Static function defined in ota.c for processing events. */
+extern void receiveAndProcessOtaEvent( void );
 
 /* ========================================================================== */
 
