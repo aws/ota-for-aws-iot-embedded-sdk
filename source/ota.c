@@ -461,6 +461,15 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext );
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                                    OtaJobParseErr_t err );
 
+/**
+ * @brief Receive and process the next available event from the event queue.
+ *
+ * Each event is processed based on the behavior defined in the global
+ * otaTransitionTable. The state of the OTA state machine will be updated and
+ * the corresponding event handler will be called.
+ */
+static void receiveAndProcessOtaEvent( void );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -547,22 +556,6 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "Stopped",
     "All"
 };
-
-/**
- * @brief Private helper function used by the processing loop for OTA events to
- * set the OTA Agent state machine into the ready state. This function needs to
- * be public so that it can be called by the unit tests directly. This function
- * should not be called by the user application.
- */
-void setAgentToReady( void );
-
-/**
- * @brief Private helper function for receiving the next available OTA Event
- * from the event queue. This function should only be called by the
- * OTA_EventProcessingTask function. This function needs to be public so that
- * it can be called by the unit tests directly.
- */
-void receiveAndProcessOtaEvent( void );
 
 /* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the Events for the OTA agent. */
@@ -2827,12 +2820,7 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-void setAgentToReady( void )
-{
-    otaAgent.state = OtaAgentStateReady;
-}
-
-void receiveAndProcessOtaEvent( void )
+static void receiveAndProcessOtaEvent( void )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;
@@ -2885,7 +2873,7 @@ void OTA_EventProcessingTask( void * pUnused )
     /*
      * OTA Agent is ready to receive and process events so update the state to ready.
      */
-    setAgentToReady();
+    otaAgent.state = OtaAgentStateReady;
 
     while( otaAgent.state != OtaAgentStateStopped )
     {

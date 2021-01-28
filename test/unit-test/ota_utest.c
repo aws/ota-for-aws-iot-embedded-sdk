@@ -121,9 +121,8 @@ static const int otaDefaultWait = 2000;
 
 /* ========================================================================== */
 
-/* Helper functions defined by the OTA library. */
-extern void setAgentToReady( void );
-extern void receiveAndProcessOtaEvent( void );
+/* Global variable defined in ota.c. */
+extern OtaAgentContext_t otaAgent;
 
 /* ========================================================================== */
 
@@ -641,7 +640,7 @@ static void otaGoToState( OtaState_t state )
             break;
 
         case OtaAgentStateReady:
-            setAgentToReady();
+            otaAgent.state = OtaAgentStateReady;
             break;
 
         case OtaAgentStateRequestingJob:
