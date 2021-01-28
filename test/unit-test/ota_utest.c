@@ -564,6 +564,7 @@ static void otaAppBufferDefault()
     pOtaAppBuffer.authSchemeSize = OTA_AUTH_SCHEME_SIZE;
 }
 
+/* Helper function for processing all elements in the queue if there are any. */
 static void processEntireQueue()
 {
     if( otaEventQueueEnd >= otaEventQueue + OTA_NUM_MSG_Q_ENTRIES )
