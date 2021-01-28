@@ -69,7 +69,7 @@ execute_process(COMMAND lcov
 # remove source files from dependencies and unit tests
 execute_process(COMMAND lcov
     --rc lcov_branch_coverage=1
-    --remove ${CMAKE_BINARY_DIR}/coverage.info *dependency* *unit-test* /usr*
+    --remove ${CMAKE_BINARY_DIR}/coverage.info *dependency* *unit-test* /usr* */source/ota.c
     --output-file ${CMAKE_BINARY_DIR}/coverage.info
 )
 
