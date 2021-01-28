@@ -121,6 +121,8 @@ static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 /* 2 seconds default wait time for OTA state machine transition. */
 static const int otaDefaultWait = 2000;
 
+extern OtaAgentContext_t otaAgent;
+
 /* ========================================================================== */
 
 static void * mockMallocAlwaysFail( size_t size )
