@@ -461,6 +461,15 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext );
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                                    OtaJobParseErr_t err );
 
+/**
+ * @brief Receive and process the next available event from the event queue.
+ *
+ * Each event is processed based on the behavior defined in the OTA transition
+ * table. The state of the OTA state machine will be updated and the
+ * corresponding event handler will be called.
+ */
+static void receiveAndProcessOtaEvent( void );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -2811,13 +2820,54 @@ static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
     return i;
 }
 
-/* Event Processing loop to run the OTA state machine. */
-void OTA_EventProcessingTask( void * pUnused )
+static void receiveAndProcessOtaEvent( void )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t i = 0;
     uint32_t transitionTableLen = ( uint32_t ) ( sizeof( otaTransitionTable ) / sizeof( otaTransitionTable[ 0 ] ) );
 
+    if( otaAgent.pOtaInterface == NULL )
+    {
+        LogError( ( "Failed to receive event: OS Interface not set" ) );
+    }
+
+    /*
+     * Receive the next event form the OTA event queue to process.
+     */
+    if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+    {
+        /*
+         * Search transition index if available in the table.
+         */
+        i = searchTransition( &eventMsg );
+
+        if( i < transitionTableLen )
+        {
+            LogDebug( ( "Found valid event handler for state transition: "
+                        "State=[%s], "
+                        "Event=[%s]",
+                        pOtaAgentStateStrings[ otaAgent.state ],
+                        pOtaEventStrings[ eventMsg.eventId ] ) );
+
+            /*
+             * Execute the handler function.
+             */
+            executeHandler( i, &eventMsg );
+        }
+
+        if( i == transitionTableLen )
+        {
+            /*
+             * Handle unexpected events.
+             */
+            handleUnexpectedEvents( &eventMsg );
+        }
+    }
+}
+
+/* Event Processing loop to run the OTA state machine. */
+void OTA_EventProcessingTask( void * pUnused )
+{
     ( void ) pUnused;
 
     /*
@@ -2827,38 +2877,7 @@ void OTA_EventProcessingTask( void * pUnused )
 
     while( otaAgent.state != OtaAgentStateStopped )
     {
-        /*
-         * Receive the next event form the OTA event queue to process.
-         */
-        if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
-        {
-            /*
-             * Search transition index if available in the table.
-             */
-            i = searchTransition( &eventMsg );
-
-            if( i < transitionTableLen )
-            {
-                LogDebug( ( "Found valid event handler for state transition: "
-                            "State=[%s], "
-                            "Event=[%s]",
-                            pOtaAgentStateStrings[ otaAgent.state ],
-                            pOtaEventStrings[ eventMsg.eventId ] ) );
-
-                /*
-                 * Execute the handler function.
-                 */
-                executeHandler( i, &eventMsg );
-            }
-
-            if( i == transitionTableLen )
-            {
-                /*
-                 * Handle unexpected events.
-                 */
-                handleUnexpectedEvents( &eventMsg );
-            }
-        }
+        receiveAndProcessOtaEvent();
     }
 }
 
