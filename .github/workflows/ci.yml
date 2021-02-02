@@ -61,7 +61,9 @@ jobs:
       - name: Build
         run: |
           sudo apt-get install -y lcov
-          cmake -S test -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -S test -B build \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS='--coverage -Wall -Wextra -DNDEBUG'
           cmake --build build
       - name: Run Coverage
         run: |

@@ -55,7 +55,7 @@ execute_process(COMMAND lcov
     --output-file ${CMAKE_BINARY_DIR}/second_coverage.info
 )
 
-# combile baseline results (zeros) with the one after running the tests
+# compile baseline results (zeros) with the one after running the tests
 execute_process(COMMAND lcov
     --base-directory ${CMAKE_BINARY_DIR}
     --directory ${CMAKE_BINARY_DIR}
@@ -69,7 +69,7 @@ execute_process(COMMAND lcov
 # remove source files from dependencies and unit tests
 execute_process(COMMAND lcov
     --rc lcov_branch_coverage=1
-    --remove ${CMAKE_BINARY_DIR}/coverage.info *dependency* *unit-test* /usr* */source/ota.c
+    --remove ${CMAKE_BINARY_DIR}/coverage.info *dependency* *unit-test* /usr* */source/ota.c *CMakeCCompilerId*
     --output-file ${CMAKE_BINARY_DIR}/coverage.info
 )
 
