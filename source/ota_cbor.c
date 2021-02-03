@@ -88,7 +88,8 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
         ( pBlockId == NULL ) ||
         ( pBlockSize == NULL ) ||
         ( pPayload == NULL ) ||
-        ( pPayloadSize == NULL ) )
+        ( pPayloadSize == NULL ) ||
+        ( pMessageBuffer == NULL ) )
     {
         cborResult = CborUnknownError;
     }

@@ -45,7 +45,10 @@ c89
 c90
 ca
 cbor
+cborarray
 cborerror
+cbormap
+cborstring
 cborvalue
 cborwork
 certfile
@@ -62,8 +65,8 @@ com
 completecallback
 cond
 config
-configpagestyle
 configassert
+configpagestyle
 configs
 connectsuccessindex
 const
@@ -281,6 +284,7 @@ msec
 msgbuffersize
 msgsize
 msgtailsize
+msgvalidity
 mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
@@ -377,8 +381,8 @@ otainterfaces
 otajobeventactivate
 otajobeventfail
 otajobeventprocessed
-otajobeventstarttest
 otajobeventselftestfailed
+otajobeventstarttest
 otajobparseerrbadmodelinitparams
 otajobparseerrbusywithexistingjob
 otajobparseerrnoactivejobs
@@ -397,12 +401,12 @@ otamqttsubscribefailed
 otamqttsuccess
 otamqttunsubscribefailed
 otanumoftimers
-otaosfipage
-otaosfisectionoverview
 otaoseventqueuecreatefailed
 otaoseventqueuedeletefailed
 otaoseventqueuereceivefailed
 otaoseventqueuesendfailed
+otaosfipage
+otaosfisectionoverview
 otaossuccess
 otaostimercreatefailed
 otaostimerdeletefailed
