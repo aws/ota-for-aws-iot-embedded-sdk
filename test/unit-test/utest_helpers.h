@@ -30,7 +30,10 @@
 #define CBOR_TEST_FILEIDENTITY_VALUE                      0
 #define CBOR_TEST_INCORRECT_FILEIDENTITY_VALUE            "corrupt"
 
-
+/**
+ * @brief Create an encoded Ota Streamming Message. If the msgValidity is false,
+ * create encode the fileid as a string, instead of an integer.
+ */
 CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
                                       size_t messageBufferSize,
                                       int blockIndex,
@@ -39,6 +42,10 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
                                       size_t * pEncodedSize,
                                       bool msgValidity );
 
+/**
+ * @brief Create a Cbor Array object.
+ *
+ */
 CborError createCborArray( uint8_t * pMessageBuffer,
                            size_t messageBufferSize,
                            size_t * pEncodedSize );
