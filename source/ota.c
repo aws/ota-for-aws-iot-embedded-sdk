@@ -577,7 +577,7 @@ static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 };
 
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ]; /*!< Buffer to store job name. */
-static uint8_t pProtocolBuffer[ 20 ];                 /*!< Buffer to store data protocol. */
+static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ];                 /*!< Buffer to store data protocol. */
 static Sig256_t sig256Buffer;                         /*!< Buffer to store key file signature. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )

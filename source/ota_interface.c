@@ -61,68 +61,87 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
     #endif
 }
 
+/**
+ * @brief Set the data interface used by the OTA Agent for streaming file
+ *        blocks based on the user configuration and job document.
+ *
+ *        - If only one of the protocols is enabled, then that protocol is set.
+ *        - If the job document specifies which protocol to use, then that
+ *          protocol will be used unless it is disabled.
+ *        - If both of the protocols are enabled and the user lists both of
+ *          them in the job document, then the higher priority protocol will
+ *          be selected.
+ */
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
-    OtaErr_t err = OtaErrInvalidDataProtocol;
-    uint32_t i;
+    OtaErr_t err = OtaErrNone;
 
-    /*
-     * Primary data protocol will be the protocol used for file download if more
-     * than one protocol is selected while creating OTA job.
-     */
-    #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
-        const char * pProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
-        {
-            "MQTT",
-            "HTTP"
-        };
-    #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
-        const char * pProtocolPriority[ OTA_DATA_NUM_PROTOCOLS ] =
-        {
-            "HTTP",
-            "MQTT"
-        };
-    #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+    #if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
+        #error "One or more of the data protocols must be set with configENABLED_DATA_PROTOCOLS."
+    #elif !( ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_MQTT ) | ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_HTTP ) )
+        #error "configOTA_PRIMARY_DATA_PROTOCOL must be set to one of the data protocols."
+    #elif ( configOTA_PRIMARY_DATA_PROTOCOL >= ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP ) )
+        #error "Invalid value for configOTA_PRIMARY_DATA_PROTOCOL: Value is expected to be OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
+    #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !(configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
+        pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+        pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+        pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+        pDataInterface->cleanup = cleanupData_Mqtt;
+    #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) && !(configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) )
+        pDataInterface->initFileTransfer = initFileTransfer_Http;
+        pDataInterface->requestFileBlock = requestDataBlock_Http;
+        pDataInterface->decodeFileBlock = decodeFileBlock_Http;
+        pDataInterface->cleanup = cleanupData_Http;
+    #else
+        char protocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
+        bool httpInJobDoc;
+        bool mqttInJobDoc;
 
-    assert( pDataInterface != NULL );
-    assert( pProtocol != NULL );
+        memcpy( protocolBuffer ,pProtocol, OTA_PROTOCOL_BUFFER_SIZE );
+        httpInJobDoc = ( strstr( protocolBuffer, "HTTP") != NULL ) ? true : false;
+        mqttInJobDoc = ( strstr( protocolBuffer, "MQTT") != NULL ) ? true : false;
 
-    for( i = 0; i < OTA_DATA_NUM_PROTOCOLS; i++ )
-    {
-        if( NULL != strstr( ( const char * ) pProtocol, pProtocolPriority[ i ] ) )
-        {
-            #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT )
-                if( strcmp( pProtocolPriority[ i ], "MQTT" ) == 0 )
-                {
-                    pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
-                    pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
-                    pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
-                    pDataInterface->cleanup = cleanupData_Mqtt;
-
-                    LogInfo( ( "Data interface is set to MQTT.\r\n" ) );
-
-                    err = OtaErrNone;
-                    break;
-                }
-            #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) */
-
-            #if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP )
-                if( strcmp( pProtocolPriority[ i ], "HTTP" ) == 0 )
-                {
-                    pDataInterface->initFileTransfer = initFileTransfer_Http;
-                    pDataInterface->requestFileBlock = requestDataBlock_Http;
-                    pDataInterface->decodeFileBlock = decodeFileBlock_Http;
-                    pDataInterface->cleanup = cleanupData_Http;
-
-                    LogInfo( ( "Data interface is set to HTTP.\r\n" ) );
-
-                    err = OtaErrNone;
-                    break;
-                }
-            #endif /* if ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) */
-        }
-    }
+        #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
+            if ( mqttInJobDoc == true )
+            {
+                pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+                pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+                pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+                pDataInterface->cleanup = cleanupData_Mqtt;
+            }
+            else if( httpInJobDoc == true )
+            {
+                pDataInterface->initFileTransfer = initFileTransfer_Http;
+                pDataInterface->requestFileBlock = requestDataBlock_Http;
+                pDataInterface->decodeFileBlock = decodeFileBlock_Http;
+                pDataInterface->cleanup = cleanupData_Http;
+            }
+            else
+            {
+                err = OtaErrInvalidDataProtocol;
+            }
+        #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
+            if( httpInJobDoc == true )
+            {
+                pDataInterface->initFileTransfer = initFileTransfer_Http;
+                pDataInterface->requestFileBlock = requestDataBlock_Http;
+                pDataInterface->decodeFileBlock = decodeFileBlock_Http;
+                pDataInterface->cleanup = cleanupData_Http;
+            }
+            else if ( mqttInJobDoc == true )
+            {
+                pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+                pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+                pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+                pDataInterface->cleanup = cleanupData_Mqtt;
+            }
+            else
+            {
+                err = OtaErrInvalidDataProtocol;
+            }
+        #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+    #endif
 
     return err;
 }

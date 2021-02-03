@@ -107,6 +107,12 @@
 #define OTA_JOB_ID_MAX_SIZE    ( 72UL + 1UL )
 
 /**
+ * @brief Size of the buffer used to store the protocol field of the job document.
+ *
+ */
+#define OTA_PROTOCOL_BUFFER_SIZE        20U
+
+/**
  * @ingroup ota_constants
  * @brief A composite cryptographic signature structure able to hold our largest supported signature.
  */
