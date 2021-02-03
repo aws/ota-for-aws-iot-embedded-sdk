@@ -41,7 +41,8 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
                                       int blockIndex,
                                       uint8_t * pBlockPayload,
                                       size_t blockPayloadSize,
-                                      size_t * pEncodedSize )
+                                      size_t * pEncodedSize,
+                                      bool msgValidity )
 {
     CborError cborResult = CborNoError;
     CborEncoder cborEncoder, cborMapEncoder;
@@ -65,11 +66,23 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
             OTA_CBOR_FILEID_KEY );
     }
 
-    if( CborNoError == cborResult )
+    if( msgValidity )
     {
-        cborResult = cbor_encode_int(
-            &cborMapEncoder,
-            CBOR_TEST_FILEIDENTITY_VALUE );
+        if( CborNoError == cborResult )
+        {
+            cborResult = cbor_encode_int(
+                &cborMapEncoder,
+                CBOR_TEST_FILEIDENTITY_VALUE );
+        }
+    }
+    else
+    {
+        if( CborNoError == cborResult )
+        {
+            cborResult = cbor_encode_text_stringz(
+                &cborMapEncoder,
+                CBOR_TEST_INCORRECT_FILEIDENTITY_VALUE );
+        }
     }
 
     /* Encode the block identity. */
@@ -124,6 +137,47 @@ CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
         cborResult = cbor_encoder_close_container_checked(
             &cborEncoder,
             &cborMapEncoder );
+    }
+
+    /* Get the encoded size. */
+    if( ( CborNoError == cborResult ) && ( pEncodedSize != NULL ) )
+    {
+        *pEncodedSize = cbor_encoder_get_buffer_size(
+            &cborEncoder,
+            pMessageBuffer );
+    }
+
+    return cborResult;
+}
+
+CborError createCborArray( uint8_t * pMessageBuffer,
+                           size_t messageBufferSize,
+                           size_t * pEncodedSize )
+{
+    CborError cborResult = CborNoError;
+    CborEncoder cborEncoder, cborArrayEncoder;
+
+    /* Initialize the CBOR encoder. */
+    cbor_encoder_init(
+        &cborEncoder,
+        pMessageBuffer,
+        messageBufferSize,
+        0 );
+
+    cborResult = cbor_encoder_create_array( &cborEncoder, &cborArrayEncoder, 1 );
+
+    /* Encode a value into the array. */
+    if( CborNoError == cborResult )
+    {
+        cborResult = cbor_encode_uint( &cborArrayEncoder, 1 );
+    }
+
+    /* Done with the encoder. */
+    if( CborNoError == cborResult )
+    {
+        cborResult = cbor_encoder_close_container_checked(
+            &cborEncoder,
+            &cborArrayEncoder );
     }
 
     /* Get the encoded size. */

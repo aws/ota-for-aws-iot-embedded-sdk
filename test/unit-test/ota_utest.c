@@ -1363,7 +1363,8 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
                 idx,
                 pFileBlock,
                 min( ( uint32_t ) remainingBytes, OTA_FILE_BLOCK_SIZE ),
-                &streamingMessageSize );
+                &streamingMessageSize,
+                true );
 
             otaEvent.eventId = OtaAgentEventReceivedFileBlock;
             otaEvent.pEventData = &eventBuffers[ idx * OTA_TEST_DUPLICATE_NUM_BLOCKS + dupIdx ];

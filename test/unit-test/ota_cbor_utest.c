@@ -93,6 +93,7 @@ void test_OTA_CborDecodeStreamResponse()
     uint8_t * pDecodedPayload = decodedPayload;
     size_t payloadSize = -1;
     bool result = false;
+    bool msgValidity = true;
     int i = 0;
 
     /* Test OTA_CBOR_Decode_GetStreamResponseMessage( ). */
@@ -107,7 +108,8 @@ void test_OTA_CborDecodeStreamResponse()
         CBOR_TEST_BLOCKIDENTITY_VALUE,
         blockPayload,
         sizeof( blockPayload ),
-        &encodedSize );
+        &encodedSize,
+        msgValidity );
     TEST_ASSERT_EQUAL( CborNoError, result );
 
     if( TEST_PROTECT() )
@@ -130,5 +132,227 @@ void test_OTA_CborDecodeStreamResponse()
         {
             TEST_ASSERT_EQUAL( blockPayload[ i ], decodedPayload[ i ] );
         }
+    }
+}
+
+void test_OTA_CborEncodeStreamRequest_Invalid()
+{
+    uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ];
+    size_t encodedSize = 0;
+    uint32_t bitmap = CBOR_TEST_BITMAP_VALUE;
+    uint32_t numBlocksRequest = otaconfigMAX_NUM_BLOCKS_REQUEST;
+
+    bool result = OTA_CBOR_Encode_GetStreamRequestMessage(
+        cborWork,                          /* output message buffer. */
+        sizeof( cborWork ),                /* size of output message buffer. */
+        &encodedSize,                      /* size of encoded message. */
+        CBOR_TEST_CLIENTTOKEN_VALUE,       /* client token. */
+        1,                                 /* file id. */
+        OTA_FILE_BLOCK_SIZE,               /* block size. */
+        0,                                 /* block offset. */
+        NULL,                              /* block bitmap. */
+        sizeof( bitmap ),                  /* size of bitmap. */
+        otaconfigMAX_NUM_BLOCKS_REQUEST ); /* number of block requested. */
+
+    TEST_ASSERT_FALSE( result );
+
+    result = OTA_CBOR_Encode_GetStreamRequestMessage(
+        NULL,                              /* output message buffer. */
+        sizeof( cborWork ),                /* size of output message buffer. */
+        &encodedSize,                      /* size of encoded message. */
+        CBOR_TEST_CLIENTTOKEN_VALUE,       /* client token. */
+        1,                                 /* file id. */
+        OTA_FILE_BLOCK_SIZE,               /* block size. */
+        0,                                 /* block offset. */
+        ( uint8_t * ) &bitmap,             /* block bitmap. */
+        sizeof( bitmap ),                  /* size of bitmap. */
+        otaconfigMAX_NUM_BLOCKS_REQUEST ); /* number of block requested. */
+
+    TEST_ASSERT_FALSE( result );
+
+    result = OTA_CBOR_Encode_GetStreamRequestMessage(
+        cborWork,                          /* output message buffer. */
+        sizeof( cborWork ),                /* size of output message buffer. */
+        NULL,                              /* size of encoded message. */
+        CBOR_TEST_CLIENTTOKEN_VALUE,       /* client token. */
+        1,                                 /* file id. */
+        OTA_FILE_BLOCK_SIZE,               /* block size. */
+        0,                                 /* block offset. */
+        ( uint8_t * ) &bitmap,             /* block bitmap. */
+        sizeof( bitmap ),                  /* size of bitmap. */
+        otaconfigMAX_NUM_BLOCKS_REQUEST ); /* number of block requested. */
+
+    TEST_ASSERT_FALSE( result );
+
+    result = OTA_CBOR_Encode_GetStreamRequestMessage(
+        cborWork,                          /* output message buffer. */
+        sizeof( cborWork ),                /* size of output message buffer. */
+        &encodedSize,                      /* size of encoded message. */
+        NULL,                              /* client token. */
+        1,                                 /* file id. */
+        OTA_FILE_BLOCK_SIZE,               /* block size. */
+        0,                                 /* block offset. */
+        ( uint8_t * ) &bitmap,             /* block bitmap. */
+        sizeof( bitmap ),                  /* size of bitmap. */
+        otaconfigMAX_NUM_BLOCKS_REQUEST ); /* number of block requested. */
+
+    TEST_ASSERT_FALSE( result );
+}
+
+void test_OTA_CborDecodeStreamResponse_Invalid()
+{
+    uint8_t blockPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ] = { 0 };
+    size_t encodedSize = 0;
+    int fileId = -1;
+    int blockIndex = -1;
+    int blockSize = -1;
+    uint8_t decodedPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t * pDecodedPayload = decodedPayload;
+    size_t payloadSize = -1;
+    bool result = false;
+    bool msgValidity = false;
+    int i = 0;
+
+    /* Test OTA_CBOR_Decode_GetStreamResponseMessage( ). */
+    for( i = 0; i < ( int ) sizeof( blockPayload ); i++ )
+    {
+        blockPayload[ i ] = i % UINT8_MAX;
+    }
+
+    result = createOtaStreammingMessage(
+        cborWork,
+        sizeof( cborWork ),
+        CBOR_TEST_BLOCKIDENTITY_VALUE,
+        blockPayload,
+        sizeof( blockPayload ),
+        &encodedSize,
+        msgValidity );
+    TEST_ASSERT_EQUAL( CborNoError, result );
+
+    if( TEST_PROTECT() )
+    {
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            &blockSize,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+    }
+
+    /* Test for invalid input parameters like NULL payload size */
+    if( TEST_PROTECT() )
+    {
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            &blockSize,
+            &pDecodedPayload,
+            NULL );
+        TEST_ASSERT_FALSE( result );
+
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            &blockSize,
+            NULL,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            NULL,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            NULL,
+            &blockSize,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            NULL,
+            &blockIndex,
+            &blockSize,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+    }
+
+    /* Test for payload size lesser than actual payload */
+    if( TEST_PROTECT() )
+    {
+        msgValidity = true;
+        payloadSize = 0;
+
+        result = createOtaStreammingMessage(
+            cborWork,
+            sizeof( cborWork ),
+            CBOR_TEST_BLOCKIDENTITY_VALUE,
+            blockPayload,
+            sizeof( blockPayload ),
+            &encodedSize,
+            msgValidity );
+        TEST_ASSERT_EQUAL( CborNoError, result );
+
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            &blockSize,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
+    }
+}
+
+void test_OTA_CborDecodeStreamResponse_InvalidMap()
+{
+    uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ] = { 0 };
+    size_t encodedSize = 0;
+    int fileId = -1;
+    int blockIndex = -1;
+    int blockSize = -1;
+    uint8_t decodedPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t * pDecodedPayload = decodedPayload;
+    size_t payloadSize = -1;
+    bool result = false;
+
+    result = createCborArray( cborWork,
+                              sizeof( cborWork ),
+                              &encodedSize );
+
+    TEST_ASSERT_EQUAL( CborNoError, result );
+
+    if( TEST_PROTECT() )
+    {
+        result = OTA_CBOR_Decode_GetStreamResponseMessage(
+            cborWork,
+            encodedSize,
+            &fileId,
+            &blockIndex,
+            &blockSize,
+            &pDecodedPayload,
+            &payloadSize );
+        TEST_ASSERT_FALSE( result );
     }
 }
