@@ -31,16 +31,16 @@
 #define CBOR_TEST_INCORRECT_FILEIDENTITY_VALUE            "corrupt"
 
 /**
- * @brief Create an encoded Ota Streamming Message. If the msgValidity is false,
+ * @brief Create an encoded Ota Streaming Message. If the msgValidity is false,
  * create encode the fileid as a string, instead of an integer.
  */
-CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
-                                      size_t messageBufferSize,
-                                      int blockIndex,
-                                      uint8_t * pBlockPayload,
-                                      size_t blockPayloadSize,
-                                      size_t * pEncodedSize,
-                                      bool msgValidity );
+CborError createOtaStreamingMessage( uint8_t * pMessageBuffer,
+                                     size_t messageBufferSize,
+                                     int blockIndex,
+                                     uint8_t * pBlockPayload,
+                                     size_t blockPayloadSize,
+                                     size_t * pEncodedSize,
+                                     bool msgValidity );
 
 /**
  * @brief Create a Cbor Array object.

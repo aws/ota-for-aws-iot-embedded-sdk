@@ -1357,7 +1357,7 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
         for( dupIdx = 0; dupIdx < OTA_TEST_DUPLICATE_NUM_BLOCKS; dupIdx++ )
         {
             /* Construct a AWS IoT streaming message. */
-            createOtaStreammingMessage(
+            createOtaStreamingMessage(
                 pStreamingMessage,
                 sizeof( pStreamingMessage ),
                 idx,

@@ -36,13 +36,13 @@
 
 /* ========================================================================== */
 
-CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
-                                      size_t messageBufferSize,
-                                      int blockIndex,
-                                      uint8_t * pBlockPayload,
-                                      size_t blockPayloadSize,
-                                      size_t * pEncodedSize,
-                                      bool msgValidity )
+CborError createOtaStreamingMessage( uint8_t * pMessageBuffer,
+                                     size_t messageBufferSize,
+                                     int blockIndex,
+                                     uint8_t * pBlockPayload,
+                                     size_t blockPayloadSize,
+                                     size_t * pEncodedSize,
+                                     bool msgValidity )
 {
     CborError cborResult = CborNoError;
     CborEncoder cborEncoder, cborMapEncoder;

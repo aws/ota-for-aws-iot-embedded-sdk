@@ -111,7 +111,7 @@ void test_OTA_CborDecodeStreamResponse()
     }
 
     /* Encode the above payload. */
-    result = createOtaStreammingMessage(
+    result = createOtaStreamingMessage(
         cborWork,
         sizeof( cborWork ),
         CBOR_TEST_BLOCKIDENTITY_VALUE,
@@ -239,7 +239,7 @@ void test_OTA_CborDecodeStreamResponse_Invalid()
 
     /* Create an invalid message by encoding a string
      * instead of an integer for fileid. */
-    result = createOtaStreammingMessage(
+    result = createOtaStreamingMessage(
         cborWork,
         sizeof( cborWork ),
         CBOR_TEST_BLOCKIDENTITY_VALUE,
@@ -331,7 +331,7 @@ void test_OTA_CborDecodeStreamResponse_Invalid()
     msgValidity = true;
     payloadSize = 0;
 
-    result = createOtaStreammingMessage(
+    result = createOtaStreamingMessage(
         cborWork,
         sizeof( cborWork ),
         CBOR_TEST_BLOCKIDENTITY_VALUE,
