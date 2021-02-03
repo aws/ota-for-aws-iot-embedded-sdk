@@ -258,10 +258,20 @@ void test_OTA_CborDecodeStreamResponse_Invalid()
         &blockSize,
         &pDecodedPayload,
         &payloadSize );
-    TEST_ASSERT_FALSE( result );     /* Decoding fails because fileid is of type CborString*/
+    TEST_ASSERT_FALSE( result ); /* Decoding fails because fileid is of type CborString. */
+
+    /* Test that decoding fails with invalid message buffer. */
+    result = OTA_CBOR_Decode_GetStreamResponseMessage(
+        NULL,
+        encodedSize,
+        &fileId,
+        &blockIndex,
+        &blockSize,
+        &pDecodedPayload,
+        &payloadSize );
+    TEST_ASSERT_FALSE( result );
 
     /* Test that decoding fails with invalid payload size. */
-
     result = OTA_CBOR_Decode_GetStreamResponseMessage(
         cborWork,
         encodedSize,
