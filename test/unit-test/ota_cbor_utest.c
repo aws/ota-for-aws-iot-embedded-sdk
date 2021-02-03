@@ -140,7 +140,6 @@ void test_OTA_CborEncodeStreamRequest_Invalid()
     uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ];
     size_t encodedSize = 0;
     uint32_t bitmap = CBOR_TEST_BITMAP_VALUE;
-    uint32_t numBlocksRequest = otaconfigMAX_NUM_BLOCKS_REQUEST;
 
     bool result = OTA_CBOR_Encode_GetStreamRequestMessage(
         cborWork,                          /* output message buffer. */
