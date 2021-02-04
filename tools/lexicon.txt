@@ -235,6 +235,7 @@ isinselftest
 iso
 jobcallback
 jobdocument
+jobdoclength
 jobid
 jobnamemaxsize
 jobnotificationhandler
@@ -380,6 +381,7 @@ otaimagestateunknown
 otainterfaces
 otajobeventactivate
 otajobeventfail
+otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventselftestfailed
 otajobeventstarttest
@@ -514,6 +516,7 @@ pfilepath
 pfinalfile
 pformat
 phostname
+pjobdocjson
 pjobname
 pjobnamebuffer
 pjobtopic
