@@ -1885,6 +1885,7 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        OtaFileContext_t * pFileContext,
                                                        OtaFileContext_t ** pFinalFile )
 {
+    OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     size_t jobNameLen = 0;
     const char * pQueryKey = OTA_JSON_EXECUTION_KEY;
@@ -1916,7 +1917,14 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                           JobReasonAccepted,
                                                           0 );
 
-            /* Everything looks OK. Set final context structure to start OTA. */
+            /* Log the error.*/
+            if( otaErr != OtaErrNone )
+            {
+                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                            OTA_Err_strerror( otaErr ) ) );
+            }
+
+            /*Set final context structure to start OTA. */
             **pFinalFile = *pFileContext;
             LogInfo( ( "Job document parsed from external callback" ) );
 
