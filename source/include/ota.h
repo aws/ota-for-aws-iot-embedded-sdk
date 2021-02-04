@@ -163,6 +163,7 @@ typedef enum OtaJobEvent
     OtaJobEventStartTest = 2,      /*!< @brief OTA job is now in self test, perform user tests. */
     OtaJobEventProcessed = 3,      /*!< @brief OTA event queued by OTA_SignalEvent is processed. */
     OtaJobEventSelfTestFailed = 4, /*!< @brief OTA self-test failed for current job. */
+    OtaJobEventParseCustomJob = 5, /*!< @brief OTA event for parsing cusom job document. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
@@ -200,19 +201,6 @@ typedef enum OtaJobEvent
  */
 typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
                                    const void * pData );
-
-/**
- * @ingroup ota_callback_types
- * @brief Custom Job callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback will be called when the OTA agent cannot parse a job document.
- *
- * @param[in] pcJSON Pointer to the json document received by the OTA agent.
- * @param[in] ulMsgLen Length of the json document received by the agent.
- */
-typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
-                                                     uint32_t ulMsgLen );
 
 /*--------------------------- OTA structs ----------------------------*/
 
@@ -277,8 +265,20 @@ typedef struct OtaAgentContext
     uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
     OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
-    OtaCustomJobCallback_t customJobCallback;              /*!< Custom job callback. */
 } OtaAgentContext_t;
+
+/**
+ * @ingroup ota_struct_types
+ * @brief OTA Job document.
+ *
+ * Structure representing OTA job document in JSON format.
+ */
+typedef struct OtaJobDocument
+{
+    uint8_t * pJobDocJson; /*!< @brief Job document in JSON format. */
+    uint16_t jobDocLength; /*!< @brief Job document length in bytes. */
+    OtaJobParseErr_t err;  /*!< @brief Job parsing error. */
+} OtaJobDocument_t;
 
 /*------------------------- OTA Public API --------------------------*/
 
