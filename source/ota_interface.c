@@ -80,15 +80,17 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
     #if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
     #error "One or more of the data protocols must be set with configENABLED_DATA_PROTOCOLS."
     #elif !( ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_MQTT ) | ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_HTTP ) )
-    #error "configOTA_PRIMARY_DATA_PROTOCOL must be set to one of the data protocols."
+    #error "configOTA_PRIMARY_DATA_PROTOCOL must be set to OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
     #elif ( configOTA_PRIMARY_DATA_PROTOCOL >= ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP ) )
     #error "Invalid value for configOTA_PRIMARY_DATA_PROTOCOL: Value is expected to be OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
     #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
+        ( void ) pProtocol;
         pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
         pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
         pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
         pDataInterface->cleanup = cleanupData_Mqtt;
     #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) )
+        ( void ) pProtocol;
         pDataInterface->initFileTransfer = initFileTransfer_Http;
         pDataInterface->requestFileBlock = requestDataBlock_Http;
         pDataInterface->decodeFileBlock = decodeFileBlock_Http;
@@ -98,7 +100,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
         bool httpInJobDoc;
         bool mqttInJobDoc;
 
-        memcpy( protocolBuffer, pProtocol, OTA_PROTOCOL_BUFFER_SIZE );
+        ( void ) memcpy( protocolBuffer, pProtocol, OTA_PROTOCOL_BUFFER_SIZE );
         httpInJobDoc = ( strstr( protocolBuffer, "HTTP" ) != NULL ) ? true : false;
         mqttInJobDoc = ( strstr( protocolBuffer, "MQTT" ) != NULL ) ? true : false;
 
@@ -140,7 +142,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             {
                 err = OtaErrInvalidDataProtocol;
             }
-        #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+        #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP ) */
     #endif /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
 
     return err;
