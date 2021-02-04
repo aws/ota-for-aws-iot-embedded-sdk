@@ -774,6 +774,9 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     {
         /* Callback for application specific self-test. */
         otaAgent.OtaAppCallback( OtaJobEventStartTest, NULL );
+
+        /* Clear self-test flag. */
+        otaAgent.fileContext.isInSelfTest = false;
     }
     else
     {
