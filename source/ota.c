@@ -1885,7 +1885,6 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
                                                        OtaFileContext_t * pFileContext,
                                                        OtaFileContext_t ** pFinalFile )
 {
-    OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     size_t jobNameLen = 0;
     const char * pQueryKey = OTA_JSON_EXECUTION_KEY;
