@@ -98,19 +98,19 @@
  * @brief Number of parameters in the job document.
  *
  */
-#define OTA_NUM_JOB_PARAMS     ( 21 )
+#define OTA_NUM_JOB_PARAMS          ( 21 )
 
 /**
  * @brief Maximum size of the Job ID.
  *
  */
-#define OTA_JOB_ID_MAX_SIZE    ( 72UL + 1UL )
+#define OTA_JOB_ID_MAX_SIZE         ( 72UL + 1UL )
 
 /**
  * @brief Size of the buffer used to store the protocol field of the job document.
  *
  */
-#define OTA_PROTOCOL_BUFFER_SIZE        20U
+#define OTA_PROTOCOL_BUFFER_SIZE    20U
 
 /**
  * @ingroup ota_constants

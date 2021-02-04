@@ -95,7 +95,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
         pDataInterface->requestFileBlock = requestDataBlock_Http;
         pDataInterface->decodeFileBlock = decodeFileBlock_Http;
         pDataInterface->cleanup = cleanupData_Http;
-    #else  /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
+    #else /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         char protocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
         bool httpInJobDoc = false;
         bool mqttInJobDoc = false;
