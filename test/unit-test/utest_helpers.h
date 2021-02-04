@@ -28,12 +28,26 @@
 #define CBOR_TEST_GETSTREAMRESPONSE_MESSAGE_ITEM_COUNT    4
 #define CBOR_TEST_CLIENTTOKEN_VALUE                       "ThisIsAClientToken"
 #define CBOR_TEST_FILEIDENTITY_VALUE                      0
+#define CBOR_TEST_INCORRECT_FILEIDENTITY_VALUE            "corrupt"
 
-CborError createOtaStreammingMessage( uint8_t * pMessageBuffer,
-                                      size_t messageBufferSize,
-                                      int blockIndex,
-                                      uint8_t * pBlockPayload,
-                                      size_t blockPayloadSize,
-                                      size_t * pEncodedSize );
+/**
+ * @brief Create an encoded Ota Streaming Message. If the msgValidity is false,
+ * create encode the fileid as a string, instead of an integer.
+ */
+CborError createOtaStreamingMessage( uint8_t * pMessageBuffer,
+                                     size_t messageBufferSize,
+                                     int blockIndex,
+                                     uint8_t * pBlockPayload,
+                                     size_t blockPayloadSize,
+                                     size_t * pEncodedSize,
+                                     bool msgValidity );
+
+/**
+ * @brief Create a Cbor Array object.
+ *
+ */
+CborError createCborArray( uint8_t * pMessageBuffer,
+                           size_t messageBufferSize,
+                           size_t * pEncodedSize );
 
 #endif /* ifndef UTEST_HELPERS */
