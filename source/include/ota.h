@@ -276,7 +276,7 @@ typedef struct OtaAgentContext
 typedef struct OtaJobDocument
 {
     uint8_t * pJobDocJson; /*!< @brief Job document in JSON format. */
-    uint16_t jobDocLength; /*!< @brief Job document length in bytes. */
+    uint32_t jobDocLength; /*!< @brief Job document length in bytes. */
     OtaJobParseErr_t err;  /*!< @brief Job parsing error. */
 } OtaJobDocument_t;
 
