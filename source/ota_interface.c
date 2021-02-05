@@ -42,10 +42,22 @@
     #include "ota_http_private.h"
 #endif
 
-/* Check if primary protocol is enabled in aws_iot_ota_agent_config.h. */
+/* Check for invalid data interface configurations. */
 
 #if !( configENABLED_DATA_PROTOCOLS & configOTA_PRIMARY_DATA_PROTOCOL )
     #error "Primary data protocol must be enabled in aws_iot_ota_agent_config.h"
+#endif
+
+#if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
+    #error "One or more of the data protocols must be set with configENABLED_DATA_PROTOCOLS."
+#endif
+
+#if !( ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_MQTT ) | ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_HTTP ) )
+    #error "configOTA_PRIMARY_DATA_PROTOCOL must be set to OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
+#endif
+
+#if ( configOTA_PRIMARY_DATA_PROTOCOL >= ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP ) )
+    #error "Invalid value for configOTA_PRIMARY_DATA_PROTOCOL: Value is expected to be OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
 #endif
 
 void setControlInterface( OtaControlInterface_t * pControlInterface )
@@ -66,13 +78,8 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
 {
     OtaErr_t err = OtaErrNone;
 
-    #if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
-    #error "One or more of the data protocols must be set with configENABLED_DATA_PROTOCOLS."
-    #elif !( ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_MQTT ) | ( configOTA_PRIMARY_DATA_PROTOCOL & OTA_DATA_OVER_HTTP ) )
-    #error "configOTA_PRIMARY_DATA_PROTOCOL must be set to OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
-    #elif ( configOTA_PRIMARY_DATA_PROTOCOL >= ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP ) )
-    #error "Invalid value for configOTA_PRIMARY_DATA_PROTOCOL: Value is expected to be OTA_DATA_OVER_MQTT or OTA_DATA_OVER_HTTP."
-    #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
+
+    #if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
         ( void ) pProtocol;
         pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
         pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
