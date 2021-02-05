@@ -78,7 +78,6 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
 {
     OtaErr_t err = OtaErrNone;
 
-
     #if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
         ( void ) pProtocol;
         pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
@@ -92,13 +91,11 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
         pDataInterface->decodeFileBlock = decodeFileBlock_Http;
         pDataInterface->cleanup = cleanupData_Http;
     #else /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
-        char protocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
         bool httpInJobDoc;
         bool mqttInJobDoc;
 
-        ( void ) memcpy( protocolBuffer, pProtocol, OTA_PROTOCOL_BUFFER_SIZE );
-        httpInJobDoc = ( strstr( protocolBuffer, "HTTP" ) != NULL ) ? true : false;
-        mqttInJobDoc = ( strstr( protocolBuffer, "MQTT" ) != NULL ) ? true : false;
+        httpInJobDoc = ( strstr( ( const char * ) pProtocol, "HTTP" ) != NULL ) ? true : false;
+        mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "MQTT" ) != NULL ) ? true : false;
 
         #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
             if( mqttInJobDoc == true )
