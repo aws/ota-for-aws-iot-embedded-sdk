@@ -91,17 +91,20 @@ typedef struct
 void setControlInterface( OtaControlInterface_t * pControlInterface );
 
 /**
- * @brief Set data interface for OTA operations.
+ * @brief Set the data interface used for OTA operations.
  *
- * This function updates the OTA data operation functions as per the config
- * options selected.
+ * This function updates the OTA data operation based on the config options.
+ * The interface can be set to the MQTT interface or the HTTP interface.
  *
- * @param[out] pDataInterface OTA data interface.
+ * These interfaces can be enabled with the configENABLED_DATA_PROTOCOLS macro.
+ * The protocol interface that should be prioritized when both protocols are
+ * valid options is configured with the configOTA_PRIMARY_DATA_PROTOCOL macro.
  *
- * @param[in] pProtocol Protocols used for the download.
+ * @param[out] pDataInterface OTA data interface to overwite.
+ *
+ * @param[in] pProtocol String containing a list of protocols that may be set.
  *
  */
-
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
 

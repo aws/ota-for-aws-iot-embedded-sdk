@@ -61,17 +61,6 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
     #endif
 }
 
-/**
- * @brief Set the data interface used by the OTA Agent for streaming file
- *        blocks based on the user configuration and job document.
- *
- *        - If only one of the protocols is enabled, then that protocol is set.
- *        - If the job document specifies which protocol to use, then that
- *          protocol will be used unless it is disabled.
- *        - If both of the protocols are enabled and the user lists both of
- *          them in the job document, then the higher priority protocol will
- *          be selected.
- */
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
@@ -97,8 +86,8 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
         pDataInterface->cleanup = cleanupData_Http;
     #else /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         char protocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
-        bool httpInJobDoc = false;
-        bool mqttInJobDoc = false;
+        bool httpInJobDoc;
+        bool mqttInJobDoc;
 
         ( void ) memcpy( protocolBuffer, pProtocol, OTA_PROTOCOL_BUFFER_SIZE );
         httpInJobDoc = ( strstr( protocolBuffer, "HTTP" ) != NULL ) ? true : false;
