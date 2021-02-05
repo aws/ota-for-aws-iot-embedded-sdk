@@ -777,6 +777,9 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
 
         /* Clear self-test flag. */
         otaAgent.fileContext.isInSelfTest = false;
+
+        /* Stop the self test timer as it is no longer required. */
+        otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
     }
     else
     {
