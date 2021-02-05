@@ -116,7 +116,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
         {
             err = OtaErrInvalidDataProtocol;
         }
-    #else  /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
+    #else /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
             if( mqttInJobDoc == true )
             {
