@@ -45,7 +45,7 @@
 /* Check for invalid data interface configurations. */
 
 #if !( configENABLED_DATA_PROTOCOLS & configOTA_PRIMARY_DATA_PROTOCOL )
-    #error "Primary data protocol must be enabled in aws_iot_ota_agent_config.h"
+    #error "Primary data protocol must be enabled in the OTA configuration file."
 #endif
 
 #if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
