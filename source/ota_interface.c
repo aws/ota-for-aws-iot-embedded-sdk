@@ -77,31 +77,46 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
     OtaErr_t err = OtaErrNone;
+    bool httpInJobDoc;
+    bool mqttInJobDoc;
+
+    /* The explicit type casts create additional branches tracked by code
+     * coverage tools that are unreachable. These macros prevent the tools
+     * from tracking branch coverage for these lines. */
+    /* LCOV_EXCL_BR_START */
+    httpInJobDoc = ( strstr( ( const char * ) pProtocol, "HTTP" ) != NULL ) ? true : false;
+    mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "MQTT" ) != NULL ) ? true : false;
+    /* LCOV_EXCL_BR_STOP */
 
     #if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
-        ( void ) pProtocol;
-        pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
-        pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
-        pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
-        pDataInterface->cleanup = cleanupData_Mqtt;
+        ( void ) httpInJobDoc;
+
+        if( mqttInJobDoc == true )
+        {
+            pDataInterface->initFileTransfer = initFileTransfer_Mqtt;
+            pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
+            pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
+            pDataInterface->cleanup = cleanupData_Mqtt;
+        }
+        else
+        {
+            err = OtaErrInvalidDataProtocol;
+        }
     #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) )
-        ( void ) pProtocol;
-        pDataInterface->initFileTransfer = initFileTransfer_Http;
-        pDataInterface->requestFileBlock = requestDataBlock_Http;
-        pDataInterface->decodeFileBlock = decodeFileBlock_Http;
-        pDataInterface->cleanup = cleanupData_Http;
-    #else /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
-        bool httpInJobDoc;
-        bool mqttInJobDoc;
+        ( void ) mqttInJobDoc;
 
-        /* The explicit type casts create additional branches tracked by code
-         * coverage tools that are unreachable. These macros prevent the tools
-         * from tracking branch coverage for these lines. */
-        /* LCOV_EXCL_BR_START */
-        httpInJobDoc = ( strstr( ( const char * ) pProtocol, "HTTP" ) != NULL ) ? true : false;
-        mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "MQTT" ) != NULL ) ? true : false;
-        /* LCOV_EXCL_BR_STOP */
-
+        if( httpInJobDoc == true )
+        {
+            pDataInterface->initFileTransfer = initFileTransfer_Http;
+            pDataInterface->requestFileBlock = requestDataBlock_Http;
+            pDataInterface->decodeFileBlock = decodeFileBlock_Http;
+            pDataInterface->cleanup = cleanupData_Http;
+        }
+        else
+        {
+            err = OtaErrInvalidDataProtocol;
+        }
+    #else  /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
             if( mqttInJobDoc == true )
             {
@@ -140,8 +155,8 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             {
                 err = OtaErrInvalidDataProtocol;
             }
-        #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP ) */
-    #endif /* if !( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) | ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
+        #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
+    #endif /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
 
     return err;
 }
