@@ -100,7 +100,7 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
  * The protocol interface that should be prioritized when both protocols are
  * valid options is configured with the configOTA_PRIMARY_DATA_PROTOCOL macro.
  *
- * @param[out] pDataInterface OTA data interface to overwite.
+ * @param[out] pDataInterface OTA data interface to overwrite.
  *
  * @param[in] pProtocol String containing a list of protocols that may be set.
  *
