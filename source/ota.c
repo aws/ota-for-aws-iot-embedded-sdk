@@ -507,7 +507,8 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    NULL                  /* customJobCallback */
+    NULL,                 /* customJobCallback */
+    1                     /* unsubscribe flag */
 };
 
 /**
@@ -1066,8 +1067,6 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     OtaErr_t err = OtaErrNone;
     OtaOsStatus_t osErr = OtaOsSuccess;
     OtaEventMsg_t eventMsg = { 0 };
-
-    ( void ) pEventData;
 
     ( void ) pEventData;
 
@@ -3116,7 +3115,8 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 /*
  * Public API to shutdown the OTA Agent.
  */
-OtaState_t OTA_Shutdown( uint32_t ticksToWait )
+OtaState_t OTA_Shutdown( uint32_t ticksToWait,
+                         uint8_t unsubscribe )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t ticks = ticksToWait;
@@ -3133,6 +3133,8 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait )
     }
     else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
     {
+        otaAgent.unsubscribeOnShutdown = unsubscribe;
+
         /*
          * Send shutdown signal to OTA Agent task.
          */
