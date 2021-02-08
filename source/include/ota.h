@@ -317,8 +317,8 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * returned to the caller.
  *
  * @param[in] unsubscribe Flag to indicate if unsubscribe operations should be performed from the job topics when
- * shutdown is called. If the flag is 0 then unsubscibe operations are not called for job topics If application
- * requires it to be unsubscribed from the job topcis then flag must be set to 1 when calling OTA_Shutdown.
+ * shutdown is called. If the flag is 0 then unsubscribe operations are not called for job topics If application
+ * requires it to be unsubscribed from the job topics then flag must be set to 1 when calling OTA_Shutdown.
  *
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
