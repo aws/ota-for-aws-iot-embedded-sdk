@@ -3133,7 +3133,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
     }
     else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
     {
-        otaAgent.unsubscribeOnShutdown = unsubscribe;
+        otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 
         /*
          * Send shutdown signal to OTA Agent task.
