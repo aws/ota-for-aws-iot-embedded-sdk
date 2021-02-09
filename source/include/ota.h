@@ -325,7 +325,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  */
 /* @[declare_ota_shutdown] */
 OtaState_t OTA_Shutdown( uint32_t ticksToWait,
-                         uint8_t unsubscribe );
+                         uint8_t unsubscribeFlag );
 /* @[declare_ota_shutdown] */
 
 /**
