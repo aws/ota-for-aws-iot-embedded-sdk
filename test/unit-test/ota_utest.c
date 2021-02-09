@@ -302,6 +302,17 @@ static OtaMqttStatus_t stubMqttSubscribe( const char * unused_1,
     return OtaMqttSuccess;
 }
 
+static OtaMqttStatus_t stubMqttSubscribeAlwaysFail( const char * unused_1,
+                                          uint16_t unused_2,
+                                          uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    return OtaMqttSubscribeFailed;
+}
+
 static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
                                         uint16_t unused_2,
                                         const char * unused_3,
@@ -341,6 +352,17 @@ static OtaMqttStatus_t stubMqttUnsubscribe( const char * unused_1,
     ( void ) unused_3;
 
     return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttUnsubscribeAlwaysFail( const char * unused_1,
+                                          uint16_t unused_2,
+                                          uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    return OtaMqttUnsubscribeFailed;
 }
 
 static OtaHttpStatus_t stubHttpInit( char * url )
@@ -1640,6 +1662,68 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
 {
     otaInterfaces.pal.closeFile = mockPalCloseFileAlwaysFail;
     test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
+/* MQTT tests. */
+void test_OTA_mqttCleanupFailed()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateRequestingJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+
+    otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribeAlwaysFail;
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
+void test_OTA_mqttEncodingFailed()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    otaEvent.eventId = OtaAgentEventRequestFileBlock;
+    OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
+    pFileContext->pRxBlockBitmap = NULL;
+
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+}
+
+void test_OTA_mqttJobSubscribingFailed()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    pOtaJobDoc = JOB_DOC_A;
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
+
+    otaGoToState( OtaAgentStateRequestingJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+
+    otaEvent.eventId = OtaAgentEventRequestJobDocument;
+
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+}
+
+void test_OTA_mqttInitFileTransferSubscribeFailed()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
+    
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+
+    otaEvent.eventId = OtaAgentEventCreateFile;
+
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
 }
 
 /**
