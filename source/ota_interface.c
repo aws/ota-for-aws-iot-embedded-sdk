@@ -76,7 +76,7 @@ void setControlInterface( OtaControlInterface_t * pControlInterface )
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
-    OtaErr_t err = OtaErrNone;
+    OtaErr_t err = OtaErrInvalidDataProtocol;
     bool httpInJobDoc;
     bool mqttInJobDoc;
 
@@ -97,10 +97,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
             pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
             pDataInterface->cleanup = cleanupData_Mqtt;
-        }
-        else
-        {
-            err = OtaErrInvalidDataProtocol;
+            err = OtaErrNone;
         }
     #elif ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) )
         ( void ) mqttInJobDoc;
@@ -111,10 +108,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             pDataInterface->requestFileBlock = requestDataBlock_Http;
             pDataInterface->decodeFileBlock = decodeFileBlock_Http;
             pDataInterface->cleanup = cleanupData_Http;
-        }
-        else
-        {
-            err = OtaErrInvalidDataProtocol;
+            err = OtaErrNone;
         }
     #else /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
@@ -124,6 +118,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
                 pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
                 pDataInterface->cleanup = cleanupData_Mqtt;
+                err = OtaErrNone;
             }
             else if( httpInJobDoc == true )
             {
@@ -131,10 +126,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->requestFileBlock = requestDataBlock_Http;
                 pDataInterface->decodeFileBlock = decodeFileBlock_Http;
                 pDataInterface->cleanup = cleanupData_Http;
-            }
-            else
-            {
-                err = OtaErrInvalidDataProtocol;
+                err = OtaErrNone;
             }
         #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
             if( httpInJobDoc == true )
@@ -143,6 +135,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->requestFileBlock = requestDataBlock_Http;
                 pDataInterface->decodeFileBlock = decodeFileBlock_Http;
                 pDataInterface->cleanup = cleanupData_Http;
+                err = OtaErrNone;
             }
             else if( mqttInJobDoc == true )
             {
@@ -150,10 +143,7 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->requestFileBlock = requestFileBlock_Mqtt;
                 pDataInterface->decodeFileBlock = decodeFileBlock_Mqtt;
                 pDataInterface->cleanup = cleanupData_Mqtt;
-            }
-            else
-            {
-                err = OtaErrInvalidDataProtocol;
+                err = OtaErrNone;
             }
         #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
     #endif /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
