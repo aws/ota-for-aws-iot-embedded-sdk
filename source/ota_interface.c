@@ -84,8 +84,8 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
      * coverage tools that are unreachable. These macros prevent the tools
      * from tracking branch coverage for these lines. */
     /* LCOV_EXCL_BR_START */
-    httpInJobDoc = ( strstr( ( const char * ) pProtocol, "HTTP" ) != NULL ) ? true : false;
-    mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "MQTT" ) != NULL ) ? true : false;
+    httpInJobDoc = ( strstr( ( const char * ) pProtocol, "\"HTTP\"" ) != NULL ) ? true : false;
+    mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "\"MQTT\"" ) != NULL ) ? true : false;
     /* LCOV_EXCL_BR_STOP */
 
     #if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
