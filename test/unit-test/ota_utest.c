@@ -1941,14 +1941,14 @@ void test_OTA_setDataInterfaceValidInput( void )
     OtaDataInterface_t dataInterface = { NULL, NULL, NULL, NULL };
     uint8_t pProtocol[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
 
-    memcpy( pProtocol, "MQTT", sizeof( "MQTT" ) );
+    memcpy( pProtocol, "[\"MQTT\"]", sizeof( "[\"MQTT\"]" ) );
     TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_EQUAL( initFileTransfer_Mqtt, dataInterface.initFileTransfer );
     TEST_ASSERT_EQUAL( requestFileBlock_Mqtt, dataInterface.requestFileBlock );
     TEST_ASSERT_EQUAL( decodeFileBlock_Mqtt, dataInterface.decodeFileBlock );
     TEST_ASSERT_EQUAL( cleanupData_Mqtt, dataInterface.cleanup );
 
-    memcpy( pProtocol, "HTTP", sizeof( "HTTP" ) );
+    memcpy( pProtocol, "[\"HTTP\"]", sizeof( "[\"HTTP\"]" ) );
     memset( &dataInterface, 0, sizeof( dataInterface ) );
     TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_EQUAL( initFileTransfer_Http, dataInterface.initFileTransfer );
@@ -1956,7 +1956,7 @@ void test_OTA_setDataInterfaceValidInput( void )
     TEST_ASSERT_EQUAL( decodeFileBlock_Http, dataInterface.decodeFileBlock );
     TEST_ASSERT_EQUAL( cleanupData_Http, dataInterface.cleanup );
 
-    memcpy( pProtocol, "HTTPMQTT", sizeof( "HTTPMQTT" ) );
+    memcpy( pProtocol, "[\"HTTP\",\"MQTT\"]", sizeof( "[\"HTTP\",\"MQTT\"]" ) );
     memset( &dataInterface, 0, sizeof( dataInterface ) );
     TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.initFileTransfer );
@@ -1964,7 +1964,7 @@ void test_OTA_setDataInterfaceValidInput( void )
     TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.decodeFileBlock );
     TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.cleanup );
 
-    memcpy( pProtocol, "MQTTHTTP", sizeof( "MQTTHTTP" ) );
+    memcpy( pProtocol, "[\"MQTT\",\"HTTP\"]", sizeof( "[\"MQTT\",\"HTTP\"]" ) );
     memset( &dataInterface, 0, sizeof( dataInterface ) );
     TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.initFileTransfer );
@@ -1980,9 +1980,30 @@ void test_OTA_setDataInterfaceValidInput( void )
 void test_OTA_setDataInterfaceInvalidInput( void )
 {
     OtaDataInterface_t dataInterface = { NULL, NULL, NULL, NULL };
-    uint8_t pProtocol[ 20 ] = { 0 };
+    uint8_t pProtocol[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
 
     memcpy( pProtocol, "invalid_protocol", sizeof( "invalid_protocol" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "MQTT", sizeof( "MQTT" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "HTTP", sizeof( "HTTP" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "[\"MQTT\"]", sizeof( "[\"MQTT\"]" ) );
     TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
     TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );

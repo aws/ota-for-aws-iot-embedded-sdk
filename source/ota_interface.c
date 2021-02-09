@@ -77,16 +77,57 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol )
 {
     OtaErr_t err = OtaErrInvalidDataProtocol;
+    size_t i;
     bool httpInJobDoc;
     bool mqttInJobDoc;
 
-    /* The explicit type casts create additional branches tracked by code
-     * coverage tools that are unreachable. These macros prevent the tools
-     * from tracking branch coverage for these lines. */
-    /* LCOV_EXCL_BR_START */
-    httpInJobDoc = ( strstr( ( const char * ) pProtocol, "HTTP" ) != NULL ) ? true : false;
-    mqttInJobDoc = ( strstr( ( const char * ) pProtocol, "MQTT" ) != NULL ) ? true : false;
-    /* LCOV_EXCL_BR_STOP */
+    static const char * pOtaTransferTypes[] =
+    {
+        /* Do not change the order of these. */
+        "[\"MQTT\"]",
+        "[\"HTTP\"]",
+        "[\"MQTT\",\"HTTP\"]",
+        "[\"HTTP\",\"MQTT\"]"
+    };
+    static size_t numTransferTypes = sizeof( pOtaTransferTypes ) / sizeof( const char * );
+
+    for( i = 0; i < numTransferTypes; ++i )
+    {
+        /* The explicit type cast creates additional branches tracked by code
+         * coverage tools that are unreachable. These macros prevent the tools
+         * from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
+        if( strcmp( pOtaTransferTypes[ i ], ( const char * ) pProtocol ) == 0 )
+        {
+            break;
+        }
+
+        /* LCOV_EXCL_BR_STOP */
+    }
+
+    switch( i )
+    {
+        case 0: /* MQTT enabled. */
+            mqttInJobDoc = true;
+            httpInJobDoc = false;
+            break;
+
+        case 1: /* HTTP enabled */
+            mqttInJobDoc = false;
+            httpInJobDoc = true;
+            break;
+
+        case 2:
+        case 3:
+            mqttInJobDoc = true;
+            httpInJobDoc = true;
+            break;
+
+        default:
+            mqttInJobDoc = false;
+            httpInJobDoc = false;
+            break;
+    }
 
     #if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) )
         ( void ) httpInJobDoc;
