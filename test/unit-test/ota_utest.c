@@ -2003,7 +2003,7 @@ void test_OTA_setDataInterfaceInvalidInput( void )
     TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
     TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
 
-    memcpy( pProtocol, "[\"MQTT\"]", sizeof( "[\"MQTT\"]" ) );
+    memcpy( pProtocol, "junk[\"MQTT\"]", sizeof( "junk[\"MQTT\"]" ) );
     TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
     TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
     TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
