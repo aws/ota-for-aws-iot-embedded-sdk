@@ -43,38 +43,36 @@
 #include "ota_appversion32.h"
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN                   "rdy"            /*!< Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN             "rdy"                  /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE            128U         /*!< Max length of a job status message to the service. */
+#define OTA_STATUS_MSG_MAX_SIZE      128U               /*!< Max length of a job status message to the service. */
 
 /**
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
  */
-#define MQTT_API_THINGS                    "$aws/things/"             /*!< Topic prefix for thing APIs. */
-#define MQTT_API_JOBS_NEXT_GET             "/jobs/$next/get"          /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS_NEXT_GET_ACCEPTED    "/jobs/$next/get/accepted" /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS_NOTIFY_NEXT          "/jobs/notify-next"        /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS                      "/jobs/"                   /*!< Job API identifier. */
-#define MQTT_API_UPDATE                    "/update"                  /*!< Job API identifier. */
-#define MQTT_API_STREAMS                   "/streams/"                /*!< Stream API identifier. */
-#define MQTT_API_DATA_CBOR                 "/data/cbor"               /*!< Stream API suffix. */
-#define MQTT_API_GET_CBOR                  "/get/cbor"                /*!< Stream API suffix. */
+#define MQTT_API_THINGS              "$aws/things/"                   /*!< Topic prefix for thing APIs. */
+#define MQTT_API_JOBS_NEXT_GET       "/jobs/$next/get"                /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NOTIFY_NEXT    "/jobs/notify-next"              /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS                "/jobs/"                         /*!< Job API identifier. */
+#define MQTT_API_UPDATE              "/update"                        /*!< Job API identifier. */
+#define MQTT_API_STREAMS             "/streams/"                      /*!< Stream API identifier. */
+#define MQTT_API_DATA_CBOR           "/data/cbor"                     /*!< Stream API suffix. */
+#define MQTT_API_GET_CBOR            "/get/cbor"                      /*!< Stream API suffix. */
 
 /* NOTE: The format specifiers in this string are placeholders only; the lengths of these
  * strings are used to calculate buffer sizes.
  */
-static const char pOtaJobsGetNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NEXT_GET;                  /*!< Topic template to request next job. */
-static const char pOtaJobsGetNextAcceptedTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NEXT_GET_ACCEPTED; /*!< Topic template for getting next job. */
-static const char pOtaJobsNotifyNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NOTIFY_NEXT;            /*!< Topic template to notify next . */
-static const char pOtaJobStatusTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS "%s"MQTT_API_UPDATE;         /*!< Topic template to update the current job. */
-static const char pOtaStreamDataTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_DATA_CBOR;  /*!< Topic template to receive data over a stream. */
-static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_GET_CBOR;    /*!< Topic template to request next data over a stream. */
+static const char pOtaJobsGetNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NEXT_GET;                 /*!< Topic template to request next job. */
+static const char pOtaJobsNotifyNextTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS_NOTIFY_NEXT;           /*!< Topic template to notify next . */
+static const char pOtaJobStatusTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_JOBS "%s"MQTT_API_UPDATE;        /*!< Topic template to update the current job. */
+static const char pOtaStreamDataTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_DATA_CBOR; /*!< Topic template to receive data over a stream. */
+static const char pOtaGetStreamTopicTemplate[] = MQTT_API_THINGS "%s"MQTT_API_STREAMS "%s"MQTT_API_GET_CBOR;   /*!< Topic template to request next data over a stream. */
 
-static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                  /*!< Used to specify client token id to authenticate job. */
-static const char pOtaStringReceive[] = "\"receive\"";                                                          /*!< Used to build the job receive template. */
+static const char pOtaGetNextJobMsgTemplate[] = "{\"clientToken\":\"%u:%s\"}";                                 /*!< Used to specify client token id to authenticate job. */
+static const char pOtaStringReceive[] = "\"receive\"";                                                         /*!< Used to build the job receive template. */
 
 /** We map all of the above status cases to one of these status strings.
  * These are the only strings that are supported by the Job Service. You
@@ -130,13 +128,12 @@ static const char asciiDigits[] =
  * enough to hold a dynamically constructed topic and message string.
  */
 #define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )              /*!< Calculate max buffer size based on topic template and thing name length. */
-#define TOPIC_GET_NEXT_BUFFER_SIZE             ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                      /*!< Max buffer size for `jobs/$next/get` topic. */
-#define TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextAcceptedTopicTemplate ) )              /*!< Max buffer size for `jobs/$next/get/accepted` topic. */
-#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                   /*!< Max buffer size for `jobs/notify-next` topic. */
-#define TOPIC_JOB_STATUS_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )     /*!< Max buffer size for `jobs/<job_name>/update` topic. */
-#define TOPIC_STREAM_DATA_BUFFER_SIZE          ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN ) /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
-#define TOPIC_GET_STREAM_BUFFER_SIZE           ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )  /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
-#define MSG_GET_NEXT_BUFFER_SIZE               ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )           /*!< Max buffer size for message of `jobs/$next/get topic`. */
+#define TOPIC_GET_NEXT_BUFFER_SIZE       ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                            /*!< Max buffer size for `jobs/$next/get` topic. */
+#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                         /*!< Max buffer size for `jobs/notify-next` topic. */
+#define TOPIC_JOB_STATUS_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )           /*!< Max buffer size for `jobs/<job_name>/update` topic. */
+#define TOPIC_STREAM_DATA_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN )       /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
+#define TOPIC_GET_STREAM_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )        /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
+#define MSG_GET_NEXT_BUFFER_SIZE         ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )                 /*!< Max buffer size for message of `jobs/$next/get topic`. */
 
 /**
  * @brief Subscribe to the jobs notification topic (i.e. New file version available).
@@ -345,13 +342,14 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
  */
 static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
+    assert( pAgentCtx != NULL );
+
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     uint16_t topicLen = 0;
 
-    /* These buffers are used to store generated MQTT topics. The static sizes
+    /* This buffer is used to store generated MQTT topics. The static size
      * are calculated from the templates and the corresponding parameters. */
-    static char pJobTopicGetNext[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
     static char pJobTopicNotifyNext[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
 
     /* NULL-terminated list of topic string components */
@@ -359,32 +357,27 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
     {
         MQTT_API_THINGS,
         NULL, /* Thing Name not available at compile time, initialized below */
-        MQTT_API_JOBS_NEXT_GET_ACCEPTED,
+        MQTT_API_JOBS_NOTIFY_NEXT,
         NULL
     };
 
-    assert( pAgentCtx != NULL );
-
     topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
 
-    /* Build and subscribe to the first topic. */
     topicLen = ( uint16_t ) stringBuilder(
-        pJobTopicGetNext,
-        sizeof( pJobTopicGetNext ),
+        pJobTopicNotifyNext,
+        sizeof( pJobTopicNotifyNext ),
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicGetNext ) ) );
+    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
 
-    mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicGetNext,
+    mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                            topicLen,
                                                            1 );
 
     if( mqttStatus == OtaMqttSuccess )
     {
-        LogInfo( ( "Subscribed to MQTT topic: "
-                   "%s",
-                   pJobTopicGetNext ) );
+        LogInfo( ( "Subscribed to MQTT topic: %s", pJobTopicNotifyNext ) );
     }
     else
     {
@@ -393,38 +386,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
                     "OtaMqttStatus_t=%s"
                     ", topic=%s",
                     OTA_MQTT_strerror( mqttStatus ),
-                    pJobTopicGetNext ) );
-    }
-
-    if( mqttStatus == OtaMqttSuccess )
-    {
-        /* Build and subscribe to the second topic. Only the last part of the topic string changes. */
-        topicStringParts[ 2 ] = MQTT_API_JOBS_NOTIFY_NEXT;
-        topicLen = ( uint16_t ) stringBuilder(
-            pJobTopicNotifyNext,
-            sizeof( pJobTopicNotifyNext ),
-            topicStringParts );
-
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
-
-        mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
-                                                               topicLen,
-                                                               1 );
-
-        if( mqttStatus == OtaMqttSuccess )
-        {
-            LogInfo( ( "Subscribed to MQTT topic: %s", pJobTopicNotifyNext ) );
-        }
-        else
-        {
-            LogError( ( "Failed to subscribe to MQTT topic: "
-                        "subscribe returned error: "
-                        "OtaMqttStatus_t=%s"
-                        ", topic=%s",
-                        OTA_MQTT_strerror( mqttStatus ),
-                        pJobTopicNotifyNext ) );
-        }
+                    pJobTopicNotifyNext ) );
     }
 
     return mqttStatus;
@@ -502,7 +464,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
      * is calculated from the template and the corresponding parameters. This
      * buffer is used with two separate templates and its size is set fit the
      * larger of the two. */
-    char pJobTopic[ TOPIC_GET_NEXT_ACCEPTED_BUFFER_SIZE ];
+    char pJobTopic[ TOPIC_NOTIFY_NEXT_BUFFER_SIZE ];
     uint16_t topicLen = 0;
 
     /* NULL-terminated list of topic string parts. */
@@ -543,39 +505,6 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
                     ", topic=%s",
                     OTA_MQTT_strerror( mqttStatus ),
                     pJobTopic ) );
-    }
-
-    if( mqttStatus == OtaMqttSuccess )
-    {
-        /* Try to unsubscribe from the second of two job topics. */
-        /* Only the last part of the topic string changes here. */
-
-        topicStringParts[ 2 ] = MQTT_API_JOBS_NEXT_GET_ACCEPTED;
-        topicLen = ( uint16_t ) stringBuilder(
-            pJobTopic,
-            sizeof( pJobTopic ),
-            topicStringParts );
-
-        /* The buffer is static and the size is calculated to fit. */
-        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
-
-        mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
-                                                                 topicLen,
-                                                                 0 );
-
-        if( mqttStatus == OtaMqttSuccess )
-        {
-            LogInfo( ( "Unsubscribed to MQTT topic: %s", pJobTopic ) );
-        }
-        else
-        {
-            LogError( ( "Failed to unsubscribe to MQTT topic: "
-                        "unsubscribe returned error: "
-                        "OtaMqttStatus_t=%s"
-                        ", topic=%s",
-                        OTA_MQTT_strerror( mqttStatus ),
-                        pJobTopic ) );
-        }
     }
 
     return mqttStatus;
