@@ -737,6 +737,8 @@ ultopiclen
 unhandled
 unistd
 unsignedversion32
+unsubscribeflag
+unsubscribeonshutdown
 updatedby
 updatefilepathsize
 updatejobstatus

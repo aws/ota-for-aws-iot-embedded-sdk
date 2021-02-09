@@ -316,7 +316,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * If this is set to zero, the function will return immediately without waiting. The actual state is
  * returned to the caller.
  *
- * @param[in] unsubscribe Flag to indicate if unsubscribe operations should be performed from the job topics when
+ * @param[in] unsubscribeFlag Flag to indicate if unsubscribe operations should be performed from the job topics when
  * shutdown is called. If the flag is 0 then unsubscribe operations are not called for job topics If application
  * requires it to be unsubscribed from the job topics then flag must be set to 1 when calling OTA_Shutdown.
  *
