@@ -3116,7 +3116,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * Public API to shutdown the OTA Agent.
  */
 OtaState_t OTA_Shutdown( uint32_t ticksToWait,
-                         uint8_t unsubscribe )
+                         uint8_t unsubscribeFlag )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t ticks = ticksToWait;
