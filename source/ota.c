@@ -435,7 +435,7 @@ static OtaErr_t processNullFileContext( void );
  *
  * @return true if in self-test, else false.
  */
-static bool inSelftest( void );
+static bool platformInSelftest( void );
 
 /**
  * @brief Function to handle events that were unexpected in the current state.
@@ -614,7 +614,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
 }
 
 
-static bool inSelftest( void )
+static bool platformInSelftest( void )
 {
     bool selfTest = false;
 
@@ -743,7 +743,7 @@ static OtaErr_t startHandler( const OtaEventData_t * pEventData )
     ( void ) pEventData;
 
     /* Start self-test timer, if platform is in self-test. */
-    if( inSelftest() == true )
+    if( platformInSelftest() == true )
     {
         ( void ) otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
                                                          "OtaSelfTestTimer",
@@ -771,10 +771,16 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     LogInfo( ( "Beginning self-test." ) );
 
     /* Check the platform's OTA update image state. It should also be in self test. */
-    if( inSelftest() == true )
+    if( platformInSelftest() == true )
     {
         /* Callback for application specific self-test. */
         otaAgent.OtaAppCallback( OtaJobEventStartTest, NULL );
+
+        /* Clear self-test flag. */
+        otaAgent.fileContext.isInSelfTest = false;
+
+        /* Stop the self test timer as it is no longer required. */
+        otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
     }
     else
     {
@@ -910,7 +916,7 @@ static OtaErr_t processValidFileContext( void )
     OtaEventMsg_t eventMsg = { 0 };
 
     /* If the platform is not in the self_test state, initiate file download. */
-    if( inSelftest() == false )
+    if( platformInSelftest() == false )
     {
         /* Init data interface routines */
         retVal = setDataInterface( &otaDataInterface, otaAgent.fileContext.pProtocols );
@@ -2314,7 +2320,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( inSelftest() == false ) )
+    if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( platformInSelftest() == false ) )
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
