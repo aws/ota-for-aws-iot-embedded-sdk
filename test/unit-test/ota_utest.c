@@ -120,6 +120,9 @@ static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 /* 2 seconds default wait time for OTA state machine transition. */
 static const int otaDefaultWait = 2000;
 
+/* Flag to unsubscribe to topics after ota shutdown. */
+static const uint8_t unsubscribeFlag = 1;
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -598,7 +601,7 @@ static void otaInitDefault()
 static void otaDeinit()
 {
     mockOSEventReset( NULL );
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     processEntireQueue();
 }
 
@@ -764,7 +767,7 @@ void test_OTA_InitWithNameTooLong()
 void test_OTA_ShutdownWhenStopped()
 {
     /* Calling shutdown when already stopped should have no effect. */
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -777,7 +780,7 @@ void test_OTA_ShutdownFailToSendEvent()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
