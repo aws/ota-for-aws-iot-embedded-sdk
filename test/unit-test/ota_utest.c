@@ -2027,7 +2027,7 @@ void test_OTA_initFileHandler_EventSendFails( void )
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, initFileHandler( otaEvent.pEventData ) );
 
     /* Test failing while trying to send the request block event after
-     * successfuly initializing the file. */
+     * successfully initializing the file. */
     otaInitDefault();
 
     /* Succeed with the file initialization to then attempt to send the event
