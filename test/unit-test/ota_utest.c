@@ -132,8 +132,9 @@ extern OtaDataInterface_t otaDataInterface;
 /* Static function defined in ota.c for processing events. */
 extern void receiveAndProcessOtaEvent( void );
 
-/* State machine function handler for initializing the file. */
+/* Static state machine function handlers under test defined in ota.c. */
 extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 
 /* ========================================================================== */
 
@@ -1977,8 +1978,8 @@ void test_OTA_initFileHandler_TimerFails( void )
 }
 
 /**
- * @brief Test that initFileHandler returns the proper error when the OS event
- * send functionality fails.
+ * @brief Test that initFileHandler returns the proper error when the OTA event
+ *        send functionality fails.
  */
 void test_OTA_initFileHandler_EventSendFails( void )
 {
@@ -2009,4 +2010,24 @@ void test_OTA_initFileHandler_EventSendFails( void )
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, initFileHandler( otaEvent.pEventData ) );
+}
+
+/**
+ * @brief Test that requestDataHandler returns the proper error when the OTA
+ *        event send functionality fails.
+ */
+void test_OTA_requestDataHandler_EventSendFails( void )
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInitDefault();
+
+    /* File context has a non-zero number of blocks remaining. */
+    otaAgent.fileContext.blocksRemaining = 1U;
+    /* Fail to start the timer. */
+    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestDataHandler( otaEvent.pEventData ) );
 }
