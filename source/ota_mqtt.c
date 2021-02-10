@@ -1175,16 +1175,19 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    /* Unsubscribe from job notification topics. */
-    mqttStatus = unsubscribeFromJobNotificationTopic( pAgentCtx );
-
-    if( mqttStatus != OtaMqttSuccess )
+    if( pAgentCtx->unsubscribeOnShutdown != 0 )
     {
-        LogWarn( ( "Failed cleanup for MQTT control plane: "
-                   "unsubscribeFromJobNotificationTopic returned error: "
-                   "OtaMqttStatus_t=%s",
-                   OTA_MQTT_strerror( mqttStatus ) ) );
-        result = OtaErrCleanupControlFailed;
+        /* Unsubscribe from job notification topics. */
+        mqttStatus = unsubscribeFromJobNotificationTopic( pAgentCtx );
+
+        if( mqttStatus != OtaMqttSuccess )
+        {
+            LogWarn( ( "Failed cleanup for MQTT control plane: "
+                       "unsubscribeFromJobNotificationTopic returned error: "
+                       "OtaMqttStatus_t=%s",
+                       OTA_MQTT_strerror( mqttStatus ) ) );
+            result = OtaErrCleanupControlFailed;
+        }
     }
 
     return result;
@@ -1200,16 +1203,19 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    /* Unsubscribe from data stream topics. */
-    mqttStatus = unsubscribeFromDataStream( pAgentCtx );
-
-    if( mqttStatus != OtaMqttSuccess )
+    if( pAgentCtx->unsubscribeOnShutdown != 0 )
     {
-        LogWarn( ( "Failed cleanup for MQTT data plane: "
-                   "unsubscribeFromDataStream returned error: "
-                   "OtaMqttStatus_t=%s",
-                   OTA_MQTT_strerror( mqttStatus ) ) );
-        result = OtaErrCleanupDataFailed;
+        /* Unsubscribe from data stream topics. */
+        mqttStatus = unsubscribeFromDataStream( pAgentCtx );
+
+        if( mqttStatus != OtaMqttSuccess )
+        {
+            LogWarn( ( "Failed cleanup for MQTT data plane: "
+                       "unsubscribeFromDataStream returned error: "
+                       "OtaMqttStatus_t=%s",
+                       OTA_MQTT_strerror( mqttStatus ) ) );
+            result = OtaErrCleanupDataFailed;
+        }
     }
 
     return result;
