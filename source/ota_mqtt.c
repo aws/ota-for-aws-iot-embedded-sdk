@@ -342,8 +342,6 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
  */
 static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
-    assert( pAgentCtx != NULL );
-
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
     uint16_t topicLen = 0;
@@ -360,6 +358,8 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         MQTT_API_JOBS_NOTIFY_NEXT,
         NULL
     };
+
+    assert( pAgentCtx != NULL );
 
     topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
 
