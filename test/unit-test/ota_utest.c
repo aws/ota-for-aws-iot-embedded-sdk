@@ -343,6 +343,13 @@ OtaErr_t mockMqttInitFileTransferAlwaysFail( OtaAgentContext_t * pAgentCtx )
     return OtaErrInitFileTransferFailed;
 }
 
+OtaErr_t mockMqttInitFileTransferAlwaysSucceed( OtaAgentContext_t * pAgentCtx )
+{
+    ( void ) pAgentCtx;
+
+    return OtaErrNone;
+}
+
 static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
                                                   uint16_t unused_2,
                                                   const char * unused_3,
@@ -1967,4 +1974,39 @@ void test_OTA_initFileHandler_TimerFails( void )
     otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrInitFileTransferFailed, initFileHandler( otaEvent.pEventData ) );
+}
+
+/**
+ * @brief Test that initFileHandler returns the proper error when the OS event
+ * send functionality fails.
+ */
+void test_OTA_initFileHandler_EventSendFails( void )
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Test failing while trying to send the shutdown event after failing
+     * to initialize the file. */
+    otaInitDefault();
+    /* Fail to initialize the file transfer so the timer is started. */
+    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysFail;
+
+    /* Simulate reaching the maximum number of attempts before considering
+     * the attempt to be a failure. */
+    otaAgent.requestMomentum = otaconfigMAX_NUM_REQUEST_MOMENTUM;
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, initFileHandler( otaEvent.pEventData ) );
+
+    /* Test failing while trying to send the request block event after
+     * successfuly initializing the file. */
+    otaInitDefault();
+
+    /* Succeed with the file initialization to then attempt to send the event
+     * for requesting a block. */
+    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysSucceed;
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, initFileHandler( otaEvent.pEventData ) );
 }
