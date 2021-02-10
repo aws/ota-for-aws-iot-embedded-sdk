@@ -1075,8 +1075,6 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
 
     ( void ) pEventData;
 
-    ( void ) pEventData;
-
     if( otaAgent.fileContext.blocksRemaining > 0U )
     {
         /* Start the request timer. */
