@@ -129,12 +129,17 @@ extern OtaAgentContext_t otaAgent;
  * protocol function pointers. */
 extern OtaDataInterface_t otaDataInterface;
 
+/* Global static variable defined in ota.c for managing the control interface
+ * protocol function pointers. */
+extern OtaControlInterface_t otaControlInterface;
+
 /* Static function defined in ota.c for processing events. */
 extern void receiveAndProcessOtaEvent( void );
 
 /* Static state machine function handlers under test defined in ota.c. */
 extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 
 /* ========================================================================== */
 
@@ -337,16 +342,25 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
-OtaErr_t mockMqttInitFileTransferAlwaysFail( OtaAgentContext_t * pAgentCtx )
+OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
 {
-    ( void ) pAgentCtx;
+    ( void ) unused;
+
+    return OtaErrRequestJobFailed;
+}
+
+
+OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
+{
+    ( void ) unused;
 
     return OtaErrInitFileTransferFailed;
 }
 
-OtaErr_t mockMqttInitFileTransferAlwaysSucceed( OtaAgentContext_t * pAgentCtx )
+
+OtaErr_t mockMqttInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
 {
-    ( void ) pAgentCtx;
+    ( void ) unused;
 
     return OtaErrNone;
 }
@@ -1970,7 +1984,7 @@ void test_OTA_initFileHandler_TimerFails( void )
     /* Initialize the OTA interfaces so they are not NULL. */
     otaInitDefault();
     /* Fail to initialize the file transfer so the timer is started. */
-    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysFail;
+    otaDataInterface.initFileTransfer = mockDataInterfaceInitFileTransferAlwaysFail;
     /* Fail to start the timer. */
     otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
 
@@ -1989,7 +2003,7 @@ void test_OTA_initFileHandler_EventSendFails( void )
      * to initialize the file. */
     otaInitDefault();
     /* Fail to initialize the file transfer so the timer is started. */
-    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysFail;
+    otaDataInterface.initFileTransfer = mockDataInterfaceInitFileTransferAlwaysFail;
 
     /* Simulate reaching the maximum number of attempts before considering
      * the attempt to be a failure. */
@@ -2030,4 +2044,44 @@ void test_OTA_requestDataHandler_EventSendFails( void )
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestDataHandler( otaEvent.pEventData ) );
+}
+
+/**
+ * @brief Test that requestJobHandler returns the proper error when the timer
+ *        start functionality fails.
+ */
+void test_OTA_requestJobHandler_TimerFails( void )
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInitDefault();
+
+    /* Fail requesting the job document. */
+    otaControlInterface.requestJob = mockControlInterfaceRequestJobAlwaysFail;
+    /* Fail to start the request timer. */
+    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, requestJobHandler( otaEvent.pEventData ) );
+}
+
+/**
+ * @brief Test that requestJobHandler returns the proper error when the OTA
+ *        event send functionality fails.
+ */
+void test_OTA_requestJobHandler_EventSendFails( void )
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInitDefault();
+
+    /* Fail requesting the job document. */
+    otaControlInterface.requestJob = mockControlInterfaceRequestJobAlwaysFail;
+
+    /* Simulate reaching the maximum number of attempts before considering
+     * the attempt to be a failure. */
+    otaAgent.requestMomentum = otaconfigMAX_NUM_REQUEST_MOMENTUM;
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestJobHandler( otaEvent.pEventData ) );
 }
