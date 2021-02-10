@@ -41,6 +41,7 @@
 #include "ota_private.h"
 #include "ota_mqtt_private.h"
 #include "ota_http_private.h"
+#include "ota_interface_private.h"
 
 /* test includes. */
 #include "utest_helpers.h"
@@ -124,8 +125,15 @@ static const int otaDefaultWait = 2000;
 /* Global static variable defined in ota.c for managing the state machine. */
 extern OtaAgentContext_t otaAgent;
 
+/* Global static variable defined in ota.c for managing the data interface
+ * protocol function pointers. */
+extern OtaDataInterface_t otaDataInterface;
+
 /* Static function defined in ota.c for processing events. */
 extern void receiveAndProcessOtaEvent( void );
+
+/* State machine function handler for initializing the file. */
+extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 
 /* ========================================================================== */
 
@@ -278,6 +286,17 @@ static OtaOsStatus_t mockOSTimerInvokeCallback( OtaTimerId_t timerId,
     return OtaOsSuccess;
 }
 
+static OtaOsStatus_t mockOSTimerStartAlwaysFail( OtaTimerId_t unused_1,
+                                                 const char * const unused_2,
+                                                 const uint32_t unused_3,
+                                                 OtaTimerCallback_t unused_4 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+    ( void ) unused_4;
+    return OtaOsTimerStartFailed;
+}
 
 static OtaOsStatus_t stubOSTimerStop( OtaTimerId_t timerId )
 {
@@ -315,6 +334,13 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     ( void ) unused_5;
 
     return OtaMqttSuccess;
+}
+
+OtaErr_t mockMqttInitFileTransferAlwaysFail( OtaAgentContext_t * pAgentCtx )
+{
+    ( void ) pAgentCtx;
+
+    return OtaErrInitFileTransferFailed;
 }
 
 static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
@@ -1919,4 +1945,26 @@ void test_OTA_HTTP_strerror( void )
     status = OtaHttpRequestFailed + 1;
     str = OTA_HTTP_strerror( status );
     TEST_ASSERT_EQUAL_STRING( "InvalidErrorCode", str );
+}
+
+/* ========================================================================== */
+/* ================== OTA State Machine Handler Unit Tests ================== */
+/* ========================================================================== */
+
+/**
+ * @brief Test that initFileHandler returns the proper error when the timer
+ *        fails to start.
+ */
+void test_OTA_initFileHandler_TimerFails( void )
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaInitDefault();
+    /* Fail to initialize the file transfer so the timer is started. */
+    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysFail;
+    /* Fail to start the timer. */
+    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrInitFileTransferFailed, initFileHandler( otaEvent.pEventData ) );
 }
