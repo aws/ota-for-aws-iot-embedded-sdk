@@ -120,6 +120,9 @@ static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 /* 2 seconds default wait time for OTA state machine transition. */
 static const int otaDefaultWait = 2000;
 
+/* Flag to unsubscribe to topics after ota shutdown. */
+static const uint8_t unsubscribeFlag = 1;
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -141,6 +144,8 @@ extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 
+/* ========================================================================== */
+/* ====================== Unit test helper functions ======================== */
 /* ========================================================================== */
 
 static void * mockMallocAlwaysFail( size_t size )
@@ -643,7 +648,7 @@ static void otaInitDefault()
 static void otaDeinit()
 {
     mockOSEventReset( NULL );
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     processEntireQueue();
 }
 
@@ -742,6 +747,10 @@ static void otaGoToState( OtaState_t state )
     mockOSEventReset( NULL );
 }
 
+/* ========================================================================== */
+/* ================ Unit test setup and tear down functions ================= */
+/* ========================================================================== */
+
 void setUp()
 {
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
@@ -760,6 +769,10 @@ void tearDown()
     otaDeinit();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
+
+/* ========================================================================== */
+/* =============================== Unit tests =============================== */
+/* ========================================================================== */
 
 void test_OTA_InitWhenStopped()
 {
@@ -801,7 +814,7 @@ void test_OTA_InitWithNameTooLong()
 void test_OTA_ShutdownWhenStopped()
 {
     /* Calling shutdown when already stopped should have no effect. */
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -814,7 +827,7 @@ void test_OTA_ShutdownFailToSendEvent()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
-    OTA_Shutdown( otaDefaultWait );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
@@ -2084,4 +2097,80 @@ void test_OTA_requestJobHandler_EventSendFails( void )
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestJobHandler( otaEvent.pEventData ) );
+}
+
+/* ========================================================================== */
+/* ======================== OTA Interface Unit Tests ======================== */
+/* ========================================================================== */
+
+/**
+ * @brief Test that setDataInterface sets the data interface when given valid
+ *        inputs.
+ */
+void test_OTA_setDataInterface_ValidInput( void )
+{
+    OtaDataInterface_t dataInterface = { NULL, NULL, NULL, NULL };
+    uint8_t pProtocol[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
+
+    memcpy( pProtocol, "[\"MQTT\"]", sizeof( "[\"MQTT\"]" ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( initFileTransfer_Mqtt, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( requestFileBlock_Mqtt, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( decodeFileBlock_Mqtt, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( cleanupData_Mqtt, dataInterface.cleanup );
+
+    memcpy( pProtocol, "[\"HTTP\"]", sizeof( "[\"HTTP\"]" ) );
+    memset( &dataInterface, 0, sizeof( dataInterface ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( initFileTransfer_Http, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( requestDataBlock_Http, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( decodeFileBlock_Http, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( cleanupData_Http, dataInterface.cleanup );
+
+    memcpy( pProtocol, "[\"MQTT\",\"HTTP\"]", sizeof( "[\"MQTT\",\"HTTP\"]" ) );
+    memset( &dataInterface, 0, sizeof( dataInterface ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "[\"HTTP\",\"MQTT\"]", sizeof( "[\"HTTP\",\"MQTT\"]" ) );
+    memset( &dataInterface, 0, sizeof( dataInterface ) );
+    TEST_ASSERT_EQUAL( OtaErrNone, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_NOT_EQUAL( NULL, dataInterface.cleanup );
+}
+
+/**
+ * @brief Test that setDataInterface returns an error and does not set the data
+ * interface when provided with an invalid input from a job document.
+ */
+void test_OTA_setDataInterface_InvalidInput( void )
+{
+    OtaDataInterface_t dataInterface = { NULL, NULL, NULL, NULL };
+    uint8_t pProtocol[ OTA_PROTOCOL_BUFFER_SIZE ] = { 0 };
+
+    memcpy( pProtocol, "invalid_protocol", sizeof( "invalid_protocol" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "junkMQTT", sizeof( "junkMQTT" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+
+    memcpy( pProtocol, "HTTPjunk", sizeof( "HTTPjunk" ) );
+    TEST_ASSERT_EQUAL( OtaErrInvalidDataProtocol, setDataInterface( &dataInterface, pProtocol ) );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.initFileTransfer );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
+    TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
 }

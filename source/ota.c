@@ -507,7 +507,8 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    NULL                  /* customJobCallback */
+    NULL,                 /* customJobCallback */
+    1                     /* unsubscribe flag */
 };
 
 /**
@@ -576,9 +577,9 @@ static const char * pOtaEventStrings[ OtaAgentEventMax ] =
     "Shutdown"
 };
 
-static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ]; /*!< Buffer to store job name. */
-static uint8_t pProtocolBuffer[ 20 ];                 /*!< Buffer to store data protocol. */
-static Sig256_t sig256Buffer;                         /*!< Buffer to store key file signature. */
+static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];       /*!< Buffer to store job name. */
+static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ]; /*!< Buffer to store data protocol. */
+static Sig256_t sig256Buffer;                               /*!< Buffer to store key file signature. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
@@ -3120,7 +3121,8 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 /*
  * Public API to shutdown the OTA Agent.
  */
-OtaState_t OTA_Shutdown( uint32_t ticksToWait )
+OtaState_t OTA_Shutdown( uint32_t ticksToWait,
+                         uint8_t unsubscribeFlag )
 {
     OtaEventMsg_t eventMsg = { 0 };
     uint32_t ticks = ticksToWait;
@@ -3137,6 +3139,8 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait )
     }
     else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
     {
+        otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
+
         /*
          * Send shutdown signal to OTA Agent task.
          */

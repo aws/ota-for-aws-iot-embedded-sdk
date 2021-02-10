@@ -657,6 +657,7 @@ sendtimeout
 sendtimeoutms
 serverfileid
 serverinfo
+setdatainterface
 setimagestate
 setplatformimagestate
 shutdownhandler
@@ -737,6 +738,8 @@ ultopiclen
 unhandled
 unistd
 unsignedversion32
+unsubscribeflag
+unsubscribeonshutdown
 updatedby
 updatefilepathsize
 updatejobstatus
