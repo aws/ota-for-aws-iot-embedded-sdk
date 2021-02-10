@@ -657,6 +657,7 @@ sendtimeout
 sendtimeoutms
 serverfileid
 serverinfo
+setdatainterface
 setimagestate
 setplatformimagestate
 shutdownhandler
