@@ -2051,8 +2051,10 @@ void test_OTA_requestDataHandler_EventSendFails( void )
 
     /* File context has a non-zero number of blocks remaining. */
     otaAgent.fileContext.blocksRemaining = 1U;
-    /* Fail to start the timer. */
-    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    /* Simulate reaching the maximum number of attempts before considering
+     * the attempt to be a failure. In this scenario, the handler will attempt
+     * to send a shutdown event to the OTA Agent.*/
+    otaAgent.requestMomentum = otaconfigMAX_NUM_REQUEST_MOMENTUM;
     /* Fail to send the OTA event. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
