@@ -1858,6 +1858,8 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
     OtaErr_t err = OtaErrNone;
     AppVersion32_t newVersion;
 
+    ( void ) newVersion; /* For suppressing compiler-warning: unused variable. */
+
     /* Only check for versions if the target is self */
     if( otaAgent.serverFileID == 0U )
     {
