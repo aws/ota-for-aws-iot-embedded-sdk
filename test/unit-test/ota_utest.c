@@ -1995,7 +1995,7 @@ void test_OTA_initFileHandler_TimerFails( void )
     OtaEventMsg_t otaEvent = { 0 };
 
     /* Initialize the OTA interfaces so they are not NULL. */
-    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
     /* Fail to initialize the file transfer so the timer is started. */
     otaDataInterface.initFileTransfer = mockDataInterfaceInitFileTransferAlwaysFail;
     /* Fail to start the timer. */
@@ -2012,9 +2012,11 @@ void test_OTA_initFileHandler_EventSendFails( void )
 {
     OtaEventMsg_t otaEvent = { 0 };
 
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateReady );
+
     /* Test failing while trying to send the shutdown event after failing
      * to initialize the file. */
-    otaInitDefault();
     /* Fail to initialize the file transfer so the timer is started. */
     otaDataInterface.initFileTransfer = mockDataInterfaceInitFileTransferAlwaysFail;
 
@@ -2028,7 +2030,6 @@ void test_OTA_initFileHandler_EventSendFails( void )
 
     /* Test failing while trying to send the request block event after
      * successfully initializing the file. */
-    otaInitDefault();
 
     /* Succeed with the file initialization to then attempt to send the event
      * for requesting a block. */
@@ -2047,10 +2048,12 @@ void test_OTA_requestDataHandler_EventSendFails( void )
 {
     OtaEventMsg_t otaEvent = { 0 };
 
-    otaInitDefault();
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateReady );
 
     /* File context has a non-zero number of blocks remaining. */
     otaAgent.fileContext.blocksRemaining = 1U;
+
     /* Simulate reaching the maximum number of attempts before considering
      * the attempt to be a failure. In this scenario, the handler will attempt
      * to send a shutdown event to the OTA Agent.*/
@@ -2069,7 +2072,8 @@ void test_OTA_requestJobHandler_TimerFails( void )
 {
     OtaEventMsg_t otaEvent = { 0 };
 
-    otaInitDefault();
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateReady );
 
     /* Fail requesting the job document. */
     otaControlInterface.requestJob = mockControlInterfaceRequestJobAlwaysFail;
@@ -2087,7 +2091,8 @@ void test_OTA_requestJobHandler_EventSendFails( void )
 {
     OtaEventMsg_t otaEvent = { 0 };
 
-    otaInitDefault();
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateReady );
 
     /* Fail requesting the job document. */
     otaControlInterface.requestJob = mockControlInterfaceRequestJobAlwaysFail;
