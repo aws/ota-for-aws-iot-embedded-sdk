@@ -363,7 +363,7 @@ OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused
 }
 
 
-OtaErr_t mockMqttInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
+OtaErr_t mockDataInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
@@ -2032,7 +2032,7 @@ void test_OTA_initFileHandler_EventSendFails( void )
 
     /* Succeed with the file initialization to then attempt to send the event
      * for requesting a block. */
-    otaDataInterface.initFileTransfer = mockMqttInitFileTransferAlwaysSucceed;
+    otaDataInterface.initFileTransfer = mockDataInitFileTransferAlwaysSucceed;
     /* Fail to send the OTA event. */
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
