@@ -974,7 +974,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t subReason )
 {
     OtaErr_t result = OtaErrUpdateJobStatusFailed;
-    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttPublishFailed;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */

@@ -328,7 +328,7 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
-static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
+static OtaMqttStatus_t stubMqttPublishAlwaysFail( const char * const unused_1,
                                                   uint16_t unused_2,
                                                   const char * unused_3,
                                                   uint32_t unused_4,
@@ -1055,7 +1055,7 @@ void test_OTA_RequestJobDocumentRetryFail()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Let MQTT publish fail so request job will also fail. */
-    otaInterfaces.mqtt.publish = mockMqttPublishAlwaysFail;
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
 
     /* Let timer invoke callback directly. */
     otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
@@ -1664,7 +1664,10 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
 
-/* MQTT tests. */
+/* ========================================================================== */
+/* ========================== OTA MQTT Unit Tests =========================== */
+/* ========================================================================== */
+
 void test_OTA_mqttCleanupFailed()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -1714,16 +1717,34 @@ void test_OTA_mqttJobSubscribingFailed()
 void test_OTA_mqttInitFileTransferSubscribeFailed()
 {
     OtaEventMsg_t otaEvent = { 0 };
-    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
     
     otaGoToState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 
     otaEvent.eventId = OtaAgentEventCreateFile;
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
 
     OTA_SignalEvent( &otaEvent );
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+}
+
+void test_OTA_mqttUpdateStatusFailed()
+{
+    OtaErr_t err = OtaErrNone;
+    otaInitDefault();
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
+    err = updateJobStatus_Mqtt(&otaAgent, JobStatusSucceeded, 0,0);
+    TEST_ASSERT_EQUAL( OtaErrUpdateJobStatusFailed, err );
+}
+
+void test_OTA_mqttRequestFileFailed()
+{
+    OtaErr_t err = OtaErrNone;
+    otaInitDefault();
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
+    err = requestFileBlock_Mqtt(&otaAgent);
+    TEST_ASSERT_EQUAL( OtaErrRequestFileBlockFailed, err );
 }
 
 /**
