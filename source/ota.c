@@ -1717,6 +1717,8 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     const char * pFileParams = NULL;
     uint32_t fileParamsLength = 0;
 
+    LogDebug( ( "JSON received: %s", pJson ) );
+
     /* Fetch the model parameters from the DocModel*/
     pModelParam = pDocModel->pBodyDef;
 
@@ -1854,6 +1856,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
 {
     OtaErr_t err = OtaErrNone;
+    AppVersion32_t newVersion;
 
     /* Only check for versions if the target is self */
     if( otaAgent.serverFileID == 0U )
@@ -1882,11 +1885,12 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
          * Update version received is newer than current version. */
         else
         {
+            newVersion.u.unsignedVersion32 = pFileContext->updaterVersion;
             LogInfo( ( "New image has a higher version number than the current image: "
-                       "Old image version=%u"
-                       ", New image version=%u",
-                       appFirmwareVersion.u.unsignedVersion32,
-                       pFileContext->updaterVersion ) );
+                       "Old image version=%u.%u.%u"
+                       ", New image version=%u.%u.%u",
+                       appFirmwareVersion.u.x.major, appFirmwareVersion.u.x.minor, appFirmwareVersion.u.x.build,
+                       newVersion.u.x.major, newVersion.u.x.minor, newVersion.u.x.build ) );
         }
     }
 
