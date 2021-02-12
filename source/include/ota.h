@@ -163,6 +163,7 @@ typedef enum OtaJobEvent
     OtaJobEventStartTest = 2,      /*!< @brief OTA job is now in self test, perform user tests. */
     OtaJobEventProcessed = 3,      /*!< @brief OTA event queued by OTA_SignalEvent is processed. */
     OtaJobEventSelfTestFailed = 4, /*!< @brief OTA self-test failed for current job. */
+    OtaJobEventParseCustomJob = 5, /*!< @brief OTA event for parsing custom job document. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
