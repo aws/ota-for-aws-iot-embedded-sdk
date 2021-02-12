@@ -164,19 +164,19 @@
  */
 typedef enum
 {
-    IngestResultFileComplete = -1,       /*!< The file transfer is complete and the signature check passed. */
-    IngestResultSigCheckFail = -2,       /*!< The file transfer is complete but the signature check failed. */
-    IngestResultFileCloseFail = -3,      /*!< There was a problem trying to close the receive file. */
-    IngestResultNullInput = -4,          /*!< One of the input pointers is NULL. */
-    IngestResultBadFileHandle = -5,      /*!< The receive file pointer is invalid. */
-    IngestResultUnexpectedBlock = -6,    /*!< We were asked to ingest a block but were not expecting one. */
-    IngestResultBlockOutOfRange = -7,    /*!< The received block is out of the expected range. */
-    IngestResultBadData = -8,            /*!< The data block from the server was malformed. */
-    IngestResultWriteBlockFailed = -9,   /*!< The PAL layer failed to write the file block. */
-    IngestResultNoDecodeMemory = -10,    /*!< Memory could not be allocated for decoding . */
-    IngestResultUninitialized = -127,    /*!< Software BUG: We forgot to set the result code. */
-    IngestResultAccepted_Continue = 0,   /*!< The block was accepted and we're expecting more. */
-    IngestResultDuplicate_Continue = 1   /*!< The block was a duplicate but that's OK. Continue. */
+    IngestResultFileComplete = -1,     /*!< The file transfer is complete and the signature check passed. */
+    IngestResultSigCheckFail = -2,     /*!< The file transfer is complete but the signature check failed. */
+    IngestResultFileCloseFail = -3,    /*!< There was a problem trying to close the receive file. */
+    IngestResultNullInput = -4,        /*!< One of the input pointers is NULL. */
+    IngestResultBadFileHandle = -5,    /*!< The receive file pointer is invalid. */
+    IngestResultUnexpectedBlock = -6,  /*!< We were asked to ingest a block but were not expecting one. */
+    IngestResultBlockOutOfRange = -7,  /*!< The received block is out of the expected range. */
+    IngestResultBadData = -8,          /*!< The data block from the server was malformed. */
+    IngestResultWriteBlockFailed = -9, /*!< The PAL layer failed to write the file block. */
+    IngestResultNoDecodeMemory = -10,  /*!< Memory could not be allocated for decoding . */
+    IngestResultUninitialized = -127,  /*!< Software BUG: We forgot to set the result code. */
+    IngestResultAccepted_Continue = 0, /*!< The block was accepted and we're expecting more. */
+    IngestResultDuplicate_Continue = 1 /*!< The block was a duplicate but that's OK. Continue. */
 } IngestResult_t;
 
 /**
