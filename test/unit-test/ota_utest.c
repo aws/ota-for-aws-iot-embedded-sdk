@@ -453,6 +453,11 @@ static OtaHttpStatus_t stubHttpDeinit()
     return OtaHttpSuccess;
 }
 
+static OtaHttpStatus_t stubHttpDeinitAlwaysFail()
+{
+    return OtaHttpDeinitFailed;
+}
+
 OtaPalStatus_t mockPalAbort( OtaFileContext_t * const pFileContext )
 {
     ( void ) pFileContext;
@@ -1726,7 +1731,7 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
 }
 
 /* ========================================================================== */
-/* ========================== OTA MQTT Unit Tests =========================== */
+/* ====================== OTA MQTT and HTTP Unit Tests ====================== */
 /* ========================================================================== */
 
 /* Test that mqtt cleanup fails with unsubscribe failure. */
@@ -1804,6 +1809,17 @@ void test_OTA_MQTT_UpdateStatusFailed()
     otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
     err = updateJobStatus_Mqtt( &otaAgent, JobStatusSucceeded, 0, 0 );
     TEST_ASSERT_EQUAL( OtaErrUpdateJobStatusFailed, err );
+}
+
+/* Test data cleanup fails with HTTP deinit failure*/
+void test_OTA_HTTP_cleanupFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.http.deinit = stubHttpDeinitAlwaysFail;
+    err = cleanupData_Http( &otaAgent );
+    TEST_ASSERT_EQUAL( OtaErrCleanupDataFailed, err );
 }
 
 /* ========================================================================== */
