@@ -278,6 +278,7 @@ typedef struct OtaAgentContext
     OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     OtaCustomJobCallback_t customJobCallback;              /*!< Custom job callback. */
+    uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
 } OtaAgentContext_t;
 
 /*------------------------- OTA Public API --------------------------*/
@@ -315,11 +316,16 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * If this is set to zero, the function will return immediately without waiting. The actual state is
  * returned to the caller.
  *
+ * @param[in] unsubscribeFlag Flag to indicate if unsubscribe operations should be performed from the job topics when
+ * shutdown is called. If the flag is 0 then unsubscribe operations are not called for job topics If application
+ * requires it to be unsubscribed from the job topics then flag must be set to 1 when calling OTA_Shutdown.
+ *
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
  */
 /* @[declare_ota_shutdown] */
-OtaState_t OTA_Shutdown( uint32_t ticksToWait );
+OtaState_t OTA_Shutdown( uint32_t ticksToWait,
+                         uint8_t unsubscribeFlag );
 /* @[declare_ota_shutdown] */
 
 /**
