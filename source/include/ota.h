@@ -166,6 +166,38 @@ typedef enum OtaJobEvent
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
+/**
+ * @ingroup ota_enum_types
+ * @brief Gives the status of the job operation.
+ *
+ */
+typedef enum
+{
+    JobStatusInProgress = 0,
+    JobStatusFailed,
+    JobStatusSucceeded,
+    JobStatusRejected,      /* Not possible today using the "get next job" feature. FUTURE! */
+    JobStatusFailedWithVal, /* This shows 2 numeric reason codes. */
+    NumJobStatusMappings
+} OtaJobStatus_t;
+
+/**
+ * @ingroup ota_struct_types
+ * @brief OTA Job document.
+ *
+ * Structure representing OTA job document.
+ */
+typedef struct OtaJobDocument
+{
+    uint8_t * pJobDocJson;     /*!< @brief Job document in JSON format. */
+    uint32_t jobDocLength;     /*!< @brief Job document length in bytes. */
+    uint8_t * pJobId;          /*!< @brief Job document in JSON format. */
+    OtaJobParseErr_t parseErr; /*!< @brief Job parsing error. */
+    OtaJobStatus_t status;     /*!< @brief Job status. */
+    int32_t reason;            /*!< @brief Job status reason. */
+    int32_t subReason;         /*!< @brief Job status subreason. */
+} OtaJobDocument_t;
+
 /*------------------------- OTA callbacks --------------------------*/
 
 /**
