@@ -259,18 +259,29 @@ static size_t stringBuilder( char * pBuffer,
 {
     size_t curLen = 0;
     int i;
+    size_t thisLength = 0;
 
     pBuffer[ 0 ] = '\0';
 
     for( i = 0; strings[ i ] != NULL; i++ )
     {
-        size_t thisLength = strlen( strings[ i ] );
+        /* The __THROW in library functions create additional branches tracked
+         * by code coverage tools that are unreachable. These macros prevent
+         * the tools from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
+        thisLength = strlen( strings[ i ] );
+        /* LCOV_EXCL_BR_STOP */
 
         /* Assert if there is not enough buffer space. */
 
         assert( thisLength + curLen + 1 <= bufferSizeBytes );
 
+        /* The __THROW in library functions create additional branches tracked
+         * by code coverage tools that are unreachable. These macros prevent
+         * the tools from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
         strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
+        /* LCOV_EXCL_BR_STOP */
         curLen += thisLength;
     }
 
@@ -905,7 +916,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t subReason )
 {
     OtaErr_t result = OtaErrUpdateJobStatusFailed;
-    OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
+    OtaMqttStatus_t mqttStatus = OtaMqttPublishFailed;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
@@ -941,11 +952,8 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    /* Check if we have some data and publish. */
-    if( msgSize > 0 )
-    {
-        mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
-    }
+    /* Publish the string created above. */
+    mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
     if( mqttStatus == OtaMqttSuccess )
     {
@@ -1151,12 +1159,12 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
                                                               pPayload,   /* This payload gets malloc'd by OTA_CBOR_Decode_GetStreamResponseMessage(). We must free it. */
                                                               pPayloadSize );
 
-    if( ( cborDecodeRet == true ) && ( pPayload != NULL ) )
+    if( cborDecodeRet == true )
     {
-        result = OtaErrNone;
+        /* pPayload and pPayloadSize is allocated by the caller. */
+        assert( ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
-        /* pPayloadSize is allocated by the caller. */
-        assert( pPayloadSize != NULL );
+        result = OtaErrNone;
     }
     else
     {
