@@ -212,6 +212,7 @@ ingestresultfilecomplete
 ingestresultfilecomplete
 ingestresultnodecodememory
 ingestresultnullcontext
+ingestresultnullinput
 ingestresultnullresultpointer
 ingestresultsigcheckfail
 ingestresultunexpectedblock
