@@ -143,7 +143,10 @@ extern void receiveAndProcessOtaEvent( void );
 extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
+<<<<<<< HEAD
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
+=======
+>>>>>>> main
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -2106,7 +2109,6 @@ void test_OTA_requestJobHandler_EventSendFails( void )
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestJobHandler( otaEvent.pEventData ) );
 }
-
 
 /**
  * @brief Test that processDataHandler safely handles receiving invalid events.
