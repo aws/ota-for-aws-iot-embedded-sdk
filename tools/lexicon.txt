@@ -682,6 +682,7 @@ statusdetails
 stddef
 stdlib
 str
+strerror
 streamname
 streamnamemaxsize
 streamnamesize
