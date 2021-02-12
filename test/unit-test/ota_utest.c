@@ -332,6 +332,17 @@ static OtaMqttStatus_t stubMqttSubscribe( const char * unused_1,
     return OtaMqttSuccess;
 }
 
+static OtaMqttStatus_t stubMqttSubscribeAlwaysFail( const char * unused_1,
+                                                    uint16_t unused_2,
+                                                    uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    return OtaMqttSubscribeFailed;
+}
+
 static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
                                         uint16_t unused_2,
                                         const char * unused_3,
@@ -370,7 +381,7 @@ OtaErr_t mockDataInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
     return OtaErrNone;
 }
 
-static OtaMqttStatus_t mockMqttPublishAlwaysFail( const char * const unused_1,
+static OtaMqttStatus_t stubMqttPublishAlwaysFail( const char * const unused_1,
                                                   uint16_t unused_2,
                                                   const char * unused_3,
                                                   uint32_t unused_4,
@@ -394,6 +405,17 @@ static OtaMqttStatus_t stubMqttUnsubscribe( const char * unused_1,
     ( void ) unused_3;
 
     return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttUnsubscribeAlwaysFail( const char * unused_1,
+                                                      uint16_t unused_2,
+                                                      uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    return OtaMqttUnsubscribeFailed;
 }
 
 static OtaHttpStatus_t stubHttpInit( char * url )
@@ -1094,7 +1116,7 @@ void test_OTA_RequestJobDocumentRetryFail()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
     /* Let MQTT publish fail so request job will also fail. */
-    otaInterfaces.mqtt.publish = mockMqttPublishAlwaysFail;
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
 
     /* Let timer invoke callback directly. */
     otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
@@ -1702,6 +1724,91 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
     otaInterfaces.pal.closeFile = mockPalCloseFileAlwaysFail;
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
+
+/* ========================================================================== */
+/* ========================== OTA MQTT Unit Tests =========================== */
+/* ========================================================================== */
+
+/* Test that mqtt cleanup fails with unsubscribe failure. */
+void test_OTA_MQTT_CleanupFailed()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaAgent.unsubscribeOnShutdown = 1;
+
+    otaGoToState( OtaAgentStateRequestingJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+
+    otaInterfaces.mqtt.unsubscribe = stubMqttUnsubscribeAlwaysFail;
+
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
+/* Test that requestFileBlock_Mqtt fails if the Encoding fails. */
+void test_OTA_MQTT_EncodingFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+
+    /* Explicitly set BitMap to NULL for the encoding to fail. */
+    OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
+    pFileContext->pRxBlockBitmap = NULL;
+
+    err = requestFileBlock_Mqtt( &otaAgent );
+    TEST_ASSERT_EQUAL( OtaErrFailedToEncodeCbor, err );
+}
+
+/* Test that requestFileBlock_Mqtt fails if the Publish fails. */
+void test_OTA_MQTT_RequestFileFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
+    err = requestFileBlock_Mqtt( &otaAgent );
+    TEST_ASSERT_EQUAL( OtaErrRequestFileBlockFailed, err );
+}
+
+/* Test that requestJob_Mqtt fails if the Subscribe fails. */
+void test_OTA_MQTT_JobSubscribingFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
+    err = requestJob_Mqtt( &otaAgent );
+    TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, err );
+}
+
+/* Test that initFileTransfer_Mqtt fails if the Subscribe fails. */
+void test_OTA_MQTT_InitFileTransferSubscribeFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
+    err = initFileTransfer_Mqtt( &otaAgent );
+    TEST_ASSERT_EQUAL( OtaErrInitFileTransferFailed, err );
+}
+
+/* Test that updateJobStatus_Mqtt fails if the Publish fails. */
+void test_OTA_MQTT_UpdateStatusFailed()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
+    err = updateJobStatus_Mqtt( &otaAgent, JobStatusSucceeded, 0, 0 );
+    TEST_ASSERT_EQUAL( OtaErrUpdateJobStatusFailed, err );
+}
+
+/* ========================================================================== */
+/* ======================= OTA StrError Unit Tests ========================== */
+/* ========================================================================== */
 
 /**
  * @brief Test OTA_Err_strerror returns correct strings.

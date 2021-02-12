@@ -297,6 +297,7 @@ mytlscontext
 nano
 nanosleep
 networkcontext
+newversion
 nextjittermax
 nextstate
 noninfringement
@@ -687,6 +688,7 @@ statusdetails
 stddef
 stdlib
 str
+strerror
 streamname
 streamnamemaxsize
 streamnamesize
