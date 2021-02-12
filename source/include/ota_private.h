@@ -224,21 +224,6 @@ typedef enum
 
 /**
  * @ingroup ota_private_enum_types
- * @brief Gives the status of the job parsing operation.
- *
- */
-typedef enum
-{
-    JobStatusInProgress = 0,
-    JobStatusFailed,
-    JobStatusSucceeded,
-    JobStatusRejected,      /* Not possible today using the "get next job" feature. FUTURE! */
-    JobStatusFailedWithVal, /* This shows 2 numeric reason codes. */
-    NumJobStatusMappings
-} OtaJobStatus_t;
-
-/**
- * @ingroup ota_private_enum_types
  * @brief Gives the reason to set for job parsing operation.
  *
  */
