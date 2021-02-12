@@ -234,6 +234,7 @@ ip
 isinselftest
 iso
 jobcallback
+jobdoclength
 jobdocument
 jobid
 jobnamemaxsize
@@ -296,6 +297,7 @@ mytlscontext
 nano
 nanosleep
 networkcontext
+newversion
 nextjittermax
 nextstate
 noninfringement
@@ -380,6 +382,7 @@ otaimagestateunknown
 otainterfaces
 otajobeventactivate
 otajobeventfail
+otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventselftestfailed
 otajobeventstarttest
@@ -465,6 +468,7 @@ paramindex
 params
 paramsreceivedbitmap
 paramsrequiredbitmap
+parseerr
 parsejobdoc
 parsejsonbymodel
 pauthscheme
@@ -514,6 +518,8 @@ pfilepath
 pfinalfile
 pformat
 phostname
+pjobdocjson
+pjobid
 pjobname
 pjobnamebuffer
 pjobtopic
