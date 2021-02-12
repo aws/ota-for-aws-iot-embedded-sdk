@@ -234,6 +234,7 @@ ip
 isinselftest
 iso
 jobcallback
+jobdoclength
 jobdocument
 jobid
 jobnamemaxsize
@@ -381,6 +382,7 @@ otaimagestateunknown
 otainterfaces
 otajobeventactivate
 otajobeventfail
+otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventselftestfailed
 otajobeventstarttest
@@ -466,6 +468,7 @@ paramindex
 params
 paramsreceivedbitmap
 paramsrequiredbitmap
+parseerr
 parsejobdoc
 parsejsonbymodel
 pauthscheme
@@ -515,6 +518,8 @@ pfilepath
 pfinalfile
 pformat
 phostname
+pjobdocjson
+pjobid
 pjobname
 pjobnamebuffer
 pjobtopic
