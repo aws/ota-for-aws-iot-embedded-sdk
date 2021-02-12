@@ -688,6 +688,8 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
 
     assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
+    LogDebug( ( "Created self test update: %s", pMsgBuffer ) );
+
     return msgSize;
 }
 

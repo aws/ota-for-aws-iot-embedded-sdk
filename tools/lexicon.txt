@@ -296,6 +296,7 @@ mytlscontext
 nano
 nanosleep
 networkcontext
+newversion
 nextjittermax
 nextstate
 noninfringement
