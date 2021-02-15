@@ -145,7 +145,14 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
         *pBlockSize = ( int32_t ) messageSize;
 
         /* The data received over HTTP does not require any decoding. */
+
+        /* The __THROW in library functions create additional branches tracked
+         * by code coverage tools that are unreachable. These macros prevent
+         * the tools from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
         ( void ) memcpy( *pPayload, pMessageBuffer, messageSize );
+        /* LCOV_EXCL_BR_STOP */
+
         *pPayloadSize = messageSize;
 
         /* Current block is processed, set the file block to next. */
