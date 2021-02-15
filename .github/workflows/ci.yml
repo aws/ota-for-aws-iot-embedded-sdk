@@ -115,14 +115,6 @@ jobs:
         uses: FreeRTOS/CI-CD-Github-Actions/formatting@main
         with:
           path: ./
-      - name: Check For Trailing Whitespace
-        run: |
-          set +me
-          shopt -s lastpipe
-          found=0
-          git ls-files | xargs file | sed -n '/ASCII/s/:.*//p' | while read f; do [[ -f $f ]] && grep -H '[[:blank:]]$' $f && let found++; done
-          (( found > 0 )) && echo 'Files have trailing whitespace.'
-          exit $found
 
   git-secrets:
     runs-on: ubuntu-latest
