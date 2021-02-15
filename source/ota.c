@@ -1158,15 +1158,23 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     OtaErr_t err = OtaErrNone;
     OtaPalStatus_t closeResult = OTA_PAL_COMBINE_ERR( OtaPalUninitialized, 0 );
     OtaEventMsg_t eventMsg = { 0 };
+    IngestResult_t result = IngestResultUninitialized;
 
     /* Get the file context. */
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
 
     /* Ingest data blocks received. */
-    IngestResult_t result = ingestDataBlock( pFileContext,
-                                             pEventData->data,
-                                             pEventData->dataLength,
-                                             &closeResult );
+    if( pEventData != NULL )
+    {
+        result = ingestDataBlock( pFileContext,
+                                  pEventData->data,
+                                  pEventData->dataLength,
+                                  &closeResult );
+    }
+    else
+    {
+        result = IngestResultNullInput;
+    }
 
     if( result == IngestResultFileComplete )
     {
@@ -2658,27 +2666,15 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     uint32_t uBlockIndex = 0;
     uint8_t * pPayload = NULL;
 
-    /* Check if the file context is NULL. */
-    if( pFileContext == NULL )
-    {
-        eIngestResult = IngestResultNullContext;
-    }
-
-    /* Check if the result pointer is NULL. */
-    if( eIngestResult == IngestResultUninitialized )
-    {
-        if( pCloseResult == NULL )
-        {
-            eIngestResult = IngestResultNullResultPointer;
-        }
-    }
+    /* Assume the file context and result pointers are not NULL. This function
+     * is only intended to be called by processDataHandler, which always passes
+     * them in as pointers to static variables. */
+    assert( pFileContext != NULL );
+    assert( pCloseResult != NULL );
 
     /* Decode the received data block. */
-    if( eIngestResult == IngestResultUninitialized )
-    {
-        /* If we have a block bitmap available then process the message. */
-        eIngestResult = decodeAndStoreDataBlock( pFileContext, pRawMsg, messageSize, &pPayload, &uBlockSize, &uBlockIndex );
-    }
+    /* If we have a block bitmap available then process the message. */
+    eIngestResult = decodeAndStoreDataBlock( pFileContext, pRawMsg, messageSize, &pPayload, &uBlockSize, &uBlockIndex );
 
     /* Validate the data block and process it to store the information.*/
     if( eIngestResult == IngestResultUninitialized )

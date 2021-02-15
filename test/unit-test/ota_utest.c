@@ -143,6 +143,7 @@ extern void receiveAndProcessOtaEvent( void );
 extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -2227,6 +2228,21 @@ void test_OTA_requestJobHandler_EventSendFails( void )
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, requestJobHandler( otaEvent.pEventData ) );
+}
+
+/**
+ * @brief Test that processDataHandler safely handles receiving invalid events.
+ */
+void test_OTA_processDataHandler_InvalidEvent( void )
+{
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateReady );
+
+    /* Test that passing NULL event data does not cause a segmentation fault.
+     * The expected return is OtaErrNone because the error return value of this
+     * handler represents the success of updating the job document when there
+     * is an issue processing the block. */
+    TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( NULL ) );
 }
 
 /* ========================================================================== */
