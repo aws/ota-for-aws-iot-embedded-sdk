@@ -191,9 +191,10 @@ typedef enum
 typedef struct OtaJobDocument
 {
     uint8_t * pJobDocJson;     /*!< @brief Job document in JSON format. */
-    uint32_t jobDocLength;     /*!< @brief Job document length in bytes. */
-    uint8_t * pJobId;          /*!< @brief Job document in JSON format. */
-    OtaJobParseErr_t parseErr; /*!< @brief Job parsing error. */
+    size_t jobDocLength;       /*!< @brief Job document length in bytes. */
+    uint8_t * pJobId;          /*!< @brief Job ID associated with the job document. */
+    size_t jobIdLength;        /*!< @brief Length of job ID in bytes. */
+    OtaJobParseErr_t parseErr; /*!< @brief Job parsing status. */
     OtaJobStatus_t status;     /*!< @brief Job status. */
     int32_t reason;            /*!< @brief Job status reason. */
     int32_t subReason;         /*!< @brief Job status subreason. */
@@ -233,19 +234,6 @@ typedef struct OtaJobDocument
  */
 typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
                                    const void * pData );
-
-/**
- * @ingroup ota_callback_types
- * @brief Custom Job callback function typedef.
- *
- * The user may register a callback function when initializing the OTA Agent. This
- * callback will be called when the OTA agent cannot parse a job document.
- *
- * @param[in] pcJSON Pointer to the json document received by the OTA agent.
- * @param[in] ulMsgLen Length of the json document received by the agent.
- */
-typedef OtaJobParseErr_t (* OtaCustomJobCallback_t)( const char * pcJSON,
-                                                     uint32_t ulMsgLen );
 
 /*--------------------------- OTA structs ----------------------------*/
 
@@ -310,7 +298,6 @@ typedef struct OtaAgentContext
     uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
     OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
-    OtaCustomJobCallback_t customJobCallback;              /*!< Custom job callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
 } OtaAgentContext_t;
 
