@@ -69,8 +69,8 @@ jobs:
           cmake --build build/ --target coverage
       - name: Check Coverage
         env:
-          MIN_LINE_COVERAGE: 90
-          MIN_BRANCH_COVERAGE: 70
+          MIN_LINE_COVERAGE: 97
+          MIN_BRANCH_COVERAGE: 84
         run: |
           lcov --rc lcov_branch_coverage=1 --list build/coverage.info | tee cov_summary.txt
           LINE_COVERAGE=$(cat cov_summary.txt | tail -n 1 | cut -d '|' -f 2 | sed -n "s/\([^%]*\)%.*/\1/p")
