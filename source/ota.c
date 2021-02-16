@@ -1908,9 +1908,6 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
 {
     OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
-    const char * pValueInJson = NULL;
-    uint8_t pJobId[ OTA_JOB_ID_MAX_SIZE ] = { 0 };
-    size_t valueLength = 0;
     OtaJobDocument_t jobDoc = { 0 };
 
     jobDoc.parseErr = OtaJobParseErrUnknown;
@@ -1920,7 +1917,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                          messageLength,
                                          OTA_JSON_JOB_DOC_KEY,
                                          strlen( OTA_JSON_JOB_DOC_KEY ),
-                                         &jobDoc.pJobDocJson,
+                                         ( const char ** ) &jobDoc.pJobDocJson,
                                          &jobDoc.jobDocLength,
                                          NULL ) )
     {
@@ -1928,7 +1925,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                              messageLength,
                                              OTA_JSON_JOB_ID_KEY,
                                              strlen( OTA_JSON_JOB_ID_KEY ),
-                                             &jobDoc.pJobId,
+                                             ( const char ** ) &jobDoc.pJobId,
                                              &jobDoc.jobIdLength,
                                              NULL ) )
         {
@@ -1950,7 +1947,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
 
     if( jobDoc.parseErr == OtaJobParseErrNone )
     {
-        ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, &jobDoc.jobIdLength );
+        ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
         otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                       jobDoc.status,
                                                       jobDoc.reason,
