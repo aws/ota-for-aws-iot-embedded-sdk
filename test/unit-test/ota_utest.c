@@ -1761,6 +1761,20 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
 
+void test_OTA_EventProcessingTask_ExitOnAbort()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+    OTA_EventProcessingTask( NULL );
+
+    /* Test that the OTA_EventProcessingTask aborts correctly after receiving
+     * and event to shutdown the OTA Agent. */
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 /* ========================================================================== */
 /* ====================== OTA MQTT and HTTP Unit Tests ====================== */
 /* ========================================================================== */
