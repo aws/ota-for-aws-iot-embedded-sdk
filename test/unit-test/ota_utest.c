@@ -144,6 +144,7 @@ extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -2312,6 +2313,20 @@ void test_OTA_processDataHandler_InvalidEvent( void )
     TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( NULL ) );
 }
 
+/**
+ * @brief Test that resumeHandler returns the proper error when the OTA event
+ *        send functionality fails.
+ */
+void test_OTA_resumeHandler_EventSendFails()
+{
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateSuspended );
+
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, resumeHandler( NULL ) );
+}
 
 /* ========================================================================== */
 /* ======================== OTA Interface Unit Tests ======================== */
