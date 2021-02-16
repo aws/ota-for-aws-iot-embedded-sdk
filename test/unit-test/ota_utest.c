@@ -146,7 +146,8 @@ extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 
 /* Static helper function under test defined in ota.c. */
-extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet, uint32_t reasonToSet );
+extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
+                                         uint32_t reasonToSet );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -1191,9 +1192,9 @@ void test_OTA_RejectWhileAborted()
     receiveAndProcessOtaEvent();
 
     /* Test that the OTA Agent is able to recover after failing to reject a job
-    * due to already having aborted the job. It is not necessary for the call
-    * to setPlatformImageState to fail for this behavior to happen, but it is
-    * required to reach the branch that checks for this scenario. */
+     * due to already having aborted the job. It is not necessary for the call
+     * to setPlatformImageState to fail for this behavior to happen, but it is
+     * required to reach the branch that checks for this scenario. */
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
