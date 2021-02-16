@@ -1214,6 +1214,20 @@ void test_OTA_ProcessJobDocumentBitmapMallocFail()
     TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
 }
 
+void test_OTA_ProcessJobDocumentEventSendFail( void )
+{
+    pOtaJobDoc = JOB_DOC_A;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 static void otaInitFileTransfer()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -2260,6 +2274,7 @@ void test_OTA_processDataHandler_InvalidEvent( void )
      * is an issue processing the block. */
     TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( NULL ) );
 }
+
 
 /* ========================================================================== */
 /* ======================== OTA Interface Unit Tests ======================== */
