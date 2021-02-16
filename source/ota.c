@@ -2182,14 +2182,6 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 
             break;
 
-        case OtaJobParseErrNone:
-
-            LogInfo( ( "Job parsing sccess: "
-                       "OtaJobParseErr_t=%s, Job name=%s",
-                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-
-            break;
-
         case OtaJobParseErrNoActiveJobs:
             LogInfo( ( "No active job available in received job document: "
                        "OtaJobParseErr_t=%s",
@@ -2297,8 +2289,17 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
     }
 
-    /* Handle job parsing error. */
-    handleJobParsingError( pFileContext, err );
+    if( err == OtaJobParseErrNone )
+    {
+        LogInfo( ( "Job parsing sccess: "
+                   "OtaJobParseErr_t=%s, Job name=%s",
+                   OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
+    }
+    else{
+        /* Handle job parsing error. */
+        handleJobParsingError( pFileContext, err );
+    }
 
     /* If we failed, close the open files. */
     if( pFinalFile == NULL )
