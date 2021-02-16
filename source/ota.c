@@ -1902,7 +1902,7 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
     return err;
 }
 
-/* If there is an error is parsing the json, check if it can be handled by external callback. */
+/* If there is an error in parsing the json, check if it can be handled by external callback. */
 static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                          uint32_t messageLength )
 {

@@ -185,6 +185,8 @@ typedef enum
 /**
  * @ingroup ota_struct_types
  * @brief OTA Job document.
+ * @note This is provided as context to the app callback, #OtaAppCallback_t,
+ * to provide information of a custom job that cannot be parsed.
  *
  * Structure representing OTA job document.
  */
