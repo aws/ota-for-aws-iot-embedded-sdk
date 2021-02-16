@@ -88,7 +88,6 @@ crypto
 css
 currblock
 currentstate
-customjobcallback
 cwd
 datablock
 datacallback
@@ -96,8 +95,6 @@ datalength
 decodememmaxsize
 decodememorysize
 deduplicate
-defaultcustomjobcallback
-defaultcustomjobcallback
 defaultotacompletecallback
 defaultotacompletecallback
 defgroup
@@ -238,6 +235,7 @@ jobcallback
 jobdoclength
 jobdocument
 jobid
+jobidlength
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -689,10 +687,10 @@ statusdetails
 stddef
 stdlib
 str
-strerror
 streamname
 streamnamemaxsize
 streamnamesize
+strerror
 strlength
 struct
 structs
