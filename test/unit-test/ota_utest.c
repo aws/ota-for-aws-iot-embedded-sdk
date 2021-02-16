@@ -145,6 +145,9 @@ extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 
+/* Static helper function under test defined in ota.c. */
+extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet, uint32_t reasonToSet );
+
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
 /* ========================================================================== */
@@ -1113,6 +1116,17 @@ void test_OTA_ImageStatePalFail()
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
 
+void test_OTA_ImageStateWithReasonPalFail()
+{
+    OtaImageState_t stateToSet = OtaImageStateAccepted;
+    OtaErr_t error;
+
+    otaGoToState( OtaAgentStateReady );
+    otaInterfaces.pal.setPlatformImageState = mockPalSetPlatformImageStateAlwaysFail;
+    error = setImageStateWithReason( stateToSet, OtaErrImageStateMismatch );
+    TEST_ASSERT_EQUAL( OtaErrNoActiveJob, error );
+}
+
 void test_OTA_RequestJobDocumentRetryFail()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -1162,6 +1176,24 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_RejectWhileAborted()
+{
+    pOtaJobDoc = JOB_DOC_INVALID;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaInterfaces.pal.setPlatformImageState = mockPalSetPlatformImageStateAlwaysFail;
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+
+    /* Test that the OTA Agent is able to recover after failing to reject a job
+    * due to already having aborted the job. It is not necessary for the call
+    * to setPlatformImageState to fail for this behavior to happen, but it is
+    * required to reach the branch that checks for this scenario. */
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
