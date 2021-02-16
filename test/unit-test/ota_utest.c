@@ -1326,6 +1326,29 @@ void test_OTA_RequestFileBlockHttpOneBlock()
     otaRequestFileBlock();
 }
 
+void test_OTA_RequestFileBlockTimerFails()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Set the event send functionality to always succeed. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Prepare the OTA Agent to request a block. */
+    otaGoToState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    otaEvent.eventId = OtaAgentEventRequestFileBlock;
+    OTA_SignalEvent( &otaEvent );
+
+    /* Set the request timer to fail when attempting to start. */
+    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    /* Process the event to request a block. */
+    receiveAndProcessOtaEvent();
+    /* Process the event to shut down. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 void test_OTA_RequestFileBlockRetryFail()
 {
     uint32_t i = 0;
