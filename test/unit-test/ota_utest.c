@@ -1563,6 +1563,22 @@ void test_OTA_SelfTestJob()
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
+void test_OTA_SelfTestJobEventSendFail()
+{
+    pOtaJobDoc = JOB_DOC_SELF_TEST;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Set the event send interface to a mock function that always fails to
+     * send the event. */
+    otaReceiveJobDocument();
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_SelfTestJobNonSelfTestPlatform()
 {
     /* Let the PAL always says it's not in self test. */
