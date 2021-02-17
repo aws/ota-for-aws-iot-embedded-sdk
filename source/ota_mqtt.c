@@ -265,23 +265,13 @@ static size_t stringBuilder( char * pBuffer,
 
     for( i = 0; strings[ i ] != NULL; i++ )
     {
-        /* The __THROW in library functions create additional branches tracked
-         * by code coverage tools that are unreachable. These macros prevent
-         * the tools from tracking branch coverage for these lines. */
-        /* LCOV_EXCL_BR_START */
         thisLength = strlen( strings[ i ] );
-        /* LCOV_EXCL_BR_STOP */
 
         /* Assert if there is not enough buffer space. */
 
         assert( thisLength + curLen + 1 <= bufferSizeBytes );
 
-        /* The __THROW in library functions create additional branches tracked
-         * by code coverage tools that are unreachable. These macros prevent
-         * the tools from tracking branch coverage for these lines. */
-        /* LCOV_EXCL_BR_START */
-        ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
-        /* LCOV_EXCL_BR_STOP */
+        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         curLen += thisLength;
     }
 

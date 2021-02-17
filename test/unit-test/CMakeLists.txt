@@ -110,11 +110,3 @@ create_test(ota_os_posix_utest
 )
 # Disable unity memory handling since we need to free memory allocated from library.
 target_compile_definitions(ota_cbor_utest PRIVATE UNITY_FIXTURE_NO_EXTRAS)
-
-# Enable sanitizers.
-target_compile_options(
-    ${real_name} PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined
-)
-target_link_options(
-    ${real_name} PUBLIC -fsanitize=address -fsanitize=leak -fsanitize=undefined
-)
