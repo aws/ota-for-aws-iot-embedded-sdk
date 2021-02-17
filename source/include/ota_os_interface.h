@@ -73,7 +73,7 @@ struct OtaEventContext;
 /**
  * @brief Type definition for Event Context.
  */
-typedef struct OtaEventContext   OtaEventContext_t;
+typedef struct OtaEventContext OtaEventContext_t;
 
 /**
  * @brief Enumeration for tracking multiple timers.
