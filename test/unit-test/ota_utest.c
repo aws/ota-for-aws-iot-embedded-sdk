@@ -148,6 +148,7 @@ extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 /* Static helper function under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
+extern bool otaClose( OtaFileContext_t * const pFileContext );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -861,6 +862,11 @@ void test_OTA_ShutdownFailToSendEvent()
     /* Shutdown should now fail and OTA agent should remain in ready state. */
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+void test_OTA_CloseNullInput()
+{
+    TEST_ASSERT_EQUAL( false, otaClose( NULL ) );
 }
 
 void test_OTA_StartWhenReady()
