@@ -776,7 +776,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
         otaAgent.fileContext.isInSelfTest = false;
 
         /* Stop the self test timer as it is no longer required. */
-        otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
     }
     else
     {
@@ -2220,6 +2220,8 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 
             /* We don't need the job name memory anymore since we're done with this job. */
             ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+
+            break;
     }
 }
 
@@ -3494,6 +3496,7 @@ const char * OTA_Err_strerror( OtaErr_t err )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3547,6 +3550,7 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3600,6 +3604,7 @@ const char * OTA_OsStatus_strerror( OtaOsStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3677,6 +3682,7 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;

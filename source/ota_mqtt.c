@@ -280,7 +280,7 @@ static size_t stringBuilder( char * pBuffer,
          * by code coverage tools that are unreachable. These macros prevent
          * the tools from tracking branch coverage for these lines. */
         /* LCOV_EXCL_BR_START */
-        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
+        ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
         /* LCOV_EXCL_BR_STOP */
         curLen += thisLength;
     }
@@ -1255,6 +1255,7 @@ const char * OTA_MQTT_strerror( OtaMqttStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
