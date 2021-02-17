@@ -2289,7 +2289,7 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
 
     if( err == OtaJobParseErrNone )
     {
-        LogInfo( ( "Job parsing sccess: "
+        LogInfo( ( "Job parsing success: "
                    "OtaJobParseErr_t=%s, Job name=%s",
                    OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
     }
@@ -2838,7 +2838,7 @@ static void receiveAndProcessOtaEvent( void )
     else
     {
         /*
-         * Receive the next event form the OTA event queue to process.
+         * Receive the next event from the OTA event queue to process.
          */
         if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
         {
