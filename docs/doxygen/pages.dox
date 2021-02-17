@@ -109,7 +109,7 @@ The OTA platform abstraction layer provides APIs for the portable platform speci
 
 @subsection ota_design_os OTA OS Functional Abstraction
 
-OTA Library can be ported to run in a variety of embedded C–based environments (e.g. real-time OS, embedded Linux). OTA Library uses queue for managing events in a state machine and timers for enabling timeouts for self test and file download. The memory allocation wrapper functions should be provided with signature similar to the standard c library malloc and free functions. 
+OTA Library can be ported to run in a variety of embedded C–based environments (e.g. real-time OS, embedded Linux). OTA Library uses queue for managing events in a state machine and timers for enabling timeouts for self test and file download. The memory allocation wrapper functions should be provided with signature similar to the standard c library malloc and free functions.
 
 @image html ota_design_os.png
 
