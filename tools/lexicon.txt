@@ -442,6 +442,7 @@ otapalsignaturecheckfailed
 otapalsuberr
 otapalsuccess
 otapaluninitialized
+otaselftesttimer
 otatimer
 otatimercallback
 otatimerid

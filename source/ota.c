@@ -578,11 +578,13 @@ static Sig256_t sig256Buffer;                               /*!< Buffer to store
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
+    assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
+
     if( otaTimerId == OtaRequestTimer )
     {
         OtaEventMsg_t xEventMsg = { 0 };
 
-        LogDebug( ( "Self-test expired within %ums\r\n",
+        LogDebug( ( "Self-test expired within %ums",
                     otaconfigFILE_REQUEST_WAIT_MS ) );
 
         xEventMsg.eventId = OtaAgentEventRequestTimer;
@@ -593,18 +595,12 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
             LogError( ( "Failed to signal the OTA Agent to start request timer" ) );
         }
     }
-    else if( otaTimerId == OtaSelfTestTimer )
+    else /* ( otaTimerId == OtaSelfTestTimer ) */
     {
-        LogError( ( "Self test failed to complete within %ums\r\n",
+        LogError( ( "Self test failed to complete within %ums",
                     otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
         ( void ) otaAgent.pOtaInterface->pal.reset( &otaAgent.fileContext );
-    }
-    else
-    {
-        LogWarn( ( "Invalid ota timer id: "
-                   "otaTimerId=%u",
-                   otaTimerId ) );
     }
 }
 
