@@ -367,6 +367,18 @@ OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
     return OtaErrRequestJobFailed;
 }
 
+OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
+                                                  OtaJobStatus_t unused2,
+                                                  int32_t unused3,
+                                                  int32_t unused4 )
+{
+    ( void ) unused1;
+    ( void ) unused2;
+    ( void ) unused3;
+    ( void ) unused4;
+
+    return OtaErrUpdateJobStatusFailed;
+}
 
 OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
 {
@@ -1065,6 +1077,25 @@ void test_OTA_ImageStateAbortFailToSendEvent()
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_SetImageState( OtaImageStateAborted ) );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+void test_OTA_ImageStateAbortUpdateStatusFail()
+{
+    /* Allow event to be sent continuously so that retries can work. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    /* Successfully send the event to abort the image. */
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAborted ) );
+
+    /* Process the event to abort the image and fail to update the job status. */
+    otaControlInterface.updateJobStatus = mockControlInterfaceUpdateJobAlwaysFail;
+    receiveAndProcessOtaEvent();
+
+    /* Test that the image state will be set regardless of whether or not the
+     * job status was updated successfully. */
+    TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
 }
 
 void test_OTA_ImageStateRjectWithActiveJob()
