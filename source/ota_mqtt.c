@@ -280,7 +280,7 @@ static size_t stringBuilder( char * pBuffer,
          * by code coverage tools that are unreachable. These macros prevent
          * the tools from tracking branch coverage for these lines. */
         /* LCOV_EXCL_BR_START */
-        ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
+        ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         /* LCOV_EXCL_BR_STOP */
         curLen += thisLength;
     }
@@ -302,10 +302,10 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( value )
+    while( value > 0U )
     {
-        *pCur++ = asciiDigits[ ( value % 10 ) ];
-        value /= 10;
+        *pCur++ = asciiDigits[ ( value % 10U ) ];
+        value /= 10U;
     }
 
     while( pCur > workBuf )
@@ -335,7 +335,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     /* Render all 8 digits, including leading zeros. */
     for( i = 0; i < 8; i++ )
     {
-        *pCur++ = asciiDigits[ value & 0xf ];
+        *pCur++ = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
         value >>= 4;
     }
 
@@ -1185,7 +1185,7 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    if( pAgentCtx->unsubscribeOnShutdown != 0 )
+    if( pAgentCtx->unsubscribeOnShutdown != 0U )
     {
         /* Unsubscribe from job notification topics. */
         mqttStatus = unsubscribeFromJobNotificationTopic( pAgentCtx );
@@ -1213,7 +1213,7 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    if( pAgentCtx->unsubscribeOnShutdown != 0 )
+    if( pAgentCtx->unsubscribeOnShutdown != 0U )
     {
         /* Unsubscribe from data stream topics. */
         mqttStatus = unsubscribeFromDataStream( pAgentCtx );
