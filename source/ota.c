@@ -2161,12 +2161,14 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     return err;
 }
 
+/* This function is called only if there is an error with the job parsing. */
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                                    OtaJobParseErr_t err )
 {
     OtaErr_t otaErr = OtaErrNone;
 
     assert( pFileContext != NULL );
+    assert( err != OtaJobParseErrNone );
 
     switch( err )
     {
