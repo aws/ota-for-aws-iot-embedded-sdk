@@ -66,6 +66,7 @@
 #define OTA_UPDATE_FILE_PATH_SIZE        100
 #define OTA_CERT_FILE_PATH_SIZE          100
 #define OTA_STREAM_NAME_SIZE             50
+#define OTA_INVALID_STREAM_NAME_SIZE     5  /* Size insufficient to hold stream name. */
 #define OTA_DECODE_MEMORY_SIZE           OTA_FILE_BLOCK_SIZE
 #define OTA_FILE_BITMAP_SIZE             50
 #define OTA_UPDATE_URL_SIZE              100
@@ -1215,8 +1216,10 @@ void test_OTA_ProcessJobDocumentInvalidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
-/* Test that the job is rejected if the file key signature cannot be
- * decoded. */
+/**
+ * @brief Test that the job is rejected if the file key signature cannot be
+ * decoded.
+ */
 void test_OTA_ProcessJobDocumentInvalidBase64Key()
 {
     pOtaJobDoc = JOB_DOC_INVALID_BASE64_KEY;
@@ -1230,8 +1233,10 @@ void test_OTA_ProcessJobDocumentInvalidBase64Key()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
-/* Test that the job is rejected if a required key(here filesize) is missing
- * from the job document. */
+/**
+ * @brief Test that the job is rejected if a required key(here filesize)
+ * is missing from the job document.
+ */
 void test_OTA_ProcessJobDocumentMissingRequiredKey()
 {
     pOtaJobDoc = JOB_DOC_MISSING_KEY;
@@ -1674,24 +1679,36 @@ void test_OTA_ReceiveFileBlockCompleteDynamicBufferHttp()
     test_OTA_ReceiveFileBlockCompleteHttp();
 }
 
-/* Test that extractAndStoreArray fails if device does not have sufficient
- * memory to allocate the string/array. */
+/**
+ * @brief Test that extractAndStoreArray fails if device does not have sufficient
+ * memory to allocate the string/array (here streamname).
+ */
 void test_OTA_ExtractArrayMemAllocFails()
 {
     otaInterfaces.os.mem.malloc = mockMallocAlwaysFail;
+    pOtaAppBuffer.streamNameSize = 0;
 
-    memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
-    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    /* Try to reach state OtaAgentStateCreatingFile, which would require the device
+     * to receive a job document and allocate resources and store the parameters.
+     * Insufficient memory causes the job to fail and state reverts to  OtaAgentStateWaitingForJob.
+     */
+    otaGoToState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
-/* Test that extractAndStoreArray fails if user buffer is insufficient
- * to allocate the string/array (here streamname). */
+/**
+ * @brief Test that extractAndStoreArray fails if user buffer is insufficient
+ * to allocate the string/array (here streamname).
+ */
 void test_OTA_ExtractArrayInsufficientBuffer()
 {
-    pOtaAppBuffer.streamNameSize = 5;
+    pOtaAppBuffer.streamNameSize = OTA_INVALID_STREAM_NAME_SIZE;
 
-    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    /* Try to reach state OtaAgentStateCreatingFile, which would require the device
+     * to receive a job document and allocate resources and store the parameters.
+     * Insufficient memory causes the job to fail and state reverts to  OtaAgentStateWaitingForJob.
+     */
+    otaGoToState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
