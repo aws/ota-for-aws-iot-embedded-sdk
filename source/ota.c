@@ -2527,8 +2527,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                          otaconfigFILE_REQUEST_WAIT_MS,
                                                          otaTimerCallback );
 
-        if( ( otaAgent.fileContext.pDecodeMem != NULL ) &&
-            ( otaAgent.fileContext.decodeMemMaxSize != 0u ) )
+        if( otaAgent.fileContext.decodeMemMaxSize != 0U )
         {
             *pPayload = otaAgent.fileContext.pDecodeMem;
             payloadSize = otaAgent.fileContext.decodeMemMaxSize;

@@ -1524,6 +1524,50 @@ void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
 
+void test_OTA_ReceiveFileBlockMallocFail()
+{
+    uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
+    uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    size_t streamingMessageSize = 0;
+    OtaEventData_t eventBuffer;
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Pass an invalid values for pDecodeMemory and decodeMemorySize so the
+     * OTA Agent dynamically allocates the buffer instead of using one provided
+     * by the user. */
+    pOtaAppBuffer.pDecodeMemory = NULL;
+    pOtaAppBuffer.decodeMemorySize = 0;
+
+    /* Get into the state before receiving a data block. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    /* Create and send the data block. */
+    createOtaStreamingMessage(
+        pStreamingMessage,
+        sizeof( pStreamingMessage ),
+        0,
+        pFileBlock,
+        OTA_FILE_BLOCK_SIZE,
+        &streamingMessageSize,
+        true );
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+    otaEvent.pEventData->dataLength = streamingMessageSize;
+    OTA_SignalEvent( &otaEvent );
+
+    /* Set malloc to fail and receive the block. */
+    otaInterfaces.os.mem.malloc = mockMallocAlwaysFail;
+    receiveAndProcessOtaEvent();
+    /* Receive the event for closing the file after the failure. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_ReceiveFileBlockCompleteHttp()
 {
     OtaEventMsg_t otaEvent;
