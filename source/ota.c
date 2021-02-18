@@ -2871,7 +2871,6 @@ static void receiveAndProcessOtaEvent( void )
     }
 }
 
-/* Event Processing loop to run the OTA state machine. */
 void OTA_EventProcessingTask( void * pUnused )
 {
     ( void ) pUnused;
