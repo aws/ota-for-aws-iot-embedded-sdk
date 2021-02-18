@@ -13,6 +13,7 @@ apis
 app
 appfirmwareversion
 ascii
+asciidigits
 attemptsdone
 attr
 auth
@@ -494,6 +495,7 @@ pcontextbase
 pcontrolinterface
 pctimername
 pctopicbuffer
+pcur
 pdata
 pdatainterface
 pdecodemem
