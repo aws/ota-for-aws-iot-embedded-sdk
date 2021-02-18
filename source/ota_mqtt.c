@@ -905,7 +905,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t reason,
                                int32_t subReason )
 {
-    OtaErr_t result = OtaErrUpdateJobStatusFailed;
+    OtaErr_t result = OtaErrNone;
     OtaMqttStatus_t mqttStatus = OtaMqttPublishFailed;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
@@ -942,20 +942,25 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    /* Publish the string created above. */
-    mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    if( msgSize > 0 )
+    {
+        /* Publish the string created above. */
+        mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
-    if( mqttStatus == OtaMqttSuccess )
-    {
-        LogDebug( ( "Published update to the job status." ) );
-        result = OtaErrNone;
-    }
-    else
-    {
-        LogError( ( "Failed to publish MQTT status message: "
-                    "publishStatusMessage returned error: "
-                    "OtaMqttStatus_t=%s",
-                    OTA_MQTT_strerror( mqttStatus ) ) );
+        if( mqttStatus == OtaMqttSuccess )
+        {
+            LogDebug( ( "Published update to the job status." ) );
+            result = OtaErrNone;
+        }
+        else
+        {
+            LogError( ( "Failed to publish MQTT status message: "
+                        "publishStatusMessage returned error: "
+                        "OtaMqttStatus_t=%s",
+                        OTA_MQTT_strerror( mqttStatus ) ) );
+
+            result = OtaErrUpdateJobStatusFailed;
+        }
     }
 
     return result;
