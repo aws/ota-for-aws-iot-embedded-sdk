@@ -387,7 +387,6 @@ otajobeventprocessed
 otajobeventselftestfailed
 otajobeventstarttest
 otajobparseerrbadmodelinitparams
-otajobparseerrbusywithexistingjob
 otajobparseerrnoactivejobs
 otajobparseerrnocontextavailable
 otajobparseerrnonconformingjobdoc

@@ -2160,9 +2160,6 @@ void test_OTA_JobParse_strerror( void )
     status = OtaJobParseErrNone;
     str = OTA_JobParse_strerror( status );
     TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNone", str );
-    status = OtaJobParseErrBusyWithExistingJob;
-    str = OTA_JobParse_strerror( status );
-    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrBusyWithExistingJob", str );
     status = OtaJobParseErrNullJob;
     str = OTA_JobParse_strerror( status );
     TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNullJob", str );
