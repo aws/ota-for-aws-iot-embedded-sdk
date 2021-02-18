@@ -144,6 +144,8 @@ extern OtaErr_t initFileHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 
 /* Static helper function under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
@@ -371,6 +373,18 @@ OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
     return OtaErrRequestJobFailed;
 }
 
+OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
+                                                  OtaJobStatus_t unused2,
+                                                  int32_t unused3,
+                                                  int32_t unused4 )
+{
+    ( void ) unused1;
+    ( void ) unused2;
+    ( void ) unused3;
+    ( void ) unused4;
+
+    return OtaErrUpdateJobStatusFailed;
+}
 
 OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
 {
@@ -1076,6 +1090,25 @@ void test_OTA_ImageStateAbortFailToSendEvent()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
+void test_OTA_ImageStateAbortUpdateStatusFail()
+{
+    /* Allow event to be sent continuously so that retries can work. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    /* Successfully send the event to abort the image. */
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAborted ) );
+
+    /* Process the event to abort the image and fail to update the job status. */
+    otaControlInterface.updateJobStatus = mockControlInterfaceUpdateJobAlwaysFail;
+    receiveAndProcessOtaEvent();
+
+    /* Test that the image state will be set regardless of whether or not the
+     * job status was updated successfully. */
+    TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
+}
+
 void test_OTA_ImageStateRjectWithActiveJob()
 {
     otaGoToState( OtaAgentStateWaitingForFileBlock );
@@ -1253,6 +1286,20 @@ void test_OTA_ProcessJobDocumentBitmapMallocFail()
     TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
 }
 
+void test_OTA_ProcessJobDocumentEventSendFail( void )
+{
+    pOtaJobDoc = JOB_DOC_A;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 static void otaInitFileTransfer()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -1349,6 +1396,29 @@ void test_OTA_RequestFileBlockHttpOneBlock()
 {
     pOtaJobDoc = JOB_DOC_ONE_BLOCK;
     otaRequestFileBlock();
+}
+
+void test_OTA_RequestFileBlockTimerFails()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Set the event send functionality to always succeed. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Prepare the OTA Agent to request a block. */
+    otaGoToState( OtaAgentStateRequestingFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_GetState() );
+
+    otaEvent.eventId = OtaAgentEventRequestFileBlock;
+    OTA_SignalEvent( &otaEvent );
+
+    /* Set the request timer to fail when attempting to start. */
+    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    /* Process the event to request a block. */
+    receiveAndProcessOtaEvent();
+    /* Process the event to shut down. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_RequestFileBlockRetryFail()
@@ -1646,6 +1716,22 @@ void test_OTA_SelfTestJob()
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
+void test_OTA_SelfTestJobEventSendFail()
+{
+    pOtaJobDoc = JOB_DOC_SELF_TEST;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Set the event send interface to a mock function that always fails to
+     * send the event. */
+    otaReceiveJobDocument();
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_SelfTestJobNonSelfTestPlatform()
 {
     /* Let the PAL always says it's not in self test. */
@@ -1812,6 +1898,20 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
 {
     otaInterfaces.pal.closeFile = mockPalCloseFileAlwaysFail;
     test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
+void test_OTA_EventProcessingTask_ExitOnAbort()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+    OTA_EventProcessingTask( NULL );
+
+    /* Test that the OTA_EventProcessingTask aborts correctly after receiving
+     * and event to shutdown the OTA Agent. */
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 /* ========================================================================== */
@@ -2326,6 +2426,31 @@ void test_OTA_processDataHandler_InvalidEvent( void )
      * handler represents the success of updating the job document when there
      * is an issue processing the block. */
     TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( NULL ) );
+}
+
+/**
+ * @brief Test that resumeHandler returns the proper error when the OTA event
+ *        send functionality fails.
+ */
+void test_OTA_resumeHandler_EventSendFails()
+{
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateSuspended );
+
+    /* Fail to send the OTA event. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, resumeHandler( NULL ) );
+}
+
+void test_OTA_jobNotificationHandler_EventSendFails()
+{
+    /* Initialize the OTA interfaces so they are not NULL. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, jobNotificationHandler( NULL ) );
 }
 
 /* ========================================================================== */

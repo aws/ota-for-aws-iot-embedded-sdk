@@ -69,7 +69,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
                     , OTA_HTTP_strerror( httpStatus ) ) );
     }
 
-    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrInitFileTransferFailed;
+    return ( httpStatus == OtaHttpSuccess ) ? OtaErrNone : OtaErrInitFileTransferFailed;
 }
 
 /*
@@ -112,7 +112,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
                     , OTA_HTTP_strerror( httpStatus ) ) );
     }
 
-    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrRequestFileBlockFailed;
+    return ( httpStatus == OtaHttpSuccess ) ? OtaErrNone : OtaErrRequestFileBlockFailed;
 }
 
 /*
@@ -169,7 +169,7 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
     /* Reset currBlock. */
     currBlock = 0;
 
-    return httpStatus == OtaHttpSuccess ? OtaErrNone : OtaErrCleanupDataFailed;
+    return ( httpStatus == OtaHttpSuccess ) ? OtaErrNone : OtaErrCleanupDataFailed;
 }
 
 const char * OTA_HTTP_strerror( OtaHttpStatus_t status )
@@ -196,6 +196,7 @@ const char * OTA_HTTP_strerror( OtaHttpStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;

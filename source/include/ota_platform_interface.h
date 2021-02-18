@@ -107,7 +107,7 @@ typedef enum OtaPalMainStatus
 #define OTA_PAL_SUB_BITS    24U                                                                                                               /*!< The OTA Agent error code is the highest 8 bits of the word. */
 #define OTA_PAL_MAIN_ERR( err )             ( ( OtaPalMainStatus_t ) ( uint32_t ) ( ( uint32_t ) ( err ) >> ( uint32_t ) OTA_PAL_SUB_BITS ) ) /*!< Helper to get the OTA PAL main error code. */
 #define OTA_PAL_SUB_ERR( err )              ( ( uint32_t ) ( err ) & ( uint32_t ) OTA_PAL_ERR_MASK )                                          /*!< Helper to get the OTA PAL sub error code. */
-#define OTA_PAL_COMBINE_ERR( main, sub )    ( ( uint32_t ) ( main ) << ( uint32_t ) OTA_PAL_SUB_BITS | ( uint32_t ) ( sub ) )                 /*!< Helper to combine the OTA PAL main and sub error code. */
+#define OTA_PAL_COMBINE_ERR( main, sub )    ( ( ( uint32_t ) ( main ) << ( uint32_t ) OTA_PAL_SUB_BITS ) | ( uint32_t ) ( sub ) )             /*!< Helper to combine the OTA PAL main and sub error code. */
 /* @[define_ota_err_code_helpers] */
 
 /**

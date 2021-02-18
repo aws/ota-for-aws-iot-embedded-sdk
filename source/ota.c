@@ -249,14 +249,14 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
 
 /**
- * @brief Check if the JSON can be parsed through a custom callback if initial parsing fails.
+ * @brief Check if the JSON can be parsed through the app callback if initial parsing fails.
  *
  * @param[in] pJson JSON job document.
  * @param[in] messageLength Length of the job document.
  * @return OtaJobParseErr_t OtaJobParseErrNone if successful, other error codes if failure.
  */
-static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
-                                                       uint32_t messageLength );
+static OtaJobParseErr_t handleCustomJob( const char * pJson,
+                                         uint32_t messageLength );
 
 /**
  * @brief Check if the incoming job document is not conflicting with current job status.
@@ -503,7 +503,6 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    NULL,                 /* customJobCallback */
     1                     /* unsubscribe flag */
 };
 
@@ -625,7 +624,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
                                                int32_t subReason )
 {
     OtaErr_t err = OtaErrNone;
-    int32_t reason = 0;
+    OtaJobReason_t reason = 0;
 
     if( state == OtaImageStateTesting )
     {
@@ -772,7 +771,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
         otaAgent.fileContext.isInSelfTest = false;
 
         /* Stop the self test timer as it is no longer required. */
-        otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
     }
     else
     {
@@ -1555,7 +1554,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
 
     ( void ) pKey; /* For suppressing compiler-warning: unused variable. */
 
-    if( *pParamSizeAdd == 0 )
+    if( *pParamSizeAdd == 0U )
     {
         /* Free previously allocated buffer. */
         if( *pCharPtr != NULL )
@@ -1899,44 +1898,36 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
     return err;
 }
 
-/* If there is an error is parsing the json check if it can be handled by external callback. */
-
-static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
-                                                       uint32_t messageLength )
+/* If there is an error in parsing the json, check if it can be handled by external callback. */
+static OtaJobParseErr_t handleCustomJob( const char * pJson,
+                                         uint32_t messageLength )
 {
     OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
-    size_t jobNameLen = 0;
-    const char * pQueryKey = OTA_JSON_EXECUTION_KEY;
-    const char * pValueInJson = NULL;
-    uint8_t pJobId[ OTA_JOB_ID_MAX_SIZE ] = { 0 };
-    size_t valueLength = 0;
     OtaJobDocument_t jobDoc = { 0 };
 
-    jobDoc.pJobDocJson = ( uint8_t * ) pJson;
-    jobDoc.jobDocLength = messageLength;
-    jobDoc.pJobId = pJobId;
     jobDoc.parseErr = OtaJobParseErrUnknown;
 
-    /* We have an unknown job parser error. Check to see if we can pass control
-     * to a callback for parsing */
-    otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
-
-    jobNameLen = strlen( ( const char * ) jobDoc.pJobId );
-
-    if( jobDoc.parseErr == OtaJobParseErrUnknown )
+    /* If this is a valid custom job, extract job document and job ID data from the JSON payload.*/
+    if( JSONSuccess != JSON_SearchConst( pJson,
+                                         messageLength,
+                                         OTA_JSON_JOB_DOC_KEY,
+                                         strlen( OTA_JSON_JOB_DOC_KEY ),
+                                         ( const char ** ) &jobDoc.pJobDocJson,
+                                         &jobDoc.jobDocLength,
+                                         NULL ) )
     {
-        /*Check if we received job with execution key.*/
-        if( JSONSuccess != JSON_SearchConst( pJson,
+        if( JSONSuccess == JSON_SearchConst( pJson,
                                              messageLength,
-                                             pQueryKey,
-                                             strlen( pQueryKey ),
-                                             &pValueInJson,
-                                             &valueLength,
+                                             OTA_JSON_JOB_ID_KEY,
+                                             strlen( OTA_JSON_JOB_ID_KEY ),
+                                             ( const char ** ) &jobDoc.pJobId,
+                                             &jobDoc.jobIdLength,
                                              NULL ) )
         {
-            /* Received job document with no execution so no active job is available.*/
-            err = OtaJobParseErrNoActiveJobs;
+            /* We have an unknown job parser error. Check to see if we can pass control
+             * to a callback for parsing */
+            otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
         }
         else
         {
@@ -1944,9 +1935,15 @@ static OtaJobParseErr_t parseJobDocFromCustomCallback( const char * pJson,
             err = OtaJobParseErrNonConformingJobDoc;
         }
     }
-    else if( ( jobDoc.parseErr == OtaJobParseErrNone ) && ( jobNameLen > 0u ) && ( jobNameLen < OTA_JOB_ID_MAX_SIZE ) )
+    else
     {
-        ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobNameLen );
+        /* Job is malformed - return an error */
+        err = OtaJobParseErrNonConformingJobDoc;
+    }
+
+    if( jobDoc.parseErr == OtaJobParseErrNone )
+    {
+        ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
         otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                       jobDoc.status,
                                                       jobDoc.reason,
@@ -2161,26 +2158,20 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     return err;
 }
 
+/* This function is called only if there is an error with the job parsing. */
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                                    OtaJobParseErr_t err )
 {
     OtaErr_t otaErr = OtaErrNone;
 
     assert( pFileContext != NULL );
+    assert( err != OtaJobParseErrNone );
 
     switch( err )
     {
         case OtaJobParseErrUpdateCurrentJob:
 
             LogInfo( ( "Update received for current job: "
-                       "OtaJobParseErr_t=%s, Job name=%s",
-                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-
-            break;
-
-        case OtaJobParseErrNone:
-
-            LogInfo( ( "Job parsing sccess: "
                        "OtaJobParseErr_t=%s, Job name=%s",
                        OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
@@ -2224,6 +2215,8 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 
             /* We don't need the job name memory anymore since we're done with this job. */
             ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+
+            break;
     }
 }
 
@@ -2289,12 +2282,21 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
         }
         else
         {
-            err = parseJobDocFromCustomCallback( pJson, messageLength );
+            err = handleCustomJob( pJson, messageLength );
         }
     }
 
-    /* Handle job parsing error. */
-    handleJobParsingError( pFileContext, err );
+    if( err == OtaJobParseErrNone )
+    {
+        LogInfo( ( "Job parsing success: "
+                   "OtaJobParseErr_t=%s, Job name=%s",
+                   OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+    }
+    else
+    {
+        /* Handle job parsing error. */
+        handleJobParsingError( pFileContext, err );
+    }
 
     /* If we failed, close the open files. */
     if( pFinalFile == NULL )
@@ -2831,42 +2833,43 @@ static void receiveAndProcessOtaEvent( void )
     {
         LogError( ( "Failed to receive event: OS Interface not set" ) );
     }
-
-    /*
-     * Receive the next event form the OTA event queue to process.
-     */
-    if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+    else
     {
         /*
-         * Search transition index if available in the table.
+         * Receive the next event from the OTA event queue to process.
          */
-        i = searchTransition( &eventMsg );
-
-        if( i < transitionTableLen )
-        {
-            LogDebug( ( "Found valid event handler for state transition: "
-                        "State=[%s], "
-                        "Event=[%s]",
-                        pOtaAgentStateStrings[ otaAgent.state ],
-                        pOtaEventStrings[ eventMsg.eventId ] ) );
-
-            /*
-             * Execute the handler function.
-             */
-            executeHandler( i, &eventMsg );
-        }
-
-        if( i == transitionTableLen )
+        if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
         {
             /*
-             * Handle unexpected events.
+             * Search transition index if available in the table.
              */
-            handleUnexpectedEvents( &eventMsg );
+            i = searchTransition( &eventMsg );
+
+            if( i < transitionTableLen )
+            {
+                LogDebug( ( "Found valid event handler for state transition: "
+                            "State=[%s], "
+                            "Event=[%s]",
+                            pOtaAgentStateStrings[ otaAgent.state ],
+                            pOtaEventStrings[ eventMsg.eventId ] ) );
+
+                /*
+                 * Execute the handler function.
+                 */
+                executeHandler( i, &eventMsg );
+            }
+
+            if( i == transitionTableLen )
+            {
+                /*
+                 * Handle unexpected events.
+                 */
+                handleUnexpectedEvents( &eventMsg );
+            }
         }
     }
 }
 
-/* Event Processing loop to run the OTA state machine. */
 void OTA_EventProcessingTask( void * pUnused )
 {
     ( void ) pUnused;
@@ -3488,6 +3491,7 @@ const char * OTA_Err_strerror( OtaErr_t err )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3541,6 +3545,7 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3594,6 +3599,7 @@ const char * OTA_OsStatus_strerror( OtaOsStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
@@ -3671,6 +3677,7 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status )
 
         default:
             str = "InvalidErrorCode";
+            break;
     }
 
     return str;
