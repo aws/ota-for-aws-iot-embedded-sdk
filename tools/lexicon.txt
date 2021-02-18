@@ -145,6 +145,7 @@ ewouldblock
 executionnumber
 expectedstatus
 expectedtype
+extractandstorearray
 failedwithval
 faqmem
 fclose
