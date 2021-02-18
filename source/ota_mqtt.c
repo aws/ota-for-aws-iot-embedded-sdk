@@ -908,7 +908,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     OtaErr_t result = OtaErrNone;
     OtaMqttStatus_t mqttStatus = OtaMqttPublishFailed;
     /* A message size of zero means don't publish anything. */
-    uint32_t msgSize = 0;
+    uint32_t msgSize = 0U;
     /* All job state transitions except streaming progress use QOS 1 since it is required to have status in the job document. */
     char pMsg[ OTA_STATUS_MSG_MAX_SIZE ];
     uint8_t qos = 1;
@@ -942,7 +942,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    if( msgSize > 0 )
+    if( msgSize > 0U )
     {
         /* Publish the string created above. */
         mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
@@ -950,7 +950,6 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         if( mqttStatus == OtaMqttSuccess )
         {
             LogDebug( ( "Published update to the job status." ) );
-            result = OtaErrNone;
         }
         else
         {
