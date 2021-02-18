@@ -265,13 +265,23 @@ static size_t stringBuilder( char * pBuffer,
 
     for( i = 0; strings[ i ] != NULL; i++ )
     {
+        /* The __THROW in library functions create additional branches tracked
+         * by code coverage tools that are unreachable. These macros prevent
+         * the tools from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
         thisLength = strlen( strings[ i ] );
+        /* LCOV_EXCL_BR_STOP */
 
         /* Assert if there is not enough buffer space. */
 
         assert( thisLength + curLen + 1 <= bufferSizeBytes );
 
-        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
+        /* The __THROW in library functions create additional branches tracked
+         * by code coverage tools that are unreachable. These macros prevent
+         * the tools from tracking branch coverage for these lines. */
+        /* LCOV_EXCL_BR_START */
+        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1 );
+        /* LCOV_EXCL_BR_STOP */
         curLen += thisLength;
     }
 
@@ -292,10 +302,10 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( value > 0U )
+    while( value )
     {
-        *pCur++ = asciiDigits[ ( value % 10U ) ];
-        value /= 10U;
+        *pCur++ = asciiDigits[ ( value % 10 ) ];
+        value /= 10;
     }
 
     while( pCur > workBuf )
@@ -325,7 +335,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     /* Render all 8 digits, including leading zeros. */
     for( i = 0; i < 8; i++ )
     {
-        *pCur++ = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
+        *pCur++ = asciiDigits[ value & 0xf ];
         value >>= 4;
     }
 
@@ -905,7 +915,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
                                int32_t reason,
                                int32_t subReason )
 {
-    OtaErr_t result = OtaErrUpdateJobStatusFailed;
+    OtaErr_t result = OtaErrNone;
     OtaMqttStatus_t mqttStatus = OtaMqttPublishFailed;
     /* A message size of zero means don't publish anything. */
     uint32_t msgSize = 0;
@@ -942,20 +952,25 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
     }
 
-    /* Publish the string created above. */
-    mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    /* Publish the string created above only when we have a message. */
+    if( msgSize > 0 )
+    {
+        mqttStatus = publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
 
-    if( mqttStatus == OtaMqttSuccess )
-    {
-        LogDebug( ( "Published update to the job status." ) );
-        result = OtaErrNone;
-    }
-    else
-    {
-        LogError( ( "Failed to publish MQTT status message: "
-                    "publishStatusMessage returned error: "
-                    "OtaMqttStatus_t=%s",
-                    OTA_MQTT_strerror( mqttStatus ) ) );
+        if( mqttStatus == OtaMqttSuccess )
+        {
+            LogDebug( ( "Published update to the job status." ) );
+            result = OtaErrNone;
+        }
+        else
+        {
+            LogError( ( "Failed to publish MQTT status message: "
+                        "publishStatusMessage returned error: "
+                        "OtaMqttStatus_t=%s",
+                        OTA_MQTT_strerror( mqttStatus ) ) );
+
+            result = OtaErrUpdateJobStatusFailed;
+        }
     }
 
     return result;
@@ -1175,7 +1190,7 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    if( pAgentCtx->unsubscribeOnShutdown != 0U )
+    if( pAgentCtx->unsubscribeOnShutdown != 0 )
     {
         /* Unsubscribe from job notification topics. */
         mqttStatus = unsubscribeFromJobNotificationTopic( pAgentCtx );
@@ -1203,7 +1218,7 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
-    if( pAgentCtx->unsubscribeOnShutdown != 0U )
+    if( pAgentCtx->unsubscribeOnShutdown != 0 )
     {
         /* Unsubscribe from data stream topics. */
         mqttStatus = unsubscribeFromDataStream( pAgentCtx );
@@ -1245,7 +1260,6 @@ const char * OTA_MQTT_strerror( OtaMqttStatus_t status )
 
         default:
             str = "InvalidErrorCode";
-            break;
     }
 
     return str;
