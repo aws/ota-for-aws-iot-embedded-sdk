@@ -1140,7 +1140,7 @@ void test_OTA_ActivateNewImageNullPalActivate()
               mockAppCallback );
 
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
-    TEST_ASSERT_NOT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+    TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ImageStateAbortWithActiveJob()
