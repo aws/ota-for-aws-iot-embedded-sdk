@@ -3136,7 +3136,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
          * stopped. */
         otaAgent.state = OtaAgentStateStopped;
     }
-    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
+    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 
@@ -3156,7 +3156,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
             /*
              * Wait for the OTA agent to complete shutdown, if requested.
              */
-            while( ( ticks > 0U ) && ( otaAgent.state != OtaAgentStateStopped ) )
+            while( ( ticks > 0U ) && ( otaAgent.state != OtaAgentStateStopped ) ) /* LCOV_EXCL_BR_LINE */
             {
                 ticks--;
             }
