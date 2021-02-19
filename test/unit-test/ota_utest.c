@@ -118,7 +118,7 @@ static FILE * pOtaFileHandle = NULL;
 static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 
 /* 2 seconds default wait time for OTA state machine transition. */
-static const int otaDefaultWait = 2000;
+static const int otaDefaultWait = 0;
 
 /* Flag to unsubscribe to topics after ota shutdown. */
 static const uint8_t unsubscribeFlag = 1;
@@ -858,10 +858,19 @@ void test_OTA_InitWithNameTooLong()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_ShutdownWithDelay()
+{
+    otaGoToState( OtaAgentStateReady );
+    OTA_Shutdown( 2000, 0 );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 void test_OTA_ShutdownWhenStopped()
 {
     /* Calling shutdown when already stopped should have no effect. */
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -875,6 +884,7 @@ void test_OTA_ShutdownFailToSendEvent()
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
