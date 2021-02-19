@@ -145,6 +145,7 @@ ewouldblock
 executionnumber
 expectedstatus
 expectedtype
+extractandstorearray
 failedwithval
 faqmem
 fclose
@@ -332,11 +333,13 @@ otaagenteventstart
 otaagenteventstartselftest
 otaagenteventsuspend
 otaagenteventuserabort
+otaagentstatecreatingfile
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
 otaagentstatestopped
 otaagentstatestopped
+otaagentstatewaitingforjob
 otaappcallback
 otabuffer
 otaclose
@@ -387,7 +390,6 @@ otajobeventprocessed
 otajobeventselftestfailed
 otajobeventstarttest
 otajobparseerrbadmodelinitparams
-otajobparseerrbusywithexistingjob
 otajobparseerrnoactivejobs
 otajobparseerrnocontextavailable
 otajobparseerrnonconformingjobdoc
