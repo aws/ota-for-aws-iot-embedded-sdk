@@ -59,11 +59,14 @@
 #define JOB_DOC_ONE_BLOCK                "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob22\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"HTTP\"],\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": \"1024\" ,\"fileid\":0,\"certfile\":\"test.crt\",\"update_data_url\":\"https://dummy-url.com/ota.bin\",\"auth_scheme\":\"aws.s3.presigned\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID                  "not a json"
 #define JOB_DOC_INVALID_PROTOCOL         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"XYZ\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_INVALID_BASE64_KEY       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"Zg===\"}] }}}}"
+#define JOB_DOC_MISSING_KEY              "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE        100
 #define OTA_CERT_FILE_PATH_SIZE          100
 #define OTA_STREAM_NAME_SIZE             50
+#define OTA_INVALID_STREAM_NAME_SIZE     5  /* Size insufficient to hold stream name used in the default job document (AFR_OTA-testjob20). */
 #define OTA_DECODE_MEMORY_SIZE           OTA_FILE_BLOCK_SIZE
 #define OTA_FILE_BITMAP_SIZE             50
 #define OTA_UPDATE_URL_SIZE              100
@@ -1309,6 +1312,39 @@ void test_OTA_ProcessJobDocumentInvalidJson()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+/**
+ * @brief Test that the job is rejected if the file key signature cannot be
+ * decoded.
+ */
+void test_OTA_ProcessJobDocumentInvalidBase64Key()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_BASE64_KEY;
+
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/**
+ * @brief Test that the job is rejected if a required key(here filesize)
+ * is missing from the job document.
+ */
+void test_OTA_ProcessJobDocumentMissingRequiredKey()
+{
+    pOtaJobDoc = JOB_DOC_MISSING_KEY;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_RejectWhileAborted()
 {
     pOtaJobDoc = JOB_DOC_INVALID;
@@ -1809,6 +1845,39 @@ void test_OTA_ReceiveFileBlockCompleteDynamicBufferHttp()
 {
     memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
     test_OTA_ReceiveFileBlockCompleteHttp();
+}
+
+/**
+ * @brief Test that extractAndStoreArray fails if device does not have sufficient
+ * memory to allocate the string/array (here streamname).
+ */
+void test_OTA_ExtractArrayMemAllocFails()
+{
+    otaInterfaces.os.mem.malloc = mockMallocAlwaysFail;
+    pOtaAppBuffer.streamNameSize = 0;
+
+    /* Try to reach state OtaAgentStateCreatingFile, which would require the device
+     * to receive a job document and allocate resources and store the parameters.
+     * Insufficient memory causes the job to fail and state reverts to  OtaAgentStateWaitingForJob.
+     */
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/**
+ * @brief Test that extractAndStoreArray fails if user buffer is insufficient
+ * to allocate the string/array (here streamname).
+ */
+void test_OTA_ExtractArrayInsufficientBuffer()
+{
+    pOtaAppBuffer.streamNameSize = OTA_INVALID_STREAM_NAME_SIZE;
+
+    /* Try to reach state OtaAgentStateCreatingFile, which would require the device
+     * to receive a job document and allocate resources and store the parameters.
+     * Insufficient memory causes the job to fail and state reverts to  OtaAgentStateWaitingForJob.
+     */
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 static void invokeSelfTestHandler()
@@ -2328,9 +2397,6 @@ void test_OTA_JobParse_strerror( void )
     status = OtaJobParseErrNone;
     str = OTA_JobParse_strerror( status );
     TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNone", str );
-    status = OtaJobParseErrBusyWithExistingJob;
-    str = OTA_JobParse_strerror( status );
-    TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrBusyWithExistingJob", str );
     status = OtaJobParseErrNullJob;
     str = OTA_JobParse_strerror( status );
     TEST_ASSERT_EQUAL_STRING( "OtaJobParseErrNullJob", str );

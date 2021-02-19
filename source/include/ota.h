@@ -129,7 +129,6 @@ typedef enum OtaJobParseErr
 {
     OtaJobParseErrUnknown = -1,        /* @brief The error code has not yet been set by a logic path. */
     OtaJobParseErrNone = 0,            /* @brief Signifies no error has occurred. */
-    OtaJobParseErrBusyWithExistingJob, /* @brief We're busy with a job but received a new job document. */
     OtaJobParseErrNullJob,             /* @brief A null job was reported (no job ID). */
     OtaJobParseErrUpdateCurrentJob,    /* @brief We're already busy with the reported job ID. */
     OtaJobParseErrZeroFileSize,        /* @brief Job document specified a zero sized file. This is not allowed. */

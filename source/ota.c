@@ -2183,14 +2183,6 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                        OTA_JobParse_strerror( err ) ) );
             break;
 
-        case OtaJobParseErrBusyWithExistingJob:
-
-            LogInfo( ( "Busy processing existing job: "
-                       "OtaJobParseErr_t=%s, Job name=%s",
-                       OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
-
-            break;
-
         default:
 
             /* If job parsing failed AND there's a job ID, update the job state to FAILED with
@@ -3508,10 +3500,6 @@ const char * OTA_JobParse_strerror( OtaJobParseErr_t err )
 
         case OtaJobParseErrNone:
             str = "OtaJobParseErrNone";
-            break;
-
-        case OtaJobParseErrBusyWithExistingJob:
-            str = "OtaJobParseErrBusyWithExistingJob";
             break;
 
         case OtaJobParseErrNullJob:
