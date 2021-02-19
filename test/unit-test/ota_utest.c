@@ -1126,6 +1126,23 @@ void test_OTA_ActivateNewImageWhenStopped()
     TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
 }
 
+void test_OTA_ActivateNewImageNullPalActivate()
+{
+    /* Have all other interfaces besides the activate function of the PAL
+     * interface. */
+    otaInterfaces.pal.activate = NULL;
+
+    /* Initialize the OTA Agent to set the interfaces before trying to
+     * activate the new image. */
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+}
+
 void test_OTA_ImageStateAbortWithActiveJob()
 {
     otaGoToState( OtaAgentStateWaitingForFileBlock );
