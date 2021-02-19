@@ -1661,6 +1661,34 @@ void test_OTA_ReceiveFileBlockMallocFail()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+void test_OTA_DroppedFileBlock()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Get ready to receive a block. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+    /* No blocks have been received or dropped yet. */
+    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsDropped );
+
+
+    /* Prepare an event as if we are receiving a data block. */
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    otaEvent.pEventData->dataLength = 0;
+
+    /* Set the interface to fail sending the data block. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    /* Simulate the application receiving a data block and failing to send it
+     * to the OTA Agent. */
+    TEST_ASSERT_EQUAL( false, OTA_SignalEvent( &otaEvent ) );
+    TEST_ASSERT_EQUAL( 1, otaAgent.statistics.otaPacketsDropped );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+}
+
 void test_OTA_ReceiveFileBlockCompleteHttp()
 {
     OtaEventMsg_t otaEvent;
