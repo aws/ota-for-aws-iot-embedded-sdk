@@ -32,7 +32,7 @@
 #define configENABLED_DATA_PROTOCOLS            ( OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP )
 
 /* Call status update for every block that we received so that we can hit some internal routines. */
-#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    1
+#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    2
 
 /* Lower request momentum so that retry fails faster. */
 #define otaconfigMAX_NUM_REQUEST_MOMENTUM       3
