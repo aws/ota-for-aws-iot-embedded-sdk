@@ -2785,8 +2785,8 @@ static void executeHandler( uint32_t index,
         LogDebug( ( "Executing handler for state transition: " ) );
 
         /*
-            * Update the current state in OTA agent context.
-            */
+         * Update the current state in OTA agent context.
+         */
         otaAgent.state = otaTransitionTable[ index ].nextState;
     }
     else
