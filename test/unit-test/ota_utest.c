@@ -859,6 +859,56 @@ void test_OTA_InitWithNameTooLong()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_InitNullAppBuffers()
+{
+    /* Test for having NULL pointers but valid sizes. */
+    pOtaAppBuffer.pUpdateFilePath = NULL;
+    pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
+    pOtaAppBuffer.pCertFilePath = NULL;
+    pOtaAppBuffer.certFilePathSize = OTA_CERT_FILE_PATH_SIZE;
+    pOtaAppBuffer.pStreamName = NULL;
+    pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
+    pOtaAppBuffer.pDecodeMemory = NULL;
+    pOtaAppBuffer.decodeMemorySize = OTA_DECODE_MEMORY_SIZE;
+    pOtaAppBuffer.pFileBitmap = NULL;
+    pOtaAppBuffer.fileBitmapSize = OTA_FILE_BITMAP_SIZE;
+    pOtaAppBuffer.pUrl = NULL;
+    pOtaAppBuffer.urlSize = OTA_UPDATE_URL_SIZE;
+    pOtaAppBuffer.pAuthScheme = NULL;
+    pOtaAppBuffer.authSchemeSize = OTA_AUTH_SCHEME_SIZE;
+
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
+void test_OTA_InitZeroAppBufferSizes()
+{
+    /* Test for having valid pointers with zero sizes. */
+    pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
+    pOtaAppBuffer.updateFilePathsize = 0;
+    pOtaAppBuffer.pCertFilePath = pUserBuffer;
+    pOtaAppBuffer.certFilePathSize = 0;
+    pOtaAppBuffer.pStreamName = pUserBuffer;
+    pOtaAppBuffer.streamNameSize = 0;
+    pOtaAppBuffer.pDecodeMemory = pUserBuffer;
+    pOtaAppBuffer.decodeMemorySize = 0;
+    pOtaAppBuffer.pFileBitmap = pUserBuffer;
+    pOtaAppBuffer.fileBitmapSize = 0;
+    pOtaAppBuffer.pUrl = pUserBuffer;
+    pOtaAppBuffer.urlSize = 0;
+    pOtaAppBuffer.pAuthScheme = pUserBuffer;
+    pOtaAppBuffer.authSchemeSize = 0;
+
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
 void test_OTA_ShutdownWithDelay()
 {
     otaGoToState( OtaAgentStateReady );
