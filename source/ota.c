@@ -2776,25 +2776,24 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    if( otaTransitionTable[ index ].handler != NULL )
+    assert( otaTransitionTable[ index ].handler != NULL );
+
+    err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
+
+    if( err == OtaErrNone )
     {
-        err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
+        LogDebug( ( "Executing handler for state transition: " ) );
 
-        if( err == OtaErrNone )
-        {
-            LogDebug( ( "Executing handler for state transition: " ) );
-
-            /*
-             * Update the current state in OTA agent context.
-             */
-            otaAgent.state = otaTransitionTable[ index ].nextState;
-        }
-        else
-        {
-            LogError( ( "Failed to execute state transition handler: "
-                        "Handler returned error: OtaErr_t=%s",
-                        OTA_Err_strerror( err ) ) );
-        }
+        /*
+            * Update the current state in OTA agent context.
+            */
+        otaAgent.state = otaTransitionTable[ index ].nextState;
+    }
+    else
+    {
+        LogError( ( "Failed to execute state transition handler: "
+                    "Handler returned error: OtaErr_t=%s",
+                    OTA_Err_strerror( err ) ) );
     }
 
     LogInfo( ( "Current State=[%s]"
