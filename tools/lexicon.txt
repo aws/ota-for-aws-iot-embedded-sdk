@@ -333,11 +333,13 @@ otaagenteventstart
 otaagenteventstartselftest
 otaagenteventsuspend
 otaagenteventuserabort
+otaagentstatecreatingfile
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
 otaagentstatestopped
 otaagentstatestopped
+otaagentstatewaitingforjob
 otaappcallback
 otabuffer
 otaclose
