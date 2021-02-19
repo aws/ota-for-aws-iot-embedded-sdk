@@ -146,6 +146,7 @@ extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
 
 /* Static helper function under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
@@ -886,6 +887,18 @@ void test_OTA_ShutdownFailToSendEvent()
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+void test_OTA_ShutdownTwiceBeforeProcessing()
+{
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaGoToState( OtaAgentStateReady );
+    OTA_Shutdown( 0, 0 );
+    OTA_Shutdown( 0, 0 );
+    receiveAndProcessOtaEvent();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_CloseNullInput()
@@ -2461,6 +2474,26 @@ void test_OTA_jobNotificationHandler_EventSendFails()
     otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, jobNotificationHandler( NULL ) );
+}
+
+/**
+ * @brief Test that shutdownHandler safely handles being called without the
+ *        control and data interfaces being set.
+ */
+void test_OTA_shutdownHandler_NullInterface()
+{
+    otaGoToState( OtaAgentStateReady );
+
+    otaDataInterface.cleanup = NULL;
+    otaDataInterface.decodeFileBlock = NULL;
+    otaDataInterface.initFileTransfer = NULL;
+    otaDataInterface.requestFileBlock = NULL;
+
+    otaControlInterface.cleanup = NULL;
+    otaControlInterface.requestJob = NULL;
+    otaControlInterface.updateJobStatus = NULL;
+
+    TEST_ASSERT_EQUAL( OtaErrNone, shutdownHandler( NULL ) );
 }
 
 /* ========================================================================== */
