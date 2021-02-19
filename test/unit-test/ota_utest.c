@@ -66,7 +66,7 @@
 #define OTA_UPDATE_FILE_PATH_SIZE        100
 #define OTA_CERT_FILE_PATH_SIZE          100
 #define OTA_STREAM_NAME_SIZE             50
-#define OTA_INVALID_STREAM_NAME_SIZE     5  /* Size insufficient to hold stream name. */
+#define OTA_INVALID_STREAM_NAME_SIZE     5  /* Size insufficient to hold stream name used in the default job document (AFR_OTA-testjob20). */
 #define OTA_DECODE_MEMORY_SIZE           OTA_FILE_BLOCK_SIZE
 #define OTA_FILE_BITMAP_SIZE             50
 #define OTA_UPDATE_URL_SIZE              100
