@@ -2670,7 +2670,7 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     bool updateJob = false;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
-        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, *otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
     };
 
     /* The document structure has an invalid value for ModelParamType_t. */

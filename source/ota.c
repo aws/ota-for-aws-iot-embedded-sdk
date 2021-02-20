@@ -2330,11 +2330,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     /* Populate an OTA file context from the OTA job document. */
 
-    pUpdateFile = parseJobDoc( otaJobDocModelParamStructure,
-                               OTA_NUM_JOB_PARAMS,
-                               pRawMsg,
-                               messageLength,
-                               &updateJob );
+    pUpdateFile = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob );
 
     if( updateJob == true )
     {
@@ -2407,8 +2403,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( err != OtaErrNone )
     {
-        LogDebug( ( "Failed to parse the file context from the job document: "
-                    "OtaErr_t=%s",
+        LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
 
