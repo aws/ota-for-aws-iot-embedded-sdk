@@ -155,6 +155,9 @@ extern OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 extern bool otaClose( OtaFileContext_t * const pFileContext );
+extern bool validateDataBlock( const OtaFileContext_t * pFileContext,
+                               uint32_t blockIndex,
+                               uint32_t blockSize );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -1648,6 +1651,28 @@ void test_OTA_ReceiveFileBlockTooLarge()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+void test_OTA_ReceiveLastFileBlockTooSmall()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    pOtaJobDoc = JOB_DOC_ONE_BLOCK;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE - 1;
+    OTA_SignalEvent( &otaEvent );
+    /* Process the event to receive the invalid block. */
+    receiveAndProcessOtaEvent();
+    /* Process the event generated after receiving an invalid block. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_ReceiveFileBlockCompleteMqtt()
 {
     OtaEventMsg_t otaEvent;
@@ -2731,4 +2756,31 @@ void test_OTA_setDataInterface_InvalidInput( void )
     TEST_ASSERT_EQUAL( NULL, dataInterface.requestFileBlock );
     TEST_ASSERT_EQUAL( NULL, dataInterface.decodeFileBlock );
     TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
+}
+
+/* ========================================================================== */
+/* ==================== OTA Private Function Unit Tests ===================== */
+/* ========================================================================== */
+
+void test_OTA_validateDataBlockInputSize()
+{
+    OtaFileContext_t fileContext = { 0 };
+
+    /* Test for when the block received is the final block. */
+    fileContext.fileSize = OTA_FILE_BLOCK_SIZE;
+    /* Block size is too small. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, 0 ) );
+    /* Block size is the expected size. */
+    TEST_ASSERT_EQUAL( true, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE ) );
+    /* Block size is larger than the expected size. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE + 1 ) );
+
+    /* Test for when the block is not the final block. */
+    fileContext.fileSize = OTA_FILE_BLOCK_SIZE * 2;
+    /* Block size is too small. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, 0 ) );
+    /* Block size is the expected size. */
+    TEST_ASSERT_EQUAL( true, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE ) );
+    /* Block size is larger than the expected size. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE + 1 ) );
 }
