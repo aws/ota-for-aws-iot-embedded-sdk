@@ -532,6 +532,7 @@ pjobtopicgetnext
 pjobtopicnotifynext
 pjson
 pjsondoc
+pjsonexpectedparams
 pkey
 plaintext
 platfrom
