@@ -156,24 +156,22 @@ extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 
-/* Static helper function under test defined in ota.c. */
+/* Static helper functions under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 
-/* Static helper function to help initialize the Json document model. */
 extern DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    const JsonDocParam_t * pBodyDef,
                                    void * contextBaseAddr,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
-/* Static helper function to parse the incoming json document. */
 extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
                                        uint16_t numJobParams,
                                        const char * pJson,
                                        uint32_t messageLength,
                                        bool * pUpdateJob );
-/* Validate JSON document and the DocModel. */
+
 extern DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 

@@ -285,14 +285,14 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 /**
  * @brief Parse the OTA job document, validate and return the populated OTA context if valid.
  *
- * @param[in] pJsonDoc Structure to store the details of keys and where to store them.
+ * @param[in] pJsonExpectedParams Structure to store the details of keys and where to store them.
  * @param[in] numJobParams Number of parameters to be extracted.
  * @param[in] pJson JSON job document.
  * @param[in] messageLength Length of the job document.
  * @param[in] pUpdateJob Represents if the job is accepted.
  * @return OtaFileContext_t* File context to store file information.
  */
-static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
+static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
                                        uint16_t numJobParams,
                                        const char * pJson,
                                        uint32_t messageLength,
@@ -2256,7 +2256,7 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
  * OTA context if valid otherwise return NULL.
  */
 
-static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
+static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
                                        uint16_t numJobParams,
                                        const char * pJson,
                                        uint32_t messageLength,
@@ -2269,7 +2269,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
     JsonDocModel_t otaJobDocModel;
 
     parseError = initDocModel( &otaJobDocModel,
-                               pJsonDoc,
+                               pJsonExpectedParams,
                                ( void * ) pFileContext,
                                ( uint32_t ) sizeof( OtaFileContext_t ),
                                numJobParams );
