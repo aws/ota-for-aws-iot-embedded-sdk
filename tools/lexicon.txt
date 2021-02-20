@@ -337,6 +337,7 @@ otaagentstatecreatingfile
 otaagentstatenotready
 otaagentstatenotready
 otaagentstateready
+otaagentstateshuttingdown
 otaagentstatestopped
 otaagentstatestopped
 otaagentstatewaitingforjob
