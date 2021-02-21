@@ -2521,8 +2521,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                                                          otaconfigFILE_REQUEST_WAIT_MS,
                                                          otaTimerCallback );
 
-        if( ( otaAgent.fileContext.pDecodeMem != NULL ) &&
-            ( otaAgent.fileContext.decodeMemMaxSize != 0u ) )
+        if( otaAgent.fileContext.decodeMemMaxSize != 0U )
         {
             *pPayload = otaAgent.fileContext.pDecodeMem;
             payloadSize = otaAgent.fileContext.decodeMemMaxSize;
@@ -2769,25 +2768,24 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    if( otaTransitionTable[ index ].handler != NULL )
+    assert( otaTransitionTable[ index ].handler != NULL );
+
+    err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
+
+    if( err == OtaErrNone )
     {
-        err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
+        LogDebug( ( "Executing handler for state transition: " ) );
 
-        if( err == OtaErrNone )
-        {
-            LogDebug( ( "Executing handler for state transition: " ) );
-
-            /*
-             * Update the current state in OTA agent context.
-             */
-            otaAgent.state = otaTransitionTable[ index ].nextState;
-        }
-        else
-        {
-            LogError( ( "Failed to execute state transition handler: "
-                        "Handler returned error: OtaErr_t=%s",
-                        OTA_Err_strerror( err ) ) );
-        }
+        /*
+         * Update the current state in OTA agent context.
+         */
+        otaAgent.state = otaTransitionTable[ index ].nextState;
+    }
+    else
+    {
+        LogError( ( "Failed to execute state transition handler: "
+                    "Handler returned error: OtaErr_t=%s",
+                    OTA_Err_strerror( err ) ) );
     }
 
     LogInfo( ( "Current State=[%s]"
@@ -3129,7 +3127,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
          * stopped. */
         otaAgent.state = OtaAgentStateStopped;
     }
-    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) )
+    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 
@@ -3149,7 +3147,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
             /*
              * Wait for the OTA agent to complete shutdown, if requested.
              */
-            while( ( ticks > 0U ) && ( otaAgent.state != OtaAgentStateStopped ) )
+            while( ( ticks > 0U ) && ( otaAgent.state != OtaAgentStateStopped ) ) /* LCOV_EXCL_BR_LINE */
             {
                 ticks--;
             }
