@@ -112,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check formatting
-        uses: aggarw13/CI-CD-Github-Actions/formatting@formatting/take-input-parameter-for-excluding-files
+        uses: FreeRTOS/CI-CD-Github-Actions/formatting@main
         with:
           path: ./
           exclude-dirs: docs
