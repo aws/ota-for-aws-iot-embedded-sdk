@@ -371,7 +371,7 @@ typedef struct OtaAgentContext
  * // OTA library error status.
  * OtaErr_t otaErr = OtaErrNone;
  *
- * // Client ID that is unique to the broker
+ * // Unique client identifier
  * char * pClientIdentifier = "uniqueClientID";
  *
  * otaErr = OTA_Init( &otaBuffer,
@@ -399,7 +399,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  *
  * @param[in] ticksToWait The number of ticks to wait for the OTA Agent to complete the shutdown process.
  * If this is set to zero, the function will return immediately without waiting. The actual state is
- * returned to the caller.
+ * returned to the caller. The agent does not sleep for this while but used for busy looping.
  *
  * @param[in] unsubscribeFlag Flag to indicate if unsubscribe operations should be performed from the job topics when
  * shutdown is called. If the flag is 0 then unsubscribe operations are not called for job topics If application
@@ -410,7 +410,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  *
  * <b>Example</b>
  * @code{c}
- * uint32_t ticksToWait = 10;
+ * // ticksToWait used for busy looping until shutdown. Actual delay may depend on the agent priority,
+ * // and platform.
+ * uint32_t ticksToWait = 100;
  *
  * // If it is required that the unsubscribe operations are not
  * //performed while shutting down set this to 0.
@@ -437,7 +439,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
  * @return The current state of the OTA agent.
  *
  * <b>Example</b>
- * Sleep while the OTA agent is in suspended state
+ * Check if OTA agent is in suspended state.
  * @code{c}
  * // OTA Agent state
  * OtaState_t state = OTA_GetState();
@@ -475,8 +477,13 @@ OtaState_t OTA_GetState( void );
  *     {
  *         // Activate the new firmware image.
  *         // This calls the platform specific code required to
- *         // activate the received OTA update firmware
+ *         // activate the received OTA update firmware.
  *         otaErr = OTA_ActivateNewImage();
+ *         if( otaErr == OtaErrActivateFailed )
+ *         {
+ *              // Handle Image activation failure by requesting manual response, sending
+ *              // error logs or retrying activation.
+ *         }
  *     }
  *
  *     // Handle other events
@@ -511,6 +518,10 @@ OtaErr_t OTA_ActivateNewImage( void );
  *     if( event == OtaJobEventStartTest )
  *     {
  *         err = OTA_SetImageState( OtaImageStateAccepted );
+ *         if( err != OtaErrNone )
+ *         {
+ *             // Handle failure or retry setting the image state.
+ *         }
  *     }
  *
  *     // Handle other events
@@ -564,8 +575,9 @@ OtaErr_t OTA_CheckForUpdate( void );
  *
  *     if( otaErr != OtaErrNone )
  *     {
- *         printf( "OTA failed to suspend.StatusCode=%d.",
- *                 otaErr );
+ *         // Suspend may fail due to Event queue failure,
+ *         // or if the agent has shut down, handle the failure by
+ *         // sending logs or retrying OTA_Suspend().
  *     }
  *     else
  *     {
@@ -575,6 +587,10 @@ OtaErr_t OTA_CheckForUpdate( void );
  *             // Wait for OTA Library state to suspend
  *             portSleep( 1000U );
  *             suspendTimeout -= 1000U;
+ *         }
+ *         if( OTA_GetState() != OtaAgentStateSuspended )
+ *         {
+ *             // Handle Suspend failure or Retry OTA_Suspend().
  *         }
  *     }
  * }
@@ -660,9 +676,13 @@ void OTA_EventProcessingTask( void * pUnused );
  * @code{c}
  * OtaHttpStatus_t handleDataFromHTTPService( const HTTPResponse_t * pResponse )
  * {
- *     // Assume otaEventBufferGet defined to get synchronized event buffers.
+ *     // Assume otaEventBufferGet is a user defined, thread-safe function
+ *     // that gets an available buffer from the pool of OTA buffers.
  *     OtaEventData_t * pData = otaEventBufferGet();
+ *     OtaHttpStatus_t returnValue = OtaHttpRequestFailed;
  *     bool result = false;
+ *
+ *     // Validate pResponse for correct data.
  *
  *     if( pData != NULL )
  *     {
@@ -676,10 +696,10 @@ void OTA_EventProcessingTask( void * pUnused );
  *
  *         if( result )
  *         {
- *             return OtaHttpSuccess;
+ *             returnValue = OtaHttpSuccess;
  *         }
  *     }
- *     return OtaHttpRequestFailed;
+ *     return returnValue;
  * }
  * @endcode
  */
