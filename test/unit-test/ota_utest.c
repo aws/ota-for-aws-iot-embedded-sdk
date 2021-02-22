@@ -180,6 +180,9 @@ extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
 extern DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
 
+extern IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
+                                              OtaPalStatus_t * pCloseResult );
+
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
 /* ========================================================================== */
@@ -2990,4 +2993,18 @@ void test_OTA_validateDataBlockInputSize()
     TEST_ASSERT_EQUAL( true, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE ) );
     /* Block size is larger than the expected size. */
     TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE + 1 ) );
+}
+
+void test_ingestDataBlockCleanup_NullFile()
+{
+    OtaFileContext_t fileContext = { 0 };
+    OtaPalStatus_t closeStatus = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+
+    fileContext.pRxBlockBitmap = NULL;
+    fileContext.blocksRemaining = 0;
+    fileContext.pFile = NULL;
+
+    TEST_ASSERT_EQUAL( IngestResultBadFileHandle, ingestDataBlockCleanup( &fileContext, &closeStatus ) );
 }
