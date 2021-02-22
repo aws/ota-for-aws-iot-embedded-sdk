@@ -882,18 +882,7 @@ static OtaErr_t processNullFileContext( void )
     {
         /*
          * If the job context returned NULL and the image state is not in the self_test state,
-         * then an error occurred parsing the OTA job message.  Abort the OTA job with a parse error.
-         *
-         * If there is a valid job id, then a job status update will be sent.
-         */
-        LogError( ( "OTA job doc parse failed: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
-
-        retVal = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) OtaErrJobParserError );
-
-        if( retVal != OtaErrNone )
-        {
-            LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( retVal ) ) );
-        }
+         * then an error occurred parsing the OTA job message. */
 
         retVal = OtaErrJobParserError;
     }
@@ -1776,9 +1765,9 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
     if( err != DocParseErrNone )
     {
-        LogError( ( "Failed to parse JSON document: "
-                    "DocParseErr_t=%d",
-                    err ) );
+        LogInfo( ( "Failed to parse JSON document as AFR_OTA job: "
+                   "DocParseErr_t=%d",
+                   err ) );
     }
 
     return err;
@@ -1909,7 +1898,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
     jobDoc.parseErr = OtaJobParseErrUnknown;
 
     /* If this is a valid custom job, extract job document and job ID data from the JSON payload.*/
-    if( JSONSuccess != JSON_SearchConst( pJson,
+    if( JSONSuccess == JSON_SearchConst( pJson,
                                          messageLength,
                                          OTA_JSON_JOB_DOC_KEY,
                                          strlen( OTA_JSON_JOB_DOC_KEY ),
@@ -1928,46 +1917,46 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
             /* We have an unknown job parser error. Check to see if we can pass control
              * to a callback for parsing */
             otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
+
+            if( jobDoc.parseErr == OtaJobParseErrNone )
+            {
+                ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
+                otaErr = otaControlInterface.updateJobStatus( &otaAgent,
+                                                              jobDoc.status,
+                                                              jobDoc.reason,
+                                                              jobDoc.subReason );
+
+                /* Log the error.*/
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                                OTA_Err_strerror( otaErr ) ) );
+                }
+
+                LogInfo( ( "Job document parsed from external callback" ) );
+
+                /* We don't need the job name memory anymore since we're done with this job. */
+                ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+            }
+            else
+            {
+                /* Job is malformed - return an error */
+                err = OtaJobParseErrNonConformingJobDoc;
+
+                LogError( ( "Custom job document parsing failed: OtaJobParseErr_t=%s",
+                            OTA_JobParse_strerror( err ) ) );
+            }
         }
         else
         {
-            /* Job is malformed - return an error */
-            err = OtaJobParseErrNonConformingJobDoc;
+            /* Jobid is NULL - return an error */
+            err = OtaJobParseErrNullJob;
         }
     }
     else
     {
-        /* Job is malformed - return an error */
-        err = OtaJobParseErrNonConformingJobDoc;
-    }
-
-    if( jobDoc.parseErr == OtaJobParseErrNone )
-    {
-        ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
-        otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                      jobDoc.status,
-                                                      jobDoc.reason,
-                                                      jobDoc.subReason );
-
-        /* Log the error.*/
-        if( otaErr != OtaErrNone )
-        {
-            LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                        OTA_Err_strerror( otaErr ) ) );
-        }
-
-        LogInfo( ( "Job document parsed from external callback" ) );
-
-        /* We don't need the job name memory anymore since we're done with this job. */
-        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
-    }
-    else
-    {
-        /* Job is malformed - return an error */
-        err = OtaJobParseErrNonConformingJobDoc;
-
-        LogError( ( "Custom job document parsing failed: OtaJobParseErr_t=%s",
-                    OTA_JobParse_strerror( err ) ) );
+        /* No active jobs present.*/
+        err = OtaJobParseErrNoActiveJobs;
     }
 
     return err;
@@ -2191,22 +2180,28 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
                         "OtaJobParseErr_t=%s, Job name=%s",
                         OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
 
-            /* Assume control of the job name from the context. */
-            ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
-
-            otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                          JobStatusFailedWithVal,
-                                                          ( int32_t ) OtaErrJobParserError,
-                                                          ( int32_t ) err );
-
-            if( otaErr != OtaErrNone )
+            if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
             {
-                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                            OTA_Err_strerror( otaErr ) ) );
-            }
+                /* Assume control of the job name from the context. */
+                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
 
-            /* We don't need the job name memory anymore since we're done with this job. */
-            ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+                otaErr = otaControlInterface.updateJobStatus( &otaAgent,
+                                                              JobStatusFailedWithVal,
+                                                              ( int32_t ) OtaErrJobParserError,
+                                                              ( int32_t ) err );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                                OTA_Err_strerror( otaErr ) ) );
+                }
+
+                /* We don't need the job name memory anymore since we're done with this job. */
+                ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+
+                /* Close any open files. */
+                ( void ) otaClose( &( otaAgent.fileContext ) );
+            }
 
             break;
     }
@@ -2288,13 +2283,6 @@ static OtaFileContext_t * parseJobDoc( const char * pJson,
     {
         /* Handle job parsing error. */
         handleJobParsingError( pFileContext, err );
-    }
-
-    /* If we failed, close the open files. */
-    if( pFinalFile == NULL )
-    {
-        /* Close any open files. */
-        ( void ) otaClose( &( otaAgent.fileContext ) );
     }
 
     /* Return pointer to populated file context or NULL if it failed. */
