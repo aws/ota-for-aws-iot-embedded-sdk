@@ -319,6 +319,70 @@ typedef struct OtaAgentContext
  * @return OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum.
  * If the agent was successfully initialized and ready to operate, the state will be
  * OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.
+ *
+ * <b>Example</b>
+ * @code{c}
+ * // Application callback when the OTA agent has completed the job
+ * // or is in self test mode. For example see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)
+ * void otaAppCallback( OtaJobEvent_t event,
+ *                      const void * pData );
+ * 
+ * // Optional: User buffer to pass down to the OTA Agent. These
+ * // buffers are assumed to be initialized previously, example:
+ * // uint8_t updateFilePath[ OTA_MAX_FILE_PATH_SIZE ];
+ * OtaAppBuffer_t otaBuffer =
+ * {
+ *     .pUpdateFilePath    = updateFilePath,
+ *     .updateFilePathsize = OTA_MAX_FILE_PATH_SIZE,
+ *     .pCertFilePath      = certFilePath,
+ *     .certFilePathSize   = OTA_MAX_FILE_PATH_SIZE,
+ *     .pDecodeMemory      = decodeMem,
+ *     .decodeMemorySize   = otaconfigFILE_BLOCK_SIZE,
+ *     .pFileBitmap        = bitmap,
+ *     .fileBitmapSize     = OTA_MAX_BLOCK_BITMAP_SIZE,
+ *     .pUrl               = updateUrl,
+ *     .urlSize            = OTA_MAX_URL_SIZE,
+ *     .pAuthScheme        = authScheme,
+ *     .authSchemeSize     = OTA_MAX_AUTH_SCHEME_SIZE
+ * };
+ * 
+ * // OTA interface context required for library interface functions
+ * // The functions set by these interfaces are assumed to be defined
+ * // For more information see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)
+ * OtaInterfaces_t pOtaInterfaces =
+ * {
+ *     // Initialize OTA library OS Interface.
+ *     .os.event.init = Posix_OtaInitEvent;
+ *     .os.event.send = Posix_OtaSendEvent;
+ *     ...
+ *     // Initialize the OTA library MQTT Interface.
+ *     .mqtt.subscribe = mqttSubscribe;
+ *     .mqtt.publish = mqttPublish;
+ *     .mqtt.unsubscribe = mqttUnsubscribe;
+ *     // Initialize the OTA library HTTP Interface.
+ *     .http.init = httpInit;
+ *     .http.request = httpRequest;
+ *     .http.deinit = httpDeinit;
+ *     // Initialize the OTA library PAL Interface.
+ *     .pal.getPlatformImageState = otaPal_GetPlatformImageState;
+ *     .pal.setPlatformImageState = otaPal_SetPlatformImageState;
+ * }
+ * 
+ * // OTA library error status.
+ * OtaErr_t otaErr = OtaErrNone;
+ * 
+ * // Client ID that is unique to the broker
+ * char * pClientIdentifier = "uniqueClientID";
+ * 
+ * otaErr = OTA_Init( &otaBuffer,
+ *                    &otaInterfaces,
+ *                    ( const uint8_t * ) pClientIdentifier,
+ *                    otaAppCallback ) ) != OtaErrNone )
+ *          if( otaErr == OtaErrNone )
+ * {
+ *     // Do something with the OTA agent.
+ * }
+ * @endcode
  */
 /* @[declare_ota_init] */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
@@ -343,6 +407,24 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  *
  * @return One of the OTA agent states from the OtaState_t enum.
  * A normal shutdown will return OtaAgentStateNotReady. Otherwise, refer to the OtaState_t enum for details.
+ * 
+ * <b>Example</b>
+ * @code{c}
+ * uint32_t ticksToWait = 10;
+ * 
+ * // If it is required that the unsubscribe operations are not
+ * //performed while shutting down set this to 0.
+ * uint8_t unsubscribe = 1;
+ * 
+ * OTA_Shutdown(ticksToWait, unsubscribe);
+ * ...
+ * 
+ * if( OTA_GetState() != OtaAgentStateStopped )
+ * {
+ *     // Optional: Disconnect MQTT and HTTP connections 
+ *     // required by the OTA agent and other tasks.
+ * }
+ * @endcode
  */
 /* @[declare_ota_shutdown] */
 OtaState_t OTA_Shutdown( uint32_t ticksToWait,
@@ -353,6 +435,19 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
  * @brief Get the current state of the OTA agent.
  *
  * @return The current state of the OTA agent.
+ * 
+ * <b>Example</b>
+ * Sleep while the OTA agent is in suspended state
+ * @code{c}
+ * // OTA Agent state
+ * OtaState_t state = OTA_GetState();
+ * 
+ * while( state != OtaAgentStateSuspended )
+ * {
+ *     portSleep(SLEEP_TIME_MS);
+ *     state = OTA_GetState();
+ * }
+ * @endcode
  */
 /* @[declare_ota_getstate] */
 OtaState_t OTA_GetState( void );
@@ -366,8 +461,24 @@ OtaState_t OTA_GetState( void );
  * is passed to the users application via the OTA Job Complete Callback mechanism. Refer to the
  * @ref OTA_Init function for more information about configuring the callback.
  *
- * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'OtaErr' from the
  * list above.
+ * 
+ * <b>Example</b>
+ * @code{c}
+ * static void otaAppCallback( OtaJobEvent_t event,
+ *                             const void * pData )
+ * {
+ *     OtaErr_t otaErr = OtaErrNone;
+ *     if( event == OtaJobEventActivate )
+ *     {
+ *         // Activate the new firmware image.
+ *         // This calls the platform specific code required to 
+ *         // activate the received OTA update firmware
+ *         otaErr = OTA_ActivateNewImage();
+ *     }
+ * }
+ * @endcode
  */
 /* @[declare_ota_activatenewimage] */
 OtaErr_t OTA_ActivateNewImage( void );
@@ -382,8 +493,25 @@ OtaErr_t OTA_ActivateNewImage( void );
  *
  * @param[in] state The state to set of the OTA image.
  *
- * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'OtaErr' from the
  * list above.
+ * 
+ * <b>Example</b>
+ * Set image state to reflect new image is accepted in application callback.
+ * 
+ * @code{c}
+ * static void otaAppCallback( OtaJobEvent_t event,
+ *                             const void * pData )
+ * {
+ *     OtaErr_t otaErr = OtaErrNone;
+ * 
+ *     if( event == OtaJobEventStartTest )
+ *     {
+ *         err = OTA_SetImageState( OtaImageStateAccepted );
+ *     }
+ *     ...
+ * }
+ * @endcode
  */
 /* @[declare_ota_setimagestate] */
 OtaErr_t OTA_SetImageState( OtaImageState_t state );
@@ -404,7 +532,7 @@ OtaImageState_t OTA_GetImageState( void );
 /**
  * @brief Request for the next available OTA job from the job service.
  *
- * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'OtaErr' from the
  * list above.
  */
 /* @[declare_ota_checkforupdate] */
@@ -414,8 +542,39 @@ OtaErr_t OTA_CheckForUpdate( void );
 /**
  * @brief Suspend OTA agent operations .
  *
- * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'OtaErr' from the
  * list above.
+ * 
+ * <b>Example</b>
+ * Suspend the OTA agent when a network error occurs.
+ * @code{c}
+ * void handleNetworkErrors()
+ * {
+ *     OtaErr_t otaErr = OtaErrNone;
+ *     int16_t suspendTimeout = 5000U;
+ * 
+ *     // Handle disconnects and other network reset operations
+ * 
+ *     // Suspend OTA operations.
+ *     otaErr = OTA_Suspend();
+ * 
+ *     if( otaErr != OtaErrNone )
+ *     {
+ *         printf( "OTA failed to suspend.StatusCode=%d.", 
+ *                 otaErr );
+ *     }
+ *     else
+ *     {
+ *         while( ( ( OTA_GetState() != OtaAgentStateSuspended ) 
+ *                 && ( suspendTimeout > 0 ) )
+ *         {
+ *             // Wait for OTA Library state to suspend
+ *             portSleep( 1000U );
+ *             suspendTimeout -= 1000U;
+ *         }
+ *     }
+ * }
+ * @endcode
  */
 /* @[declare_ota_suspend] */
 OtaErr_t OTA_Suspend( void );
@@ -424,8 +583,41 @@ OtaErr_t OTA_Suspend( void );
 /**
  * @brief Resume OTA agent operations .
  *
- * @return OtaErrNone if successful, otherwise an error code prefixed with 'kOTA_Err_' from the
+ * @return OtaErrNone if successful, otherwise an error code prefixed with 'OtaErr' from the
  * list above.
+ * 
+ * <b>Example</b>
+ * Resume the OTA agent after the network errors are resolved.
+ * @code{c}
+ * bool handleReconnect()
+ * {
+ *     // OTA event message used for sending event to OTA Agent.
+ *     OtaEventMsg_t eventMsg = { 0 };
+ *     OtaErr_t otaErr = OtaErrUninitialized;
+ *     bool returnStatus = establishConnection();
+ * 
+ *     if( returnStatus == EXIT_SUCCESS )
+ *     {
+ *         // Check if OTA process was suspended and resume if required.
+ *         if( OTA_GetState() == OtaAgentStateSuspended )
+ *         {
+ *             // Resume OTA operations.
+ *             otaErr = OTA_Resume();
+ *         }
+ *         else
+ *         {
+ *             // Send start event to OTA Agent.
+ *             eventMsg.eventId = OtaAgentEventStart;
+ *             OTA_SignalEvent( &eventMsg );
+ *         }
+ *         
+ *         if( otaErr != OtaErrNone )
+ *             returnStatus = false;
+ *     }
+ *     
+ *     return returnStatus;
+ * }
+ * @endcode
  */
 /* @[declare_ota_resume] */
 OtaErr_t OTA_Resume( void );
@@ -441,6 +633,9 @@ OtaErr_t OTA_Resume( void );
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  * This can be a function pointer that executes as the first routine when the
  * event loop starts.
+ * 
+ * For a Posix based reference of creating a thread with this task,
+ * please see the [csdk-demos](https://github.com/aws/aws-iot-device-sd
  */
 /* @[declare_ota_eventprocessingtask] */
 void OTA_EventProcessingTask( void * pUnused );
@@ -455,6 +650,34 @@ void OTA_EventProcessingTask( void * pUnused );
  *
  * @param[in] pEventMsg Event to be added to the queue
  * @return true If operation is successful, false If the event can not be added
+ * 
+ * <b>Example</b>
+ * Signal OTA agent that a new file block has been received over the http connection.
+ * @code{c}
+ * OtaHttpStatus_t handleDataFromHTTPService( const HTTPResponse_t * pResponse )
+ * {
+ *     // Assume otaEventBufferGet defined to get synchronized event buffers.
+ *     OtaEventData_t * pData = otaEventBufferGet();
+ *     bool result = false;
+ * 
+ *     if( pData != NULL )
+ *     {
+ *         memcpy( pData->data, pResponse->pBody, pResponse->bodyLen );
+ *         pData->dataLength = pResponse->bodyLen;
+ * 
+ *         // Send job document received event.
+ *         eventMsg.eventId = OtaAgentEventReceivedFileBlock;
+ *         eventMsg.pEventData = pData;
+ *         result = OTA_SignalEvent( &eventMsg );
+ * 
+ *         if( result )
+ *         {
+ *             ret = OtaHttpSuccess;
+ *         }
+ *     }
+ *     return OtaHttpRequestFailed;
+ * }
+ * @endcode
  */
 /* @[declare_ota_signalevent] */
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
@@ -482,6 +705,25 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg );
  * @note Calling @ref OTA_Init will reset this statistic.
  *
  * @return OtaErrNone if the statistics can be received successfully.
+ * 
+ * <b>Example</b>
+ * @code{c}
+ * // OTA library packet statistics per job. 
+ * OtaAgentStatistics_t otaStatistics = { 0 };
+ * OtaErr_t otaErr = OtaErrNone;
+ * 
+ * // Get the current statistics from the agent.
+ * otaErr = OTA_GetStatistics( &otaStatistics );
+ * 
+ * if( otaErr != OtaErrNone )
+ * {
+ *     printf( " Received: %u   Queued: %u   Processed: %u   Dropped: %u",
+ *             otaStatistics.otaPacketsReceived,
+ *             otaStatistics.otaPacketsQueued,
+ *             otaStatistics.otaPacketsProcessed,
+ *             otaStatistics.otaPacketsDropped );
+ * }
+ * @endcode
  */
 /* @[declare_ota_getstatistics] */
 OtaErr_t OTA_GetStatistics( OtaAgentStatistics_t * pStatistics );
