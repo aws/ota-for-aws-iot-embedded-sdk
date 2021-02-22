@@ -61,6 +61,9 @@
 #define JOB_DOC_INVALID_PROTOCOL         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"XYZ\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID_BASE64_KEY       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"Zg===\"}] }}}}"
 #define JOB_DOC_MISSING_KEY              "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_INVALID_NUMBER_NAN       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": \"NaN\",\"fileid\":\"NaN\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_INVALID_NUMBER_VAL       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": 19223372036854775808,\"fileid\":\"NaN\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_SERVERFILE_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":1,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE        100
@@ -139,6 +142,9 @@ extern OtaDataInterface_t otaDataInterface;
  * protocol function pointers. */
 extern OtaControlInterface_t otaControlInterface;
 
+/* The OTA job document model. */
+extern const JsonDocParam_t * otaJobDocModelParamStructure;
+
 /* Static function defined in ota.c for processing events. */
 extern void receiveAndProcessOtaEvent( void );
 
@@ -151,13 +157,28 @@ extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
 
-/* Static helper function under test defined in ota.c. */
+/* Static helper functions under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
 extern bool otaClose( OtaFileContext_t * const pFileContext );
 extern bool validateDataBlock( const OtaFileContext_t * pFileContext,
                                uint32_t blockIndex,
                                uint32_t blockSize );
+
+extern DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
+                                   const JsonDocParam_t * pBodyDef,
+                                   void * contextBaseAddr,
+                                   uint32_t contextSize,
+                                   uint16_t numJobParams );
+
+extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
+                                       uint16_t numJobParams,
+                                       const char * pJson,
+                                       uint32_t messageLength,
+                                       bool * pUpdateJob );
+
+extern DocParseErr_t validateJSON( const char * pJson,
+                                   uint32_t messageLength );
 
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
@@ -1367,6 +1388,39 @@ void test_OTA_ProcessJobDocumentMissingRequiredKey()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+/**
+ * @brief Test that the job is rejected if a field that is expected
+ * to be an integer is NaN.
+ */
+void test_OTA_ProcessJobDocumentInvalidNum()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_NUMBER_VAL;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/**
+ * @brief Test that the job is rejected if a field that is expected
+ * to be an integer is greater than the maximum allowed number for
+ * string to int conversion (LONG_MAX).
+ */
+void test_OTA_ProcessJobDocumentNumOverflow()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_NUMBER_NAN;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_RejectWhileAborted()
 {
     pOtaJobDoc = JOB_DOC_INVALID;
@@ -1971,6 +2025,25 @@ void test_OTA_ExtractArrayInsufficientBuffer()
      */
     otaGoToState( OtaAgentStateCreatingFile );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+
+void test_OTA_ProcessJobDocumentFileIdNotZero()
+{
+    pOtaJobDoc = JOB_DOC_SERVERFILE_ID;
+
+    /* Set the event send interface to a mock function that allows events to be sent continuously.
+     * This is to complete the self test process. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
 static void invokeSelfTestHandler()
@@ -2826,9 +2899,75 @@ void test_OTA_setDataInterface_InvalidInput( void )
     TEST_ASSERT_EQUAL( NULL, dataInterface.cleanup );
 }
 
+
 /* ========================================================================== */
 /* ==================== OTA Private Function Unit Tests ===================== */
 /* ========================================================================== */
+
+void test_OTA_initDocModelFail()
+{
+    DocParseErr_t parseError = DocParseErrNone;
+    JsonDocModel_t otaJobDocModel;
+
+    parseError = initDocModel( NULL,
+                               otaJobDocModelParamStructure,
+                               ( void * ) &( otaAgent.fileContext ),
+                               ( uint32_t ) sizeof( OtaFileContext_t ),
+                               OTA_NUM_JOB_PARAMS );
+    TEST_ASSERT_EQUAL( DocParseErrNullModelPointer, parseError );
+
+    parseError = initDocModel( &otaJobDocModel,
+                               NULL,
+                               ( void * ) &( otaAgent.fileContext ),
+                               ( uint32_t ) sizeof( OtaFileContext_t ),
+                               OTA_NUM_JOB_PARAMS );
+    TEST_ASSERT_EQUAL( DocParseErrNullBodyPointer, parseError );
+
+    parseError = initDocModel( &otaJobDocModel,
+                               otaJobDocModelParamStructure,
+                               ( void * ) &( otaAgent.fileContext ),
+                               ( uint32_t ) sizeof( OtaFileContext_t ),
+                               OTA_DOC_MODEL_MAX_PARAMS + 1 );
+    TEST_ASSERT_EQUAL( DocParseErrTooManyParams, parseError );
+}
+
+void test_OTA_parseJobFailsNullJsonDocument()
+{
+    OtaFileContext_t * pContext = NULL;
+    bool updateJob = false;
+
+    otaInitDefault();
+    pContext = parseJobDoc( NULL, 0, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+
+    TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( false, updateJob );
+}
+
+void test_OTA_extractParameterFailInvalidJobDocModel()
+{
+    OtaFileContext_t * pContext;
+    bool updateJob = false;
+    JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
+    {
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, *otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
+    };
+
+    /* The document structure has an invalid value for ModelParamType_t. */
+
+    otaInitDefault();
+    pContext = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+
+    TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( false, updateJob );
+}
+
+void test_OTA_validateJSONFailNullJson()
+{
+    DocParseErr_t err = DocParseErrNone;
+
+    err = validateJSON( NULL, 0 );
+    TEST_ASSERT_EQUAL( DocParseErrNullDocPointer, err );
+}
 
 void test_OTA_validateDataBlockInputSize()
 {
