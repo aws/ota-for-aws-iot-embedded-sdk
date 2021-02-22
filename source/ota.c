@@ -1892,7 +1892,7 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
     ( void ) newVersion; /* For suppressing compiler-warning: unused variable. */
 
     /* Only check for versions if the target is self */
-    if( otaAgent.serverFileID == 0U )
+    if( ( otaAgent.serverFileID == 0U ) && ( otaAgent.fileContext.fileType == configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID ) )
     {
         /* Check if version reported is the same as the running version. */
         if( pFileContext->updaterVersion == appFirmwareVersion.u.unsignedVersion32 )
