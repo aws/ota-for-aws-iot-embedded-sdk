@@ -211,6 +211,19 @@
 #endif
 
 /**
+ * @brief The file type id received in the job document.
+ *
+ * @note The file type id received in the job document that allows devices
+ * to identify the type of file received from the cloud. This configuration
+ * defines the file type id used for firmware updates. If this is changed
+ * then the updated value must be used while creating firmware update jobs.
+ *
+ */
+#ifndef configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID
+    #define configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID    0U
+#endif
+
+/**
  * @brief The protocol selected for OTA control operations.
  *
  * @note This configurations parameter sets the default protocol for all the
