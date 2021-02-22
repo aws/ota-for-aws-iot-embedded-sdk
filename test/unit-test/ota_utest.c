@@ -124,7 +124,7 @@ static FILE * pOtaFileHandle = NULL;
 static uint8_t pOtaFileBuffer[ OTA_TEST_FILE_SIZE ];
 
 /* 2 seconds default wait time for OTA state machine transition. */
-static const int otaDefaultWait = 2000;
+static const int otaDefaultWait = 0;
 
 /* Flag to unsubscribe to topics after ota shutdown. */
 static const uint8_t unsubscribeFlag = 1;
@@ -155,10 +155,15 @@ extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t resumeHandler( const OtaEventData_t * pEventData );
 extern OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t shutdownHandler( const OtaEventData_t * pEventData );
 
 /* Static helper functions under test defined in ota.c. */
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
+extern bool otaClose( OtaFileContext_t * const pFileContext );
+extern bool validateDataBlock( const OtaFileContext_t * pFileContext,
+                               uint32_t blockIndex,
+                               uint32_t blockSize );
 
 extern DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    const JsonDocParam_t * pBodyDef,
@@ -881,10 +886,69 @@ void test_OTA_InitWithNameTooLong()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_InitNullAppBuffers()
+{
+    /* Test for having NULL pointers but valid sizes. */
+    pOtaAppBuffer.pUpdateFilePath = NULL;
+    pOtaAppBuffer.updateFilePathsize = OTA_UPDATE_FILE_PATH_SIZE;
+    pOtaAppBuffer.pCertFilePath = NULL;
+    pOtaAppBuffer.certFilePathSize = OTA_CERT_FILE_PATH_SIZE;
+    pOtaAppBuffer.pStreamName = NULL;
+    pOtaAppBuffer.streamNameSize = OTA_STREAM_NAME_SIZE;
+    pOtaAppBuffer.pDecodeMemory = NULL;
+    pOtaAppBuffer.decodeMemorySize = OTA_DECODE_MEMORY_SIZE;
+    pOtaAppBuffer.pFileBitmap = NULL;
+    pOtaAppBuffer.fileBitmapSize = OTA_FILE_BITMAP_SIZE;
+    pOtaAppBuffer.pUrl = NULL;
+    pOtaAppBuffer.urlSize = OTA_UPDATE_URL_SIZE;
+    pOtaAppBuffer.pAuthScheme = NULL;
+    pOtaAppBuffer.authSchemeSize = OTA_AUTH_SCHEME_SIZE;
+
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
+void test_OTA_InitZeroAppBufferSizes()
+{
+    /* Test for having valid pointers with zero sizes. */
+    pOtaAppBuffer.pUpdateFilePath = pUserBuffer;
+    pOtaAppBuffer.updateFilePathsize = 0;
+    pOtaAppBuffer.pCertFilePath = pUserBuffer;
+    pOtaAppBuffer.certFilePathSize = 0;
+    pOtaAppBuffer.pStreamName = pUserBuffer;
+    pOtaAppBuffer.streamNameSize = 0;
+    pOtaAppBuffer.pDecodeMemory = pUserBuffer;
+    pOtaAppBuffer.decodeMemorySize = 0;
+    pOtaAppBuffer.pFileBitmap = pUserBuffer;
+    pOtaAppBuffer.fileBitmapSize = 0;
+    pOtaAppBuffer.pUrl = pUserBuffer;
+    pOtaAppBuffer.urlSize = 0;
+    pOtaAppBuffer.pAuthScheme = pUserBuffer;
+    pOtaAppBuffer.authSchemeSize = 0;
+
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
+void test_OTA_ShutdownWithDelay()
+{
+    otaGoToState( OtaAgentStateReady );
+    OTA_Shutdown( 2000, 0 );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 void test_OTA_ShutdownWhenStopped()
 {
     /* Calling shutdown when already stopped should have no effect. */
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
@@ -898,7 +962,25 @@ void test_OTA_ShutdownFailToSendEvent()
 
     /* Shutdown should now fail and OTA agent should remain in ready state. */
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
+    receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+void test_OTA_ShutdownTwiceBeforeProcessing()
+{
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaGoToState( OtaAgentStateReady );
+    OTA_Shutdown( 0, 0 );
+    OTA_Shutdown( 0, 0 );
+    receiveAndProcessOtaEvent();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
+void test_OTA_CloseNullInput()
+{
+    TEST_ASSERT_EQUAL( false, otaClose( NULL ) );
 }
 
 void test_OTA_StartWhenReady()
@@ -1069,6 +1151,23 @@ void test_OTA_ActivateNewImage()
 void test_OTA_ActivateNewImageWhenStopped()
 {
     TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
+}
+
+void test_OTA_ActivateNewImageNullPalActivate()
+{
+    /* Have all other interfaces besides the activate function of the PAL
+     * interface. */
+    otaInterfaces.pal.activate = NULL;
+
+    /* Initialize the OTA Agent to set the interfaces before trying to
+     * activate the new image. */
+    OTA_Init( &pOtaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ImageStateAbortWithActiveJob()
@@ -1606,6 +1705,28 @@ void test_OTA_ReceiveFileBlockTooLarge()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+void test_OTA_ReceiveLastFileBlockTooSmall()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    pOtaJobDoc = JOB_DOC_ONE_BLOCK;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    otaEvent.pEventData->dataLength = OTA_FILE_BLOCK_SIZE - 1;
+    OTA_SignalEvent( &otaEvent );
+    /* Process the event to receive the invalid block. */
+    receiveAndProcessOtaEvent();
+    /* Process the event generated after receiving an invalid block. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_ReceiveFileBlockCompleteMqtt()
 {
     OtaEventMsg_t otaEvent;
@@ -1676,6 +1797,78 @@ void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
 {
     memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
     test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
+void test_OTA_ReceiveFileBlockMallocFail()
+{
+    uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
+    uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    size_t streamingMessageSize = 0;
+    OtaEventData_t eventBuffer;
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Pass an invalid values for pDecodeMemory and decodeMemorySize so the
+     * OTA Agent dynamically allocates the buffer instead of using one provided
+     * by the user. */
+    pOtaAppBuffer.pDecodeMemory = NULL;
+    pOtaAppBuffer.decodeMemorySize = 0;
+
+    /* Get into the state before receiving a data block. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    /* Create and send the data block. */
+    createOtaStreamingMessage(
+        pStreamingMessage,
+        sizeof( pStreamingMessage ),
+        0,
+        pFileBlock,
+        OTA_FILE_BLOCK_SIZE,
+        &streamingMessageSize,
+        true );
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+    otaEvent.pEventData->dataLength = streamingMessageSize;
+    OTA_SignalEvent( &otaEvent );
+
+    /* Set malloc to fail and receive the block. */
+    otaInterfaces.os.mem.malloc = mockMallocAlwaysFail;
+    receiveAndProcessOtaEvent();
+    /* Receive the event for closing the file after the failure. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_DroppedFileBlock()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Get ready to receive a block. */
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+    /* No blocks have been received or dropped yet. */
+    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsDropped );
+
+
+    /* Prepare an event as if we are receiving a data block. */
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    otaEvent.pEventData->dataLength = 0;
+
+    /* Set the interface to fail sending the data block. */
+    otaInterfaces.os.event.send = mockOSEventSendAlwaysFail;
+
+    /* Simulate the application receiving a data block and failing to send it
+     * to the OTA Agent. */
+    TEST_ASSERT_EQUAL( false, OTA_SignalEvent( &otaEvent ) );
+    TEST_ASSERT_EQUAL( 1, otaAgent.statistics.otaPacketsDropped );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 }
 
 void test_OTA_ReceiveFileBlockCompleteHttp()
@@ -2542,6 +2735,26 @@ void test_OTA_jobNotificationHandler_EventSendFails()
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, jobNotificationHandler( NULL ) );
 }
 
+/**
+ * @brief Test that shutdownHandler safely handles being called without the
+ *        control and data interfaces being set.
+ */
+void test_OTA_shutdownHandler_NullInterface()
+{
+    otaGoToState( OtaAgentStateReady );
+
+    otaDataInterface.cleanup = NULL;
+    otaDataInterface.decodeFileBlock = NULL;
+    otaDataInterface.initFileTransfer = NULL;
+    otaDataInterface.requestFileBlock = NULL;
+
+    otaControlInterface.cleanup = NULL;
+    otaControlInterface.requestJob = NULL;
+    otaControlInterface.updateJobStatus = NULL;
+
+    TEST_ASSERT_EQUAL( OtaErrNone, shutdownHandler( NULL ) );
+}
+
 /* ========================================================================== */
 /* ======================== OTA Interface Unit Tests ======================== */
 /* ========================================================================== */
@@ -2620,7 +2833,7 @@ void test_OTA_setDataInterface_InvalidInput( void )
 
 
 /* ========================================================================== */
-/* ==================== OTA private methods Unit Tests ====================== */
+/* ==================== OTA Private Function Unit Tests ====================== */
 /* ========================================================================== */
 
 void test_OTA_initDocModelFail()
@@ -2686,4 +2899,27 @@ void test_OTA_validateJSONFailNullJson()
 
     err = validateJSON( NULL, 0 );
     TEST_ASSERT_EQUAL( DocParseErrNullDocPointer, err );
+}
+
+void test_OTA_validateDataBlockInputSize()
+{
+    OtaFileContext_t fileContext = { 0 };
+
+    /* Test for when the block received is the final block. */
+    fileContext.fileSize = OTA_FILE_BLOCK_SIZE;
+    /* Block size is too small. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, 0 ) );
+    /* Block size is the expected size. */
+    TEST_ASSERT_EQUAL( true, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE ) );
+    /* Block size is larger than the expected size. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE + 1 ) );
+
+    /* Test for when the block is not the final block. */
+    fileContext.fileSize = OTA_FILE_BLOCK_SIZE * 2;
+    /* Block size is too small. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, 0 ) );
+    /* Block size is the expected size. */
+    TEST_ASSERT_EQUAL( true, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE ) );
+    /* Block size is larger than the expected size. */
+    TEST_ASSERT_EQUAL( false, validateDataBlock( &fileContext, 0, OTA_FILE_BLOCK_SIZE + 1 ) );
 }
