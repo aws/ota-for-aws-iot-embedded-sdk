@@ -444,7 +444,8 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
  *
  * while( state != OtaAgentStateSuspended )
  * {
- *     portSleep( SLEEP_TIME_MS );
+ *     // Do something while the agent is back to
+ *     // the desired state.
  *     state = OTA_GetState();
  * }
  * @endcode
@@ -477,6 +478,8 @@ OtaState_t OTA_GetState( void );
  *         // activate the received OTA update firmware
  *         otaErr = OTA_ActivateNewImage();
  *     }
+ *
+ *     // Handle other events
  * }
  * @endcode
  */
@@ -509,7 +512,8 @@ OtaErr_t OTA_ActivateNewImage( void );
  *     {
  *         err = OTA_SetImageState( OtaImageStateAccepted );
  *     }
- *     ...
+ *
+ *     // Handle other events
  * }
  * @endcode
  */
