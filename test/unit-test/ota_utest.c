@@ -1412,7 +1412,7 @@ void test_OTA_ProcessJobDocumentBitmapMallocFail()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentEventSendFail( void )
