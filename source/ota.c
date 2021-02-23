@@ -1950,9 +1950,17 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
          * to a callback for parsing */
         otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
 
-        if( ( jobDoc.parseErr == OtaJobParseErrNone ) && ( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE ) )
+        if( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE )
         {
             ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
+        }
+        else
+        {
+            jobDoc.parseErr = OtaJobParseErrNonConformingJobDoc;
+        }
+
+        if( jobDoc.parseErr == OtaJobParseErrNone )
+        {
             otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                           jobDoc.status,
                                                           jobDoc.reason,
