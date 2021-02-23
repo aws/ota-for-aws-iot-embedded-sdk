@@ -1777,6 +1777,11 @@ void test_OTA_ReceiveWithNullFile()
     /* Process the event generated after receiving a valid block while the
      * Agent has a NULL file pointer. */
     receiveAndProcessOtaEvent();
+
+    /* Having a NULL file pointer means that the data blocks can not be saved.
+     * This is treated as a failure for the job as a whole. Ensure that after
+     * failing the current job because the file pointer is NULL, the OTA Agent
+     * goes back to the waiting for a job state. */
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
@@ -2137,7 +2142,7 @@ void test_OTA_SelfTestJobSameVersion()
     TEST_ASSERT_EQUAL( true, resetCalled );
 }
 
-void test_OTA_SelfTestJobFileType()
+void test_OTA_SelfTestJobNonFirmwareFileType()
 {
     pOtaJobDoc = JOB_DOC_SELF_TEST_FILE_TYPE;
     otaInterfaces.os.event.send = mockOSEventSend;
