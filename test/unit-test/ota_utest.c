@@ -3061,7 +3061,7 @@ void test_verifyActiveJobStatus_NullUpdateURL()
 
     /* Set the job names to be the same to simulate receiving a job doc with the same ID. */
     ( void ) memcpy( otaAgent.pActiveJobName, "jobName", sizeof( "jobName" ) );
-    fileContext.pJobName = "jobName";
+    fileContext.pJobName = ( uint8_t * ) "jobName";
     /* Set the pUpdateUrlPath to NULL. */
     otaAgent.fileContext.pUpdateUrlPath = NULL;
 
