@@ -305,6 +305,7 @@ mythreadsleepfunction
 mytime
 mytimefunction
 mytlscontext
+nan
 nano
 nanosleep
 networkcontext
@@ -548,6 +549,8 @@ pjobtopic
 pjobtopicgetnext
 pjobtopicnotifynext
 pjson
+pjsondoc
+pjsonexpectedparams
 pkey
 plaintext
 platfrom
@@ -799,3 +802,4 @@ www
 xaa
 xyz
 zg
+configurably
