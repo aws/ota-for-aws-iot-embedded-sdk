@@ -185,6 +185,10 @@ extern DocParseErr_t validateJSON( const char * pJson,
 extern IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                                               OtaPalStatus_t * pCloseResult );
 
+extern OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
+                                               OtaFileContext_t ** pFinalFile,
+                                               bool * pUpdateJob );
+
 /* ========================================================================== */
 /* ====================== Unit test helper functions ======================== */
 /* ========================================================================== */
@@ -3036,4 +3040,30 @@ void test_ingestDataBlockCleanup_NullFile()
     fileContext.pFile = NULL;
 
     TEST_ASSERT_EQUAL( IngestResultBadFileHandle, ingestDataBlockCleanup( &fileContext, &closeStatus ) );
+}
+
+void test_verifyActiveJobStatus_NullJobName()
+{
+    OtaFileContext_t fileContext = { 0 };
+    OtaFileContext_t finalFile = { 0 };
+    OtaFileContext_t * pFinalFile = &finalFile;
+    bool shouldUpdate = false;
+
+    TEST_ASSERT_EQUAL( OtaJobParseErrNullJob, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
+}
+
+void test_verifyActiveJobStatus_NullUpdateURL()
+{
+    OtaFileContext_t fileContext = { 0 };
+    OtaFileContext_t finalFile = { 0 };
+    OtaFileContext_t * pFinalFile = &finalFile;
+    bool shouldUpdate = false;
+
+    /* Set the job names to be the same to simulate receiving a job doc with the same ID. */
+    ( void ) memcpy( otaAgent.pActiveJobName, "jobName", sizeof( "jobName" ) );
+    fileContext.pJobName = "jobName";
+    /* Set the pUpdateUrlPath to NULL. */
+    otaAgent.fileContext.pUpdateUrlPath = NULL;
+
+    TEST_ASSERT_EQUAL( OtaJobParseErrUpdateCurrentJob, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
 }
