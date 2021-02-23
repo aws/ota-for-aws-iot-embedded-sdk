@@ -2151,18 +2151,10 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         else
         {
             *pFinalFile = pFileContext;
+            **pFinalFile = *pFileContext;
 
-            if( *pFinalFile == NULL )
-            {
-                LogError( ( "Job succesfully parsed, but there is no file context available." ) );
-            }
-            else
-            {
-                **pFinalFile = *pFileContext;
-
-                /* Everything looks OK. Set final context structure to start OTA. */
-                LogInfo( ( "Job document was accepted. Attempting to begin the update." ) );
-            }
+            /* Everything looks OK. Set final context structure to start OTA. */
+            LogInfo( ( "Job document was accepted. Attempting to begin the update." ) );
         }
     }
     else
