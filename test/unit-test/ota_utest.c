@@ -202,11 +202,6 @@ static void * mockMallocAlwaysFail( size_t size )
     return NULL;
 }
 
-static void mockFree( void * ptr )
-{
-    ( void ) ptr;
-}
-
 static OtaOsStatus_t mockOSEventReset( OtaEventContext_t * unused )
 {
     otaEventQueueEnd = otaEventQueue;
