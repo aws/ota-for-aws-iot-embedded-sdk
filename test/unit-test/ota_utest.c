@@ -202,6 +202,11 @@ static void * mockMallocAlwaysFail( size_t size )
     return NULL;
 }
 
+static void mockFree( void * ptr )
+{
+    ( void ) ptr;
+}
+
 static OtaOsStatus_t mockOSEventReset( OtaEventContext_t * unused )
 {
     otaEventQueueEnd = otaEventQueue;
@@ -1518,6 +1523,19 @@ void test_OTA_ProcessJobDocumentInvalidProtocol()
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
 }
 
+void test_OTA_ProcessJobDocumentInvalidProtocolPalFails()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_PROTOCOL;
+    otaInterfaces.pal.setPlatformImageState = mockPalSetPlatformImageStateAlwaysFail;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+}
+
 void test_OTA_ProcessJobDocumentValidJson()
 {
     pOtaJobDoc = JOB_DOC_A;
@@ -2300,8 +2318,9 @@ void test_OTA_RefreshWithInvalidJobDoc()
      * We need this to go through the process of refreshing job doc. */
     otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* First send request job doc event while we're in progress, this should make OTA agent to
-     * to request job doc again and transit to waiting for job state. */
+    /* Send the request job document event while the OTA Agent is already in the process of
+     * downloading a file. The OTA Agent should cancel the current job and begin waiting
+     * for the next job document. */
     otaEvent.eventId = OtaAgentEventRequestJobDocument;
     OTA_SignalEvent( &otaEvent );
     receiveAndProcessOtaEvent();
