@@ -66,6 +66,9 @@
 #define JOB_DOC_INVALID_NUMBER_NAN        "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": \"NaN\",\"fileid\":\"NaN\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID_NUMBER_VAL        "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\": 19223372036854775808,\"fileid\":\"NaN\",\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_SERVERFILE_ID             "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":1,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_MISSING_JOB_DOC           "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1}}"
+#define JOB_DOC_MISSING_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_INVALID_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLength\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE         100
@@ -660,11 +663,38 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysPendingCommit( OtaFileConte
 static void mockAppCallback( OtaJobEvent_t event,
                              const void * pData )
 {
+    OtaJobDocument_t * jobDoc = NULL;
+
     ( void ) pData;
 
     if( event == OtaJobEventStartTest )
     {
         OTA_SetImageState( OtaImageStateAccepted );
+    }
+
+    if( event == OtaJobEventParseCustomJob )
+    {
+        jobDoc = ( OtaJobDocument_t * ) pData;
+        jobDoc->parseErr = OtaJobParseErrNone;
+    }
+}
+
+static void mockAppCallbackCustomParsingFails( OtaJobEvent_t event,
+                                               const void * pData )
+{
+    OtaJobDocument_t * jobDoc = NULL;
+
+    ( void ) pData;
+
+    if( event == OtaJobEventStartTest )
+    {
+        OTA_SetImageState( OtaImageStateAccepted );
+    }
+
+    if( event == OtaJobEventParseCustomJob )
+    {
+        jobDoc = ( OtaJobDocument_t * ) pData;
+        jobDoc->parseErr = OtaJobParseErrUnknown;
     }
 }
 
@@ -1430,6 +1460,34 @@ void test_OTA_ProcessJobDocumentNumOverflow()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+void test_OTA_ProcessCustomJobAppCallbackFails()
+{
+    pOtaJobDoc = JOB_DOC_MISSING_KEY;
+    otaInit( pOtaDefaultClientId, mockAppCallbackCustomParsingFails );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_ProcessCustomJobFailsInvalidKeys()
+{
+    /* Custom job parsing fails with key 'jobDocument' missing. */
+    pOtaJobDoc = JOB_DOC_MISSING_JOB_DOC;
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Custom job parsing fails with key 'jobId' missing. */
+    pOtaJobDoc = JOB_DOC_MISSING_JOB_ID;
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Custom job parsing fails with value of 'jobId' exceeding max length(72). */
+    pOtaJobDoc = JOB_DOC_INVALID_JOB_ID;
+    otaGoToState( OtaAgentStateCreatingFile );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
 void test_OTA_RejectWhileAborted()
 {
     pOtaJobDoc = JOB_DOC_INVALID;
@@ -1494,7 +1552,7 @@ void test_OTA_ProcessJobDocumentBitmapMallocFail()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentEventSendFail( void )
@@ -2227,6 +2285,33 @@ static void refreshWithJobDoc( const char * initJobDoc,
 void test_OTA_RefreshWithSameJobDoc()
 {
     refreshWithJobDoc( JOB_DOC_A, JOB_DOC_A );
+}
+
+void test_OTA_RefreshWithInvalidJobDoc()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    pOtaJobDoc = JOB_DOC_A;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    /* Set the event send interface to a mock function that allows events to be sent continuously.
+     * We need this to go through the process of refreshing job doc. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* First send request job doc event while we're in progress, this should make OTA agent to
+     * to request job doc again and transit to waiting for job state. */
+    otaEvent.eventId = OtaAgentEventRequestJobDocument;
+    OTA_SignalEvent( &otaEvent );
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Now send the new job doc, OTA agent should abort current job and start the new job. */
+    pOtaJobDoc = JOB_DOC_MISSING_KEY;
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_RefreshWithDifferentJobDoc()
