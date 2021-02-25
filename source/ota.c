@@ -2014,7 +2014,7 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 
             /* Abort the current job. */
             ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateAborted );
-            
+
             /*
              * Abort any active file access and release the file resource, if needed.
              */
