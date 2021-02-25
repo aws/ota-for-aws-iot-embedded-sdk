@@ -31,6 +31,7 @@
 
 /* Standard library include. */
 #include <stdint.h>
+#include <string.h>
 
 /* OTA library interface include. */
 #include "ota_os_interface.h"
