@@ -371,7 +371,7 @@ static void agentShutdownCleanup( void );
 /**
  * @brief A helper function to cleanup resources when data ingestion is complete.
  */
-static void dataHandlerCleanup( IngestResult_t result );
+static void dataHandlerCleanup();
 
 /**
  * @brief Prepare the document model for use by sanity checking the initialization parameters and detecting all required parameters.
@@ -1140,7 +1140,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     return err;
 }
 
-static void dataHandlerCleanup( IngestResult_t result )
+static void dataHandlerCleanup()
 {
     OtaEventMsg_t eventMsg = { 0 };
 
@@ -1206,7 +1206,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         {
             jobDoc.status = JobStatusSucceeded;
             jobDoc.reason = JobReasonAccepted;
-            jobDoc.subReason = otaAgent.fileContext.fileType;
+            jobDoc.subReason = ( int32_t ) otaAgent.fileContext.fileType;
 
             /* Let main application know that update is complete */
             otaAgent.OtaAppCallback( OtaJobEventUpdateComplete, &jobDoc );
@@ -1215,7 +1215,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         /* File receive is complete and authenticated. Update the job status. */
         err = otaControlInterface.updateJobStatus( &otaAgent, jobDoc.status, jobDoc.reason, jobDoc.subReason );
 
-        dataHandlerCleanup( result );
+        dataHandlerCleanup();
 
         /* Last file block processed, increment the statistics. */
         otaAgent.statistics.otaPacketsProcessed++;
@@ -1228,7 +1228,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateRejected );
 
         jobDoc.status = JobStatusFailedWithVal;
-        jobDoc.reason = closeResult;
+        jobDoc.reason = ( int32_t ) closeResult;
         jobDoc.subReason = result;
 
         /* Let main application know activate event. */
@@ -1237,7 +1237,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         /* Update the job status with the with failure code. */
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) closeResult, ( int32_t ) result );
 
-        dataHandlerCleanup( result );
+        dataHandlerCleanup();
     }
     else
     {
@@ -2323,7 +2323,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         /* Set the job id and length from OTA context. */
         jobDoc.pJobId = otaAgent.pActiveJobName;
         jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
-        jobDoc.pJobDocJson = pJson;
+        jobDoc.pJobDocJson = ( const uint8_t * ) pJson;
         jobDoc.jobDocLength = messageLength;
         jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
