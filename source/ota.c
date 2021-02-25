@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v2.0.0 (Release Candidate)
+ * AWS IoT Over-the-air Update v3.0.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -2016,7 +2016,17 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 
             /* Abort the current job. */
             ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateAborted );
-            ( void ) otaClose( &( otaAgent.fileContext ) );
+
+            /*
+             * Abort any active file access and release the file resource, if needed.
+             */
+            ( void ) otaAgent.pOtaInterface->pal.abort( pFileContext );
+
+            /* Cleanup related to selected protocol. */
+            if( otaDataInterface.cleanup != NULL )
+            {
+                ( void ) otaDataInterface.cleanup( &otaAgent );
+            }
 
             /* Set new active job name. */
             ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( ( const char * ) pFileContext->pJobName ) );
