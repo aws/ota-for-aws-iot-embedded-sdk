@@ -3157,3 +3157,26 @@ void test_verifyActiveJobStatus_NullUpdateURL()
 
     TEST_ASSERT_EQUAL( OtaJobParseErrUpdateCurrentJob, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
 }
+
+void test_verifyActiveJobStatus_NullCleanupInterface()
+{
+    OtaFileContext_t fileContext = { 0 };
+    OtaFileContext_t finalFile = { 0 };
+    OtaFileContext_t * pFinalFile = &finalFile;
+    bool shouldUpdate = false;
+
+    otaGoToState( OtaAgentStateReady );
+
+    /* Make it so that the job document names do not match. This simulates
+     * receiving a new job document. In this scenario, the OTA Agent will drop
+     * the old job. */
+    fileContext.pJobName = ( uint8_t * ) "jobName";
+    memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+
+    /* Set the data interface for cleanup to NULL. */
+    otaDataInterface.cleanup = NULL;
+
+    /* The verifyActiveJobStatus function is expected to safely avoid calling
+     * the cleanup function if it is not defined. */
+    TEST_ASSERT_EQUAL( OtaJobParseErrNone, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
+}
