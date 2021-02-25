@@ -20,7 +20,7 @@ jobs:
       - name: Check warnings
         run: |
           cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG' \
-          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror'
+          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DLOG_LEVEL=3'
           cmake --build build
 
   complexity:
