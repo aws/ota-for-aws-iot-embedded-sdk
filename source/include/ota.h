@@ -191,14 +191,14 @@ typedef enum
  */
 typedef struct OtaJobDocument
 {
-    uint8_t * pJobDocJson;     /*!< @brief Job document in JSON format. */
-    size_t jobDocLength;       /*!< @brief Job document length in bytes. */
-    uint8_t * pJobId;          /*!< @brief Job ID associated with the job document. */
-    size_t jobIdLength;        /*!< @brief Length of job ID in bytes. */
-    OtaJobParseErr_t parseErr; /*!< @brief Job parsing status. */
-    OtaJobStatus_t status;     /*!< @brief Job status. */
-    int32_t reason;            /*!< @brief Job status reason. */
-    int32_t subReason;         /*!< @brief Job status subreason. */
+    const uint8_t * pJobDocJson; /*!< @brief Job document in JSON format. */
+    size_t jobDocLength;         /*!< @brief Job document length in bytes. */
+    const uint8_t * pJobId;      /*!< @brief Job ID associated with the job document. */
+    size_t jobIdLength;          /*!< @brief Length of job ID in bytes. */
+    OtaJobParseErr_t parseErr;   /*!< @brief Job parsing status. */
+    OtaJobStatus_t status;       /*!< @brief Job status. */
+    int32_t reason;              /*!< @brief Job status reason. */
+    int32_t subReason;           /*!< @brief Job status subreason. */
 } OtaJobDocument_t;
 
 /*------------------------- OTA callbacks --------------------------*/

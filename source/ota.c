@@ -1926,6 +1926,9 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
     OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     OtaJobDocument_t jobDoc = { 0 };
+    const char * jobDocValue = NULL;
+    const char * jobIdValue = NULL;
+
 
     jobDoc.parseErr = OtaJobParseErrUnknown;
 
@@ -1934,7 +1937,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                            messageLength,
                                            OTA_JSON_JOB_DOC_KEY,
                                            strlen( OTA_JSON_JOB_DOC_KEY ),
-                                           ( const char ** ) &jobDoc.pJobDocJson,
+                                           &jobDocValue,
                                            &jobDoc.jobDocLength,
                                            NULL ) ) &&
 
@@ -1942,7 +1945,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                            messageLength,
                                            OTA_JSON_JOB_ID_KEY,
                                            strlen( OTA_JSON_JOB_ID_KEY ),
-                                           ( const char ** ) &jobDoc.pJobId,
+                                           &jobIdValue,
                                            &jobDoc.jobIdLength,
                                            NULL ) ) )
     {
@@ -1950,8 +1953,10 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
          * to a callback for parsing */
         otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
 
-        if( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE )
+        if( ( jobDoc.jobIdLength > 0U ) && ( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE ) ) /* LCOV_EXCL_BR_LINE */
         {
+            jobDoc.pJobDocJson = jobDocValue;
+            jobDoc.pJobId = jobIdValue;
             ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
         }
         else
