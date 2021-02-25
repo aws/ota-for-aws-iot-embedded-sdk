@@ -795,6 +795,7 @@ ustopiclen
 utils
 validatedatablock
 valuelength
+verifyactivejobstatus
 versionnumber
 vportfree
 writeblock
