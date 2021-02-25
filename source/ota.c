@@ -2014,7 +2014,17 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 
             /* Abort the current job. */
             ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateAborted );
-            ( void ) otaClose( &( otaAgent.fileContext ) );
+            
+            /*
+             * Abort any active file access and release the file resource, if needed.
+             */
+            ( void ) otaAgent.pOtaInterface->pal.abort( pFileContext );
+
+            /* Cleanup related to selected protocol. */
+            if( otaDataInterface.cleanup != NULL )
+            {
+                ( void ) otaDataInterface.cleanup( &otaAgent );
+            }
 
             /* Set new active job name. */
             ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, strlen( ( const char * ) pFileContext->pJobName ) );
