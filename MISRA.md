@@ -31,3 +31,4 @@ Deviations from the MISRA standard are listed below:
 | Rule 21.3 | Required | This is explained in rule 4.12 from section above. We define a malloc and free interface so that our OTA library can be ported to any OS. |
 | Rule 21.8 | Required | One of the OTA platform abstraction layer interfaces `abort` is flagged for this violation. This is implemented by a platform abstraction layer and always called through the OTA PAL interface. |
 | Rule 10.1 | Required | Use of POSIX specific macro `O_CREAT` and `O_RDWR` is flagged for this violation. We use these 2 macros with one POSIX API `mq_open` in the POSIX OS implementation. |
+| Rule 2.2 | Required | This rule prohibits dead code for the string arrays `pOtaAgentStateStrings` and `pOtaEventStrings`. These are used only for logging which is disabled during static analysis. |

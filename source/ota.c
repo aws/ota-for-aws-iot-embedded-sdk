@@ -1926,6 +1926,9 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
     OtaErr_t otaErr = OtaErrNone;
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     OtaJobDocument_t jobDoc = { 0 };
+    const char * jobDocValue = NULL;
+    const char * jobIdValue = NULL;
+
 
     jobDoc.parseErr = OtaJobParseErrUnknown;
 
@@ -1934,7 +1937,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                            messageLength,
                                            OTA_JSON_JOB_DOC_KEY,
                                            strlen( OTA_JSON_JOB_DOC_KEY ),
-                                           ( const char ** ) &jobDoc.pJobDocJson,
+                                           &jobDocValue,
                                            &jobDoc.jobDocLength,
                                            NULL ) ) &&
 
@@ -1942,7 +1945,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                            messageLength,
                                            OTA_JSON_JOB_ID_KEY,
                                            strlen( OTA_JSON_JOB_ID_KEY ),
-                                           ( const char ** ) &jobDoc.pJobId,
+                                           &jobIdValue,
                                            &jobDoc.jobIdLength,
                                            NULL ) ) )
     {
@@ -1950,8 +1953,10 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
          * to a callback for parsing */
         otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
 
-        if( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE )
+        if( ( jobDoc.jobIdLength > 0U ) && ( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE ) ) /* LCOV_EXCL_BR_LINE */
         {
+            jobDoc.pJobDocJson = ( const uint8_t * ) jobDocValue;
+            jobDoc.pJobId = ( const uint8_t * ) jobIdValue;
             ( void ) memcpy( otaAgent.pActiveJobName, jobDoc.pJobId, jobDoc.jobIdLength );
         }
         else
@@ -1961,17 +1966,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
 
         if( jobDoc.parseErr == OtaJobParseErrNone )
         {
-            otaErr = otaControlInterface.updateJobStatus( &otaAgent,
-                                                          jobDoc.status,
-                                                          jobDoc.reason,
-                                                          jobDoc.subReason );
-
-            /* Log the error.*/
-            if( otaErr != OtaErrNone )
-            {
-                LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
-                            OTA_Err_strerror( otaErr ) ) );
-            }
+            otaErr = otaControlInterface.updateJobStatus( &otaAgent, jobDoc.status, jobDoc.reason, jobDoc.subReason );
 
             LogInfo( ( "Job document parsed from external callback" ) );
             err = jobDoc.parseErr;
@@ -1992,6 +1987,13 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
     {
         /* No active jobs present.*/
         err = OtaJobParseErrNoActiveJobs;
+    }
+
+    /* Log the error.*/
+    if( otaErr != OtaErrNone )
+    {
+        LogError( ( "Failed to update job status: updateJobStatus returned error: OtaErr_t=%s",
+                    OTA_Err_strerror( otaErr ) ) );
     }
 
     return err;
