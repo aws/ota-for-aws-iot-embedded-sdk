@@ -2371,11 +2371,14 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
         if( pUpdateFile->blockBitmapMaxSize == 0u )
         {
+            /* LCOV_EXCL_START */
             if( pUpdateFile->pRxBlockBitmap != NULL )
             {
                 /* Free any previously allocated bitmap. */
                 otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
             }
+
+            /* LCOV_EXCL_STOP */
 
             pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
         }
