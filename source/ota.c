@@ -1176,6 +1176,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     /* Set the job id and length from OTA context. */
     jobDoc.pJobId = otaAgent.pActiveJobName;
     jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
+    jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
     /* Ingest data blocks received. */
     if( pEventData != NULL )
@@ -2324,6 +2325,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
         jobDoc.pJobDocJson = pJson;
         jobDoc.jobDocLength = messageLength;
+        jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
         /* Let the application know to release buffer.*/
         otaAgent.OtaAppCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );

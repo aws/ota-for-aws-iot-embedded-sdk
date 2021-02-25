@@ -197,6 +197,7 @@ typedef struct OtaJobDocument
     size_t jobDocLength;         /*!< @brief Job document length in bytes. */
     const uint8_t * pJobId;      /*!< @brief Job ID associated with the job document. */
     size_t jobIdLength;          /*!< @brief Length of job ID in bytes. */
+    uint32_t fileTypeId;         /*!< @brief File Type ID from the job document. */
     OtaJobParseErr_t parseErr;   /*!< @brief Job parsing status. */
     OtaJobStatus_t status;       /*!< @brief Job status. */
     int32_t reason;              /*!< @brief Job status reason. */
