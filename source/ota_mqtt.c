@@ -271,7 +271,7 @@ static size_t stringBuilder( char * pBuffer,
 
         assert( thisLength + curLen + 1 <= bufferSizeBytes );
 
-        strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
+        ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         curLen += thisLength;
     }
 
