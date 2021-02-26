@@ -1140,7 +1140,7 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     return err;
 }
 
-static void dataHandlerCleanup()
+static void dataHandlerCleanup( void )
 {
     OtaEventMsg_t eventMsg = { 0 };
 
