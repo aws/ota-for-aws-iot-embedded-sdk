@@ -695,7 +695,6 @@ static void mockAppCallbackCustomParsingFails( OtaJobEvent_t event,
     if( event == OtaJobEventParseCustomJob )
     {
         jobDoc = ( OtaJobDocument_t * ) pData;
-        jobDoc->jobIdLength = 0; /* Set invalid jobid length in custom parsing. */
         jobDoc->parseErr = OtaJobParseErrUnknown;
     }
 }
