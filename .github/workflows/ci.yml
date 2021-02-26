@@ -19,8 +19,8 @@ jobs:
           submodules: true
       - name: Check warnings
         run: |
-          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG' \
-          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror'
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DLOG_LEVEL=LOG_LEVEL_DEBUG'
           cmake --build build
 
   complexity:
