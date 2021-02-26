@@ -69,6 +69,7 @@
 #define JOB_DOC_MISSING_JOB_DOC           "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1}}"
 #define JOB_DOC_MISSING_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLength\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_DIFFERENT_FILE_TYPE       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"fileType\":2,\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE         100
@@ -1950,6 +1951,12 @@ void test_OTA_ReceiveFileBlockCompleteMqtt()
 void test_OTA_ReceiveFileBlockCompleteDynamicBufferMqtt()
 {
     memset( &pOtaAppBuffer, 0, sizeof( pOtaAppBuffer ) );
+    test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
+void test_OTA_ReceiveFileBlockCompleteDifferentFileTypeMqtt()
+{
+    pOtaJobDoc = JOB_DOC_DIFFERENT_FILE_TYPE;
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
 
