@@ -6,7 +6,7 @@ This library has gone through code quality checks including verification that no
 
 See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
 
-### AWS IoT Over-the-air Updates Config File
+## AWS IoT Over-the-air Updates Config File
 
 The AWS IoT Over-the-air Updates library exposes configuration macros that are required for building the library. A list of all the configurations and their default values are defined in [ota_config_defaults.h](source/include/ota_config_defaults.h). To provide custom values for the configuration macros, a custom config file named `ota_config.h` can be provided by the user application to the library.
 
@@ -46,6 +46,15 @@ git submodule update --checkout --init --recursive test/unit-test/CMock
 
 1. Run `cd build && ctest` to execute all tests and view the test run summary.
 
+## Migration Guide
+
+### How to migrate from v2.0.0 (Release Candidate) to v3.0.0
+
+The following table lists equivalent API function signatures in v2.0.0 (Release Candidate) and v3.0.0 declared in [ota.h](source/include/ota.h)
+
+| v2.0.0 (Release Candidate) | v3.0.0 | Notes |
+| :-: | :-: | :-: |
+| `OtaState_t OTA_Shutdown( uint32_t ticksToWait );` | `OtaState_t OTA_Shutdown( uint32_t ticksToWait, uint8_t unsubscribeFlag );` | `unsubscribeFlag` indicates if unsubscribe operations should be performed from the job topics when shutdown is called. Set this as 1 to unsubscribe, 0 otherwise. |
 ## Reference examples
 
 Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for a reference example on POSIX:
@@ -72,3 +81,7 @@ Doxygen pages, please run the following command from the root of this repository
 ```shell
 doxygen docs/doxygen/config.doxyfile
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for information on contributing.
