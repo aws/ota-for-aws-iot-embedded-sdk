@@ -19,8 +19,8 @@ jobs:
           submodules: true
       - name: Check warnings
         run: |
-          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_INIT='-DLOG_LEVEL=LOG_LEVEL_DEBUG' \
-          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror'
+          cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DLOG_LEVEL=LOG_LEVEL_DEBUG'
           cmake --build build
 
   complexity:
@@ -71,8 +71,8 @@ jobs:
         uses: FreeRTOS/CI-CD-Github-Actions/coverage-cop@main
         with:
           path: ./build/coverage.info
-          line-coverage-min: 90
-          branch-coverage-min: 70
+          line-coverage-min: 100
+          branch-coverage-min: 100
 
   doxygen:
     runs-on: ubuntu-20.04

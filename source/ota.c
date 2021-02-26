@@ -1998,7 +1998,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
             /* Job is malformed - return an error */
             err = OtaJobParseErrNonConformingJobDoc;
 
-            LogError( ( "Custom job document parsing failed: OtaJobParseErr_t=%s, jobIdLength=%d",
+            LogError( ( "Failed to parse custom job document: OtaJobParseErr_t=%s, jobIdLength=%lu",
                         OTA_JobParse_strerror( jobDoc.parseErr ), jobDoc.jobIdLength ) );
         }
     }
