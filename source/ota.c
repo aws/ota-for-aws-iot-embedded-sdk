@@ -371,7 +371,7 @@ static void agentShutdownCleanup( void );
 /**
  * @brief A helper function to cleanup resources when data ingestion is complete.
  */
-static void dataHandlerCleanup( IngestResult_t result );
+static void dataHandlerCleanup( void );
 
 /**
  * @brief Prepare the document model for use by sanity checking the initialization parameters and detecting all required parameters.
@@ -1140,16 +1140,12 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     return err;
 }
 
-static void dataHandlerCleanup( IngestResult_t result )
+static void dataHandlerCleanup( void )
 {
     OtaEventMsg_t eventMsg = { 0 };
 
     /* Stop the request timer. */
     ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
-
-    /* Negative result codes mean we should stop the OTA process
-     * because we are either done or in an unrecoverable error state.
-     * We don't want to hang on to the resources. */
 
     /* Send event to close file. */
     eventMsg.eventId = OtaAgentEventCloseFile;
@@ -1162,9 +1158,6 @@ static void dataHandlerCleanup( IngestResult_t result )
                    eventMsg.eventId ) );
     }
 
-    /* Let main application know of our result. */
-    otaAgent.OtaAppCallback( ( result == IngestResultFileComplete ) ? OtaJobEventActivate : OtaJobEventFail, NULL );
-
     /* Clear any remaining string memory holding the job name since this job is done. */
     ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 }
@@ -1175,9 +1168,15 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     OtaPalStatus_t closeResult = OTA_PAL_COMBINE_ERR( OtaPalUninitialized, 0 );
     OtaEventMsg_t eventMsg = { 0 };
     IngestResult_t result = IngestResultUninitialized;
+    OtaJobDocument_t jobDoc = { 0 };
 
     /* Get the file context. */
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
+
+    /* Set the job id and length from OTA context. */
+    jobDoc.pJobId = otaAgent.pActiveJobName;
+    jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
+    jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
     /* Ingest data blocks received. */
     if( pEventData != NULL )
@@ -1194,26 +1193,51 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
     if( result == IngestResultFileComplete )
     {
-        /* File receive is complete and authenticated. Update the job status with the self_test ready identifier. */
-        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonSigCheckPassed, 0 );
-        dataHandlerCleanup( result );
+        /* Check if this is firmware update. */
+        if( otaAgent.fileContext.fileType == configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID )
+        {
+            jobDoc.status = JobStatusInProgress;
+            jobDoc.reason = JobReasonSigCheckPassed;
+
+            /* Let main application know activate event. */
+            otaAgent.OtaAppCallback( OtaJobEventActivate, &jobDoc );
+        }
+        else
+        {
+            jobDoc.status = JobStatusSucceeded;
+            jobDoc.reason = JobReasonAccepted;
+            jobDoc.subReason = ( int32_t ) otaAgent.fileContext.fileType;
+
+            /* Let main application know that update is complete */
+            otaAgent.OtaAppCallback( OtaJobEventUpdateComplete, &jobDoc );
+        }
+
+        /* File receive is complete and authenticated. Update the job status. */
+        err = otaControlInterface.updateJobStatus( &otaAgent, jobDoc.status, jobDoc.reason, jobDoc.subReason );
+
+        dataHandlerCleanup();
 
         /* Last file block processed, increment the statistics. */
         otaAgent.statistics.otaPacketsProcessed++;
     }
     else if( result < IngestResultFileComplete )
     {
-        LogError( ( "Failed to ingest data block, rejecting image: ingestDataBlock returned error: "
-                    "OtaErr_t=%d",
-                    result ) );
+        LogError( ( "Failed to ingest data block, rejecting image: ingestDataBlock returned error: OtaErr_t=%d", result ) );
 
         /* Call the platform specific code to reject the image. */
         ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateRejected );
 
+        jobDoc.status = JobStatusFailedWithVal;
+        jobDoc.reason = ( int32_t ) closeResult;
+        jobDoc.subReason = result;
+
+        /* Let main application know activate event. */
+        otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
+
         /* Update the job status with the with failure code. */
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) closeResult, ( int32_t ) result );
 
-        dataHandlerCleanup( result );
+        dataHandlerCleanup();
     }
     else
     {
@@ -1235,18 +1259,13 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         else
         {
             /* Start the request timer. */
-            ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
-                                                             "OtaRequestTimer",
-                                                             otaconfigFILE_REQUEST_WAIT_MS,
-                                                             otaTimerCallback );
+            ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer, "OtaRequestTimer", otaconfigFILE_REQUEST_WAIT_MS, otaTimerCallback );
 
             eventMsg.eventId = OtaAgentEventRequestFileBlock;
 
             if( OTA_SignalEvent( &eventMsg ) == false )
             {
-                LogWarn( ( "Failed to trigger requesting the next block: Unable to signal event: "
-                           "event=%d",
-                           eventMsg.eventId ) );
+                LogWarn( ( "Failed to trigger requesting the next block: Unable to signal event=%d", eventMsg.eventId ) );
             }
         }
     }
@@ -2269,6 +2288,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
     OtaFileContext_t * pFinalFile = NULL;
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
     JsonDocModel_t otaJobDocModel;
+    OtaJobDocument_t jobDoc = { 0 };
 
     parseError = initDocModel( &otaJobDocModel,
                                pJsonExpectedParams,
@@ -2299,6 +2319,16 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         LogInfo( ( "Job parsing success: "
                    "OtaJobParseErr_t=%s, Job name=%s",
                    OTA_JobParse_strerror( err ), ( const char * ) pFileContext->pJobName ) );
+
+        /* Set the job id and length from OTA context. */
+        jobDoc.pJobId = otaAgent.pActiveJobName;
+        jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
+        jobDoc.pJobDocJson = ( const uint8_t * ) pJson;
+        jobDoc.jobDocLength = messageLength;
+        jobDoc.fileTypeId = otaAgent.fileContext.fileType;
+
+        /* Let the application know to release buffer.*/
+        otaAgent.OtaAppCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );
     }
     else
     {

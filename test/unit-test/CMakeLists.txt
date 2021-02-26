@@ -88,13 +88,6 @@ create_test(ota_base64_utest
     "${test_include_directories}"
 )
 
-create_test(ota_job_parsing_utest
-    "ota_job_parsing_utest.c"
-    "${utest_link_list}"
-    "${utest_dep_list}"
-    "${test_include_directories}"
-)
-
 create_test(ota_cbor_utest
     "ota_cbor_utest.c"
     "${utest_link_list}"
