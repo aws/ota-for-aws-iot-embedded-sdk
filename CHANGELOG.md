@@ -1,6 +1,6 @@
 # Changelog for AWS IoT Over-the-air Update Library
 
-## v3.0.0 (February 2021)
+## v3.0.0 (March 2021)
 
 ### Updates
 
