@@ -371,7 +371,7 @@ static void agentShutdownCleanup( void );
 /**
  * @brief A helper function to cleanup resources when data ingestion is complete.
  */
-static void dataHandlerCleanup();
+static void dataHandlerCleanup( void );
 
 /**
  * @brief Prepare the document model for use by sanity checking the initialization parameters and detecting all required parameters.
