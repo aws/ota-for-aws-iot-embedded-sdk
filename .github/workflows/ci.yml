@@ -71,8 +71,8 @@ jobs:
         uses: FreeRTOS/CI-CD-Github-Actions/coverage-cop@main
         with:
           path: ./build/coverage.info
-          line-coverage-min: 90
-          branch-coverage-min: 70
+          line-coverage-min: 100
+          branch-coverage-min: 100
 
   doxygen:
     runs-on: ubuntu-20.04
