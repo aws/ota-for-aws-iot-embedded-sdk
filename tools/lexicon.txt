@@ -624,6 +624,7 @@ presigned
 presponse
 presultlen
 pretryparams
+previousversion
 printf
 processdatahandler
 processjobhandler
