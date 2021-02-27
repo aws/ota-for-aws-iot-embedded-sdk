@@ -4,7 +4,7 @@ The OTA library enables you to manage the notification of a newly available upda
 
 This library has gone through code quality checks including verification that no function has a [GNU Complexity](https://www.gnu.org/software/complexity/manual/complexity.html) score over 8. This library has also undergone static code analysis from [Coverity static analysis](https://scan.coverity.com/).
 
-See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
+See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
 
 ## AWS IoT Over-the-air Updates Config File
 
