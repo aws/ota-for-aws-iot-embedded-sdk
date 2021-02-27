@@ -65,13 +65,13 @@ Please refer to the demos of the AWS IoT Over-the-air Updates library in the fol
 ## Porting
 
 In order to support AWS IoT Over-the-air Updates on your device, it is necessary to provide the following components:
-1. [Port for the OTA Portable Abstraction Layer (PAL).](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_pal)
+1. [Port for the OTA Portable Abstraction Layer (PAL).](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_pal)
 
-1. [OS Interface](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_os)
+1. [OS Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_os)
 
-1. [MQTT Interface](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_mqtt)
+1. [MQTT Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_mqtt)
 
-1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202012.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
+1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
 
 ## Generating documentation
 
