@@ -1169,6 +1169,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     OtaEventMsg_t eventMsg = { 0 };
     IngestResult_t result = IngestResultUninitialized;
     OtaJobDocument_t jobDoc = { 0 };
+    OtaJobEvent_t otaJobEvent = OtaLastJobEvent;
 
     /* Get the file context. */
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
@@ -1199,8 +1200,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
             jobDoc.status = JobStatusInProgress;
             jobDoc.reason = JobReasonSigCheckPassed;
 
-            /* Let main application know activate event. */
-            otaAgent.OtaAppCallback( OtaJobEventActivate, &jobDoc );
+            otaJobEvent = OtaJobEventActivate;
         }
         else
         {
@@ -1208,8 +1208,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
             jobDoc.reason = JobReasonAccepted;
             jobDoc.subReason = ( int32_t ) otaAgent.fileContext.fileType;
 
-            /* Let main application know that update is complete */
-            otaAgent.OtaAppCallback( OtaJobEventUpdateComplete, &jobDoc );
+            otaJobEvent = OtaJobEventUpdateComplete;
         }
 
         /* File receive is complete and authenticated. Update the job status. */
@@ -1219,6 +1218,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         /* Last file block processed, increment the statistics. */
         otaAgent.statistics.otaPacketsProcessed++;
+
+        /* Let main application know that update is complete */
+        otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
     }
     else if( result < IngestResultFileComplete )
     {
@@ -1231,13 +1233,13 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         jobDoc.reason = ( int32_t ) closeResult;
         jobDoc.subReason = result;
 
-        /* Let main application know activate event. */
-        otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
-
         /* Update the job status with the with failure code. */
         err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) closeResult, ( int32_t ) result );
 
         dataHandlerCleanup();
+
+        /* Let main application know activate event. */
+        otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
     }
     else
     {
