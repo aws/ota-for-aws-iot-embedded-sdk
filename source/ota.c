@@ -1897,9 +1897,9 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
 {
     OtaErr_t err = OtaErrNone;
-    AppVersion32_t newVersion;
+    AppVersion32_t previousVersion;
 
-    ( void ) newVersion; /* For suppressing compiler-warning: unused variable. */
+    ( void ) previousVersion; /* For suppressing compiler-warning: unused variable. */
 
     /* Only check for versions if the target is self */
     if( ( otaAgent.serverFileID == 0U ) && ( otaAgent.fileContext.fileType == configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID ) )
@@ -1928,12 +1928,12 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
          * Update version received is newer than current version. */
         else
         {
-            newVersion.u.unsignedVersion32 = pFileContext->updaterVersion;
+            previousVersion.u.unsignedVersion32 = pFileContext->updaterVersion;
             LogInfo( ( "New image has a higher version number than the current image: "
                        "New image version=%u.%u.%u"
-                       ", Old image version=%u.%u.%u",
+                       ", Previous image version=%u.%u.%u",
                        appFirmwareVersion.u.x.major, appFirmwareVersion.u.x.minor, appFirmwareVersion.u.x.build,
-                       newVersion.u.x.major, newVersion.u.x.minor, newVersion.u.x.build ) );
+                       previousVersion.u.x.major, previousVersion.u.x.minor, previousVersion.u.x.build ) );
         }
     }
 
