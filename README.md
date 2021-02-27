@@ -6,6 +6,8 @@ This library has gone through code quality checks including verification that no
 
 See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
 
+**AWS IoT Over-the-air Update Library v3.0.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.0.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
+
 ## AWS IoT Over-the-air Updates Config File
 
 The AWS IoT Over-the-air Updates library exposes configuration macros that are required for building the library. A list of all the configurations and their default values are defined in [ota_config_defaults.h](source/include/ota_config_defaults.h). To provide custom values for the configuration macros, a custom config file named `ota_config.h` can be provided by the user application to the library.

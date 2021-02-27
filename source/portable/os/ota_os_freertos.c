@@ -217,6 +217,9 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
     configASSERT( pTimerName != NULL );
     configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
+    /* Set OTA lib callback. */
+    otaTimerCallback = callback;
+
     /* If timer is not created.*/
     if( otaTimer[ otaTimerId ] == NULL )
     {
