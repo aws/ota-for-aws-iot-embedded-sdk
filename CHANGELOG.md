@@ -4,6 +4,7 @@
 
 ### Updates
 
+ - The AWS IoT Over-the-air Update library is now generally available.
  - [#154](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/154) Update `Ota_Shutdown` API. `Ota_Shutdown` now takes a parameter `unsubscribeFlag` which  indicates if unsubscribe operations should be performed from the job topics when shutdown is called.
  - [#174](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/174), [#186](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/186) Add support for different filetypes. `configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID` config can be used to define the default firmware filetype id.
 

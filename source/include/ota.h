@@ -658,7 +658,7 @@ OtaErr_t OTA_Resume( void );
  * event loop starts.
  *
  * For a Posix based reference of creating a thread with this task,
- * please see the [csdk-demos](https://github.com/aws/aws-iot-device-sd
+ * please see the [demos in AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota).
  */
 /* @[declare_ota_eventprocessingtask] */
 void OTA_EventProcessingTask( void * pUnused );
