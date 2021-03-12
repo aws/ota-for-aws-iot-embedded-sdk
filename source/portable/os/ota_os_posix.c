@@ -351,7 +351,7 @@ OtaOsStatus_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
     }
     else
     {
-        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
+        LogDebug( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
 
         otaOsStatus = OtaOsTimerStopFailed;
     }
