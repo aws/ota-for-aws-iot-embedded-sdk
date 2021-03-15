@@ -1706,7 +1706,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 
     if( err != DocParseErrNone )
     {
-        LogError( ( "Failed to extract document parameter: error=%d, paramter key=%s",
+        LogDebug( ( "Failed to extract document parameter: error=%d, paramter key=%s",
                     err, docParam.pSrcKey ) );
     }
 
@@ -1732,10 +1732,10 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         {
             if( ( missingParams & ( ( uint32_t ) 1U << scanIndex ) ) != 0U )
             {
-                LogInfo( ( "Failed job document content check: "
-                           "Required job document parameter was not extracted: "
-                           "parameter=%s",
-                           pModelParam[ scanIndex ].pSrcKey ) );
+                LogDebug( ( "Failed job document content check: "
+                            "Required job document parameter was not extracted: "
+                            "parameter=%s",
+                            pModelParam[ scanIndex ].pSrcKey ) );
             }
         }
 
@@ -1818,9 +1818,9 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
     if( err != DocParseErrNone )
     {
-        LogInfo( ( "Failed to parse JSON document as AFR_OTA job: "
-                   "DocParseErr_t=%d",
-                   err ) );
+        LogDebug( ( "Failed to parse JSON document as AFR_OTA job: "
+                    "DocParseErr_t=%d",
+                    err ) );
     }
 
     return err;
@@ -2000,7 +2000,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
             /* Job is malformed - return an error */
             err = OtaJobParseErrNonConformingJobDoc;
 
-            LogError( ( "Failed to parse custom job document: OtaJobParseErr_t=%s, jobIdLength=%lu",
+            LogDebug( ( "Failed to parse custom job document: OtaJobParseErr_t=%s, jobIdLength=%lu",
                         OTA_JobParse_strerror( jobDoc.parseErr ), jobDoc.jobIdLength ) );
         }
     }
@@ -2084,9 +2084,9 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
     }
     else
     {
-        LogWarn( ( "Parameter check failed: "
-                   "pJobName is NULL while the OTA Agent is busy: "
-                   "Ignoring parameter check failure." ) );
+        LogDebug( ( "Parameter check failed: "
+                    "pJobName is NULL while the OTA Agent is busy: "
+                    "Ignoring parameter check failure." ) );
         err = OtaJobParseErrNullJob;
     }
 
@@ -2201,7 +2201,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     }
     else
     {
-        LogError( ( "Failed to validate and start the job: OtaJobParseErr_t=%s", OTA_JobParse_strerror( err ) ) );
+        LogDebug( ( "Failed to validate and start the job: OtaJobParseErr_t=%s", OTA_JobParse_strerror( err ) ) );
     }
 
     return err;
@@ -2826,7 +2826,7 @@ static void executeHandler( uint32_t index,
     }
     else
     {
-        LogError( ( "Failed to execute state transition handler: "
+        LogDebug( ( "Failed to execute state transition handler: "
                     "Handler returned error: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
