@@ -1615,7 +1615,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
             LogError( ( "Memory allocation failed "
                         "[key: valueLength]=[%s: %lu]",
                         pKey,
-                        valueLength ) );
+                        ( unsigned long ) valueLength ) );
         }
     }
     else
