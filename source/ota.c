@@ -1627,7 +1627,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
             LogError( ( "Insufficient user memory: "
                         "[key: valueLength]=[%s: %lu]",
                         pKey,
-                        valueLength ) );
+                        ( unsigned long ) valueLength ) );
         }
     }
 
@@ -2001,7 +2001,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
             err = OtaJobParseErrNonConformingJobDoc;
 
             LogDebug( ( "Failed to parse custom job document: OtaJobParseErr_t=%s, jobIdLength=%lu",
-                        OTA_JobParse_strerror( jobDoc.parseErr ), jobDoc.jobIdLength ) );
+                        OTA_JobParse_strerror( jobDoc.parseErr ), ( unsigned long ) jobDoc.jobIdLength ) );
         }
     }
     else
