@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
- - [#200](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/200) Add type cast fro logging variable of type size_t
+ - [#200](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/200) Add type cast for logging variable of type size_t
 
 ## v3.0.0 (March 2021)
 
