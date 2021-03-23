@@ -1,5 +1,11 @@
 # Changelog for AWS IoT Over-the-air Update Library
 
+## main
+
+### Minor Changes
+
+ - [#200](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/200) Add type cast fro logging variable of type size_t
+
 ## v3.0.0 (March 2021)
 
 ### Updates
@@ -14,7 +20,6 @@
  - [#177](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/177) Add code example documentation for OTA APIs.
  - [#155](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/155) Remove subscription from accepted topics of AWS IoT Jobs service. AWS IoT Jobs service publishes messages on response topics without needing devices to subscribe to response topics.
  - [#183](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/183), [#158](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/158), [#157](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/157), [#153](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/153) Other fixes to execution flow and improving logs.
- - [#200](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/200) Add cast in logging of type size_t
 
 ## v2.0.0 (Release Candidate) (December 2020)
 - This is a release candidate of the AWS IoT Over-the-air (OTA) Update library in this repository. You can use the OTA library with your chosen MQTT library, HTTP library, and operating system (e.g. Linux, FreeRTOS).
