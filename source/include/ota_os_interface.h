@@ -267,9 +267,9 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;   /*!< @brief Timer start state. */
-    OtaStopTimer_t stop;     /*!< @brief Timer stop state. */
-    OtaDeleteTimer_t delete; /*!< @brief Delete timer. */
+    OtaStartTimer_t startTimer;   /*!< @brief Timer start state. */
+    OtaStopTimer_t stopTimer;     /*!< @brief Timer stop state. */
+    OtaDeleteTimer_t deleteTimer; /*!< @brief Delete timer. */
 } OtaTimerInterface_t;
 
 /**

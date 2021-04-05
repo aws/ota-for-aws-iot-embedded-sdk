@@ -708,9 +708,9 @@ static void otaInterfaceDefault()
     otaInterfaces.os.event.recv = mockOSEventReceive;
     otaInterfaces.os.event.deinit = mockOSEventReset;
 
-    otaInterfaces.os.timer.start = stubOSTimerStart;
-    otaInterfaces.os.timer.stop = stubOSTimerStop;
-    otaInterfaces.os.timer.delete = stubOSTimerDelete;
+    otaInterfaces.os.timer.startTimer = stubOSTimerStart;
+    otaInterfaces.os.timer.stopTimer = stubOSTimerStop;
+    otaInterfaces.os.timer.deleteTimer = stubOSTimerDelete;
 
     otaInterfaces.os.mem.malloc = malloc;
     otaInterfaces.os.mem.free = free;
@@ -1355,7 +1355,7 @@ void test_OTA_RequestJobDocumentRetryFail()
     otaInterfaces.mqtt.publish = stubMqttPublishAlwaysFail;
 
     /* Let timer invoke callback directly. */
-    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+    otaInterfaces.os.timer.startTimer = mockOSTimerInvokeCallback;
 
     /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
@@ -1622,7 +1622,7 @@ void test_OTA_InitFileTransferRetryFail()
     otaInterfaces.http.init = mockHttpInitAlwaysFail;
 
     /* Let timer invoke callback directly. */
-    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+    otaInterfaces.os.timer.startTimer = mockOSTimerInvokeCallback;
 
     /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
@@ -1696,7 +1696,7 @@ void test_OTA_RequestFileBlockTimerFails()
     OTA_SignalEvent( &otaEvent );
 
     /* Set the request timer to fail when attempting to start. */
-    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    otaInterfaces.os.timer.startTimer = mockOSTimerStartAlwaysFail;
     /* Process the event to request a block. */
     receiveAndProcessOtaEvent();
     /* Process the event to shut down. */
@@ -1718,7 +1718,7 @@ void test_OTA_RequestFileBlockRetryFail()
     otaInterfaces.http.request = mockHttpRequestAlwaysFail;
 
     /* Let timer invoke callback directly. */
-    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+    otaInterfaces.os.timer.startTimer = mockOSTimerInvokeCallback;
 
     /* Allow event to be sent continuously so that retries can work. */
     otaInterfaces.os.event.send = mockOSEventSend;
@@ -2241,7 +2241,7 @@ void test_OTA_StartWithSelfTest()
     palImageState = OtaPalImageStatePendingCommit;
 
     /* Let timer start to invoke callback directly. */
-    otaInterfaces.os.timer.start = mockOSTimerInvokeCallback;
+    otaInterfaces.os.timer.startTimer = mockOSTimerInvokeCallback;
 
     /* Start OTA agent. */
     otaGoToState( OtaAgentStateWaitingForJob );
@@ -2803,7 +2803,7 @@ void test_OTA_initFileHandler_TimerFails( void )
     /* Fail to initialize the file transfer so the timer is started. */
     otaDataInterface.initFileTransfer = mockDataInterfaceInitFileTransferAlwaysFail;
     /* Fail to start the timer. */
-    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    otaInterfaces.os.timer.startTimer = mockOSTimerStartAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrInitFileTransferFailed, initFileHandler( otaEvent.pEventData ) );
 }
@@ -2882,7 +2882,7 @@ void test_OTA_requestJobHandler_TimerFails( void )
     /* Fail requesting the job document. */
     otaControlInterface.requestJob = mockControlInterfaceRequestJobAlwaysFail;
     /* Fail to start the request timer. */
-    otaInterfaces.os.timer.start = mockOSTimerStartAlwaysFail;
+    otaInterfaces.os.timer.startTimer = mockOSTimerStartAlwaysFail;
 
     TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, requestJobHandler( otaEvent.pEventData ) );
 }
