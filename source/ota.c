@@ -769,9 +769,9 @@ static OtaErr_t startHandler( const OtaEventData_t * pEventData )
     if( platformInSelftest() == true )
     {
         ( void ) otaAgent.pOtaInterface->os.timer.startTimer( OtaSelfTestTimer,
-                                                         "OtaSelfTestTimer",
-                                                         otaconfigSELF_TEST_RESPONSE_WAIT_MS,
-                                                         otaTimerCallback );
+                                                              "OtaSelfTestTimer",
+                                                              otaconfigSELF_TEST_RESPONSE_WAIT_MS,
+                                                              otaTimerCallback );
     }
 
     /* Send event to OTA task to get job document. */
@@ -846,9 +846,9 @@ static OtaErr_t requestJobHandler( const OtaEventData_t * pEventData )
         {
             /* Start the request timer. */
             osErr = otaAgent.pOtaInterface->os.timer.startTimer( OtaRequestTimer,
-                                                            "OtaRequestTimer",
-                                                            otaconfigFILE_REQUEST_WAIT_MS,
-                                                            otaTimerCallback );
+                                                                 "OtaRequestTimer",
+                                                                 otaconfigFILE_REQUEST_WAIT_MS,
+                                                                 otaTimerCallback );
 
             if( osErr != OtaOsSuccess )
             {
@@ -1025,9 +1025,9 @@ static OtaErr_t initFileHandler( const OtaEventData_t * pEventData )
         {
             /* Start the request timer. */
             osErr = otaAgent.pOtaInterface->os.timer.startTimer( OtaRequestTimer,
-                                                            "OtaRequestTimer",
-                                                            otaconfigFILE_REQUEST_WAIT_MS,
-                                                            otaTimerCallback );
+                                                                 "OtaRequestTimer",
+                                                                 otaconfigFILE_REQUEST_WAIT_MS,
+                                                                 otaTimerCallback );
 
             if( osErr != OtaOsSuccess )
             {
@@ -1092,9 +1092,9 @@ static OtaErr_t requestDataHandler( const OtaEventData_t * pEventData )
     {
         /* Start the request timer. */
         osErr = otaAgent.pOtaInterface->os.timer.startTimer( OtaRequestTimer,
-                                                        "OtaRequestTimer",
-                                                        otaconfigFILE_REQUEST_WAIT_MS,
-                                                        otaTimerCallback );
+                                                             "OtaRequestTimer",
+                                                             otaconfigFILE_REQUEST_WAIT_MS,
+                                                             otaTimerCallback );
 
         if( ( osErr == OtaOsSuccess ) && ( otaAgent.requestMomentum < otaconfigMAX_NUM_REQUEST_MOMENTUM ) )
         {
@@ -2560,9 +2560,9 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     if( ( pFileContext->pRxBlockBitmap != NULL ) && ( pFileContext->blocksRemaining > 0U ) )
     {
         ( void ) otaAgent.pOtaInterface->os.timer.startTimer( OtaRequestTimer,
-                                                         "OtaRequestTimer",
-                                                         otaconfigFILE_REQUEST_WAIT_MS,
-                                                         otaTimerCallback );
+                                                              "OtaRequestTimer",
+                                                              otaconfigFILE_REQUEST_WAIT_MS,
+                                                              otaTimerCallback );
 
         if( otaAgent.fileContext.decodeMemMaxSize != 0U )
         {

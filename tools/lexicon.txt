@@ -108,6 +108,7 @@ defgroup
 deinit
 deinitialize
 deinitializing
+deletetimer
 destlen
 destoffset
 developerguide
@@ -720,11 +721,13 @@ stacksize
 starthandler
 startselftesttimer
 startselftimer
+starttimer
 statetoset
 statuscode
 statusdetails
 stddef
 stdlib
+stoptimer
 str
 streamname
 streamnamemaxsize
