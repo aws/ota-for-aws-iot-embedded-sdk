@@ -52,9 +52,9 @@ static void timerCallback()
 
 void setUp( void )
 {
-    timer.startTimer = Posix_OtaStartTimer;
-    timer.deleteTimer = Posix_OtaDeleteTimer;
-    timer.stopTimer = Posix_OtaStopTimer;
+    timer.start = Posix_OtaStartTimer;
+    timer.delete = Posix_OtaDeleteTimer;
+    timer.stop = Posix_OtaStopTimer;
 
     event.init = Posix_OtaInitEvent;
     event.send = Posix_OtaSendEvent;
@@ -116,7 +116,7 @@ void timerCreateAndStop( OtaTimerId_t timer_id )
     OtaErr_t result = OtaErrUninitialized;
     int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
 
-    result = timer.startTimer( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Wait for the timer callback to be invoked. */
@@ -129,10 +129,10 @@ void timerCreateAndStop( OtaTimerId_t timer_id )
 
     TEST_ASSERT_EQUAL( true, timerCallbackInovked );
 
-    result = timer.stopTimer( timer_id );
+    result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
-    result = timer.deleteTimer( timer_id );
+    result = timer.delete( timer_id );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 }
 
@@ -160,21 +160,21 @@ void test_OTA_posix_InvalidTimerOperations( void )
     OtaErr_t result = OtaErrUninitialized;
     OtaTimerId_t timer_id = OtaRequestTimer;
 
-    result = timer.startTimer( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
+    result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Set the timeout to 0 and stop the timer*/
-    result = timer.startTimer( timer_id, TIMER_NAME, 0, NULL );
+    result = timer.start( timer_id, TIMER_NAME, 0, NULL );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
-    result = timer.stopTimer( timer_id );
+    result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
-    result = timer.deleteTimer( timer_id );
+    result = timer.delete( timer_id );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
     /* Delete a timer that has been deleted. */
-    result = timer.deleteTimer( timer_id );
+    result = timer.delete( timer_id );
     TEST_ASSERT_NOT_EQUAL( OtaErrNone, result );
 }
 
