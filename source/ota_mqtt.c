@@ -625,7 +625,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
         payloadStringParts[ 5 ] = numBlocksString;
 
         ( void ) stringBuilderUInt32Decimal( receivedString, sizeof( receivedString ), received );
-        ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), received );
+        ( void ) stringBuilderUInt32Decimal( numBlocksString, sizeof( numBlocksString ), numBlocks );
 
 
         msgSize = ( uint32_t ) stringBuilder(
