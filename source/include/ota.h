@@ -387,7 +387,7 @@ typedef struct OtaAgentContext
  */
 /* @[declare_ota_init] */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
-                   OtaInterfaces_t * pOtaInterfaces,
+                   const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
 /* @[declare_ota_init] */
