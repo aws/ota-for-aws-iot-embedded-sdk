@@ -210,13 +210,11 @@ typedef struct OtaJobDocument
  * @ingroup ota_callback_types
  * @brief OTA update complete callback function typedef.
  *
- * The user may register a callback function when initializing the OTA Agent. This
+ * The user must register a callback function when initializing the OTA Agent. This
  * callback is used to notify the main application when the OTA update job is complete.
  * Typically, it is used to reset the device after a successful update by calling
  * @ref OTA_ActivateNewImage and may also be used to kick off user specified self tests
- * during the Self Test phase. If the user does not supply a custom callback function,
- * a default callback handler is used that automatically calls @ref OTA_ActivateNewImage
- * after a successful update.
+ * during the Self Test phase.
  *
  * The callback function is called with one of the following arguments:
  *
