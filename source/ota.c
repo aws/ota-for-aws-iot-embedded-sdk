@@ -3061,7 +3061,7 @@ static void initializeLocalBuffers( void )
  * successfully.
  */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
-                   OtaInterfaces_t * pOtaInterfaces,
+                   const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback )
 {

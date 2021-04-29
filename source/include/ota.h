@@ -298,7 +298,7 @@ typedef struct OtaAgentContext
     uint32_t numOfBlocksToReceive;                         /*!< Number of data blocks to receive per data request. */
     OtaAgentStatistics_t statistics;                       /*!< The OTA agent statistics block. */
     uint32_t requestMomentum;                              /*!< The number of requests sent before a response was received. */
-    OtaInterfaces_t * pOtaInterface;                       /*!< Collection of all interfaces used by the agent. */
+    const OtaInterfaces_t * pOtaInterface;                 /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
 } OtaAgentContext_t;
@@ -387,7 +387,7 @@ typedef struct OtaAgentContext
  */
 /* @[declare_ota_init] */
 OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
-                   OtaInterfaces_t * pOtaInterfaces,
+                   const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
 /* @[declare_ota_init] */
