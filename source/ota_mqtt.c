@@ -292,7 +292,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( value > 0U )
+    while( value >= 0U )
     {
         *pCur++ = asciiDigits[ ( value % 10U ) ];
         value /= 10U;
