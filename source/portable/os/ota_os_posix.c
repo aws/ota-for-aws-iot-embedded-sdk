@@ -39,6 +39,7 @@
 
 /* Posix includes. */
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <mqueue.h>
 
 /* OTA OS POSIX Interface Includes.*/
