@@ -43,7 +43,7 @@
 #define MAX_MSG_SIZE    sizeof( OtaEventMsg_t )
 
 /* Array containing pointer to the OTA event structures used to send events to the OTA task. */
-static OtaEventMsg_t queueData[ MAX_MESSAGES ];
+static OtaEventMsg_t queueData[ MAX_MESSAGES * MAX_MSG_SIZE ];
 
 /* The queue control structure.  .*/
 static StaticQueue_t staticQueue;
@@ -68,7 +68,7 @@ OtaOsStatus_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 
     ( void ) pEventCtx;
 
-    otaEventQueue = xQueueCreateStatic( ( UBaseType_t ) OTA_NUM_MSG_Q_ENTRIES,
+    otaEventQueue = xQueueCreateStatic( ( UBaseType_t ) MAX_MESSAGES,
                                         ( UBaseType_t ) MAX_MSG_SIZE,
                                         ( uint8_t * ) queueData,
                                         &staticQueue );
