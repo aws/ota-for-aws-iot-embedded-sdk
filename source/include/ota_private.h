@@ -59,11 +59,7 @@
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
 #define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
-#ifdef configOTA_NUM_MSG_Q_ENTRIES
-    #define OTA_NUM_MSG_Q_ENTRIES    configOTA_NUM_MSG_Q_ENTRIES
-#else
-    #define OTA_NUM_MSG_Q_ENTRIES    20U                   /*!< Maximum number of entries in the OTA message queue. */
-#endif
+
 /** @} */
 
 /**
