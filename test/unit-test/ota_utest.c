@@ -91,7 +91,7 @@
 
 #define min( x, y )    ( x < y ? x : y )
 
-#define OTA_NUM_MSG_Q_ENTRIES 20
+#define OTA_NUM_MSG_Q_ENTRIES    20
 
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
