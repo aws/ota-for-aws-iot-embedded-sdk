@@ -1950,7 +1950,6 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
     const char * jobDocValue = NULL;
     const char * jobIdValue = NULL;
 
-
     jobDoc.parseErr = OtaJobParseErrUnknown;
 
     /* If this is a valid custom job, extract job document and job ID data from the JSON payload.*/
@@ -1970,10 +1969,6 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
                                            &jobDoc.jobIdLength,
                                            NULL ) ) )
     {
-        /* We have an unknown job parser error. Check to see if we can pass control
-         * to a callback for parsing */
-        otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
-
         if( ( jobDoc.jobIdLength > 0U ) && ( jobDoc.jobIdLength <= OTA_JOB_ID_MAX_SIZE ) ) /* LCOV_EXCL_BR_LINE */
         {
             jobDoc.pJobDocJson = ( const uint8_t * ) jobDocValue;
@@ -1984,6 +1979,10 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
         {
             jobDoc.parseErr = OtaJobParseErrNonConformingJobDoc;
         }
+
+        /* We have an unknown job parser error. Check to see if we can pass control
+         * to a callback for parsing */
+        otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
 
         if( jobDoc.parseErr == OtaJobParseErrNone )
         {
