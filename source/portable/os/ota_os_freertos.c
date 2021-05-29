@@ -215,7 +215,6 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
     configASSERT( callback != NULL );
     configASSERT( pTimerName != NULL );
-    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     /* Set OTA lib callback. */
     otaTimerCallback = callback;
@@ -287,8 +286,6 @@ OtaOsStatus_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
 
-    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
-
     if( otaTimer[ otaTimerId ] != NULL )
     {
         /* Stop the timer. */
@@ -320,8 +317,6 @@ OtaOsStatus_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     BaseType_t retVal = pdFALSE;
-
-    configASSERT( ( otaTimerId >= OtaRequestTimer ) && ( otaTimerId < OtaNumOfTimers ) );
 
     if( otaTimer[ otaTimerId ] != NULL )
     {
