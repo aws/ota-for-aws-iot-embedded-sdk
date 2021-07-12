@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+cleanupData_Http proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for cleanupData_Http.
 
 To run the proof.
 -------------

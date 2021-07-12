@@ -1,7 +1,7 @@
-setControlInterface proof
+setDataaInterface proof
 ==============
 
-This directory contains a memory safety proof for setControlInterface.
+This directory contains a memory safety proof for setDataInterface.
 
 To run the proof.
 -------------
