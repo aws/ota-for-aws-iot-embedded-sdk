@@ -1,0 +1,1 @@
+../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/bounds_check/bounds_check_harness.c

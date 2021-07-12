@@ -1,0 +1,1 @@
+../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/signed_overflow_check/signed_overflow_check_harness.c

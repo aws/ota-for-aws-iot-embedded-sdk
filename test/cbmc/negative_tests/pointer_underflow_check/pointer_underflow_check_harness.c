@@ -1,0 +1,1 @@
+../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/pointer_underflow_check/pointer_underflow_check_harness.c
