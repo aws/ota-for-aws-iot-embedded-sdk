@@ -1,7 +1,7 @@
-initFileTransfer_Http proof
+requestDataBlock_Http proof
 ==============
 
-This directory contains a memory safety proof for initFileTransfer_Http.
+This directory contains a memory safety proof for requestDataBlock_Http.
 
 To run the proof.
 -------------
