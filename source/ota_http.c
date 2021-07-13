@@ -40,6 +40,7 @@
  *
  */
 static uint32_t currBlock;
+
 /*
  * Init file transfer by initializing the http module with the pre-signed url.
  */
