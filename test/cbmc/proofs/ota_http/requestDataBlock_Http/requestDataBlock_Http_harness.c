@@ -27,29 +27,32 @@
 
 #include "ota_http_private.h"
 
-OtaHttpStatus_t request(uint32_t rangeStart, uint32_t rangeEnd){
-  OtaHttpStatus_t status;
-  return status;
+OtaHttpStatus_t request( uint32_t rangeStart,
+                         uint32_t rangeEnd )
+{
+    OtaHttpStatus_t status;
+
+    return status;
 }
 
 void requestDataBlock_Http_harness()
 {
-  OtaAgentContext_t *pAgentCtx;
-  OtaFileContext_t fileContext; 
-  OtaHttpInterface_t http;
+    OtaAgentContext_t * pAgentCtx;
+    OtaFileContext_t fileContext;
+    OtaHttpInterface_t http;
 
-  OtaInterfaces_t interface; 
+    OtaInterfaces_t interface;
 
-  pAgentCtx = (OtaAgentContext_t*) malloc(sizeof(OtaAgentContext_t));
+    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
-  __CPROVER_assume(pAgentCtx != NULL);
+    __CPROVER_assume( pAgentCtx != NULL );
 
-  pAgentCtx->fileContext = fileContext;
+    pAgentCtx->fileContext = fileContext;
 
-  http.request = request;
-  interface.http = http;
-  __CPROVER_assume(pAgentCtx->fileContext.fileSize != 0);
-  pAgentCtx->pOtaInterface = &interface;
+    http.request = request;
+    interface.http = http;
+    __CPROVER_assume( pAgentCtx->fileContext.fileSize != 0 );
+    pAgentCtx->pOtaInterface = &interface;
 
-  requestDataBlock_Http(pAgentCtx);
+    requestDataBlock_Http( pAgentCtx );
 }

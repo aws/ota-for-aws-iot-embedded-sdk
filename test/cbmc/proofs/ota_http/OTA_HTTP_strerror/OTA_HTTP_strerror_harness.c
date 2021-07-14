@@ -30,7 +30,7 @@
 
 void OTA_HTTP_strerror_harness()
 {
-  OtaHttpStatus_t status;
+    OtaHttpStatus_t status;
 
-  OTA_HTTP_strerror(status);
+    OTA_HTTP_strerror( status );
 }

@@ -28,16 +28,16 @@
 
 void setDataInterface_harness()
 {
-  OtaDataInterface_t* pDataInterface;
-  uint8_t* pProtocol;
-  size_t size; 
+    OtaDataInterface_t * pDataInterface;
+    uint8_t * pProtocol;
+    size_t size;
 
-  pDataInterface = (OtaDataInterface_t *)malloc(sizeof(OtaDataInterface_t));
+    pDataInterface = ( OtaDataInterface_t * ) malloc( sizeof( OtaDataInterface_t ) );
 
-  __CPROVER_assume(size < 100);
-  pProtocol = (uint8_t*)malloc(size);
+    __CPROVER_assume( size < 100 );
+    pProtocol = ( uint8_t * ) malloc( size );
 
-  __CPROVER_assume(pDataInterface != NULL);
+    __CPROVER_assume( pDataInterface != NULL );
 
-  setDataInterface(pDataInterface,pProtocol);
+    setDataInterface( pDataInterface, pProtocol );
 }

@@ -29,10 +29,10 @@
 
 void setControlInterface_harness()
 {
-  OtaControlInterface_t* pControlInterface;
+    OtaControlInterface_t * pControlInterface;
 
-  pControlInterface = (OtaControlInterface_t *)malloc(sizeof(OtaControlInterface_t));
+    pControlInterface = ( OtaControlInterface_t * ) malloc( sizeof( OtaControlInterface_t ) );
 
-  __CPROVER_assume(pControlInterface != NULL);
-  setControlInterface(pControlInterface);
+    __CPROVER_assume( pControlInterface != NULL );
+    setControlInterface( pControlInterface );
 }

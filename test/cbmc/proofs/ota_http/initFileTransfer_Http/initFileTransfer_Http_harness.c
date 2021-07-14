@@ -26,29 +26,31 @@
  */
 #include "ota_http_private.h"
 
-OtaHttpStatus_t init(char* pUrl){
-  OtaHttpStatus_t status;
-  return status;
+OtaHttpStatus_t init( char * pUrl )
+{
+    OtaHttpStatus_t status;
+
+    return status;
 }
 
 void initFileTransfer_Http_harness()
 {
-  OtaAgentContext_t *pAgentCtx;
-  OtaFileContext_t fileContext; 
-  OtaHttpInterface_t http;
+    OtaAgentContext_t * pAgentCtx;
+    OtaFileContext_t fileContext;
+    OtaHttpInterface_t http;
 
-  OtaInterfaces_t interface; 
+    OtaInterfaces_t interface;
 
-  pAgentCtx = (OtaAgentContext_t*) malloc(sizeof(OtaAgentContext_t));
+    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
-  __CPROVER_assume(pAgentCtx != NULL);
+    __CPROVER_assume( pAgentCtx != NULL );
 
-  pAgentCtx->fileContext = fileContext;
+    pAgentCtx->fileContext = fileContext;
 
-  http.init = init;
-  interface.http = http;
+    http.init = init;
+    interface.http = http;
 
-  pAgentCtx->pOtaInterface = &interface;
+    pAgentCtx->pOtaInterface = &interface;
 
-  initFileTransfer_Http(pAgentCtx);
+    initFileTransfer_Http( pAgentCtx );
 }

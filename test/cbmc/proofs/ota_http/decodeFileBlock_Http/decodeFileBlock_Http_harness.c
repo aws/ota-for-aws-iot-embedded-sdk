@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file decodeFileBlock_Http_harness.c
  * @brief Implements the proof harness for decodeFileBlock_Http function.
@@ -29,32 +30,31 @@
 
 void decodeFileBlock_Http_harness()
 {
+    uint8_t * pMessageBuffer;
+    size_t messageSize;
+    int32_t * pFileId;
+    int32_t * pBlockId;
+    int32_t * pBlockSize;
+    uint8_t ** pPayload;
+    size_t * pPayloadSize;
 
-  uint8_t* pMessageBuffer;
-  size_t messageSize;
-  int32_t* pFileId;
-  int32_t* pBlockId;
-  int32_t* pBlockSize;
-  uint8_t** pPayload;
-  size_t * pPayloadSize;
+    __CPROVER_assume( messageSize < ( OTA_FILE_BLOCK_SIZE + 1 ) && messageSize != 0 );
 
-  __CPROVER_assume(messageSize < (OTA_FILE_BLOCK_SIZE + 1) && messageSize != 0);
+    pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
-  pMessageBuffer = (uint8_t*)malloc(messageSize);
+    pFileId = ( int32_t * ) malloc( sizeof( int32_t ) );
+    pBlockId = ( int32_t * ) malloc( sizeof( int32_t ) );
+    pBlockSize = ( int32_t * ) malloc( sizeof( int32_t ) );
 
-  pFileId = (int32_t *)malloc(sizeof(int32_t));
-  pBlockId = (int32_t *)malloc(sizeof(int32_t));
-  pBlockSize = (int32_t *)malloc(sizeof(int32_t));
+    char * temp = malloc( messageSize );
+    __CPROVER_assume( temp != NULL );
 
-  char* temp = malloc(messageSize);
-  __CPROVER_assume(temp != NULL);
+    pPayload = &temp;
 
-  pPayload = &temp;
+    pPayloadSize = ( size_t * ) malloc( sizeof( size_t ) );
 
-  pPayloadSize = (size_t *)malloc(sizeof(size_t));
+    __CPROVER_assume( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
+                      pBlockSize != NULL && pPayloadSize != NULL );
 
-  __CPROVER_assume(pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
-            pBlockSize != NULL && pPayloadSize != NULL);
-  
-  decodeFileBlock_Http(pMessageBuffer,messageSize,pFileId,pBlockId,pBlockSize,pPayload,pPayloadSize);
+    decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId, pBlockId, pBlockSize, pPayload, pPayloadSize );
 }

@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file cleanupData_Http_harness.c
  * @brief Implements the proof harness for cleanupData_Http function.
@@ -27,28 +28,29 @@
 #include "ota.h"
 #include "ota_http_private.h"
 
-OtaHttpStatus_t deinit(){
-  OtaHttpStatus_t status;
+OtaHttpStatus_t deinit()
+{
+    OtaHttpStatus_t status;
 
-  return status;
+    return status;
 }
 
 void cleanupData_Http_harness()
 {
-  OtaAgentContext_t* pAgentCtx;
-  OtaHttpInterface_t http; 
-  OtaInterfaces_t* interfaces;
-  
-  pAgentCtx = (OtaAgentContext_t* )malloc(sizeof(OtaAgentContext_t));
-  interfaces = (OtaInterfaces_t*) malloc(sizeof(OtaInterfaces_t));
+    OtaAgentContext_t * pAgentCtx;
+    OtaHttpInterface_t http;
+    OtaInterfaces_t * interfaces;
 
-  http.deinit = deinit;
+    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
+    interfaces = ( OtaInterfaces_t * ) malloc( sizeof( OtaInterfaces_t ) );
 
-  __CPROVER_assume(pAgentCtx != NULL && interfaces != NULL);
-  
-  interfaces->http = http;
- 
-  pAgentCtx->pOtaInterface = interfaces;
-  
-  cleanupData_Http(pAgentCtx);
+    http.deinit = deinit;
+
+    __CPROVER_assume( pAgentCtx != NULL && interfaces != NULL );
+
+    interfaces->http = http;
+
+    pAgentCtx->pOtaInterface = interfaces;
+
+    cleanupData_Http( pAgentCtx );
 }

@@ -29,6 +29,7 @@
 
 void OTA_MQTT_strerror_harness()
 {
-  OtaMqttStatus_t status;
-  OTA_MQTT_strerror(status);
+    OtaMqttStatus_t status;
+
+    OTA_MQTT_strerror( status );
 }

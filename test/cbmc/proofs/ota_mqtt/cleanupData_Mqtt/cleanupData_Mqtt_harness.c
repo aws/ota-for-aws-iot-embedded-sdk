@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file cleanupData_Mqtt_harness.c
  * @brief Implements the proof harness for cleanupData_Mqtt function.
@@ -28,7 +29,7 @@
 
 void cleanupData_Mqtt_harness()
 {
-  OtaAgentContext_t* pAgentCtx;
+    OtaAgentContext_t * pAgentCtx;
 
-  cleanupData_Mqtt(pAgentCtx);
+    cleanupData_Mqtt( pAgentCtx );
 }
