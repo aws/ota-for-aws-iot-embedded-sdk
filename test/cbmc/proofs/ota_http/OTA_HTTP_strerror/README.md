@@ -1,7 +1,7 @@
 OTA_HTTP_strerror proof
 ==============
 
-This directory contains a memory safety proof for OTA_HTTP_strerror .
+This directory contains a memory safety proof for OTA_HTTP_strerror.
 
 To run the proof.
 -------------
