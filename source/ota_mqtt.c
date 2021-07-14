@@ -1193,7 +1193,7 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
             result = OtaErrCleanupControlFailed;
         }
     }
-    
+
     return result;
 }
 
@@ -1251,6 +1251,6 @@ const char * OTA_MQTT_strerror( OtaMqttStatus_t status )
             str = "InvalidErrorCode";
             break;
     }
-    
+
     return str;
 }
