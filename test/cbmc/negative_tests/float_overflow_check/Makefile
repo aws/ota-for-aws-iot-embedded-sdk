@@ -1,1 +1,0 @@
-../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/float_overflow_check/Makefile

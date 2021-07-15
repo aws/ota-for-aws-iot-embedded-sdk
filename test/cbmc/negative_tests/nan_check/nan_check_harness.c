@@ -1,1 +1,0 @@
-../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/nan_check/nan_check_harness.c

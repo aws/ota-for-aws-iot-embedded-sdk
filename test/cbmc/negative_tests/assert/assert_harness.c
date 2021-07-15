@@ -1,1 +1,0 @@
-../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/assert/assert_harness.c

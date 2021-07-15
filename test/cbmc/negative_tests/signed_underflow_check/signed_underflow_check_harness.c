@@ -1,1 +1,0 @@
-../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/signed_underflow_check/signed_underflow_check_harness.c

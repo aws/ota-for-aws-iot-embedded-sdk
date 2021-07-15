@@ -1,1 +1,0 @@
-../../aws-templates-for-cbmc-proofs/template-for-repository/negative_tests/undefined_shift_check/undefined_shift_check_harness.c
