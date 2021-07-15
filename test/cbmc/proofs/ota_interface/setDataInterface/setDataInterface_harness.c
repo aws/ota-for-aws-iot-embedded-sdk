@@ -22,7 +22,7 @@
 
 /**
  * @file setControlInterface_harness.c
- * @brief Implements the proof harness for setControlInterface function.
+ * @brief Implements the proof harness for setDataInterface function.
  */
 #include "ota_interface_private.h"
 
