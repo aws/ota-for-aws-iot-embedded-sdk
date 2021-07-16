@@ -14,10 +14,10 @@
 ################################################################
 
 # Flags to pass to goto-cc for compilation (typically those passed to gcc -c)
-COMPILE_FLAGS = -fPIC
+#COMPILE_FLAGS = -fPIC
 
 # Flags to pass to goto-cc for linking (typically those passed to gcc)
-LINK_FLAGS = -std=gnu90
+#LINK_FLAGS = -std=gnu90
 
 # Preprocessor include paths -I...
 # Consider adding
@@ -29,7 +29,7 @@ INCLUDES += -I$(SRCDIR)/source/include
 INCLUDES += -I$(SRCDIR)/test/unit-test
 
 # Preprocessor definitions -D...
-DEFINES = -Dhttp_EXPORTS
+#DEFINES = -Dhttp_EXPORTS
 
 # Path to arpa executable
 # ARPA =
