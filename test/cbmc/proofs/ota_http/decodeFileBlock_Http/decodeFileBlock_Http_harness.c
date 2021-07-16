@@ -38,8 +38,6 @@ void decodeFileBlock_Http_harness()
     uint8_t ** pPayload;
     size_t * pPayloadSize;
 
-    __CPROVER_assume( messageSize < ( OTA_FILE_BLOCK_SIZE + 1 ) && messageSize != 0 );
-
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
     pFileId = ( int32_t * ) malloc( sizeof( int32_t ) );
