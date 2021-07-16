@@ -1,0 +1,7 @@
+{ "expected-missing-functions":
+  [
+
+  ],
+  "proof-name": "OTA_MQTT_strerror",
+  "proof-root": "test/cbmc/proofs"
+}

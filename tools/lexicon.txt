@@ -47,6 +47,7 @@ bytestosend
 c89
 c90
 ca
+cbmc
 cbor
 cborarray
 cborerror
@@ -112,6 +113,7 @@ destlen
 destoffset
 developerguide
 didn
+div
 dns
 docmodel
 docparam
@@ -700,6 +702,7 @@ sendtimeout
 sendtimeoutms
 serverfileid
 serverinfo
+setcontrolinterface
 setdatainterface
 setimagestate
 setplatformimagestate
@@ -713,6 +716,7 @@ snihostname
 sockaddr
 sockets_invalid_parameter
 socketstatus
+spdx
 srand
 src
 ssl
