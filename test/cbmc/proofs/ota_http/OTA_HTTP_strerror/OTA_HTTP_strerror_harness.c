@@ -25,12 +25,16 @@
  * @brief Implements the proof harness for OTA_HTTP_strerror function.
  */
 
+/* http interface includes*/ 
 #include "ota_http_private.h"
-#include "ota_http_interface.h"
 
 void OTA_HTTP_strerror_harness()
 {
     OtaHttpStatus_t status;
-
-    OTA_HTTP_strerror( status );
+    const char* str = NULL; 
+    
+    str = OTA_HTTP_strerror( status );
+    
+    /* Assert to check the return of OTA_HTTP_strerror() is not null*/
+    __CPROVER_assert(str != NULL, "function cannot return null");
 }
