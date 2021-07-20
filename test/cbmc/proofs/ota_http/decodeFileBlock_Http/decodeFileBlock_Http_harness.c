@@ -24,12 +24,14 @@
  * @file decodeFileBlock_Http_harness.c
  * @brief Implements the proof harness for decodeFileBlock_Http function.
  */
-
+/* Http interface inclues. */
 #include "ota_http_private.h"
 
 
 void decodeFileBlock_Http_harness()
 {
+    OtaErr_t err;
+
     uint8_t * pMessageBuffer;
     size_t messageSize;
     int32_t * pFileId;
@@ -38,21 +40,48 @@ void decodeFileBlock_Http_harness()
     uint8_t ** pPayload;
     size_t * pPayloadSize;
 
+    int32_t fileId;
+    int32_t blockId;
+    int32_t blockSize;
+    size_t payloadSize;
+
+    /* Initializing the unconstrained variables. */
+    pFileId = &fileId;
+    pBlockId = &blockId;
+    pBlockSize = &blockSize;
+
+    char * size = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
-    pFileId = ( int32_t * ) malloc( sizeof( int32_t ) );
-    pBlockId = ( int32_t * ) malloc( sizeof( int32_t ) );
-    pBlockSize = ( int32_t * ) malloc( sizeof( int32_t ) );
+    /* The size of the message buffer cannot be null. */
+    __CPROVER_assume( size != NULL );
 
-    char * temp = malloc( messageSize );
-    __CPROVER_assume( temp != NULL );
+    /* Intializing the variable. */
+    pPayload = &size;
+    pPayloadSize = &payloadSize;
 
-    pPayload = &temp;
+    /* The size of message buffer is not null. */
+    __CPROVER_assume( pMessageBuffer != NULL );
 
-    pPayloadSize = ( size_t * ) malloc( sizeof( size_t ) );
+    /* pFileId should be pointing to a file. */
+    __CPROVER_assume( pFileId != NULL );
 
-    __CPROVER_assume( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
-                      pBlockSize != NULL && pPayloadSize != NULL );
+    /* pBlockId should point to a block inside the file. */
+    __CPROVER_assume( pBlockId != NULL );
 
-    decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId, pBlockId, pBlockSize, pPayload, pPayloadSize );
+    /* The block should have non-zero size. */
+    __CPROVER_assume( pBlockSize != NULL );
+
+    /* the size of the Payload should be non-zero. */
+    __CPROVER_assume( pPayloadSize != NULL );
+
+    /* Call the proof. */
+    err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId, pBlockId, pBlockSize, pPayload, pPayloadSize );
+
+    /* Assert because the function cannot return values other OtaErrNone and OtaErrInvalidArg. */
+    __CPROVER_assert( ( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ) ), "Function return should be either None or invalid argument" );
+
+    /* Free allocated memory. */
+    free( size );
+    free( pMessageBuffer );
 }
