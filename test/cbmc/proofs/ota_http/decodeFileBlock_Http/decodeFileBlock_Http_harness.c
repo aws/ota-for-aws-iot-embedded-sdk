@@ -24,7 +24,7 @@
  * @file decodeFileBlock_Http_harness.c
  * @brief Implements the proof harness for decodeFileBlock_Http function.
  */
-/* Http interface inclues. */
+/* Http interface includes. */
 #include "ota_http_private.h"
 
 
@@ -56,7 +56,7 @@ void decodeFileBlock_Http_harness()
     /* The size of the message buffer cannot be null. */
     __CPROVER_assume( size != NULL );
 
-    /* Intializing the variable. */
+    /* Initializing the variable. */
     pPayload = &size;
     pPayloadSize = &payloadSize;
 
