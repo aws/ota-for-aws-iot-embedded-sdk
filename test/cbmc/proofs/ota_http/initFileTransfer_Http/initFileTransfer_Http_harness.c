@@ -45,11 +45,11 @@ void initFileTransfer_Http_harness()
 
     pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
-    /* The funciton requires Agent and the interface to be initialized and
+    /* The function requires Agent and the interface to be initialized and
      *  thus they can't be NULL. If they are, they will hit an assert in the function. */
     __CPROVER_assume( pAgentCtx != NULL );
 
-    /* Initlaize the file context from the Agent context. */
+    /* Initialize the file context from the Agent context. */
     pAgentCtx->fileContext = fileContext;
 
     /* Updating the function pointer in Http to the stub. */

@@ -28,6 +28,7 @@ bitmaplen
 bitmask
 blockbitmapmaxsize
 blockbitmapsize
+blockid
 blockindex
 blockindex
 blockoffset
@@ -548,6 +549,7 @@ pfilepath
 pfinalfile
 pformat
 phostname
+phttp
 pjobdocjson
 pjobid
 pjobname
