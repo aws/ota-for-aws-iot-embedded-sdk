@@ -36,7 +36,7 @@ void OTA_HTTP_strerror_harness()
     /* Call function under test. */
     pstr = OTA_HTTP_strerror( status );
 
-    /* Assert to check the return of the function is not null. If it is,
-     *  then there is some problem. */
+    /* The function returns a string which is never a NULL. If it does, then 
+        there is a problem. */
     __CPROVER_assert( pstr != NULL, "function cannot return null" );
 }
