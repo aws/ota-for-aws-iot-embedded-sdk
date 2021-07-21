@@ -21,23 +21,33 @@
  */
 
 /**
- * @file setControlInterface_harness.c
+ * @file setDataInterface_harness.c
  * @brief Implements the proof harness for setDataInterface function.
  */
+/* Ota interface includes. */
 #include "ota_interface_private.h"
 
 void setDataInterface_harness()
 {
     OtaDataInterface_t * pDataInterface;
+    OtaDataInterface_t dataInterface;
+    OtaErr_t err;
+
     uint8_t * pProtocol;
     size_t size;
 
-    pDataInterface = ( OtaDataInterface_t * ) malloc( sizeof( OtaDataInterface_t ) );
-
-    __CPROVER_assume( size < 100 );
+    /* Initialize the variable. */
     pProtocol = ( uint8_t * ) malloc( size );
+    pDataInterface = &dataInterface;
 
-    __CPROVER_assume( pDataInterface != NULL );
+    /* Call the function under test. */
+    err = setDataInterface( pDataInterface, pProtocol );
 
-    setDataInterface( pDataInterface, pProtocol );
+    /* The function return can only be either of two values i.e OtaErrNone or
+     *  OtaErrInvalidDataProtocol. */
+    __CPROVER_assert( ( err == OtaErrInvalidDataProtocol ) || ( err == OtaErrNone ),
+                      "The function return can be either of those values." );
+
+    /* Free variables. */
+    free( pProtocol );
 }

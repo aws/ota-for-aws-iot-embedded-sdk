@@ -24,15 +24,17 @@
  * @file setControlInterface_harness.c
  * @brief Implements the proof harness for setControlInterface function.
  */
-
+/* Ota interface includes. */
 #include "ota_interface_private.h"
 
 void setControlInterface_harness()
 {
     OtaControlInterface_t * pControlInterface;
+    OtaControlInterface_t controlInterface;
 
-    pControlInterface = ( OtaControlInterface_t * ) malloc( sizeof( OtaControlInterface_t ) );
+    /* Initialize the control interface. */
+    pControlInterface = &controlInterface;
 
-    __CPROVER_assume( pControlInterface != NULL );
+    /* Call to the function under test. */
     setControlInterface( pControlInterface );
 }

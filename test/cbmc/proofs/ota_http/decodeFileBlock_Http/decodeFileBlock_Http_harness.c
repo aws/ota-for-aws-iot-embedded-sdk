@@ -50,6 +50,7 @@ void decodeFileBlock_Http_harness()
     pBlockId = &blockId;
     pBlockSize = &blockSize;
 
+    /* Allocate memory for the payload and the buffer to store the message. */
     char * size = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
@@ -75,11 +76,13 @@ void decodeFileBlock_Http_harness()
     /* the size of the Payload should be non-zero. */
     __CPROVER_assume( pPayloadSize != NULL );
 
-    /* Call the proof. */
-    err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId, pBlockId, pBlockSize, pPayload, pPayloadSize );
+    /* Call the function under test. */
+    err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId,
+                                pBlockId, pBlockSize, pPayload, pPayloadSize );
 
     /* Assert because the function cannot return values other OtaErrNone and OtaErrInvalidArg. */
-    __CPROVER_assert( ( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ) ), "Function return should be either None or invalid argument" );
+    __CPROVER_assert( ( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ) ),
+                      "Function return should be either None or invalid argument" );
 
     /* Free allocated memory. */
     free( size );

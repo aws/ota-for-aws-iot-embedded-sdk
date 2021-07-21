@@ -24,33 +24,44 @@
  * @file cleanupData_Http_harness.c
  * @brief Implements the proof harness for cleanupData_Http function.
  */
-
-#include "ota.h"
+/* Http Interface includes. */
 #include "ota_http_private.h"
 
+/* Stub required for the proof. */
 OtaHttpStatus_t deinit()
 {
     OtaHttpStatus_t status;
 
     return status;
 }
+/*-----------------------------------------------------------*/
 
 void cleanupData_Http_harness()
 {
     OtaAgentContext_t * pAgentCtx;
-    OtaHttpInterface_t http;
-    OtaInterfaces_t * interfaces;
+    OtaHttpInterface_t pHttp;
+    OtaInterfaces_t * pInterfaces;
+    OtaHttpStatus_t status;
 
     pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
-    interfaces = ( OtaInterfaces_t * ) malloc( sizeof( OtaInterfaces_t ) );
+    pInterfaces = ( OtaInterfaces_t * ) malloc( sizeof( OtaInterfaces_t ) );
 
-    http.deinit = deinit;
+    /* The funciton requires Agent and the interface to be initialized and thus
+     * they can't be NULL. If they are, they will hit an assert in the function. */
+    __CPROVER_assume( pAgentCtx != NULL && pInterfaces != NULL );
 
-    __CPROVER_assume( pAgentCtx != NULL && interfaces != NULL );
+    /* Updating the function pointer in pHttp to the stub. */
+    pHttp.deinit = deinit;
 
-    interfaces->http = http;
+    /* Update the interface and the Agent. */
+    pInterfaces->http = pHttp;
+    pAgentCtx->pOtaInterface = pInterfaces;
 
-    pAgentCtx->pOtaInterface = interfaces;
+    /* Call the function under test. */
+    status = cleanupData_Http( pAgentCtx );
 
-    cleanupData_Http( pAgentCtx );
+    /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */
+    __CPROVER_assert( ( status == OtaErrNone ) ||
+                      ( status == OtaErrCleanupDataFailed ),
+                      "The function return should be either OtaErrNone or OtaErrCleanupDataFailed" );
 }

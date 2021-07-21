@@ -24,8 +24,10 @@
  * @file initFileTransfer_Http_harness.c
  * @brief Implements the proof harness for initFileTransfer_Http function.
  */
+/* Http interface includes. */
 #include "ota_http_private.h"
 
+/* Stub required for the proof. */
 OtaHttpStatus_t init( char * pUrl )
 {
     OtaHttpStatus_t status;
@@ -38,19 +40,30 @@ void initFileTransfer_Http_harness()
     OtaAgentContext_t * pAgentCtx;
     OtaFileContext_t fileContext;
     OtaHttpInterface_t http;
-
+    OtaHttpStatus_t status;
     OtaInterfaces_t interface;
 
     pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
+    /* The funciton requires Agent and the interface to be initialized and
+     *  thus they can't be NULL. If they are, they will hit an assert in the function. */
     __CPROVER_assume( pAgentCtx != NULL );
 
+    /* Initlaize the file context from the Agent context. */
     pAgentCtx->fileContext = fileContext;
 
+    /* Updating the function pointer in Http to the stub. */
     http.init = init;
-    interface.http = http;
 
+    /* Update the interface and the Agent. */
+    interface.http = http;
     pAgentCtx->pOtaInterface = &interface;
 
-    initFileTransfer_Http( pAgentCtx );
+    /* Call function under test. */
+    status = initFileTransfer_Http( pAgentCtx );
+
+    /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */
+    __CPROVER_assert( ( status == OtaErrNone ) ||
+                      ( status == OtaErrInitFileTransferFailed ),
+                      "The function return should be either OtaErrNone or OtaErrCleanupDataFailed" );
 }

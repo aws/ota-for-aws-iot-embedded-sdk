@@ -24,9 +24,10 @@
  * @file requestDataBlock_Http_harness.c
  * @brief Implements the proof harness for requestDataBlock_Http function.
  */
-
+/* Http interface includes. */
 #include "ota_http_private.h"
 
+/* Stub required for the proof. */
 OtaHttpStatus_t request( uint32_t rangeStart,
                          uint32_t rangeEnd )
 {
@@ -34,25 +35,38 @@ OtaHttpStatus_t request( uint32_t rangeStart,
 
     return status;
 }
+/*-----------------------------------------------------------*/
 
 void requestDataBlock_Http_harness()
 {
     OtaAgentContext_t * pAgentCtx;
     OtaFileContext_t fileContext;
     OtaHttpInterface_t http;
-
     OtaInterfaces_t interface;
+    OtaErr_t err;
 
+    /* Allocating memory to the agent context. */
     pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
+    /* The Agent context cannot point to NULL. If it does, then the assert
+     *  in the source file is triggered. */
     __CPROVER_assume( pAgentCtx != NULL );
 
+    /* Initialize the file context field in the Agent context. */
     pAgentCtx->fileContext = fileContext;
-
     http.request = request;
     interface.http = http;
+
+    /* The file size in the file context should have a non-zero value. */
     __CPROVER_assume( pAgentCtx->fileContext.fileSize != 0 );
+
+    /* Initialize the interface in the Agent Context. */
     pAgentCtx->pOtaInterface = &interface;
 
-    requestDataBlock_Http( pAgentCtx );
+    /* Call to the function under test. */
+    err = requestDataBlock_Http( pAgentCtx );
+
+    /*Assert to check if the return from the function is of expected values. */
+    __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrRequestFileBlockFailed ),
+                      "The function return should be either of these values" );
 }
