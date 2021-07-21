@@ -54,8 +54,8 @@ void decodeFileBlock_Http_harness()
     char * size = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
-    /* size is used to store the content from the message buffer and should 
-        not point to a NULL address. */
+    /* size is used to store the content from the message buffer and should
+     *  not point to a NULL address. */
     __CPROVER_assume( size != NULL );
 
     /* Initializing the variable. */
@@ -63,22 +63,22 @@ void decodeFileBlock_Http_harness()
     pPayloadSize = &payloadSize;
 
     /* pMessageBuffer stores the message from the FIle and should point to a NULL
-        address. */
+     *  address. */
     __CPROVER_assume( pMessageBuffer != NULL );
 
     /* pFileId is required to point to a FILE and cannot point to a NULL address. */
     __CPROVER_assume( pFileId != NULL );
 
     /* BlockId is pointer to the block inside the file and should not point to a NULL
-       address. */
+     * address. */
     __CPROVER_assume( pBlockId != NULL );
 
-    /* pBlockSize is a pointer to store the size of the current block and should not 
-        point to a NULL address. */
+    /* pBlockSize is a pointer to store the size of the current block and should not
+     *  point to a NULL address. */
     __CPROVER_assume( pBlockSize != NULL );
 
-    /* pPayloadSize is the pointer to a variable which stores the size of the Payload 
-        and should not be point to NULL address. */
+    /* pPayloadSize is the pointer to a variable which stores the size of the Payload
+     *  and should not be point to NULL address. */
     __CPROVER_assume( pPayloadSize != NULL );
 
     /* Call the function under test. */

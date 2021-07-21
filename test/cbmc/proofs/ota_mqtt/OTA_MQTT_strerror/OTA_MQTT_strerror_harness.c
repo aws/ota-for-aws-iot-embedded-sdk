@@ -36,6 +36,6 @@ void OTA_MQTT_strerror_harness()
     pstr = OTA_MQTT_strerror( status );
 
     /* The function returns a string which is never NULL. If it does, then it is a
-        problem. */
+     *  problem. */
     __CPROVER_assert( pstr != NULL, "Function return cannot be NULL" );
 }
