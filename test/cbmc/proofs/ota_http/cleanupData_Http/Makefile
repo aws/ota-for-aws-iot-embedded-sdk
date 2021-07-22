@@ -10,8 +10,6 @@ PROOF_UID = cleanupData_Http_harness
 
 DEFINES +=
 
-INCLUDES += $(SRCDIR)/source/include
-
 REMOVE_FUNCTION_BODY +=
 UNWINDSET +=
 

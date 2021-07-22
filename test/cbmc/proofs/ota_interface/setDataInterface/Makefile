@@ -9,7 +9,6 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = setDataInterface
 
 DEFINES +=
-INCLUDES += $(SRCDIR)/source/include
 
 REMOVE_FUNCTION_BODY +=
 UNWINDSET +=

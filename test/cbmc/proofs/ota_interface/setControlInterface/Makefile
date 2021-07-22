@@ -9,7 +9,6 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = setControlInterface
 
 DEFINES +=
-INCLUDES += /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include
 
 REMOVE_FUNCTION_BODY +=
 UNWINDSET +=

@@ -10,8 +10,6 @@ PROOF_UID = decodeFileBlock_Http
 
 DEFINES +=
 
-INCLUDES += $(SRCDIR)/source/include
-
 REMOVE_FUNCTION_BODY +=
 UNWINDSET +=
 
