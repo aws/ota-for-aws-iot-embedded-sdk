@@ -63,7 +63,6 @@ void requestDataBlock_Http_harness()
     /* Initialize the interface in the Agent Context. */
     pAgentCtx->pOtaInterface = &interface;
 
-    /* Call to the function under test. */
     err = requestDataBlock_Http( pAgentCtx );
 
     /*Assert to check if the return from the function is of expected values. */

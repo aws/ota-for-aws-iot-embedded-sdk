@@ -33,7 +33,6 @@ void OTA_HTTP_strerror_harness()
     OtaHttpStatus_t status;
     const char * pstr = NULL;
 
-    /* Call function under test. */
     pstr = OTA_HTTP_strerror( status );
 
     /* The function returns a string which is never a NULL. If it does, then

@@ -40,7 +40,6 @@ void setDataInterface_harness()
     pProtocol = ( uint8_t * ) malloc( size );
     pDataInterface = &dataInterface;
 
-    /* Call the function under test. */
     err = setDataInterface( pDataInterface, pProtocol );
 
     /* The function return can only be either of two values i.e OtaErrNone or

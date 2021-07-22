@@ -59,7 +59,6 @@ void initFileTransfer_Http_harness()
     interface.http = http;
     pAgentCtx->pOtaInterface = &interface;
 
-    /* Call function under test. */
     status = initFileTransfer_Http( pAgentCtx );
 
     /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */

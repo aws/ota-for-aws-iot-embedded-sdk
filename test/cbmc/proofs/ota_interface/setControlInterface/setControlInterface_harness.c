@@ -35,6 +35,5 @@ void setControlInterface_harness()
     /* Initialize the control interface. */
     pControlInterface = &controlInterface;
 
-    /* Call to the function under test. */
     setControlInterface( pControlInterface );
 }

@@ -32,7 +32,6 @@ void OTA_MQTT_strerror_harness()
     OtaMqttStatus_t status;
     const char * pstr;
 
-    /* Call function under test. */
     pstr = OTA_MQTT_strerror( status );
 
     /* The function returns a string which is never NULL. If it does, then it is a

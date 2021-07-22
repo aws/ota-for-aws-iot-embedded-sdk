@@ -81,7 +81,6 @@ void decodeFileBlock_Http_harness()
      *  and should not be point to NULL address. */
     __CPROVER_assume( pPayloadSize != NULL );
 
-    /* Call the function under test. */
     err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId,
                                 pBlockId, pBlockSize, pPayload, pPayloadSize );
 

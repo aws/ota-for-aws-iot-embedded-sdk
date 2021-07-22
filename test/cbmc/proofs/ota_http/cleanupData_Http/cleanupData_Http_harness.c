@@ -57,7 +57,6 @@ void cleanupData_Http_harness()
     pInterfaces->http = pHttp;
     pAgentCtx->pOtaInterface = pInterfaces;
 
-    /* Call the function under test. */
     status = cleanupData_Http( pAgentCtx );
 
     /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */
