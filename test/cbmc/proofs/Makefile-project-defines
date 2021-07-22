@@ -26,10 +26,11 @@
 # include directories in your project.
 #
 INCLUDES += -I$(SRCDIR)/source/include
-INCLUDES += -I$(SRCDIR)/test/unit-test
 
 # Preprocessor definitions -D...
 #DEFINES = -Dhttp_EXPORTS
+
+DEFINES ?= -DOTA_DO_NOT_USE_CUSTOM_CONFIG
 
 # Path to arpa executable
 # ARPA =
