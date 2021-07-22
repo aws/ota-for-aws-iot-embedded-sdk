@@ -30,8 +30,6 @@ INCLUDES += -I$(SRCDIR)/source/include
 # Preprocessor definitions -D...
 #DEFINES = -Dhttp_EXPORTS
 
-DEFINES ?= -DOTA_DO_NOT_USE_CUSTOM_CONFIG
-
 # Path to arpa executable
 # ARPA =
 

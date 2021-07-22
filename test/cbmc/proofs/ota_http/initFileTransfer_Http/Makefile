@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = initFileTransfer_Http
 
-DEFINES += -DOTA_DO_NOT_USE_CUSTOM_CONFIG
+DEFINES += 
 INCLUDES += $(SRCDIR)/source/include
 
 REMOVE_FUNCTION_BODY +=
