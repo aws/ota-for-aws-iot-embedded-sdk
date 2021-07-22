@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = setControlInterface
 
-DEFINES += 
+DEFINES +=
 INCLUDES += /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include
 
 REMOVE_FUNCTION_BODY +=

@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = setDataInterface
 
-DEFINES += 
+DEFINES +=
 INCLUDES += $(SRCDIR)/source/include
 
 REMOVE_FUNCTION_BODY +=

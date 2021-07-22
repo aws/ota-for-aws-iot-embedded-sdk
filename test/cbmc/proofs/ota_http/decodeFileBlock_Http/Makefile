@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = decodeFileBlock_Http
 
-DEFINES += 
+DEFINES +=
 
 INCLUDES += $(SRCDIR)/source/include
 
