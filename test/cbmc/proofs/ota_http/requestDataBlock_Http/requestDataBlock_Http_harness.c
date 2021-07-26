@@ -48,8 +48,8 @@ void requestDataBlock_Http_harness()
     /* Allocating memory to the agent context. */
     pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
 
-    /* The Agent context cannot point to NULL. If it does, then the assert
-     *  in the source file is triggered. */
+    /* The Agent context can never be NULL since it is statically allocated in ota.c.
+         If it does, then the assert in the source file is triggered. */
     __CPROVER_assume( pAgentCtx != NULL );
 
     /* Initialize the file context field in the Agent context. */

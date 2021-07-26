@@ -26,7 +26,7 @@
  */
 /* Http Interface includes. */
 #include "ota_http_private.h"
-
+    
 /* Stub required for the proof. */
 OtaHttpStatus_t deinit()
 {
@@ -51,7 +51,12 @@ void cleanupData_Http_harness()
     __CPROVER_assume( pAgentCtx != NULL && pInterfaces != NULL );
 
     /* Updating the function pointer in pHttp to the stub. */
-    pHttp.deinit = deinit;
+    if(nondet_bool()){
+        pHttp.deinit = deinit;
+    }
+    else{
+        pHttp.deinit = NULL;
+    }
 
     /* Update the interface and the Agent. */
     pInterfaces->http = pHttp;

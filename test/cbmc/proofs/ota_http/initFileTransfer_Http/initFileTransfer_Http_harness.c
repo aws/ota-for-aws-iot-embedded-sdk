@@ -42,12 +42,9 @@ void initFileTransfer_Http_harness()
     OtaHttpInterface_t http;
     OtaHttpStatus_t status;
     OtaInterfaces_t interface;
+    OtaAgentContext_t agent; 
 
-    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
-
-    /* The function requires Agent and the interface to be initialized and
-     *  thus they can't be NULL. If they are, they will hit an assert in the function. */
-    __CPROVER_assume( pAgentCtx != NULL );
+    pAgentCtx = &agent;
 
     /* Initialize the file context from the Agent context. */
     pAgentCtx->fileContext = fileContext;
