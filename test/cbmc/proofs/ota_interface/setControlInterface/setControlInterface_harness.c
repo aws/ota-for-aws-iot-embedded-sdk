@@ -32,8 +32,8 @@ void setControlInterface_harness()
     OtaControlInterface_t * pControlInterface;
     OtaControlInterface_t controlInterface;
 
-    /* Initialize the control interface. The control interface can never 
-        be NULL as it is declared statically in ota.c source file. */
+    /* Initialize the control interface. The control interface can never
+     *  be NULL as it is declared statically in ota.c source file. */
     pControlInterface = &controlInterface;
 
     setControlInterface( pControlInterface );

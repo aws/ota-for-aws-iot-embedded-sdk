@@ -26,7 +26,7 @@
  */
 /* Http Interface includes. */
 #include "ota_http_private.h"
-    
+
 /* Stub required for the proof. */
 OtaHttpStatus_t deinit()
 {
@@ -48,9 +48,9 @@ void cleanupData_Http_harness()
 
     pAgentCtx = &agent;
     pInterfaces = &interface;
-    
-    /* This assumption is made because the deinit function can never be NULL 
-        It is always pointing to a function. */
+
+    /* This assumption is made because the deinit function can never be NULL
+     *  It is always pointing to a function. */
     pHttp.deinit = deinit;
 
     /* Update the interface and the Agent. */

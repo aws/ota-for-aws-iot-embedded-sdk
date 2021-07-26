@@ -46,8 +46,8 @@ void requestDataBlock_Http_harness()
     OtaErr_t err;
     OtaAgentContext_t agent;
 
-    /* Allocating memory to the agent context. The agent can never be NULL since it 
-        is a globally declared variable. */
+    /* Allocating memory to the agent context. The agent can never be NULL since it
+     *  is a globally declared variable. */
     pAgentCtx = &agent;
 
     /* Initialize the file context field in the Agent context. */

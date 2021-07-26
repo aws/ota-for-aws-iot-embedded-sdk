@@ -36,10 +36,10 @@ void setDataInterface_harness()
     uint8_t * pProtocol;
     size_t size;
 
-    /* The maximum size of the protocol buffer is defined by OTA_PROTOCOL_BUFFER_SIZE 
-        and thus size variable cannot exceed OTA_PROTOCOL_BUFFER_SIZE. */
-    __CPROVER_assume(size <= OTA_PROTOCOL_BUFFER_SIZE);
-    
+    /* The maximum size of the protocol buffer is defined by OTA_PROTOCOL_BUFFER_SIZE
+     *  and thus size variable cannot exceed OTA_PROTOCOL_BUFFER_SIZE. */
+    __CPROVER_assume( size <= OTA_PROTOCOL_BUFFER_SIZE );
+
     /* Initialize the variable. */
     pProtocol = ( uint8_t * ) malloc( size );
     pDataInterface = &dataInterface;

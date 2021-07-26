@@ -42,7 +42,7 @@ void initFileTransfer_Http_harness()
     OtaHttpInterface_t http;
     OtaHttpStatus_t status;
     OtaInterfaces_t interface;
-    OtaAgentContext_t agent; 
+    OtaAgentContext_t agent;
 
     pAgentCtx = &agent;
 
