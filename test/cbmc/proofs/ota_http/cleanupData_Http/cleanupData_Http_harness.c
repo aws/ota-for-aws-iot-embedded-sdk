@@ -43,20 +43,15 @@ void cleanupData_Http_harness()
     OtaInterfaces_t * pInterfaces;
     OtaHttpStatus_t status;
 
-    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
-    pInterfaces = ( OtaInterfaces_t * ) malloc( sizeof( OtaInterfaces_t ) );
+    OtaAgentContext_t agent;
+    OtaInterfaces_t interface;
 
-    /* The function requires Agent and the interface to be initialized and thus
-     * they can't be NULL. If they are, they will hit an assert in the function. */
-    __CPROVER_assume( pAgentCtx != NULL && pInterfaces != NULL );
-
-    /* Updating the function pointer in pHttp to the stub. */
-    if(nondet_bool()){
-        pHttp.deinit = deinit;
-    }
-    else{
-        pHttp.deinit = NULL;
-    }
+    pAgentCtx = &agent;
+    pInterfaces = &interface;
+    
+    /* This assumption is made because the deinit function can never be NULL 
+        It is always pointing to a function. */
+    pHttp.deinit = deinit;
 
     /* Update the interface and the Agent. */
     pInterfaces->http = pHttp;
