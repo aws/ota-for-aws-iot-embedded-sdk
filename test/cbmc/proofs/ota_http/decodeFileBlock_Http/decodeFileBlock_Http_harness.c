@@ -45,27 +45,26 @@ void decodeFileBlock_Http_harness()
     int32_t blockSize;
     size_t payloadSize;
 
-    /* Initializing the unconstrained variables. */
+    /* Initializing the unconstrained variables. These variables can never be NUll 
+        since they have been declared statically in the decodeAndStoreDataBlock() function. */
     pFileId = &fileId;
     pBlockId = &blockId;
     pBlockSize = &blockSize;
-
-    __CPROVER_assume(messageSize <= OTA_DATA_BLOCK_SIZE);
 
     /* Allocate memory for the payload and the buffer to store the message. */
     char * size = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
-    /* size is used to store the content from the message buffer and should
-     *  not point to a NULL address. */
-    __CPROVER_assume( size != NULL );
+    /* size can never be NULL since it is a pointer to the payload buffer which is initialized
+        statically in the ingestDataBlock() Function. */
+    __CPROVER_assume( size != NULL ); 
 
     /* Initializing the variable. */
     pPayload = &size;
     pPayloadSize = &payloadSize;
 
-    /* pMessageBuffer stores the message from the FIle and should point to a NULL
-     *  address. */
+    /* This assumption is made because the pMessageBuffer is always pointing to a 
+        static array. */
     __CPROVER_assume( pMessageBuffer != NULL );
 
     err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId,

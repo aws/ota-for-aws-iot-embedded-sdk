@@ -44,20 +44,18 @@ void requestDataBlock_Http_harness()
     OtaHttpInterface_t http;
     OtaInterfaces_t interface;
     OtaErr_t err;
+    OtaAgentContext_t agent;
 
-    /* Allocating memory to the agent context. */
-    pAgentCtx = ( OtaAgentContext_t * ) malloc( sizeof( OtaAgentContext_t ) );
-
-    /* The Agent context can never be NULL since it is statically allocated in ota.c.
-         If it does, then the assert in the source file is triggered. */
-    __CPROVER_assume( pAgentCtx != NULL );
+    /* Allocating memory to the agent context. The agent can never be NULL since it 
+        is a globally declared variable. */
+    pAgentCtx = &agent;
 
     /* Initialize the file context field in the Agent context. */
     pAgentCtx->fileContext = fileContext;
     http.request = request;
     interface.http = http;
 
-    /* The file size in the file context should have a non-zero value. */
+    /* File size can never be zero and is verified in the validateAndStartJob() function.*/
     __CPROVER_assume( pAgentCtx->fileContext.fileSize != 0 );
 
     /* Initialize the interface in the Agent Context. */
