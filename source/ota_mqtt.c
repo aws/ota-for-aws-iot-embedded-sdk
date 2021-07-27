@@ -765,7 +765,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
 
     ( void ) stringBuilderUInt32Hex( reasonString, sizeof( reasonString ), ( uint32_t ) reason );
     ( void ) stringBuilderUInt32Hex( subReasonString, sizeof( subReasonString ), ( uint32_t ) subReason );
-   
+
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
      * include in the code.
@@ -786,14 +786,14 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     else if( status == JobStatusSucceeded )
     {
         /* New version string.*/
-        (void)stringBuilderUInt32Decimal(versionMajorString, sizeof(versionMajorString), newVersion.u.x.major);
-        (void)stringBuilderUInt32Decimal(versionMinorString, sizeof(versionMinorString), newVersion.u.x.minor);
-        (void)stringBuilderUInt32Decimal(versionBuildString, sizeof(versionBuildString), newVersion.u.x.build);
-         
+        ( void ) stringBuilderUInt32Decimal( versionMajorString, sizeof( versionMajorString ), newVersion.u.x.major );
+        ( void ) stringBuilderUInt32Decimal( versionMinorString, sizeof( versionMinorString ), newVersion.u.x.minor );
+        ( void ) stringBuilderUInt32Decimal( versionBuildString, sizeof( versionBuildString ), newVersion.u.x.build );
+
         /* Updater version string.*/
-        (void)stringBuilderUInt32Decimal( prevVersionMajorString, sizeof(prevVersionMajorString), prevVersion.u.x.major);
-        (void)stringBuilderUInt32Decimal( prevVersionMinorString, sizeof(prevVersionMinorString), prevVersion.u.x.minor);
-        (void)stringBuilderUInt32Decimal( prevVersionBuildString, sizeof(prevVersionMinorString), prevVersion.u.x.build);
+        ( void ) stringBuilderUInt32Decimal( prevVersionMajorString, sizeof( prevVersionMajorString ), prevVersion.u.x.major );
+        ( void ) stringBuilderUInt32Decimal( prevVersionMinorString, sizeof( prevVersionMinorString ), prevVersion.u.x.minor );
+        ( void ) stringBuilderUInt32Decimal( prevVersionBuildString, sizeof( prevVersionMinorString ), prevVersion.u.x.build );
 
         pPayloadParts = pPayloadPartsStatusSucceeded;
         pPayloadParts[ 0 ] = pOtaJobStatusStrings[ status ];
