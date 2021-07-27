@@ -217,7 +217,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              OtaJobStatus_t status,
                                              int32_t reason,
                                              int32_t subReason,
-                                             uint32_t updaterVersion );
+                                             uint32_t previousVersion );
 
 /**
  * @brief Build a string from a set of strings
