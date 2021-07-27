@@ -732,7 +732,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
         NULL, /* Version minor string not available at compile time, initialized below. */
         ".",
         NULL, /* Version build string not available at compile time, initialized below. */
-        "\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"",
+        "\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"", /* Expands to `","updatedBy":` */
         "  v",
         NULL, /* Previous version major string not available at compile time, initialized below. */
         ".",
