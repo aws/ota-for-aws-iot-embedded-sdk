@@ -761,7 +761,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     assert( pMsgBuffer != NULL );
 
     newVersion.u.signedVersion32 = subReason;
-    prevVersion.u.signedVersion32 = updaterVersion;
+    prevVersion.u.signedVersion32 = (int32_t)updaterVersion;
 
     ( void ) stringBuilderUInt32Hex( reasonString, sizeof( reasonString ), ( uint32_t ) reason );
     ( void ) stringBuilderUInt32Hex( subReasonString, sizeof( subReasonString ), ( uint32_t ) subReason );
