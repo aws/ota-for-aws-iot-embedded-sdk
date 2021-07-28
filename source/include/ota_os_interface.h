@@ -269,7 +269,11 @@ typedef struct OtaTimerInterface
 {
     OtaStartTimer_t start;   /*!< @brief Timer start state. */
     OtaStopTimer_t stop;     /*!< @brief Timer stop state. */
+#ifndef __cplusplus
     OtaDeleteTimer_t delete; /*!< @brief Delete timer. */
+#else
+    OtaDeleteTimer_t deleteTimer; /*!< @brief Delete timer for C++ builds. */
+#endif
 } OtaTimerInterface_t;
 
 /**
