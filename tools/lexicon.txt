@@ -108,6 +108,7 @@ defgroup
 deinit
 deinitialize
 deinitializing
+deleteTimer
 destlen
 destoffset
 developerguide
