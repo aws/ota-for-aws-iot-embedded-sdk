@@ -30,11 +30,11 @@
 void OTA_MQTT_strerror_harness()
 {
     OtaMqttStatus_t status;
-    const char * pstr;
+    const char * pErrorMsg;
 
-    pstr = OTA_MQTT_strerror( status );
+    pErrorMsg = OTA_MQTT_strerror( status );
 
     /* The function returns a string which is never NULL. If it does, then it is a
      *  problem. */
-    __CPROVER_assert( pstr != NULL, "Function return cannot be NULL" );
+    __CPROVER_assert( pErrorMsg != NULL, "Function return cannot be NULL" );
 }
