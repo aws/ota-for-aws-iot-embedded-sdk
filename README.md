@@ -75,6 +75,8 @@ In order to support AWS IoT Over-the-air Updates on your device, it is necessary
 For enabling data transfer over HTTP dataplane the following component should also be provided:
 
 1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
+
+**NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be ported.
 ## Reference examples
 
 Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for a reference example on POSIX:
