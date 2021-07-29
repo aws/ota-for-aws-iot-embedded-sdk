@@ -28,6 +28,12 @@
 #ifndef OTA_BASE64_PRIVATE_H
 #define OTA_BASE64_PRIVATE_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* Standard includes. */
 #include <stdint.h>
 #include <stdlib.h>
@@ -102,5 +108,11 @@ Base64Status_t base64Decode( uint8_t * pDest,
                              size_t * pResultLen,
                              const uint8_t * pEncodedData,
                              const size_t encodedLen );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_BASE64_PRIVATE_H */

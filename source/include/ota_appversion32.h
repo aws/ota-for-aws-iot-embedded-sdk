@@ -28,6 +28,12 @@
 #ifndef IOT_APPVERSION32_H
 #define IOT_APPVERSION32_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* Standard includes. */
 #include <stdint.h>
 
@@ -65,5 +71,11 @@ typedef struct
 } AppVersion32_t;
 
 extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef IOT_APPVERSION32_H */

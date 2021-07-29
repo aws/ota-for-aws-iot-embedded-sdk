@@ -35,6 +35,12 @@
 #ifndef OTA_CONFIG_DEFAULTS_H
 #define OTA_CONFIG_DEFAULTS_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* The macro definition for OTA_DO_NOT_USE_CUSTOM_CONFIG is for Doxygen
  * documentation only. */
 
@@ -352,5 +358,11 @@
 #ifndef LogDebug
     #define LogDebug( message )
 #endif
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_CONFIG_DEFAULTS_H */

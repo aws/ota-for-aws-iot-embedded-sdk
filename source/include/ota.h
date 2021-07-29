@@ -28,6 +28,12 @@
 #ifndef OTA_H
 #define OTA_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
 #include <stdio.h>
@@ -797,5 +803,11 @@ const char * OTA_PalStatus_strerror( OtaPalMainStatus_t status );
 /* @[declare_ota_osstatus_strerror] */
 const char * OTA_OsStatus_strerror( OtaOsStatus_t status );
 /* @[declare_ota_osstatus_strerror] */
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_H */

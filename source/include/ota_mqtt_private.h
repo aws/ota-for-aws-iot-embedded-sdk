@@ -28,6 +28,12 @@
 #ifndef OTA_MQTT_H
 #define OTA_MQTT_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* OTA includes. */
 #include "ota.h"
 #include "ota_private.h"
@@ -153,5 +159,11 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
  * @return The string representation of the status.
  */
 const char * OTA_MQTT_strerror( OtaMqttStatus_t status );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_MQTT_H */
