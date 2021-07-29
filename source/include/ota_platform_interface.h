@@ -28,6 +28,12 @@
 #ifndef OTA_PLATFORM_INTERFACE
 #define OTA_PLATFORM_INTERFACE
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 #include "ota_private.h"
 
 /**
@@ -303,5 +309,11 @@ typedef struct OtaPalInterface
     OtaPalSetPlatformImageState_t setPlatformImageState; /*!< @brief Set the state of the OTA update image. */
     OtaPalGetPlatformImageState_t getPlatformImageState; /*!< @brief Get the state of the OTA update image. */
 } OtaPalInterface_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_PLATFORM_INTERFACE */

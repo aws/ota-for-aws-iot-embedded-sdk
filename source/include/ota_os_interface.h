@@ -29,6 +29,12 @@
 #ifndef OTA_OS_INTERFACE_H
 #define OTA_OS_INTERFACE_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 
 /**
  * @otaosfipage
@@ -301,5 +307,11 @@ typedef struct OtaOSInterface
     OtaTimerInterface_t timer; /*!< @brief OTA Timer interface. */
     OtaMallocInterface_t mem;  /*!< @brief OTA memory interface. */
 } OtaOSInterface_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_OS_INTERFACE_H */

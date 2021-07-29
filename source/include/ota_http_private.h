@@ -28,6 +28,12 @@
 #ifndef OTA_HTTP_H
 #define OTA_HTTP_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* OTA includes. */
 #include "ota.h"
 #include "ota_private.h"
@@ -106,5 +112,11 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
  * @return The string representation of the status.
  */
 const char * OTA_HTTP_strerror( OtaHttpStatus_t status );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_HTTP_H */
