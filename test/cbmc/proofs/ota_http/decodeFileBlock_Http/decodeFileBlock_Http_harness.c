@@ -51,16 +51,22 @@ void decodeFileBlock_Http_harness()
     pBlockId = &blockId;
     pBlockSize = &blockSize;
 
+    /* Initialize the pPayload pointer. */
+    pPayload = ( char ** ) malloc( sizeof( char * ) );
+
+    /* pPayload cannot point to NULL since it is always initialized in the ingestDataBlock function. */
+    __CPROVER_assume( pPayload != NULL );
+
     /* Allocate memory for the payload and the buffer to store the message. */
-    char * size = ( char * ) malloc( messageSize );
+    *pPayload = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
     /* size can never be NULL since it is a pointer to the payload buffer which is initialized
      *  statically in the ingestDataBlock() Function. */
-    __CPROVER_assume( size != NULL );
+    __CPROVER_assume( *pPayload != NULL );
 
     /* Initializing the variable. */
-    pPayload = &size;
+    /**pPayload = size; */
     pPayloadSize = &payloadSize;
 
     /* This assumption is made because the pMessageBuffer is always pointing to a
@@ -75,6 +81,6 @@ void decodeFileBlock_Http_harness()
                       "Function return should be either None or invalid argument" );
 
     /* Free allocated memory. */
-    free( size );
+    /*free( size ); */
     free( pMessageBuffer );
 }
