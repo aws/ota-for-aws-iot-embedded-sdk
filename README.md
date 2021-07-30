@@ -76,10 +76,10 @@ For enabling data transfer over HTTP dataplane the following component should al
 
 1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
 
-**NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be ported.
+**NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be provided.
 ## Reference examples
 
-Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for a reference example on POSIX:
+Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for reference examples on POSIX and FreeRTOS:
 
 | Platform | Location |
 | :-: | :-: |
