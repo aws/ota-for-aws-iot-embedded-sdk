@@ -1,0 +1,15 @@
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto'
+Function Pointer Removal
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 1102 function requestFileBlock_Mqtt: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 493 function unsubscribeFromJobNotificationTopic: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 878 function requestJob_Mqtt: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 1007 function initFileTransfer_Mqtt: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 375 function subscribeToJobNotificationTopics: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 436 function unsubscribeFromDataStream: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 561 function publishStatusMessage: replacing function pointer by 0 possible targets
+Virtual function removal
+Cleaning inline assembler statements
+Removing unused functions
+Dropping 29 of 33 functions (4 used)
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto'
+

@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c"
+  ],
+  "command": "goto-cc  --export-file-local-symbols  -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto"
+  ],
+  "pipeline_name": "setControlInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/proof_sources-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "setControlInterface: building proof binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "b4148ab1-dcdb-4ce1-9d3e-20b622c73184",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/a990bbac-7518-4d88-87ca-ac7c0b2f6840/status/b4148ab1-dcdb-4ce1-9d3e-20b622c73184.json"
+}

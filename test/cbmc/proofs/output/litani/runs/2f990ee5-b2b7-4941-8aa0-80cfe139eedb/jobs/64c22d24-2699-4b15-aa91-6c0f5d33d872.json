@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/cleanupData_Mqtt/cleanupData_Mqtt_harness.c"
+  ],
+  "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/unit-test  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/cleanupData_Mqtt/cleanupData_Mqtt_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/cleanupData_Mqtt/gotos/proof1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/cleanupData_Mqtt/gotos/proof1.goto"
+  ],
+  "pipeline_name": "cleanupData_Mqtt_harness",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/cleanupData_Mqtt/logs/proof_sources-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "cleanupData_Mqtt_harness: building proof binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "64c22d24-2699-4b15-aa91-6c0f5d33d872",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2f990ee5-b2b7-4941-8aa0-80cfe139eedb/status/64c22d24-2699-4b15-aa91-6c0f5d33d872.json"
+}

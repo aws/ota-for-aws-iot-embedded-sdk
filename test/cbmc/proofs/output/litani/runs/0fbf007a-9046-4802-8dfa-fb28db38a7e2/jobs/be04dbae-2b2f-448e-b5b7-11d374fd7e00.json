@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c"
+  ],
+  "command": "goto-cc  --export-file-local-symbols -fPIC /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/unit-test -Dhttp_EXPORTS -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/proof1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/proof1.goto"
+  ],
+  "pipeline_name": "decodeFileBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/logs/proof_sources-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "decodeFileBlock_Http: building proof binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "be04dbae-2b2f-448e-b5b7-11d374fd7e00",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/0fbf007a-9046-4802-8dfa-fb28db38a7e2/status/be04dbae-2b2f-448e-b5b7-11d374fd7e00.json"
+}

@@ -1,0 +1,12 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c": [
+        "OTA_HTTP_strerror_harness"
+      ],
+      "source/ota_http.c": [
+        "OTA_HTTP_strerror"
+      ]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto"
+  ],
+  "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto"
+  ],
+  "pipeline_name": "requestDataBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/drop_unused_functions-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "requestDataBlock_Http: dropping unused functions",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "4bfc7129-3a7d-4059-8237-c5e75c5d0aae",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/05876a03-1e4c-4794-abca-409e7c219ea0/status/4bfc7129-3a7d-4059-8237-c5e75c5d0aae.json"
+}

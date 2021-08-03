@@ -1,0 +1,45 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto"
+    ],
+    "command": "goto-cc  --function setControlInterface_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto"
+    ],
+    "pipeline_name": "setControlInterface",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/link_proof_project-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "setControlInterface: linking project to proof",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/a990bbac-7518-4d88-87ca-ac7c0b2f6840/status/16fe62aa-c229-45ff-b87d-58b138764c92.json",
+    "job_id": "16fe62aa-c229-45ff-b87d-58b138764c92"
+  },
+  "complete": true,
+  "start_time": "2021-07-22T20:58:52Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [],
+  "stderr": [],
+  "end_time": "2021-07-22T20:58:52Z"
+}

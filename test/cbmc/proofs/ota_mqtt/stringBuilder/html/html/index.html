@@ -1,0 +1,226 @@
+
+
+<html>
+  <head>
+    <title>CBMC</title>
+    <link rel="stylesheet" type="text/css" href="/viewer.css">
+  </head>
+
+  <body>
+    <h1>CBMC report</h1>
+
+    <div class="coverage">
+      <h2>Coverage</h2>
+
+      
+      <p>
+        Coverage: 1.00 (reached 33 of 33 reachable lines)
+      </p>
+
+      
+      <table class="coverage">
+        <tr>
+          <th class="coverage">Coverage</th>
+          <th class="function">Function</th>
+          <th class="file">File</th>
+        </tr>
+        
+        <tr>
+          <td class="coverage">1.00 (11/11)</td>
+          <td class="function"><a href="./source/ota_mqtt.c.html#256">stringBuilder</a></td>
+          <td class="file"><a href="./source/ota_mqtt.c.html">source/ota_mqtt.c</a></td>
+        </tr>
+        
+        <tr>
+          <td class="coverage">1.00 (22/22)</td>
+          <td class="function"><a href="./test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c.html#26">stringBuilder_harness</a></td>
+          <td class="file"><a href="./test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c.html">test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c</a></td>
+        </tr>
+        
+      </table>
+    </div>
+
+    <div class="warnings">
+      <h2> Warnings</h2>
+      
+
+      
+
+      
+
+      
+
+      
+      None
+      
+
+    <div class="errors">
+      <h2>Errors</h2>
+      
+
+      
+      <ul>
+        <li>Loop unwinding failures
+          <ul>
+            
+            <li> [<a href="./traces/stringBuilder.unwind.0.html">trace</a>]
+              stringBuilder.unwind.0
+              in line
+              <a href="./source/ota_mqtt.c.html#266">266</a>
+              in file
+              <a href="./source/ota_mqtt.c.html">source/ota_mqtt.c</a>
+            </li>
+            
+            <li> [<a href="./traces/strlen.unwind.0.html">trace</a>]
+              strlen.unwind.0
+              in line
+              18
+              in file
+              &lt;builtin-library-strlen&gt;
+            </li>
+            
+            <li> [<a href="./traces/strncat.unwind.1.html">trace</a>]
+              strncat.unwind.1
+              in line
+              44
+              in file
+              &lt;builtin-library-strncat&gt;
+            </li>
+            
+          </ul>
+        </li>
+      </ul>
+      
+
+      
+
+      
+      <ul>
+        
+        <li> File &lt;builtin-library-strlen&gt;
+          <ul>
+            
+            
+            <li>
+              Function strlen
+              <ul>
+                
+                <li>
+                  Line 18
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/strlen.pointer_arithmetic.5.html">trace</a>]
+                      pointer arithmetic: pointer outside object bounds in s + (signed long int)len
+                    </li>
+                    
+                    <li>
+                      [<a href="./traces/strlen.pointer_dereference.5.html">trace</a>]
+                      dereference failure: pointer outside object bounds in s[(signed long int)len]
+                    </li>
+                     
+                  </ul>
+                </li>
+                 
+              </ul>
+            </li>
+             
+          </ul>
+        </li>
+        
+        <li> File &lt;builtin-library-strncat&gt;
+          <ul>
+            
+            
+            <li>
+              Function strncat
+              <ul>
+                
+                <li>
+                  Line 39
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/strncat.pointer_dereference.5.html">trace</a>]
+                      dereference failure: pointer outside object bounds in dst[(signed long int)i]
+                    </li>
+                     
+                  </ul>
+                </li>
+                
+                <li>
+                  Line 47
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/strncat.pointer_dereference.17.html">trace</a>]
+                      dereference failure: pointer outside object bounds in dst[(signed long int)i]
+                    </li>
+                     
+                  </ul>
+                </li>
+                 
+              </ul>
+            </li>
+             
+          </ul>
+        </li>
+        
+        <li> File <a href="./source/ota_mqtt.c.html">source/ota_mqtt.c</a>
+          <ul>
+            
+            
+            <li>
+              Function <a href="./source/ota_mqtt.c.html#256">stringBuilder</a>
+              <ul>
+                
+                <li>
+                  Line <a href="./source/ota_mqtt.c.html#264">264</a>
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/stringBuilder.pointer_dereference.5.html">trace</a>]
+                      dereference failure: pointer outside object bounds in pBuffer[(signed long int)0]
+                    </li>
+                     
+                  </ul>
+                </li>
+                
+                <li>
+                  Line <a href="./source/ota_mqtt.c.html#272">272</a>
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/stringBuilder.assertion.1.html">trace</a>]
+                      assertion thisLength + curLen + 1 <= bufferSizeBytes
+                    </li>
+                     
+                  </ul>
+                </li>
+                
+                <li>
+                  Line <a href="./source/ota_mqtt.c.html#274">274</a>
+                  <ul>
+                    
+                    <li>
+                      [<a href="./traces/stringBuilder.overflow.10.html">trace</a>]
+                      arithmetic overflow on unsigned - in (bufferSizeBytes - curLen) - (unsigned long int)1u
+                    </li>
+                     
+                  </ul>
+                </li>
+                 
+              </ul>
+            </li>
+             
+          </ul>
+        </li>
+         
+      </ul>
+      
+
+      
+
+    </div>
+  </body>
+</html>

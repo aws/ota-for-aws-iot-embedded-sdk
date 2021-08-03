@@ -1,0 +1,336 @@
+{
+  "viewer-property": {
+    "properties": {
+      "setDataInterface_harness.assertion.1": {
+        "class": "assertion",
+        "description": "The function return can be either of those values.",
+        "expression": "(signed int)err == 13 || (signed int)err == 0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 51
+        }
+      },
+      "setDataInterface_harness.precondition_instance.1": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)pProtocol == NULL || (FALSE || !(POINTER_OBJECT((void *)pProtocol) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)pProtocol) && (FALSE || !(POINTER_OBJECT((void *)pProtocol) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)pProtocol) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)pProtocol) < 0l || (unsigned long int)POINTER_OFFSET((void *)pProtocol) + (unsigned long int)0 > OBJECT_SIZE((void *)pProtocol))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)pProtocol) && NULL != (void *)pProtocol ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface_harness.precondition_instance.2": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)pProtocol == NULL || IS_DYNAMIC_OBJECT((void *)pProtocol)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface_harness.precondition_instance.3": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)pProtocol == NULL || POINTER_OFFSET((void *)pProtocol) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface_harness.precondition_instance.4": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)pProtocol == NULL || __CPROVER_deallocated != (void *)pProtocol",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface_harness.precondition_instance.5": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)pProtocol == NULL || __CPROVER_malloc_object != (void *)pProtocol || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface_harness.precondition_instance.6": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)pProtocol == NULL || __CPROVER_alloca_object != (void *)pProtocol",
+        "location": {
+          "file": "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c",
+          "function": "setDataInterface_harness",
+          "line": 55
+        }
+      },
+      "setDataInterface.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pDataInterface->initFileTransfer",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pDataInterface->initFileTransfer",
+        "expression": "!IS_INVALID_POINTER(pDataInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pDataInterface->initFileTransfer",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pDataInterface->initFileTransfer",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pDataInterface->initFileTransfer",
+        "expression": "POINTER_OFFSET(pDataInterface) >= 0l && OBJECT_SIZE(pDataInterface) >= (unsigned long int)POINTER_OFFSET(pDataInterface) + 8ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pDataInterface->initFileTransfer",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)) == POINTER_OBJECT(pDataInterface)) || pDataInterface == ((OtaDataInterface_t *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 91
+        }
+      },
+      "setDataInterface.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pDataInterface->requestFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pDataInterface->requestFileBlock",
+        "expression": "!IS_INVALID_POINTER(pDataInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pDataInterface->requestFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pDataInterface->requestFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pDataInterface->requestFileBlock",
+        "expression": "POINTER_OFFSET(pDataInterface) + 8l >= 0l && OBJECT_SIZE(pDataInterface) >= (unsigned long int)POINTER_OFFSET(pDataInterface) + 16ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pDataInterface->requestFileBlock",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)) == POINTER_OBJECT(pDataInterface)) || (char *)pDataInterface + 8l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 92
+        }
+      },
+      "setDataInterface.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pDataInterface->decodeFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(((OtaErr_t (**)(const uint8_t *, size_t, int32_t *, int32_t *, int32_t *, uint8_t **, size_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pDataInterface->decodeFileBlock",
+        "expression": "!IS_INVALID_POINTER(pDataInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pDataInterface->decodeFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pDataInterface->decodeFileBlock",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pDataInterface->decodeFileBlock",
+        "expression": "POINTER_OFFSET(pDataInterface) + 16l >= 0l && OBJECT_SIZE(pDataInterface) >= (unsigned long int)POINTER_OFFSET(pDataInterface) + 24ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pDataInterface->decodeFileBlock",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(const uint8_t *, size_t, int32_t *, int32_t *, int32_t *, uint8_t **, size_t *))NULL)) == POINTER_OBJECT(pDataInterface)) || (char *)pDataInterface + 16l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 93
+        }
+      },
+      "setDataInterface.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pDataInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(((OtaErr_t (**)(const OtaAgentContext_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "setDataInterface.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pDataInterface->cleanup",
+        "expression": "!IS_INVALID_POINTER(pDataInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "setDataInterface.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pDataInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "setDataInterface.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pDataInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pDataInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "setDataInterface.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pDataInterface->cleanup",
+        "expression": "POINTER_OFFSET(pDataInterface) + 24l >= 0l && OBJECT_SIZE(pDataInterface) >= (unsigned long int)POINTER_OFFSET(pDataInterface) + 32ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "setDataInterface.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pDataInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(const OtaAgentContext_t *))NULL)) == POINTER_OBJECT(pDataInterface)) || (char *)pDataInterface + 24l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setDataInterface",
+          "line": 94
+        }
+      },
+      "malloc.assertion.1": {
+        "class": "assertion",
+        "description": "max allocation size exceeded",
+        "expression": "malloc_size <= __CPROVER_max_malloc_size",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 26
+        }
+      },
+      "malloc.assertion.2": {
+        "class": "assertion",
+        "description": "max allocation may fail",
+        "expression": "!__CPROVER_malloc_may_fail || !should_malloc_fail",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 31
+        }
+      }
+    }
+  }
+}

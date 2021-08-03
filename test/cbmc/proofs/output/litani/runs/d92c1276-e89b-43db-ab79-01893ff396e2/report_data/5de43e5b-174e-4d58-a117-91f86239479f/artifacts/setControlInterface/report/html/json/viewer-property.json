@@ -1,0 +1,216 @@
+{
+  "viewer-property": {
+    "properties": {
+      "malloc.assertion.1": {
+        "class": "assertion",
+        "description": "max allocation size exceeded",
+        "expression": "malloc_size <= __CPROVER_max_malloc_size",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 26
+        }
+      },
+      "malloc.assertion.2": {
+        "class": "assertion",
+        "description": "max allocation may fail",
+        "expression": "!__CPROVER_malloc_may_fail || !should_malloc_fail",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 31
+        }
+      },
+      "setControlInterface.assertion.1": {
+        "class": "assertion",
+        "description": "assertion pControlInterface != NULL",
+        "expression": "pControlInterface != ((OtaControlInterface_t *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 65
+        }
+      },
+      "setControlInterface.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pControlInterface->requestJob",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pControlInterface->requestJob",
+        "expression": "!IS_INVALID_POINTER(pControlInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pControlInterface->requestJob",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pControlInterface->requestJob",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pControlInterface->requestJob",
+        "expression": "POINTER_OFFSET(pControlInterface) >= 0l && OBJECT_SIZE(pControlInterface) >= (unsigned long int)POINTER_OFFSET(pControlInterface) + 8ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pControlInterface->requestJob",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *))NULL)) == POINTER_OBJECT(pControlInterface)) || pControlInterface == ((OtaControlInterface_t *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 68
+        }
+      },
+      "setControlInterface.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pControlInterface->updateJobStatus",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *, OtaJobStatus_t, int32_t, int32_t))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pControlInterface->updateJobStatus",
+        "expression": "!IS_INVALID_POINTER(pControlInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pControlInterface->updateJobStatus",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pControlInterface->updateJobStatus",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pControlInterface->updateJobStatus",
+        "expression": "POINTER_OFFSET(pControlInterface) + 8l >= 0l && OBJECT_SIZE(pControlInterface) >= (unsigned long int)POINTER_OFFSET(pControlInterface) + 16ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pControlInterface->updateJobStatus",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(OtaAgentContext_t *, OtaJobStatus_t, int32_t, int32_t))NULL)) == POINTER_OBJECT(pControlInterface)) || (char *)pControlInterface + 8l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 69
+        }
+      },
+      "setControlInterface.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pControlInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(((OtaErr_t (**)(const OtaAgentContext_t *))NULL)))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      },
+      "setControlInterface.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pControlInterface->cleanup",
+        "expression": "!IS_INVALID_POINTER(pControlInterface)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      },
+      "setControlInterface.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pControlInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      },
+      "setControlInterface.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pControlInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(pControlInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      },
+      "setControlInterface.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pControlInterface->cleanup",
+        "expression": "POINTER_OFFSET(pControlInterface) + 16l >= 0l && OBJECT_SIZE(pControlInterface) >= (unsigned long int)POINTER_OFFSET(pControlInterface) + 24ul",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      },
+      "setControlInterface.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pControlInterface->cleanup",
+        "expression": "!(POINTER_OBJECT(((OtaErr_t (**)(const OtaAgentContext_t *))NULL)) == POINTER_OBJECT(pControlInterface)) || (char *)pControlInterface + 16l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_interface.c",
+          "function": "setControlInterface",
+          "line": 70
+        }
+      }
+    }
+  }
+}

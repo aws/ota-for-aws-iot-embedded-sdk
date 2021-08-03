@@ -1,0 +1,59 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto"
+    ],
+    "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto"
+    ],
+    "pipeline_name": "OTA_MQTT_strerror",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/drop_unused_functions-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "OTA_MQTT_strerror: dropping unused functions",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d8dc4f73-c17d-46d8-9495-abecf0d57065/status/3ff14b54-fbbd-4da0-8fc0-71a7afe439ba.json",
+    "job_id": "3ff14b54-fbbd-4da0-8fc0-71a7afe439ba"
+  },
+  "complete": true,
+  "start_time": "2021-07-22T00:44:56Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [
+    "Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto'",
+    "Function Pointer Removal",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 375 function subscribeToJobNotificationTopics: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 561 function publishStatusMessage: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 1102 function requestFileBlock_Mqtt: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 878 function requestJob_Mqtt: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 436 function unsubscribeFromDataStream: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 1007 function initFileTransfer_Mqtt: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c line 493 function unsubscribeFromJobNotificationTopic: replacing function pointer by 0 possible targets",
+    "Virtual function removal",
+    "Cleaning inline assembler statements",
+    "Removing unused functions",
+    "Dropping 29 of 33 functions (4 used)",
+    "Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto'"
+  ],
+  "stderr": [],
+  "end_time": "2021-07-22T00:44:56Z"
+}

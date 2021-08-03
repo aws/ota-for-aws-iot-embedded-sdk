@@ -1,0 +1,32 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto"
+  ],
+  "command": "goto-cc  --function initFileTransfer_Http_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto"
+  ],
+  "pipeline_name": "initFileTransfer_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/link_proof_project-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "initFileTransfer_Http: linking project to proof",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "9943c88b-116a-455c-a87d-dd169ad38fb8",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d8dc4f73-c17d-46d8-9495-abecf0d57065/status/9943c88b-116a-455c-a87d-dd169ad38fb8.json"
+}

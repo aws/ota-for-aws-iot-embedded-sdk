@@ -1,0 +1,946 @@
+{
+  "viewer-property": {
+    "properties": {
+      "decodeFileBlock_Http_harness.assertion.1": {
+        "class": "assertion",
+        "description": "Function return should be either None or invalid argument",
+        "expression": "(signed int)err == 0 || (signed int)err == 3",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 74
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.1": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)size == NULL || (FALSE || !(POINTER_OBJECT((void *)size) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)size) && (FALSE || !(POINTER_OBJECT((void *)size) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)size) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)size) < 0l || (unsigned long int)POINTER_OFFSET((void *)size) + (unsigned long int)0 > OBJECT_SIZE((void *)size))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)size) && NULL != (void *)size ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.2": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)size == NULL || IS_DYNAMIC_OBJECT((void *)size)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.3": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)size == NULL || POINTER_OFFSET((void *)size) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.4": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)size == NULL || __CPROVER_deallocated != (void *)size",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.5": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)size == NULL || __CPROVER_malloc_object != (void *)size || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.6": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)size == NULL || __CPROVER_alloca_object != (void *)size",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 78
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.7": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)pMessageBuffer == NULL || (FALSE || !(POINTER_OBJECT((void *)pMessageBuffer) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)pMessageBuffer) && (FALSE || !(POINTER_OBJECT((void *)pMessageBuffer) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)pMessageBuffer) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)pMessageBuffer) < 0l || (unsigned long int)POINTER_OFFSET((void *)pMessageBuffer) + (unsigned long int)0 > OBJECT_SIZE((void *)pMessageBuffer))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)pMessageBuffer) && NULL != (void *)pMessageBuffer ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.8": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)pMessageBuffer == NULL || IS_DYNAMIC_OBJECT((void *)pMessageBuffer)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.9": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)pMessageBuffer == NULL || POINTER_OFFSET((void *)pMessageBuffer) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.10": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)pMessageBuffer == NULL || __CPROVER_deallocated != (void *)pMessageBuffer",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.11": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)pMessageBuffer == NULL || __CPROVER_malloc_object != (void *)pMessageBuffer || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "decodeFileBlock_Http_harness.precondition_instance.12": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)pMessageBuffer == NULL || __CPROVER_alloca_object != (void *)pMessageBuffer",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c",
+          "function": "decodeFileBlock_Http_harness",
+          "line": 79
+        }
+      },
+      "memcpy.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)n",
+        "expression": "!(n >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 44
+        }
+      },
+      "memcpy.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on signed to unsigned type conversion in (unsigned long int)(signed long int)n",
+        "expression": "(signed long int)n >= 0l",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 44
+        }
+      },
+      "decodeFileBlock_Http.assertion.1": {
+        "class": "assertion",
+        "description": "assertion pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL && pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL",
+        "expression": "pMessageBuffer != ((const uint8_t *)NULL) && pFileId != ((int32_t *)NULL) && pBlockId != ((int32_t *)NULL) && pBlockSize != ((int32_t *)NULL) && pPayload != ((uint8_t **)NULL) && pPayloadSize != ((size_t *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 132
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pFileId",
+        "expression": "!(POINTER_OBJECT(pFileId) == POINTER_OBJECT(((int32_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pFileId",
+        "expression": "!IS_INVALID_POINTER(pFileId)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pFileId",
+        "expression": "!(POINTER_OBJECT(pFileId) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pFileId",
+        "expression": "!(POINTER_OBJECT(pFileId) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pFileId",
+        "expression": "POINTER_OFFSET(pFileId) >= 0l && OBJECT_SIZE(pFileId) >= (unsigned long int)POINTER_OFFSET(pFileId) + 4ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pFileId",
+        "expression": "!(POINTER_OBJECT(((int32_t *)NULL)) == POINTER_OBJECT(pFileId)) || pFileId == ((int32_t *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 143
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pBlockId",
+        "expression": "!(POINTER_OBJECT(pBlockId) == POINTER_OBJECT(((int32_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pBlockId",
+        "expression": "!IS_INVALID_POINTER(pBlockId)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pBlockId",
+        "expression": "!(POINTER_OBJECT(pBlockId) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pBlockId",
+        "expression": "!(POINTER_OBJECT(pBlockId) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pBlockId",
+        "expression": "POINTER_OFFSET(pBlockId) >= 0l && OBJECT_SIZE(pBlockId) >= (unsigned long int)POINTER_OFFSET(pBlockId) + 4ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pBlockId",
+        "expression": "!(POINTER_OBJECT(((int32_t *)NULL)) == POINTER_OBJECT(pBlockId)) || pBlockId == ((int32_t *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (int32_t)currBlock",
+        "expression": "!(currBlock >= 2147483648u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 144
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pBlockSize",
+        "expression": "!(POINTER_OBJECT(pBlockSize) == POINTER_OBJECT(((int32_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pBlockSize",
+        "expression": "!IS_INVALID_POINTER(pBlockSize)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pBlockSize",
+        "expression": "!(POINTER_OBJECT(pBlockSize) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pBlockSize",
+        "expression": "!(POINTER_OBJECT(pBlockSize) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pBlockSize",
+        "expression": "POINTER_OFFSET(pBlockSize) >= 0l && OBJECT_SIZE(pBlockSize) >= (unsigned long int)POINTER_OFFSET(pBlockSize) + 4ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pBlockSize",
+        "expression": "!(POINTER_OBJECT(((int32_t *)NULL)) == POINTER_OBJECT(pBlockSize)) || pBlockSize == ((int32_t *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (int32_t)messageSize",
+        "expression": "!(messageSize >= 2147483648ul)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 145
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pPayload",
+        "expression": "!(POINTER_OBJECT(pPayload) == POINTER_OBJECT(((uint8_t **)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pPayload",
+        "expression": "!IS_INVALID_POINTER(pPayload)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pPayload",
+        "expression": "!(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pPayload",
+        "expression": "!(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pPayload",
+        "expression": "POINTER_OFFSET(pPayload) >= 0l && OBJECT_SIZE(pPayload) >= (unsigned long int)POINTER_OFFSET(pPayload) + 8ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pPayload",
+        "expression": "!(POINTER_OBJECT(((uint8_t **)NULL)) == POINTER_OBJECT(pPayload)) || pPayload == ((uint8_t **)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.25": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(((uint8_t **)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.26": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !IS_INVALID_POINTER(pPayload)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.27": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.28": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.29": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> POINTER_OFFSET(pPayload) >= 0l && OBJECT_SIZE(pPayload) >= (unsigned long int)POINTER_OFFSET(pPayload) + 8ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.30": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(((uint8_t **)NULL)) == POINTER_OBJECT(pPayload)) || pPayload == ((uint8_t **)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.overflow.3": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(messageSize >= 9223372036854775808ul)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "memcpy.pointer_arithmetic.1": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.2": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !IS_INVALID_POINTER(*pPayload)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.3": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.4": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.5": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> POINTER_OFFSET(*pPayload) + (signed long int)messageSize >= 0l && OBJECT_SIZE(*pPayload) >= (unsigned long int)POINTER_OFFSET(*pPayload) + (unsigned long int)(signed long int)messageSize",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.6": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(*pPayload)) || (const char *)*pPayload + (signed long int)messageSize == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer.1": {
+        "class": "pointer",
+        "description": "same object violation in (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(*pPayload)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.7": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer NULL in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.8": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer invalid in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !IS_INVALID_POINTER(pMessageBuffer)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.9": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: deallocated dynamic object in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.10": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: dead object in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.11": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer outside object bounds in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> POINTER_OFFSET(pMessageBuffer) >= 0l && OBJECT_SIZE(pMessageBuffer) >= (unsigned long int)POINTER_OFFSET(pMessageBuffer)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "memcpy.pointer_arithmetic.12": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: invalid integer address in (const char *)(const void *)pMessageBuffer",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer)) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(pMessageBuffer)) || pMessageBuffer == ((const uint8_t *)NULL)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 33
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.31": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(((uint8_t **)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.32": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !IS_INVALID_POINTER(pPayload)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.33": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.34": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pPayload) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.35": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> POINTER_OFFSET(pPayload) >= 0l && OBJECT_SIZE(pPayload) >= (unsigned long int)POINTER_OFFSET(pPayload) + 8ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.36": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(((uint8_t **)NULL)) == POINTER_OBJECT(pPayload)) || pPayload == ((uint8_t **)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.overflow.4": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(messageSize >= 9223372036854775808ul)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "memcpy.pointer_arithmetic.13": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.14": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !IS_INVALID_POINTER(pMessageBuffer)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.15": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.16": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(pMessageBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.17": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> POINTER_OFFSET(pMessageBuffer) + (signed long int)messageSize >= 0l && OBJECT_SIZE(pMessageBuffer) >= (unsigned long int)POINTER_OFFSET(pMessageBuffer) + (unsigned long int)(signed long int)messageSize",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.18": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(pMessageBuffer)) || (const char *)pMessageBuffer + (signed long int)messageSize == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer.2": {
+        "class": "pointer",
+        "description": "same object violation in (const char *)(void *)*pPayload >= (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> POINTER_OBJECT(*pPayload) == POINTER_OBJECT(pMessageBuffer)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.19": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer NULL in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.20": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer invalid in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !IS_INVALID_POINTER(*pPayload)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.21": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: deallocated dynamic object in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.22": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: dead object in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(*pPayload) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.23": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer outside object bounds in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> POINTER_OFFSET(*pPayload) >= 0l && OBJECT_SIZE(*pPayload) >= (unsigned long int)POINTER_OFFSET(*pPayload)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "memcpy.pointer_arithmetic.24": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: invalid integer address in (const char *)(void *)*pPayload",
+        "expression": "!(POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(*pPayload)) || *pPayload == ((uint8_t *)NULL)",
+        "location": {
+          "file": "<builtin-library-memcpy>",
+          "function": "memcpy",
+          "line": 34
+        }
+      },
+      "decodeFileBlock_Http.precondition_instance.1": {
+        "class": "precondition_instance",
+        "description": "memcpy src/dst overlap",
+        "expression": "POINTER_OBJECT((void *)*pPayload) != POINTER_OBJECT((const void *)pMessageBuffer) || (const char *)(const void *)pMessageBuffer >= (const char *)(void *)*pPayload + (signed long int)messageSize || (const char *)(void *)*pPayload >= (const char *)(const void *)pMessageBuffer + (signed long int)messageSize",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.precondition_instance.2": {
+        "class": "precondition_instance",
+        "description": "memcpy source region readable",
+        "expression": "(FALSE || !(POINTER_OBJECT((const void *)pMessageBuffer) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((const void *)pMessageBuffer) && (FALSE || !(POINTER_OBJECT((const void *)pMessageBuffer) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((const void *)pMessageBuffer) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((const void *)pMessageBuffer) < 0l || (size_t)POINTER_OFFSET((const void *)pMessageBuffer) + messageSize > OBJECT_SIZE((const void *)pMessageBuffer))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((const void *)pMessageBuffer) && NULL != (const void *)pMessageBuffer ==> FALSE)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.precondition_instance.3": {
+        "class": "precondition_instance",
+        "description": "memcpy destination region writeable",
+        "expression": "(FALSE || !(POINTER_OBJECT((void *)*pPayload) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)*pPayload) && (FALSE || !(POINTER_OBJECT((void *)*pPayload) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)*pPayload) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)*pPayload) < 0l || (size_t)POINTER_OFFSET((void *)*pPayload) + messageSize > OBJECT_SIZE((void *)*pPayload))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)*pPayload) && NULL != (void *)*pPayload ==> FALSE)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 148
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.37": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in *pPayloadSize",
+        "expression": "!(POINTER_OBJECT(pPayloadSize) == POINTER_OBJECT(((size_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.38": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in *pPayloadSize",
+        "expression": "!IS_INVALID_POINTER(pPayloadSize)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.39": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in *pPayloadSize",
+        "expression": "!(POINTER_OBJECT(pPayloadSize) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.40": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in *pPayloadSize",
+        "expression": "!(POINTER_OBJECT(pPayloadSize) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.41": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in *pPayloadSize",
+        "expression": "POINTER_OFFSET(pPayloadSize) >= 0l && OBJECT_SIZE(pPayloadSize) >= (unsigned long int)POINTER_OFFSET(pPayloadSize) + 8ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.pointer_dereference.42": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in *pPayloadSize",
+        "expression": "!(POINTER_OBJECT(((size_t *)NULL)) == POINTER_OBJECT(pPayloadSize)) || pPayloadSize == ((size_t *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 150
+        }
+      },
+      "decodeFileBlock_Http.overflow.5": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in currBlock + 1u",
+        "expression": "!overflow(\"+\", uint32_t, currBlock, 1u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "decodeFileBlock_Http",
+          "line": 153
+        }
+      },
+      "malloc.assertion.1": {
+        "class": "assertion",
+        "description": "max allocation size exceeded",
+        "expression": "malloc_size <= __CPROVER_max_malloc_size",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 26
+        }
+      },
+      "malloc.assertion.2": {
+        "class": "assertion",
+        "description": "max allocation may fail",
+        "expression": "!__CPROVER_malloc_may_fail || !should_malloc_fail",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 31
+        }
+      }
+    }
+  }
+}

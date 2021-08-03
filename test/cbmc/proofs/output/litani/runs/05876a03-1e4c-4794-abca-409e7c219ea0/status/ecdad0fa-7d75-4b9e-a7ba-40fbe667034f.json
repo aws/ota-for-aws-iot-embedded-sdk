@@ -1,0 +1,52 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto"
+    ],
+    "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto"
+    ],
+    "pipeline_name": "setControlInterface",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/drop_unused_functions-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "setControlInterface: dropping unused functions",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/05876a03-1e4c-4794-abca-409e7c219ea0/status/ecdad0fa-7d75-4b9e-a7ba-40fbe667034f.json",
+    "job_id": "ecdad0fa-7d75-4b9e-a7ba-40fbe667034f"
+  },
+  "complete": true,
+  "start_time": "2021-07-28T13:31:21Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [
+    "Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto'",
+    "Function Pointer Removal",
+    "Virtual function removal",
+    "Cleaning inline assembler statements",
+    "Removing unused functions",
+    "Dropping 10 of 14 functions (4 used)",
+    "Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto'"
+  ],
+  "stderr": [],
+  "end_time": "2021-07-28T13:31:21Z"
+}

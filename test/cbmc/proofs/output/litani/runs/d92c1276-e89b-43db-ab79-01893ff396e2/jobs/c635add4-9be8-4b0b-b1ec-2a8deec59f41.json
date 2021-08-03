@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto"
+  ],
+  "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto"
+  ],
+  "pipeline_name": "setControlInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/remove_function_body-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "setControlInterface: removing function bodies from project sources",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "c635add4-9be8-4b0b-b1ec-2a8deec59f41",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d92c1276-e89b-43db-ab79-01893ff396e2/status/c635add4-9be8-4b0b-b1ec-2a8deec59f41.json"
+}

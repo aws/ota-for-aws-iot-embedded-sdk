@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness6.goto"
+  ],
+  "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness7.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness7.goto"
+  ],
+  "pipeline_name": "cleanupData_Http_harness",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/logs/slice_global_inits-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "cleanupData_Http_harness: slicing global initializations",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "c4e9eb67-f1ee-42d6-b8a2-09f64c0c5a3d",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/a990bbac-7518-4d88-87ca-ac7c0b2f6840/status/c4e9eb67-f1ee-42d6-b8a2-09f64c0c5a3d.json"
+}

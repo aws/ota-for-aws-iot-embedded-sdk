@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto"
+  ],
+  "pipeline_name": "setControlInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "setControlInterface: not checking function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "7c4085a0-ace7-4fb7-a051-eeba75c40922",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a3b833a-9006-42ba-bef2-5e500b865c1c/status/7c4085a0-ace7-4fb7-a051-eeba75c40922.json"
+}

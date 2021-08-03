@@ -1,0 +1,112 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "requestDataBlock_Http": {
+          "80": "hit",
+          "83": "hit",
+          "84": "hit",
+          "86": "hit",
+          "88": "both",
+          "91": "hit",
+          "94": "hit",
+          "96": "hit",
+          "98": "hit",
+          "102": "hit",
+          "106": "both",
+          "108": "hit",
+          "115": "hit",
+          "116": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "request": {
+          "34": "hit",
+          "36": "hit",
+          "37": "hit"
+        },
+        "requestDataBlock_Http_harness": {
+          "42": "hit",
+          "43": "hit",
+          "44": "hit",
+          "45": "hit",
+          "46": "hit",
+          "49": "hit",
+          "53": "hit",
+          "56": "hit",
+          "57": "hit",
+          "58": "hit",
+          "61": "hit",
+          "64": "hit",
+          "66": "hit",
+          "69": "hit",
+          "71": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "requestDataBlock_Http": {
+          "hit": 14,
+          "percentage": 1.0,
+          "total": 14
+        }
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "request": {
+          "hit": 3,
+          "percentage": 1.0,
+          "total": 3
+        },
+        "requestDataBlock_Http_harness": {
+          "hit": 15,
+          "percentage": 1.0,
+          "total": 15
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "80": "hit",
+        "83": "hit",
+        "84": "hit",
+        "86": "hit",
+        "88": "both",
+        "91": "hit",
+        "94": "hit",
+        "96": "hit",
+        "98": "hit",
+        "102": "hit",
+        "106": "both",
+        "108": "hit",
+        "115": "hit",
+        "116": "hit"
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "34": "hit",
+        "36": "hit",
+        "37": "hit",
+        "42": "hit",
+        "43": "hit",
+        "44": "hit",
+        "45": "hit",
+        "46": "hit",
+        "49": "hit",
+        "53": "hit",
+        "56": "hit",
+        "57": "hit",
+        "58": "hit",
+        "61": "hit",
+        "64": "hit",
+        "66": "hit",
+        "69": "hit",
+        "71": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 32,
+      "percentage": 1.0,
+      "total": 32
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto"
+  ],
+  "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto"
+  ],
+  "pipeline_name": "OTA_MQTT_strerror",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/drop_unused_functions-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_MQTT_strerror: dropping unused functions",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "932c5780-a01d-4ae7-8d82-a5109c7f121d",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/fb4c2aa9-94ff-4ac6-a580-24d2e6ddc112/status/932c5780-a01d-4ae7-8d82-a5109c7f121d.json"
+}

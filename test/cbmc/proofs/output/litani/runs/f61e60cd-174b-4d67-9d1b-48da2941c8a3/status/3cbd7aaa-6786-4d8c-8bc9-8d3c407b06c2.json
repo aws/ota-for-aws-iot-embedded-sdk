@@ -1,0 +1,48 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto"
+    ],
+    "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto"
+    ],
+    "pipeline_name": "setControlInterface",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/slice_global_inits-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "setControlInterface: slicing global initializations",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/f61e60cd-174b-4d67-9d1b-48da2941c8a3/status/3cbd7aaa-6786-4d8c-8bc9-8d3c407b06c2.json",
+    "job_id": "3cbd7aaa-6786-4d8c-8bc9-8d3c407b06c2"
+  },
+  "complete": true,
+  "start_time": "2021-07-21T20:51:13Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [
+    "Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto'",
+    "Slicing away initializations of unused global variables",
+    "Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto'"
+  ],
+  "stderr": [],
+  "end_time": "2021-07-21T20:51:13Z"
+}

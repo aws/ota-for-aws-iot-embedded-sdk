@@ -1,0 +1,2271 @@
+{
+  "viewer-symbol": {
+    "symbols": {
+      "BITS_PER_BYTE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 55
+      },
+      "CONST_STRLEN": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 47
+      },
+      "DocParseErrBase64Decode": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 190
+      },
+      "DocParseErrDuplicatesNotAllowed": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 192
+      },
+      "DocParseErrFieldTypeMismatch": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 189
+      },
+      "DocParseErrInvalidModelParamType": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 200
+      },
+      "DocParseErrInvalidNumChar": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 191
+      },
+      "DocParseErrInvalidToken": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 201
+      },
+      "DocParseErrMalformedDoc": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 193
+      },
+      "DocParseErrNone": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 186
+      },
+      "DocParseErrNullBodyPointer": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 196
+      },
+      "DocParseErrNullDocPointer": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 197
+      },
+      "DocParseErrNullModelPointer": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 195
+      },
+      "DocParseErrOutOfMemory": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 187
+      },
+      "DocParseErrParamKeyNotInModel": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 199
+      },
+      "DocParseErrTooManyParams": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 198
+      },
+      "DocParseErrUnknown": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 185
+      },
+      "DocParseErrUserBufferInsuffcient": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 188
+      },
+      "DocParseErr_InvalidJSONBuffer": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 194
+      },
+      "DocParseErr_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 202
+      },
+      "IngestResultAccepted_Continue": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 174
+      },
+      "IngestResultBadData": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 170
+      },
+      "IngestResultBadFileHandle": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 167
+      },
+      "IngestResultBlockOutOfRange": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 169
+      },
+      "IngestResultDuplicate_Continue": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 175
+      },
+      "IngestResultFileCloseFail": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 165
+      },
+      "IngestResultFileComplete": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 163
+      },
+      "IngestResultNoDecodeMemory": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 172
+      },
+      "IngestResultNullInput": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 166
+      },
+      "IngestResultSigCheckFail": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 164
+      },
+      "IngestResultUnexpectedBlock": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 168
+      },
+      "IngestResultUninitialized": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 173
+      },
+      "IngestResultWriteBlockFailed": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 171
+      },
+      "IngestResult_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 176
+      },
+      "JobReasonAborted": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 233
+      },
+      "JobReasonAccepted": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 231
+      },
+      "JobReasonReceiving": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 228
+      },
+      "JobReasonRejected": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 232
+      },
+      "JobReasonSelfTestActive": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 230
+      },
+      "JobReasonSigCheckPassed": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 229
+      },
+      "JobStatusFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 179
+      },
+      "JobStatusFailedWithVal": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 182
+      },
+      "JobStatusInProgress": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 178
+      },
+      "JobStatusRejected": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 181
+      },
+      "JobStatusSucceeded": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 180
+      },
+      "JsonDocModel_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 278
+      },
+      "JsonDocParam_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 255
+      },
+      "LOG2_BITS_PER_BYTE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 54
+      },
+      "ModelParamTypeArray": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 214
+      },
+      "ModelParamTypeArrayCopy": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 218
+      },
+      "ModelParamTypeIdent": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 217
+      },
+      "ModelParamTypeObject": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 213
+      },
+      "ModelParamTypeSigBase64": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 216
+      },
+      "ModelParamTypeStringCopy": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 211
+      },
+      "ModelParamTypeStringInDoc": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 212
+      },
+      "ModelParamTypeUInt32": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 215
+      },
+      "ModelParamType_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 219
+      },
+      "NumJobReasons": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 234
+      },
+      "NumJobStatusMappings": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 183
+      },
+      "OTA_CONTROL_OVER_MQTT": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 38
+      },
+      "OTA_DATA_BLOCK_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 77
+      },
+      "OTA_DATA_NUM_PROTOCOLS": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 43
+      },
+      "OTA_DATA_OVER_HTTP": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 42
+      },
+      "OTA_DATA_OVER_MQTT": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 41
+      },
+      "OTA_DOC_MODEL_MAX_PARAMS": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 72
+      },
+      "OTA_DONT_STORE_PARAM": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 75
+      },
+      "OTA_ERASED_BLOCKS_VAL": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 61
+      },
+      "OTA_EVT_MASK_ALL_EVENTS": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 90
+      },
+      "OTA_EVT_MASK_DATA_MSG_READY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 86
+      },
+      "OTA_EVT_MASK_JOB_MSG_READY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 85
+      },
+      "OTA_EVT_MASK_REQ_TIMEOUT": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 88
+      },
+      "OTA_EVT_MASK_SHUTDOWN": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 87
+      },
+      "OTA_EVT_MASK_USER_ABORT": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 89
+      },
+      "OTA_FILE_BLOCK_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 56
+      },
+      "OTA_FILE_SIG_KEY_STR_MAX_LENGTH": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 50
+      },
+      "OTA_H": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_HTTP_INTERFACE_H": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_INTERFACE_PRIVATE_H": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_JOB_ID_MAX_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 103
+      },
+      "OTA_JOB_PARAM_OPTIONAL": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 74
+      },
+      "OTA_JOB_PARAM_REQUIRED": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 73
+      },
+      "OTA_JSON_AUTH_SCHEME_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 150
+      },
+      "OTA_JSON_CLIENT_TOKEN_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 130
+      },
+      "OTA_JSON_EXECUTION_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 132
+      },
+      "OTA_JSON_FILETYPE_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 151
+      },
+      "OTA_JSON_FILE_ATTRIBUTE_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 147
+      },
+      "OTA_JSON_FILE_CERT_NAME_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 148
+      },
+      "OTA_JSON_FILE_GROUP_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 142
+      },
+      "OTA_JSON_FILE_ID_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 146
+      },
+      "OTA_JSON_FILE_PATH_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 144
+      },
+      "OTA_JSON_FILE_SIZE_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 145
+      },
+      "OTA_JSON_JOB_DOC_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 139
+      },
+      "OTA_JSON_JOB_ID_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 133
+      },
+      "OTA_JSON_OTA_UNIT_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 140
+      },
+      "OTA_JSON_PROTOCOLS_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 141
+      },
+      "OTA_JSON_SELF_TEST_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 135
+      },
+      "OTA_JSON_SELF_TEST_KEY_ONLY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 138
+      },
+      "OTA_JSON_SEPARATOR": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 129
+      },
+      "OTA_JSON_STATUS_DETAILS_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 134
+      },
+      "OTA_JSON_STREAM_NAME_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 143
+      },
+      "OTA_JSON_TIMESTAMP_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 131
+      },
+      "OTA_JSON_UPDATED_BY_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 136
+      },
+      "OTA_JSON_UPDATED_BY_KEY_ONLY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 137
+      },
+      "OTA_JSON_UPDATE_DATA_URL_KEY": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 149
+      },
+      "OTA_MAX_BLOCK_BITMAP_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 58
+      },
+      "OTA_MAX_FILES": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 57
+      },
+      "OTA_MAX_JSON_STR_LEN": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 71
+      },
+      "OTA_MAX_JSON_TOKENS": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 70
+      },
+      "OTA_MQTT_H": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_MQTT_INTERFACE_H": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_NUM_JOB_PARAMS": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 97
+      },
+      "OTA_OS_INTERFACE_H": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 30
+      },
+      "OTA_PAL_COMBINE_ERR": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 110
+      },
+      "OTA_PAL_ERR_MASK": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 106
+      },
+      "OTA_PAL_MAIN_ERR": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 108
+      },
+      "OTA_PAL_SUB_BITS": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 107
+      },
+      "OTA_PAL_SUB_ERR": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 109
+      },
+      "OTA_PLATFORM_INTERFACE": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 29
+      },
+      "OTA_PRIVATE_H": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 30
+      },
+      "OTA_PROTOCOL_BUFFER_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 109
+      },
+      "OTA_REQUEST_MSG_MAX_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 59
+      },
+      "OTA_REQUEST_URL_MAX_SIZE": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 60
+      },
+      "OTA_STORE_NESTED_JSON": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 76
+      },
+      "OtaAgentContext": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 287
+      },
+      "OtaAgentContext_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 304
+      },
+      "OtaAgentEventCloseFile": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 348
+      },
+      "OtaAgentEventCreateFile": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 344
+      },
+      "OtaAgentEventMax": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 353
+      },
+      "OtaAgentEventReceivedFileBlock": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 346
+      },
+      "OtaAgentEventReceivedJobDocument": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 343
+      },
+      "OtaAgentEventRequestFileBlock": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 345
+      },
+      "OtaAgentEventRequestJobDocument": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 342
+      },
+      "OtaAgentEventRequestTimer": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 347
+      },
+      "OtaAgentEventResume": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 350
+      },
+      "OtaAgentEventShutdown": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 352
+      },
+      "OtaAgentEventStart": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 340
+      },
+      "OtaAgentEventStartSelfTest": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 341
+      },
+      "OtaAgentEventSuspend": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 349
+      },
+      "OtaAgentEventUserAbort": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 351
+      },
+      "OtaAgentStateAll": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 121
+      },
+      "OtaAgentStateClosingFile": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 117
+      },
+      "OtaAgentStateCreatingFile": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 114
+      },
+      "OtaAgentStateInit": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 110
+      },
+      "OtaAgentStateNoTransition": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 109
+      },
+      "OtaAgentStateReady": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 111
+      },
+      "OtaAgentStateRequestingFileBlock": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 115
+      },
+      "OtaAgentStateRequestingJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 112
+      },
+      "OtaAgentStateShuttingDown": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 119
+      },
+      "OtaAgentStateStopped": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 120
+      },
+      "OtaAgentStateSuspended": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 118
+      },
+      "OtaAgentStateWaitingForFileBlock": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 116
+      },
+      "OtaAgentStateWaitingForJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 113
+      },
+      "OtaAgentStatistics": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 284
+      },
+      "OtaAgentStatistics_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 290
+      },
+      "OtaAppBuffer": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 264
+      },
+      "OtaAppBuffer_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 280
+      },
+      "OtaAppCallback": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 302
+      },
+      "OtaAppCallback_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 237
+      },
+      "OtaControlInterface_t": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 60
+      },
+      "OtaDataInterface_t": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 80
+      },
+      "OtaDeinitEvent_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 165
+      },
+      "OtaDeleteTimer_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 222
+      },
+      "OtaErr": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 72
+      },
+      "OtaErrActivateFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 96
+      },
+      "OtaErrAgentStopped": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 78
+      },
+      "OtaErrCleanupControlFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 83
+      },
+      "OtaErrCleanupDataFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 84
+      },
+      "OtaErrDowngradeNotAllowed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 89
+      },
+      "OtaErrFailedToDecodeCbor": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 95
+      },
+      "OtaErrFailedToEncodeCbor": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 94
+      },
+      "OtaErrImageStateMismatch": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 91
+      },
+      "OtaErrInitFileTransferFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 81
+      },
+      "OtaErrInvalidArg": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 77
+      },
+      "OtaErrInvalidDataProtocol": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 87
+      },
+      "OtaErrJobParserError": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 86
+      },
+      "OtaErrMomentumAbort": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 88
+      },
+      "OtaErrNoActiveJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 92
+      },
+      "OtaErrNone": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 74
+      },
+      "OtaErrPanic": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 76
+      },
+      "OtaErrRequestFileBlockFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 82
+      },
+      "OtaErrRequestJobFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 80
+      },
+      "OtaErrSameFirmwareVersion": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 90
+      },
+      "OtaErrSignalEventFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 79
+      },
+      "OtaErrUninitialized": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 75
+      },
+      "OtaErrUpdateJobStatusFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 85
+      },
+      "OtaErrUserAbort": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 93
+      },
+      "OtaErr_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 97
+      },
+      "OtaEvent": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 338
+      },
+      "OtaEventContext": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 71
+      },
+      "OtaEventContext_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 76
+      },
+      "OtaEventData": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 415
+      },
+      "OtaEventData_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 420
+      },
+      "OtaEventInterface": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 255
+      },
+      "OtaEventInterface_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 262
+      },
+      "OtaEventMsg": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 427
+      },
+      "OtaEventMsg_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 431
+      },
+      "OtaEvent_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 354
+      },
+      "OtaFileContext": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 375
+      },
+      "OtaFileContext_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 408
+      },
+      "OtaFree_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 249
+      },
+      "OtaHttpDeinit": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 122
+      },
+      "OtaHttpDeinitFailed": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 83
+      },
+      "OtaHttpInitFailed": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 82
+      },
+      "OtaHttpInit_t": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 97
+      },
+      "OtaHttpInterface": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 129
+      },
+      "OtaHttpInterface_t": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 134
+      },
+      "OtaHttpRequestFailed": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 84
+      },
+      "OtaHttpRequest_t": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 111
+      },
+      "OtaHttpStatus": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 79
+      },
+      "OtaHttpStatus_t": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 85
+      },
+      "OtaHttpSuccess": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 81
+      },
+      "OtaImageState": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 307
+      },
+      "OtaImageStateAborted": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 313
+      },
+      "OtaImageStateAccepted": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 311
+      },
+      "OtaImageStateRejected": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 312
+      },
+      "OtaImageStateTesting": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 310
+      },
+      "OtaImageStateUnknown": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 309
+      },
+      "OtaImageState_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 316
+      },
+      "OtaInitEvent_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 116
+      },
+      "OtaInterface": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 250
+      },
+      "OtaInterfaces_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 256
+      },
+      "OtaJobDocument": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 194
+      },
+      "OtaJobDocument_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 205
+      },
+      "OtaJobEvent": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 158
+      },
+      "OtaJobEventActivate": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 160
+      },
+      "OtaJobEventFail": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 161
+      },
+      "OtaJobEventParseCustomJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 165
+      },
+      "OtaJobEventProcessed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 163
+      },
+      "OtaJobEventReceivedJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 166
+      },
+      "OtaJobEventSelfTestFailed": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 164
+      },
+      "OtaJobEventStartTest": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 162
+      },
+      "OtaJobEventUpdateComplete": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 167
+      },
+      "OtaJobEvent_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 169
+      },
+      "OtaJobParseErr": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 128
+      },
+      "OtaJobParseErrBadModelInitParams": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 136
+      },
+      "OtaJobParseErrNoActiveJobs": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 138
+      },
+      "OtaJobParseErrNoContextAvailable": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 137
+      },
+      "OtaJobParseErrNonConformingJobDoc": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 135
+      },
+      "OtaJobParseErrNone": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 131
+      },
+      "OtaJobParseErrNullJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 132
+      },
+      "OtaJobParseErrUnknown": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 130
+      },
+      "OtaJobParseErrUpdateCurrentJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 133
+      },
+      "OtaJobParseErrZeroFileSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 134
+      },
+      "OtaJobParseErr_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 139
+      },
+      "OtaJobReason_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 235
+      },
+      "OtaJobStatus_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 184
+      },
+      "OtaLastImageState": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 315
+      },
+      "OtaLastJobEvent": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 168
+      },
+      "OtaMallocInterface": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 279
+      },
+      "OtaMallocInterface_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 288
+      },
+      "OtaMalloc_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 235
+      },
+      "OtaMqttInterface": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 155
+      },
+      "OtaMqttInterface_t": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 160
+      },
+      "OtaMqttPublishFailed": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 84
+      },
+      "OtaMqttPublish_t": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 145
+      },
+      "OtaMqttStatus": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 81
+      },
+      "OtaMqttStatus_t": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 87
+      },
+      "OtaMqttSubscribeFailed": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 85
+      },
+      "OtaMqttSubscribe_t": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 105
+      },
+      "OtaMqttSuccess": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 83
+      },
+      "OtaMqttUnsubscribeFailed": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 86
+      },
+      "OtaMqttUnsubscribe_t": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 124
+      },
+      "OtaNumOfTimers": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 85
+      },
+      "OtaOSInterface": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 294
+      },
+      "OtaOSInterface_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 299
+      },
+      "OtaOsEventQueueCreateFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 95
+      },
+      "OtaOsEventQueueDeleteFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 98
+      },
+      "OtaOsEventQueueReceiveFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 97
+      },
+      "OtaOsEventQueueSendFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 96
+      },
+      "OtaOsStatus": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 92
+      },
+      "OtaOsStatus_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 104
+      },
+      "OtaOsSuccess": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 94
+      },
+      "OtaOsTimerCreateFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 99
+      },
+      "OtaOsTimerDeleteFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 103
+      },
+      "OtaOsTimerRestartFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 101
+      },
+      "OtaOsTimerStartFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 100
+      },
+      "OtaOsTimerStopFailed": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 102
+      },
+      "OtaPalAbortFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 84
+      },
+      "OtaPalAbort_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 133
+      },
+      "OtaPalActivateFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 87
+      },
+      "OtaPalActivateNewImage_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 222
+      },
+      "OtaPalBadImageState": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 83
+      },
+      "OtaPalBadSignerCert": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 82
+      },
+      "OtaPalBootInfoCreateFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 81
+      },
+      "OtaPalCloseFile_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 184
+      },
+      "OtaPalCommitFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 86
+      },
+      "OtaPalCreateFileForRx_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 158
+      },
+      "OtaPalFileAbort": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 88
+      },
+      "OtaPalFileClose": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 89
+      },
+      "OtaPalGetPlatformImageState_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 285
+      },
+      "OtaPalImageState": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 324
+      },
+      "OtaPalImageStateInvalid": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 329
+      },
+      "OtaPalImageStatePendingCommit": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 327
+      },
+      "OtaPalImageStateUnknown": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 326
+      },
+      "OtaPalImageStateValid": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 328
+      },
+      "OtaPalImageState_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 330
+      },
+      "OtaPalInterface": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 291
+      },
+      "OtaPalInterface_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 305
+      },
+      "OtaPalMainStatus": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 72
+      },
+      "OtaPalMainStatus_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 90
+      },
+      "OtaPalNullFileContext": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 77
+      },
+      "OtaPalOutOfMemory": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 76
+      },
+      "OtaPalRejectFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 85
+      },
+      "OtaPalResetDevice_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 236
+      },
+      "OtaPalRxFileCreateFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 79
+      },
+      "OtaPalRxFileTooLarge": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 80
+      },
+      "OtaPalSetPlatformImageState_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 259
+      },
+      "OtaPalSignatureCheckFailed": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 78
+      },
+      "OtaPalStatus_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 61
+      },
+      "OtaPalSubStatus_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 66
+      },
+      "OtaPalSuccess": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 74
+      },
+      "OtaPalUninitialized": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 75
+      },
+      "OtaPalWriteBlock_t": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 205
+      },
+      "OtaReceiveEvent_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 150
+      },
+      "OtaRequestTimer": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 83
+      },
+      "OtaSelfTestTimer": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 84
+      },
+      "OtaSendEvent_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 132
+      },
+      "OtaStartTimer_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 195
+      },
+      "OtaState": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 107
+      },
+      "OtaState_t": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 122
+      },
+      "OtaStopTimer_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 210
+      },
+      "OtaTimerCallback_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 177
+      },
+      "OtaTimerId_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 86
+      },
+      "OtaTimerInterface": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 268
+      },
+      "OtaTimerInterface_t": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 273
+      },
+      "Sig256_t": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 366
+      },
+      "abort": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 297
+      },
+      "activate": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 301
+      },
+      "authSchemeMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 399
+      },
+      "authSchemeSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 279
+      },
+      "blockBitmapMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 393
+      },
+      "blocksRemaining": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 385
+      },
+      "bufferUsed": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 419
+      },
+      "certFilePathMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 395
+      },
+      "certFilePathSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 269
+      },
+      "cleanup": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 59
+      },
+      "cleanupControl_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 111
+      },
+      "cleanupData_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 124
+      },
+      "closeFile": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 299
+      },
+      "contextBase": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 272
+      },
+      "contextSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 273
+      },
+      "createFile": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 298
+      },
+      "data": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 365
+      },
+      "dataLength": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 418
+      },
+      "decodeFileBlock": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 72
+      },
+      "decodeFileBlock_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 92
+      },
+      "decodeMemMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 405
+      },
+      "decodeMemorySize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 273
+      },
+      "deinit": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 133
+      },
+      "event": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 296
+      },
+      "eventId": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 430
+      },
+      "fileAttributes": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 386
+      },
+      "fileBitmapSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 275
+      },
+      "fileContext": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 291
+      },
+      "fileIndex": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 292
+      },
+      "filePathMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 378
+      },
+      "fileSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 384
+      },
+      "fileType": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 406
+      },
+      "fileTypeId": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 200
+      },
+      "free": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 287
+      },
+      "getPlatformImageState": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 304
+      },
+      "http": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 254
+      },
+      "imageState": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 297
+      },
+      "init": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 131
+      },
+      "initFileTransfer": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 70
+      },
+      "initFileTransfer_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 59
+      },
+      "isInSelfTest": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 401
+      },
+      "jobDocLength": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 197
+      },
+      "jobIdLength": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 199
+      },
+      "jobNameMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 389
+      },
+      "kOTA_MaxSignatureSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 116
+      },
+      "malloc": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 285
+      },
+      "mem": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 298
+      },
+      "modelParamType": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 254
+      },
+      "mqtt": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 253
+      },
+      "numModelParams": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 275
+      },
+      "numOfBlocksToReceive": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 298
+      },
+      "os": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 252
+      },
+      "otaPacketsDropped": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 289
+      },
+      "otaPacketsProcessed": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 288
+      },
+      "otaPacketsQueued": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 287
+      },
+      "otaPacketsReceived": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 286
+      },
+      "pActiveJobName": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 294
+      },
+      "pAuthScheme": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 278
+      },
+      "pBodyDef": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 274
+      },
+      "pCertFilePath": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 268
+      },
+      "pCertFilepath": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 394
+      },
+      "pClientTokenFromJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 295
+      },
+      "pDecodeMem": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 404
+      },
+      "pDecodeMemory": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 272
+      },
+      "pDestOffset": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 252
+      },
+      "pDestSizeOffset": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 253
+      },
+      "pEventContext": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 261
+      },
+      "pEventData": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 429
+      },
+      "pFile": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 380
+      },
+      "pFileBitmap": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 274
+      },
+      "pFilePath": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 377
+      },
+      "pJobDocJson": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 196
+      },
+      "pJobId": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 198
+      },
+      "pJobName": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 388
+      },
+      "pOtaInterface": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 301
+      },
+      "pProtocols": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 402
+      },
+      "pRxBlockBitmap": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 392
+      },
+      "pSignature": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 407
+      },
+      "pSrcKey": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 250
+      },
+      "pStreamName": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 270
+      },
+      "pThingName": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 290
+      },
+      "pUpdateFilePath": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 266
+      },
+      "pUpdateUrlPath": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 396
+      },
+      "pUrl": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 276
+      },
+      "pal": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 255
+      },
+      "paramsReceivedBitmap": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 276
+      },
+      "paramsRequiredBitmap": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 277
+      },
+      "parseErr": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 201
+      },
+      "protocolMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 403
+      },
+      "publish": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 159
+      },
+      "reason": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 203
+      },
+      "recv": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 259
+      },
+      "request": {
+        "file": "source/include/ota_http_interface.h",
+        "function": null,
+        "line": 132
+      },
+      "requestFileBlock": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 71
+      },
+      "requestFileBlock_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 73
+      },
+      "requestJob": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 54
+      },
+      "requestJob_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 46
+      },
+      "requestMomentum": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 300
+      },
+      "required": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 251
+      },
+      "reset": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 302
+      },
+      "send": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 258
+      },
+      "serverFileID": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 293
+      },
+      "setControlInterface": {
+        "file": "source/ota_interface.c",
+        "function": null,
+        "line": 63
+      },
+      "setControlInterface_harness": {
+        "file": "test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c",
+        "function": null,
+        "line": 30
+      },
+      "setDataInterface": {
+        "file": "source/ota_interface.c",
+        "function": null,
+        "line": 76
+      },
+      "setPlatformImageState": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 303
+      },
+      "size": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 364
+      },
+      "start": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 270
+      },
+      "state": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 289
+      },
+      "statistics": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 299
+      },
+      "status": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 202
+      },
+      "stop": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 271
+      },
+      "streamNameMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 391
+      },
+      "streamNameSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 271
+      },
+      "subReason": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 204
+      },
+      "subscribe": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 157
+      },
+      "timer": {
+        "file": "source/include/ota_os_interface.h",
+        "function": null,
+        "line": 297
+      },
+      "timestampFromJob": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 296
+      },
+      "unsubscribe": {
+        "file": "source/include/ota_mqtt_interface.h",
+        "function": null,
+        "line": 158
+      },
+      "unsubscribeOnShutdown": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 303
+      },
+      "updateFilePathsize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 267
+      },
+      "updateJobStatus": {
+        "file": "source/include/ota_interface_private.h",
+        "function": null,
+        "line": 55
+      },
+      "updateJobStatus_Mqtt": {
+        "file": "source/include/ota_mqtt_private.h",
+        "function": null,
+        "line": 143
+      },
+      "updateUrlMaxSize": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 397
+      },
+      "updaterVersion": {
+        "file": "source/include/ota_private.h",
+        "function": null,
+        "line": 400
+      },
+      "urlSize": {
+        "file": "source/include/ota.h",
+        "function": null,
+        "line": 277
+      },
+      "writeBlock": {
+        "file": "source/include/ota_platform_interface.h",
+        "function": null,
+        "line": 300
+      }
+    }
+  }
+}

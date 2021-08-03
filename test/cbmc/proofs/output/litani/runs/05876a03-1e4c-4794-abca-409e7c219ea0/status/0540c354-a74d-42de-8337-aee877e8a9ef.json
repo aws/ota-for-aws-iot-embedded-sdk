@@ -1,0 +1,44 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto"
+    ],
+    "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto"
+    ],
+    "pipeline_name": "setDataInterface",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": false,
+    "stdout_file": null,
+    "stderr_file": null,
+    "pool": null,
+    "description": "setDataInterface: not replacing function calls with function contracts",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/05876a03-1e4c-4794-abca-409e7c219ea0/status/0540c354-a74d-42de-8337-aee877e8a9ef.json",
+    "job_id": "0540c354-a74d-42de-8337-aee877e8a9ef"
+  },
+  "complete": true,
+  "start_time": "2021-07-28T13:31:21Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [],
+  "stderr": [],
+  "end_time": "2021-07-28T13:31:21Z"
+}

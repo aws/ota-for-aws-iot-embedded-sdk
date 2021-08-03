@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto"
+  ],
+  "pipeline_name": "OTA_MQTT_strerror",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_MQTT_strerror: copying final goto-binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "f6434e57-8fea-42eb-8db5-85d69d191139",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/c5815b33-f4e5-4602-8f4a-861ae5ecd480/status/f6434e57-8fea-42eb-8db5-85d69d191139.json"
+}

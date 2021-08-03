@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c"
+  ],
+  "command": "goto-cc  --export-file-local-symbols -fPIC /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/unit-test -Dhttp_EXPORTS -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto"
+  ],
+  "pipeline_name": "OTA_MQTT_strerror",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/proof_sources-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_MQTT_strerror: building proof binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "03d548cc-8d73-478f-9dff-31f9533626f9",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/0fbf007a-9046-4802-8dfa-fb28db38a7e2/status/03d548cc-8d73-478f-9dff-31f9533626f9.json"
+}

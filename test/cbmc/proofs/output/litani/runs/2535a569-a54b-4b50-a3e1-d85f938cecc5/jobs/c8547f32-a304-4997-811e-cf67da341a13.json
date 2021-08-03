@@ -1,0 +1,33 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/result.txt",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/property.xml",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/coverage.xml"
+  ],
+  "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/gotos/setControlInterface_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/html",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/html"
+  ],
+  "pipeline_name": "setControlInterface",
+  "ci_stage": "report",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/viewer-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "setControlInterface: generating report",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "c8547f32-a304-4997-811e-cf67da341a13",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2535a569-a54b-4b50-a3e1-d85f938cecc5/status/c8547f32-a304-4997-811e-cf67da341a13.json"
+}

@@ -1,0 +1,107 @@
+/*
+ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ SPDX-License-Identifier: Apache-2.0
+*/
+
+.coverage table td
+{
+    padding-right: 1em;
+}
+
+.coverage table th
+{
+    padding-right: 1em;
+    text-align: left;
+}
+
+/****************************************************************/
+
+.code .line
+{
+    font-family: monospace;
+    white-space: pre;
+}
+
+.code .line.hit,
+.code .line.hit a
+{
+    color: green;
+}
+
+.code .line.missed,
+.code .line.missed a
+{
+    color: red;
+}
+
+.code .line.both,
+.code .line.both a
+{
+    color: orange;
+}
+
+/****************************************************************/
+
+.trace
+{
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-style: solid;
+    border-width: 1px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.trace .step
+{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.trace .step .cbmc,
+.trace .step .header,
+.trace .step .code
+{
+    font-family: monospace;
+    white-space: pre;
+}
+
+.trace .step .cbmc,
+.trace .step .code
+{
+    margin-left: 1em;
+}
+
+.trace .function-body
+{
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: blue;
+    margin-left: 1em;
+    padding-left: .5em;
+}
+
+.trace .function-body.hidden
+{
+    display: none;
+}
+
+/****************************************************************/
+
+#trace-header
+{
+    border-style: solid;
+    border-width: 1px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#trace-navigation ul,
+#trace-description ul {
+    margin-block-start: 0px;
+}
+
+#trace-navigation p,
+#trace-description p {
+    margin-block-end: 0px;
+}

@@ -1,0 +1,3043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Pipeline initFileTransfer_Http
+  </title>
+<style>
+#title{
+  background-color: #ec407a;
+  color: white;
+  padding: 2em;
+}
+h1 {
+  margin-bottom: 0em;
+}
+#subtitle {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+}
+.run-info ul {
+  list-style: none;
+}
+.run-info ul li {
+  display: inline;
+  margin-right: 6em;
+  margin-left: -3em;
+  text-transform: uppercase;
+  font-size: small;
+  color: #ec407a;
+}
+#content {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 2em;
+  color: #263238;
+  font-family: Helvetica, sans-serif;
+}
+p {
+  margin: 0;
+}
+.command-table {
+  background-color: #eceff1;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  margin-bottom: 4em;
+}
+.command-table .fail-ignored {
+  background-color: #e65100cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .success {
+  background-color: #1a237ecc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .in-progress {
+  background-color: #26323844;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .fail {
+  background-color: #f44336cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-content {
+  background-color: #eceff1;
+  padding: 1em;
+}
+.command-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.command-id-link{
+  flex-grow: 0;
+}
+.command-id-link a {
+  font-size: xx-large;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+  text-decoration: none;
+  margin-left: 0.2em;
+}
+.command-id-link a:link {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-id-link a:visited:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-description {
+  color: #26323899;
+  font-size: smaller;
+  text-align: center;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.command-invocation {
+  padding: 1em;
+  color: #fff;
+  background-color: #005662;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  text-shadow: 0 0 2px #ffccbccc;
+}
+.command-stats-table {
+  margin-top: 0.2em;
+  border-radius: 0.5em;
+  padding: 0.2em;
+  padding-top: 0.4em;
+  display: flex;
+  flex-direction: column;
+  background-color: #eae3998a;
+  color: #263238cc;
+  margin-bottom: 0.2em;
+}
+.command-stats-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  font-size: small;
+  text-transform: uppercase;
+}
+.command-stats-row p .value {
+  color: #00251aaa;
+  text-shadow: 0 0 2px #82ada944;
+  font-weight: bold;
+}
+.output-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #cfd8dc;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  max-height: 20em;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.output-box xmp{
+  white-space: pre;
+}
+.stage-name p {
+  margin-left: 0.5em;
+  color: #546e7a;
+  text-shadow:  -1px  0px 0px #fff
+               ,-2px  0px 0px #ffffff99
+               ,-1px  1px 0px #ffffff99
+               ;
+  font-size: 48pt;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-weight: bold;
+  font-style: italic;
+}
+.stage-name .underline {
+  width: 100%;
+  height: 1.1em;
+  background-color: #546e7a;
+  margin-top: -1.6em;
+}
+.stage-name {
+  margin-top: 6em;
+  margin-bottom: 3em;
+}
+
+.outcome-table-info-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #ffee58;
+  border-radius: 0.5em;
+}
+.outcome-table-info-box .outcome{
+  font-weight: bold;
+}
+#toc {
+  margin-bottom: 6em;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  margin-right: 3em;
+}
+.toc-title {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  margin-bottom: -1em;
+}
+.toc-section{
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  text-transform: capitalize;
+}
+.toc-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.toc-row-icon {
+  padding-right: 8px;
+}
+.status-icon-cross {
+  fill: #f44336;
+    width: 16px;
+    height: 16px;
+}
+.status-icon-tick {
+  fill: #3f51b5;
+  stroke: #ffffff77;
+  stroke-width: 1px;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress {
+  fill: #333;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress circle {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: none
+}
+a:link {
+  color: #1e88e5;
+}
+a:visited {
+  color: #1e88e5;
+}
+a:visited:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+a:visited:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+
+#contents-container {
+  margin-top: 6em;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+#depgraph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: flex-start;
+  flex-shrink: 7;
+}
+
+#depgraph-title p {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+#depgraph-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#depgraph-preview {
+  padding: 1em;
+}
+
+.memory-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+  align-items: center;
+}
+.memory-preview {
+  width: 75%;
+}
+.memory-preview svg {
+  margin-left: -1em;
+  margin-right: -2em;
+}
+.memory-table {
+}
+.memory-title {
+  text-align: center;
+  font-style: bold;
+}
+.memory-subtitle {
+  text-transform: lowercase;
+  font-variant: small-caps;
+  text-align: center;
+  opacity: 0.8;
+}
+.memory-pad {
+  width: 1.5em;
+}
+.memory-value {
+  text-align: center;
+  margin-right: 2em;
+}
+.rss {
+  color: #ab47bc;
+}
+.vsz {
+  color: #4caf50;
+}
+
+
+@media (prefers-color-scheme: dark){
+  a:link {
+    color: #29b6f6;
+  }
+  a:visited {
+    color: #29b6f6;
+  }
+  a:visited:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  a:visited:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  .command-id-link a:link {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb.
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  .command-id-link a:visited:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  body {
+    color: #babdbe;
+    background-color: #263238;
+  }
+  .outcome-table-info-box p{
+    color: #000a12;
+  }
+  p {
+    color: #babdbe;
+  }
+  #subtitle {
+    color: #fff;
+  }
+  .command-table {
+    background-color: #37474f;
+  }
+  .command-content {
+    background-color: #37474f;
+  }
+  .command-invocation p {
+    color: #fff;
+  }
+  .command-stats-table {
+    background-color: #eae399d0;
+    color: #263238;
+  }
+  .command-stats-table p {
+    color: #263238;
+  }
+  .output-box {
+    color: #cfd8dccc;
+    background-color: #102027;
+  }
+  .stage-name p {
+    text-shadow: -1px  0px 0px #263238,
+                 -2px  0px 0px #26323899,
+                 -1px  1px 0px #26323899;
+  }
+  .status-icon-in-progress { fill: #ddd; }
+  .status-icon-in-progress circle { stroke: #ddd; }
+
+  /* SVG graphs */
+  g text {
+    fill: #eceff1;
+    stroke: #fff0;
+  }
+}
+</style>
+</head>
+<body>
+<div id="content">
+
+  <div id="title">
+    <h1>
+      AWS IoT Over-the-air Update Library pipeline &lsquo;initFileTransfer_Http&rsquo;
+    </h1>
+    <p id="subtitle">
+      Litani CI Dashboard
+    </p>
+  </div><!-- id="title" -->
+
+  <div class=run-info>
+    <ul>
+      <li>Pipeline status: success</li>
+      <li>2021-07-22T20:39:28Z</li>
+      <li>d87d6827-59e2-4788-a606-ce21ab4688b3</li>
+    </ul>
+  </div><!-- class=run-info -->
+
+  <div id="contents-container">
+
+    <div id="toc">
+      <div class="toc-title">
+        <p>Summary of jobs for this pipeline</p>
+      </div><!-- class="toc-title" -->
+
+      
+        <div class="toc-section">
+          <p>build</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-409799d0-27c0-4aa9-bdf9-66c2317ee116">
+              
+              initFileTransfer_Http: not checking function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-4383efe1-35d6-4b03-afbe-48ec6040b569">
+              
+              initFileTransfer_Http: building proof binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-4734406a-70f6-4330-ba00-275b9ca0db00">
+              
+              initFileTransfer_Http: linking project to proof
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-b8612558-b2d4-4cc5-af4e-d68659a8020d">
+              
+              initFileTransfer_Http: removing function bodies from project sources
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-10cb0c16-1c78-4813-a1bd-5c4c154584ae">
+              
+              initFileTransfer_Http: building project binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-9e58dc77-e5a5-4a1c-bb9a-64f74878e265">
+              
+              initFileTransfer_Http: slicing global initializations
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-9fc3ec75-3315-4298-9b70-0dd0276457d4">
+              
+              initFileTransfer_Http: dropping unused functions
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-8466fec3-463c-4209-932f-a41855fca505">
+              
+              initFileTransfer_Http: not applying loop contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-1bd17762-6227-4fdb-b2e3-6755c7c21167">
+              
+              initFileTransfer_Http: not replacing function calls with function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-36a62a35-e3c3-4ad1-828f-ccf7885ddfb5">
+              
+              initFileTransfer_Http: not setting static variables to nondet
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-5e7d1b94-bbe7-4fa9-b07f-ea632293db2f">
+              
+              initFileTransfer_Http: copying final goto-binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>test</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-1f7b9117-b228-4447-ae3e-f4c65d490cd7">
+              
+              initFileTransfer_Http: printing safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-e5efd83b-0c98-45a5-ae77-0dbb3affc3fc">
+              
+              initFileTransfer_Http: checking safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-6d19c072-2305-46ac-a13d-7d914db69ec8">
+              
+              initFileTransfer_Http: calculating coverage
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>report</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-6aa8463b-39e2-4a83-876c-6839764d0fbb">
+              
+              initFileTransfer_Http: generating report
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+    </div><!-- id="toc" -->
+
+
+    
+    <div id="depgraph">
+      <div id="depgraph-title">
+        <p>Dependency graph for pipeline</p>
+        <p>(click for larger version)</p>
+      </div><!-- id="depgraph-title" -->
+      <a href="dependencies.svg">
+        <div id="depgraph-preview">
+          <img
+             src="dependencies.svg"
+             alt="pipeline dependency graph" />
+        </div><!-- id="depgraph-preview" -->
+      </a><!-- href="" -->
+    </div><!-- id="depgraph" -->
+    
+
+  </div><!-- id="contents-container" -->
+
+
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>build</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-409799d0-27c0-4aa9-bdf9-66c2317ee116">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-409799d0-27c0-4aa9-bdf9-66c2317ee116">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: not checking function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-4383efe1-35d6-4b03-afbe-48ec6040b569">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-4383efe1-35d6-4b03-afbe-48ec6040b569">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: building proof binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-4734406a-70f6-4330-ba00-275b9ca0db00">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-4734406a-70f6-4330-ba00-275b9ca0db00">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: linking project to proof
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --function initFileTransfer_Http_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-b8612558-b2d4-4cc5-af4e-d68659a8020d">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-b8612558-b2d4-4cc5-af4e-d68659a8020d">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: removing function bodies from project sources
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto'
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-10cb0c16-1c78-4813-a1bd-5c4c154584ae">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-10cb0c16-1c78-4813-a1bd-5c4c154584ae">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: building project binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:30Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-9e58dc77-e5a5-4a1c-bb9a-64f74878e265">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-9e58dc77-e5a5-4a1c-bb9a-64f74878e265">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: slicing global initializations
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto'
+Slicing away initializations of unused global variables
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-9fc3ec75-3315-4298-9b70-0dd0276457d4">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-9fc3ec75-3315-4298-9b70-0dd0276457d4">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: dropping unused functions
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto'
+Function Pointer Removal
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 106 function requestDataBlock_Http: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 167 function cleanupData_Http: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 63 function initFileTransfer_Http: replacing function pointer by 1 possible targets
+Virtual function removal
+Cleaning inline assembler statements
+Removing unused functions
+Dropping 8 of 14 functions (6 used)
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-8466fec3-463c-4209-932f-a41855fca505">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-8466fec3-463c-4209-932f-a41855fca505">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: not applying loop contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-1bd17762-6227-4fdb-b2e3-6755c7c21167">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-1bd17762-6227-4fdb-b2e3-6755c7c21167">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: not replacing function calls with function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-36a62a35-e3c3-4ad1-828f-ccf7885ddfb5">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-36a62a35-e3c3-4ad1-828f-ccf7885ddfb5">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: not setting static variables to nondet
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-5e7d1b94-bbe7-4fa9-b07f-ea632293db2f">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-5e7d1b94-bbe7-4fa9-b07f-ea632293db2f">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: copying final goto-binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>test</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-1f7b9117-b228-4447-ae3e-f4c65d490cd7">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-1f7b9117-b228-4447-ae3e-f4c65d490cd7">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: printing safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="WARNING">
+<location file="&lt;builtin-library-malloc&gt;" line="6" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<text>warning: implicit function declaration "malloc"
+old definition in module initFileTransfer_Http_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c line 46 function initFileTransfer_Http_harness
+void * (void)
+new definition in module &lt;built-in-library&gt; file &lt;builtin-library-malloc&gt; line 6
+void * (__CPROVER_size_t malloc_size)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((OtaFileContext_t *)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.2">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;fileContext</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.3">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.4">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.5">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;fileContext</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 72l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 256ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.6">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="53" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(((OtaFileContext_t *)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 72l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.7">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.8">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.9">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.10">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.11">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http_harness.pointer_dereference.12">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)</expression>
+</property>
+
+<property class="assertion" name="initFileTransfer_Http_harness.assertion.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="65" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>The function return should be either OtaErrNone or OtaErrCleanupDataFailed</description>
+<expression>(signed int)status == 0 || (signed int)status == 7</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.2">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.3">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.4">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.5">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.6">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)</expression>
+</property>
+
+<property class="assertion" name="initFileTransfer_Http.assertion.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>assertion pAgentCtx != NULL &amp;&amp; pAgentCtx-&gt;pOtaInterface != NULL</description>
+<expression>tmp_if_expr</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.7">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in fileContext-&gt;pUpdateUrlPath</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(((uint8_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.8">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in fileContext-&gt;pUpdateUrlPath</description>
+<expression>!IS_INVALID_POINTER(fileContext)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.9">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in fileContext-&gt;pUpdateUrlPath</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.10">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in fileContext-&gt;pUpdateUrlPath</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.11">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in fileContext-&gt;pUpdateUrlPath</description>
+<expression>POINTER_OFFSET(fileContext) + 104l &gt;= 0l &amp;&amp; OBJECT_SIZE(fileContext) &gt;= (unsigned long int)POINTER_OFFSET(fileContext) + 112ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.12">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="60" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in fileContext-&gt;pUpdateUrlPath</description>
+<expression>!(POINTER_OBJECT(((uint8_t **)NULL)) == POINTER_OBJECT(fileContext)) || (char *)fileContext + 104l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.13">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.14">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.15">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.16">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.17">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.18">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.19">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.20">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx-&gt;pOtaInterface)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.21">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.22">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.23">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface) + 104l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx-&gt;pOtaInterface) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface) + 128ul</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.24">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)) == POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface)) || (char *)pAgentCtx-&gt;pOtaInterface + 104l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.25">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.init) == POINTER_OBJECT(((const OtaHttpInit_t)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.26">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx-&gt;pOtaInterface-&gt;http.init)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.27">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.init) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.28">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.init) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.29">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface-&gt;http.init) &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx-&gt;pOtaInterface-&gt;http.init) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface-&gt;http.init)</expression>
+</property>
+
+<property class="pointer dereference" name="initFileTransfer_Http.pointer_dereference.30">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface-&gt;http.init</description>
+<expression>!(POINTER_OBJECT(((const OtaHttpInit_t)NULL)) == POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.init)) || pAgentCtx-&gt;pOtaInterface-&gt;http.init == ((const OtaHttpInit_t)NULL)</expression>
+</property>
+
+<property class="assertion" name="malloc.assertion.1">
+<location file="&lt;builtin-library-malloc&gt;" function="malloc" line="26" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>max allocation size exceeded</description>
+<expression>malloc_size &lt;= __CPROVER_max_malloc_size</expression>
+</property>
+
+<property class="assertion" name="malloc.assertion.2">
+<location file="&lt;builtin-library-malloc&gt;" function="malloc" line="31" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>max allocation may fail</description>
+<expression>!__CPROVER_malloc_may_fail || !should_malloc_fail</expression>
+</property>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-e5efd83b-0c98-45a5-ae77-0dbb3affc3fc">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-e5efd83b-0c98-45a5-ae77-0dbb3affc3fc">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: checking safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:32Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux
+Reading GOTO program from file
+Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (user-specified)
+Starting Bounded Model Checking
+Runtime Symex: 0.0143068s
+size of program expression: 406 steps
+simple slicing removed 4 assignments
+Generated 44 VCC(s), 31 remaining after simplification
+Runtime Postprocess Equation: 2.9468e-05s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.00299432s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 0.00127291s
+Solving with MiniSAT 2.2.1 with simplifier
+9245 variables, 1927 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.00404467s
+Runtime decision procedure: 0.00713185s
+
+** Results:
+/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c function initFileTransfer_Http
+[initFileTransfer_Http.assertion.1] line 54 assertion pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL: SUCCESS
+[initFileTransfer_Http.pointer_dereference.1] line 54 dereference failure: pointer NULL in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.2] line 54 dereference failure: pointer invalid in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.3] line 54 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.4] line 54 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.5] line 54 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.6] line 54 dereference failure: invalid integer address in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.7] line 60 dereference failure: pointer NULL in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.8] line 60 dereference failure: pointer invalid in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.9] line 60 dereference failure: deallocated dynamic object in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.10] line 60 dereference failure: dead object in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.11] line 60 dereference failure: pointer outside object bounds in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.12] line 60 dereference failure: invalid integer address in fileContext->pUpdateUrlPath: SUCCESS
+[initFileTransfer_Http.pointer_dereference.13] line 63 dereference failure: pointer NULL in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.14] line 63 dereference failure: pointer invalid in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.15] line 63 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.16] line 63 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.17] line 63 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.18] line 63 dereference failure: invalid integer address in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http.pointer_dereference.19] line 63 dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.20] line 63 dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.21] line 63 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.22] line 63 dereference failure: dead object in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.23] line 63 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.24] line 63 dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http: SUCCESS
+[initFileTransfer_Http.pointer_dereference.25] line 63 dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.init: SUCCESS
+[initFileTransfer_Http.pointer_dereference.26] line 63 dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http.init: SUCCESS
+[initFileTransfer_Http.pointer_dereference.27] line 63 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http.init: SUCCESS
+[initFileTransfer_Http.pointer_dereference.28] line 63 dereference failure: dead object in pAgentCtx->pOtaInterface->http.init: SUCCESS
+[initFileTransfer_Http.pointer_dereference.29] line 63 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http.init: SUCCESS
+[initFileTransfer_Http.pointer_dereference.30] line 63 dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http.init: SUCCESS
+
+/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c function initFileTransfer_Http_harness
+[initFileTransfer_Http_harness.pointer_dereference.1] line 53 dereference failure: pointer NULL in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.2] line 53 dereference failure: pointer invalid in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.3] line 53 dereference failure: deallocated dynamic object in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.4] line 53 dereference failure: dead object in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.5] line 53 dereference failure: pointer outside object bounds in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.6] line 53 dereference failure: invalid integer address in pAgentCtx->fileContext: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.7] line 60 dereference failure: pointer NULL in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.8] line 60 dereference failure: pointer invalid in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.9] line 60 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.10] line 60 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.11] line 60 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.pointer_dereference.12] line 60 dereference failure: invalid integer address in pAgentCtx->pOtaInterface: SUCCESS
+[initFileTransfer_Http_harness.assertion.1] line 65 The function return should be either OtaErrNone or OtaErrCleanupDataFailed: SUCCESS
+
+<builtin-library-malloc> function malloc
+[malloc.assertion.1] line 26 max allocation size exceeded: SUCCESS
+[malloc.assertion.2] line 31 max allocation may fail: SUCCESS
+
+** 0 of 46 failed (1 iterations)
+VERIFICATION SUCCESSFUL
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+          <div class="output-box"><xmp>stderr:
+            
+file <builtin-library-malloc> line 6: warning: implicit function declaration "malloc"
+old definition in module initFileTransfer_Http_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c line 46 function initFileTransfer_Http_harness
+void * (void)
+new definition in module <built-in-library> file <builtin-library-malloc> line 6
+void * (__CPROVER_size_t malloc_size)
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-6d19c072-2305-46ac-a13d-7d914db69ec8">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-6d19c072-2305-46ac-a13d-7d914db69ec8">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: calculating coverage
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:31Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:32Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="WARNING">
+<location file="&lt;builtin-library-malloc&gt;" line="6" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<text>warning: implicit function declaration "malloc"
+old definition in module initFileTransfer_Http_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c line 46 function initFileTransfer_Http_harness
+void * (void)
+new definition in module &lt;built-in-library&gt; file &lt;builtin-library-malloc&gt; line 6
+void * (__CPROVER_size_t malloc_size)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Rewriting existing assertions as assumptions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Starting Bounded Model Checking</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Symex: 0.00982716s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>size of program expression: 384 steps</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generated 10 VCC(s), 10 remaining after simplification</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Postprocess Equation: 5.1231e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Passing problem to propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>converting SSA</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Convert SSA: 0.00281419s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Post-processing</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Post-process: 4.1806e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>8751 variables, 227 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 0.000950395s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 0.00388009s</text>
+</message>
+
+<goal description="block 7 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63,65)" id="initFileTransfer_Http.coverage.7" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 6 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63)" id="initFileTransfer_Http.coverage.6" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 5 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63)" id="initFileTransfer_Http.coverage.5" status="FAILED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 4 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54,57,60,63)" id="initFileTransfer_Http.coverage.4" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54)" id="initFileTransfer_Http.coverage.3" status="FAILED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54)" id="initFileTransfer_Http.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:49-51,54)" id="initFileTransfer_Http.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="49" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:init:33,35,36)" id="init.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="init" line="33" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:62,65,68)" id="initFileTransfer_Http_harness.coverage.3" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="62" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:46,50,53,56,59,60,62)" id="initFileTransfer_Http_harness.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="46" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 8 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:72,73)" id="initFileTransfer_Http.coverage.8" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="72" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:40-44,46)" id="initFileTransfer_Http_harness.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="40" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<message type="STATUS-MESSAGE">
+<text>** 10 of 12 covered (83.3%)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>** Used 2 iterations</text>
+</message>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>report</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-6aa8463b-39e2-4a83-876c-6839764d0fbb">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-6aa8463b-39e2-4a83-876c-6839764d0fbb">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                initFileTransfer_Http: generating report
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-22T20:39:33Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-22T20:39:33Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+WARNING: --block is depricated, using --coverage /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml.
+WARNING: --htmldir is depricated, using --reportdir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html.
+WARNING: Use xml or json instead of text for better results: ['/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt']
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+
+
+</div><!-- id="content" -->
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_mqtt.c": {
+        "OTA_MQTT_strerror": {
+          "1230": "hit",
+          "1232": "hit",
+          "1234": "hit",
+          "1235": "hit",
+          "1236": "hit",
+          "1238": "hit",
+          "1239": "hit",
+          "1240": "hit",
+          "1242": "hit",
+          "1243": "hit",
+          "1244": "hit",
+          "1246": "hit",
+          "1247": "hit",
+          "1248": "hit",
+          "1251": "hit",
+          "1255": "hit",
+          "1256": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c": {
+        "OTA_MQTT_strerror_harness": {
+          "32": "hit",
+          "34": "hit",
+          "35": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_mqtt.c": {
+        "OTA_MQTT_strerror": {
+          "hit": 17,
+          "percentage": 1.0,
+          "total": 17
+        }
+      },
+      "test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c": {
+        "OTA_MQTT_strerror_harness": {
+          "hit": 3,
+          "percentage": 1.0,
+          "total": 3
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_mqtt.c": {
+        "1230": "hit",
+        "1232": "hit",
+        "1234": "hit",
+        "1235": "hit",
+        "1236": "hit",
+        "1238": "hit",
+        "1239": "hit",
+        "1240": "hit",
+        "1242": "hit",
+        "1243": "hit",
+        "1244": "hit",
+        "1246": "hit",
+        "1247": "hit",
+        "1248": "hit",
+        "1251": "hit",
+        "1255": "hit",
+        "1256": "hit"
+      },
+      "test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c": {
+        "32": "hit",
+        "34": "hit",
+        "35": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 20,
+      "percentage": 1.0,
+      "total": 20
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c": [
+        "decodeFileBlock_Http_harness"
+      ],
+      "source/ota_http.c": [
+        "decodeFileBlock_Http"
+      ]
+    }
+  }
+}

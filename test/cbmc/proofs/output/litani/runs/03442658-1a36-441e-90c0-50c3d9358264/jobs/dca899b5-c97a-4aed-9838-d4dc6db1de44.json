@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c"
+  ],
+  "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project1.goto"
+  ],
+  "pipeline_name": "requestDataBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/project_sources-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "requestDataBlock_Http: building project binary",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "dca899b5-c97a-4aed-9838-d4dc6db1de44",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/03442658-1a36-441e-90c0-50c3d9358264/status/dca899b5-c97a-4aed-9838-d4dc6db1de44.json"
+}

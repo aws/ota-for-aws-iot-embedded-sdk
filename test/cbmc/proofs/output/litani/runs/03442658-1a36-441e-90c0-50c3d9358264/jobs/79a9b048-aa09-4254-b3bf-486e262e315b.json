@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto"
+  ],
+  "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto"
+  ],
+  "pipeline_name": "setDataInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/drop_unused_functions-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "setDataInterface: dropping unused functions",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "79a9b048-aa09-4254-b3bf-486e262e315b",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/03442658-1a36-441e-90c0-50c3d9358264/status/79a9b048-aa09-4254-b3bf-486e262e315b.json"
+}

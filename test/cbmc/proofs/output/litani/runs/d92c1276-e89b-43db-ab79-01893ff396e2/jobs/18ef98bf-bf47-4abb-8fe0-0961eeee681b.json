@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/project1.goto"
+  ],
+  "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/project2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/project2.goto"
+  ],
+  "pipeline_name": "cleanupData_Http_harness",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/logs/remove_function_body-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "cleanupData_Http_harness: removing function bodies from project sources",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "18ef98bf-bf47-4abb-8fe0-0961eeee681b",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d92c1276-e89b-43db-ab79-01893ff396e2/status/18ef98bf-bf47-4abb-8fe0-0961eeee681b.json"
+}

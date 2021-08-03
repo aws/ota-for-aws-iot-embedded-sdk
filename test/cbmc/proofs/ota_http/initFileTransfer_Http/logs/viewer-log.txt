@@ -1,0 +1,4 @@
+WARNING: --block is depricated, using --coverage /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml.
+WARNING: --htmldir is depricated, using --reportdir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html.
+WARNING: Use xml or json instead of text for better results: ['/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt']
+

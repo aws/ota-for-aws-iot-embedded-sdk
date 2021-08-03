@@ -1,0 +1,2792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Pipeline OTA_HTTP_strerror
+  </title>
+<style>
+#title{
+  background-color: #ec407a;
+  color: white;
+  padding: 2em;
+}
+h1 {
+  margin-bottom: 0em;
+}
+#subtitle {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+}
+.run-info ul {
+  list-style: none;
+}
+.run-info ul li {
+  display: inline;
+  margin-right: 6em;
+  margin-left: -3em;
+  text-transform: uppercase;
+  font-size: small;
+  color: #ec407a;
+}
+#content {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 2em;
+  color: #263238;
+  font-family: Helvetica, sans-serif;
+}
+p {
+  margin: 0;
+}
+.command-table {
+  background-color: #eceff1;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  margin-bottom: 4em;
+}
+.command-table .fail-ignored {
+  background-color: #e65100cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .success {
+  background-color: #1a237ecc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .in-progress {
+  background-color: #26323844;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .fail {
+  background-color: #f44336cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-content {
+  background-color: #eceff1;
+  padding: 1em;
+}
+.command-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.command-id-link{
+  flex-grow: 0;
+}
+.command-id-link a {
+  font-size: xx-large;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+  text-decoration: none;
+  margin-left: 0.2em;
+}
+.command-id-link a:link {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-id-link a:visited:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-description {
+  color: #26323899;
+  font-size: smaller;
+  text-align: center;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.command-invocation {
+  padding: 1em;
+  color: #fff;
+  background-color: #005662;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  text-shadow: 0 0 2px #ffccbccc;
+}
+.command-stats-table {
+  margin-top: 0.2em;
+  border-radius: 0.5em;
+  padding: 0.2em;
+  padding-top: 0.4em;
+  display: flex;
+  flex-direction: column;
+  background-color: #eae3998a;
+  color: #263238cc;
+  margin-bottom: 0.2em;
+}
+.command-stats-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  font-size: small;
+  text-transform: uppercase;
+}
+.command-stats-row p .value {
+  color: #00251aaa;
+  text-shadow: 0 0 2px #82ada944;
+  font-weight: bold;
+}
+.output-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #cfd8dc;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  max-height: 20em;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.output-box xmp{
+  white-space: pre;
+}
+.stage-name p {
+  margin-left: 0.5em;
+  color: #546e7a;
+  text-shadow:  -1px  0px 0px #fff
+               ,-2px  0px 0px #ffffff99
+               ,-1px  1px 0px #ffffff99
+               ;
+  font-size: 48pt;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-weight: bold;
+  font-style: italic;
+}
+.stage-name .underline {
+  width: 100%;
+  height: 1.1em;
+  background-color: #546e7a;
+  margin-top: -1.6em;
+}
+.stage-name {
+  margin-top: 6em;
+  margin-bottom: 3em;
+}
+
+.outcome-table-info-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #ffee58;
+  border-radius: 0.5em;
+}
+.outcome-table-info-box .outcome{
+  font-weight: bold;
+}
+#toc {
+  margin-bottom: 6em;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  margin-right: 3em;
+}
+.toc-title {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  margin-bottom: -1em;
+}
+.toc-section{
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  text-transform: capitalize;
+}
+.toc-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.toc-row-icon {
+  padding-right: 8px;
+}
+.status-icon-cross {
+  fill: #f44336;
+    width: 16px;
+    height: 16px;
+}
+.status-icon-tick {
+  fill: #3f51b5;
+  stroke: #ffffff77;
+  stroke-width: 1px;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress {
+  fill: #333;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress circle {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: none
+}
+a:link {
+  color: #1e88e5;
+}
+a:visited {
+  color: #1e88e5;
+}
+a:visited:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+a:visited:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+
+#contents-container {
+  margin-top: 6em;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+#depgraph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: flex-start;
+  flex-shrink: 7;
+}
+
+#depgraph-title p {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+#depgraph-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#depgraph-preview {
+  padding: 1em;
+}
+
+.memory-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+  align-items: center;
+}
+.memory-preview {
+  width: 75%;
+}
+.memory-preview svg {
+  margin-left: -1em;
+  margin-right: -2em;
+}
+.memory-table {
+}
+.memory-title {
+  text-align: center;
+  font-style: bold;
+}
+.memory-subtitle {
+  text-transform: lowercase;
+  font-variant: small-caps;
+  text-align: center;
+  opacity: 0.8;
+}
+.memory-pad {
+  width: 1.5em;
+}
+.memory-value {
+  text-align: center;
+  margin-right: 2em;
+}
+.rss {
+  color: #ab47bc;
+}
+.vsz {
+  color: #4caf50;
+}
+
+
+@media (prefers-color-scheme: dark){
+  a:link {
+    color: #29b6f6;
+  }
+  a:visited {
+    color: #29b6f6;
+  }
+  a:visited:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  a:visited:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  .command-id-link a:link {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb.
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  .command-id-link a:visited:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  body {
+    color: #babdbe;
+    background-color: #263238;
+  }
+  .outcome-table-info-box p{
+    color: #000a12;
+  }
+  p {
+    color: #babdbe;
+  }
+  #subtitle {
+    color: #fff;
+  }
+  .command-table {
+    background-color: #37474f;
+  }
+  .command-content {
+    background-color: #37474f;
+  }
+  .command-invocation p {
+    color: #fff;
+  }
+  .command-stats-table {
+    background-color: #eae399d0;
+    color: #263238;
+  }
+  .command-stats-table p {
+    color: #263238;
+  }
+  .output-box {
+    color: #cfd8dccc;
+    background-color: #102027;
+  }
+  .stage-name p {
+    text-shadow: -1px  0px 0px #263238,
+                 -2px  0px 0px #26323899,
+                 -1px  1px 0px #26323899;
+  }
+  .status-icon-in-progress { fill: #ddd; }
+  .status-icon-in-progress circle { stroke: #ddd; }
+
+  /* SVG graphs */
+  g text {
+    fill: #eceff1;
+    stroke: #fff0;
+  }
+}
+</style>
+</head>
+<body>
+<div id="content">
+
+  <div id="title">
+    <h1>
+      AWS IoT Over-the-air Update Library pipeline &lsquo;OTA_HTTP_strerror&rsquo;
+    </h1>
+    <p id="subtitle">
+      Litani CI Dashboard
+    </p>
+  </div><!-- id="title" -->
+
+  <div class=run-info>
+    <ul>
+      <li>Pipeline status: success</li>
+      <li>2021-07-21T20:51:10Z</li>
+      <li>f61e60cd-174b-4d67-9d1b-48da2941c8a3</li>
+    </ul>
+  </div><!-- class=run-info -->
+
+  <div id="contents-container">
+
+    <div id="toc">
+      <div class="toc-title">
+        <p>Summary of jobs for this pipeline</p>
+      </div><!-- class="toc-title" -->
+
+      
+        <div class="toc-section">
+          <p>build</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-4788fef8-abc1-4098-8982-858a8ca7cdb5">
+              
+              OTA_HTTP_strerror: linking project to proof
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-f0ddfc4a-c4d5-4dd8-ba7c-094271af3fa5">
+              
+              OTA_HTTP_strerror: building project binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-ea95c015-095b-4210-baf6-6db6490c65df">
+              
+              OTA_HTTP_strerror: removing function bodies from project sources
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-b55af144-1118-4538-96e1-ea7730cfdd49">
+              
+              OTA_HTTP_strerror: building proof binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-9521eb32-6d91-4252-9066-b02ea6681efa">
+              
+              OTA_HTTP_strerror: slicing global initializations
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-36a5a253-9bd0-4225-bf8b-c4b3f0aabcdc">
+              
+              OTA_HTTP_strerror: dropping unused functions
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-e261c6eb-9342-4dd8-902c-42aa9c55cc23">
+              
+              OTA_HTTP_strerror: not applying loop contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-7f5b6046-92ff-4a15-94e4-c1954bee3734">
+              
+              OTA_HTTP_strerror: not checking function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-34960de3-49d7-437e-9680-f89cc8faf15a">
+              
+              OTA_HTTP_strerror: not setting static variables to nondet
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-975d2387-8507-4cb0-857b-92c4820da61f">
+              
+              OTA_HTTP_strerror: copying final goto-binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-5d3ff058-32b1-4bbe-8314-da6e233fc781">
+              
+              OTA_HTTP_strerror: not replacing function calls with function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>test</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-9fde7ba7-f0aa-48f6-8246-79ca3b798d8f">
+              
+              OTA_HTTP_strerror: printing safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-6b58ef04-212a-4788-b85c-bdaa3aac6978">
+              
+              OTA_HTTP_strerror: checking safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-dcfb3ede-161c-4fba-868c-081ae1eb55fc">
+              
+              OTA_HTTP_strerror: calculating coverage
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>report</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-4e0f1337-da0a-4773-8b4c-a53a692915dd">
+              
+              OTA_HTTP_strerror: generating report
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+    </div><!-- id="toc" -->
+
+
+    
+    <div id="depgraph">
+      <div id="depgraph-title">
+        <p>Dependency graph for pipeline</p>
+        <p>(click for larger version)</p>
+      </div><!-- id="depgraph-title" -->
+      <a href="dependencies.svg">
+        <div id="depgraph-preview">
+          <img
+             src="dependencies.svg"
+             alt="pipeline dependency graph" />
+        </div><!-- id="depgraph-preview" -->
+      </a><!-- href="" -->
+    </div><!-- id="depgraph" -->
+    
+
+  </div><!-- id="contents-container" -->
+
+
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>build</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-4788fef8-abc1-4098-8982-858a8ca7cdb5">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-4788fef8-abc1-4098-8982-858a8ca7cdb5">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: linking project to proof
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --function OTA_HTTP_strerror_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-f0ddfc4a-c4d5-4dd8-ba7c-094271af3fa5">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-f0ddfc4a-c4d5-4dd8-ba7c-094271af3fa5">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: building project binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/include -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-ea95c015-095b-4210-baf6-6db6490c65df">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-ea95c015-095b-4210-baf6-6db6490c65df">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: removing function bodies from project sources
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto'
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-b55af144-1118-4538-96e1-ea7730cfdd49">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-b55af144-1118-4538-96e1-ea7730cfdd49">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: building proof binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/include -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:12Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-9521eb32-6d91-4252-9066-b02ea6681efa">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-9521eb32-6d91-4252-9066-b02ea6681efa">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: slicing global initializations
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto'
+Slicing away initializations of unused global variables
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-36a5a253-9bd0-4225-bf8b-c4b3f0aabcdc">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-36a5a253-9bd0-4225-bf8b-c4b3f0aabcdc">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: dropping unused functions
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto'
+Function Pointer Removal
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 167 function cleanupData_Http: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 106 function requestDataBlock_Http: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 63 function initFileTransfer_Http: replacing function pointer by 0 possible targets
+Virtual function removal
+Cleaning inline assembler statements
+Removing unused functions
+Dropping 7 of 11 functions (4 used)
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-e261c6eb-9342-4dd8-902c-42aa9c55cc23">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-e261c6eb-9342-4dd8-902c-42aa9c55cc23">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: not applying loop contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-7f5b6046-92ff-4a15-94e4-c1954bee3734">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-7f5b6046-92ff-4a15-94e4-c1954bee3734">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: not checking function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-34960de3-49d7-437e-9680-f89cc8faf15a">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-34960de3-49d7-437e-9680-f89cc8faf15a">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: not setting static variables to nondet
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-975d2387-8507-4cb0-857b-92c4820da61f">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-975d2387-8507-4cb0-857b-92c4820da61f">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: copying final goto-binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-5d3ff058-32b1-4bbe-8314-da6e233fc781">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-5d3ff058-32b1-4bbe-8314-da6e233fc781">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: not replacing function calls with function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>test</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-9fde7ba7-f0aa-48f6-8246-79ca3b798d8f">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-9fde7ba7-f0aa-48f6-8246-79ca3b798d8f">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: printing safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<property class="assertion" name="OTA_HTTP_strerror_harness.assertion.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c" function="OTA_HTTP_strerror_harness" line="41" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>function cannot return null</description>
+<expression>pstr != ((const char *)NULL)</expression>
+</property>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-6b58ef04-212a-4788-b85c-bdaa3aac6978">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-6b58ef04-212a-4788-b85c-bdaa3aac6978">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: checking safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:14Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux
+Reading GOTO program from file
+Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (user-specified)
+Starting Bounded Model Checking
+Runtime Symex: 0.0016198s
+size of program expression: 73 steps
+simple slicing removed 2 assignments
+Generated 1 VCC(s), 1 remaining after simplification
+Runtime Postprocess Equation: 1.1873e-05s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.000439295s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 1.6068e-05s
+Solving with MiniSAT 2.2.1 with simplifier
+242 variables, 261 clauses
+SAT checker inconsistent: instance is UNSATISFIABLE
+Runtime Solver: 3.2057e-05s
+Runtime decision procedure: 0.000514818s
+
+** Results:
+/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c function OTA_HTTP_strerror_harness
+[OTA_HTTP_strerror_harness.assertion.1] line 41 function cannot return null: SUCCESS
+
+** 0 of 1 failed (1 iterations)
+VERIFICATION SUCCESSFUL
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-dcfb3ede-161c-4fba-868c-081ae1eb55fc">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-dcfb3ede-161c-4fba-868c-081ae1eb55fc">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: calculating coverage
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:13Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:14Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Rewriting existing assertions as assumptions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Starting Bounded Model Checking</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Symex: 0.00179575s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>size of program expression: 85 steps</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generated 12 VCC(s), 12 remaining after simplification</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Postprocess Equation: 1.3464e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Passing problem to propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>converting SSA</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Convert SSA: 0.000438382s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Post-processing</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Post-process: 2.8204e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>242 variables, 294 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 0.000346188s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 0.000851225s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>242 variables, 165 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 1.958e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 3.9372e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>242 variables, 166 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 2.0533e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 3.5881e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>242 variables, 166 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 4.7109e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 6.336e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>242 variables, 118 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 2.9594e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 4.6185e-05s</text>
+</message>
+
+<goal description="block 10 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:202,203)" id="OTA_HTTP_strerror.coverage.10" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="202" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 9 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:194,195)" id="OTA_HTTP_strerror.coverage.9" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="194" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 8 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:190,191)" id="OTA_HTTP_strerror.coverage.8" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="190" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 7 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:186,187)" id="OTA_HTTP_strerror.coverage.7" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="186" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 6 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:182,183)" id="OTA_HTTP_strerror.coverage.6" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="182" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 5 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:198)" id="OTA_HTTP_strerror.coverage.5" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="198" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 4 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:193)" id="OTA_HTTP_strerror.coverage.4" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="193" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:189)" id="OTA_HTTP_strerror.coverage.3" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="189" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:185)" id="OTA_HTTP_strerror.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="185" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:OTA_HTTP_strerror:177,179,181)" id="OTA_HTTP_strerror.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="OTA_HTTP_strerror" line="177" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c:OTA_HTTP_strerror_harness:37,41,42)" id="OTA_HTTP_strerror_harness.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c" function="OTA_HTTP_strerror_harness" line="37" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c:OTA_HTTP_strerror_harness:33,34,37)" id="OTA_HTTP_strerror_harness.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c" function="OTA_HTTP_strerror_harness" line="33" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<message type="STATUS-MESSAGE">
+<text>** 12 of 12 covered (100.0%)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>** Used 6 iterations</text>
+</message>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>report</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-4e0f1337-da0a-4773-8b4c-a53a692915dd">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-4e0f1337-da0a-4773-8b4c-a53a692915dd">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                OTA_HTTP_strerror: generating report
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-21T20:51:15Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-21T20:51:15Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+WARNING: --block is depricated, using --coverage /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml.
+WARNING: --htmldir is depricated, using --reportdir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html.
+WARNING: Use xml or json instead of text for better results: ['/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt']
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+
+
+</div><!-- id="content" -->
+</body>
+</html>

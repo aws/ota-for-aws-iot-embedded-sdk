@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness2.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness3.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness3.goto"
+  ],
+  "pipeline_name": "decodeFileBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "decodeFileBlock_Http: not replacing function calls with function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "1deefa75-ff27-40aa-bf1a-dc1fa5b0b85a",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d87d6827-59e2-4788-a606-ce21ab4688b3/status/1deefa75-ff27-40aa-bf1a-dc1fa5b0b85a.json"
+}

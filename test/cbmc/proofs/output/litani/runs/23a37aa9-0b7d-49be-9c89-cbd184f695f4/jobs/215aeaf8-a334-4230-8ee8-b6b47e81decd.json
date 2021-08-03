@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness2.goto"
+  ],
+  "pipeline_name": "requestDataBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "requestDataBlock_Http: not checking function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "215aeaf8-a334-4230-8ee8-b6b47e81decd",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/23a37aa9-0b7d-49be-9c89-cbd184f695f4/status/215aeaf8-a334-4230-8ee8-b6b47e81decd.json"
+}

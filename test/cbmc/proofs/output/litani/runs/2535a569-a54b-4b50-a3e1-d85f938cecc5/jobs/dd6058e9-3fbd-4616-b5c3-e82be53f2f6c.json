@@ -1,0 +1,33 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/result.txt",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/property.xml",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/coverage.xml"
+  ],
+  "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/html",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/html"
+  ],
+  "pipeline_name": "OTA_MQTT_strerror",
+  "ci_stage": "report",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/OTA_MQTT_strerror/logs/viewer-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_MQTT_strerror: generating report",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "dd6058e9-3fbd-4616-b5c3-e82be53f2f6c",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2535a569-a54b-4b50-a3e1-d85f938cecc5/status/dd6058e9-3fbd-4616-b5c3-e82be53f2f6c.json"
+}

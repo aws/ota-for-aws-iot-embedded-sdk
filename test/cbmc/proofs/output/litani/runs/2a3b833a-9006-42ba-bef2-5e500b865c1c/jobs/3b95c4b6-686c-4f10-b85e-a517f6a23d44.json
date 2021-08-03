@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto"
+  ],
+  "pipeline_name": "setDataInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "setDataInterface: not checking function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "3b95c4b6-686c-4f10-b85e-a517f6a23d44",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a3b833a-9006-42ba-bef2-5e500b865c1c/status/3b95c4b6-686c-4f10-b85e-a517f6a23d44.json"
+}

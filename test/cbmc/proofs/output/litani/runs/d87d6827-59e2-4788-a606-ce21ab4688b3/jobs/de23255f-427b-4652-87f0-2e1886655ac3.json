@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto"
+  ],
+  "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto"
+  ],
+  "pipeline_name": "setDataInterface",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/slice_global_inits-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "setDataInterface: slicing global initializations",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "de23255f-427b-4652-87f0-2e1886655ac3",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d87d6827-59e2-4788-a606-ce21ab4688b3/status/de23255f-427b-4652-87f0-2e1886655ac3.json"
+}

@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto"
+  ],
+  "pipeline_name": "initFileTransfer_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "initFileTransfer_Http: not checking function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "17c128e4-3c04-41d4-bb4b-92e136d55efe",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d92c1276-e89b-43db-ab79-01893ff396e2/status/17c128e4-3c04-41d4-bb4b-92e136d55efe.json"
+}

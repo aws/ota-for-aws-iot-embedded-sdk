@@ -1,0 +1,61 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_interface.c": {
+        "setControlInterface": {
+          "65": "hit",
+          "68": "hit",
+          "69": "hit",
+          "70": "hit",
+          "74": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c": {
+        "setControlInterface_harness": {
+          "32": "hit",
+          "33": "hit",
+          "36": "hit",
+          "39": "hit",
+          "40": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_interface.c": {
+        "setControlInterface": {
+          "hit": 5,
+          "percentage": 1.0,
+          "total": 5
+        }
+      },
+      "test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c": {
+        "setControlInterface_harness": {
+          "hit": 5,
+          "percentage": 1.0,
+          "total": 5
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_interface.c": {
+        "65": "hit",
+        "68": "hit",
+        "69": "hit",
+        "70": "hit",
+        "74": "hit"
+      },
+      "test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c": {
+        "32": "hit",
+        "33": "hit",
+        "36": "hit",
+        "39": "hit",
+        "40": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 10,
+      "percentage": 1.0,
+      "total": 10
+    }
+  }
+}

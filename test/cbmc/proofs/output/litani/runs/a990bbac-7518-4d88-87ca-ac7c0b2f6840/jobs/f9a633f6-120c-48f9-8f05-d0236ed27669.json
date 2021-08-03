@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto"
+  ],
+  "pipeline_name": "OTA_HTTP_strerror",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_HTTP_strerror: not setting static variables to nondet",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "f9a633f6-120c-48f9-8f05-d0236ed27669",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/a990bbac-7518-4d88-87ca-ac7c0b2f6840/status/f9a633f6-120c-48f9-8f05-d0236ed27669.json"
+}

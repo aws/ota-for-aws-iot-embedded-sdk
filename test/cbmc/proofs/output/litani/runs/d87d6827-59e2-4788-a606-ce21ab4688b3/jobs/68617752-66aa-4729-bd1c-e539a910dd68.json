@@ -1,0 +1,32 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/proof1.goto",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project2.goto"
+  ],
+  "command": "goto-cc  --function requestDataBlock_Http_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto"
+  ],
+  "pipeline_name": "requestDataBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/link_proof_project-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "requestDataBlock_Http: linking project to proof",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "68617752-66aa-4729-bd1c-e539a910dd68",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d87d6827-59e2-4788-a606-ce21ab4688b3/status/68617752-66aa-4729-bd1c-e539a910dd68.json"
+}

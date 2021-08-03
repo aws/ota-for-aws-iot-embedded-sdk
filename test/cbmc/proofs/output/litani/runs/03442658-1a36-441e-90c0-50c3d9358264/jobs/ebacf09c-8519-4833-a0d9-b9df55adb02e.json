@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/project1.goto"
+  ],
+  "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/project2.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/project2.goto"
+  ],
+  "pipeline_name": "decodeFileBlock_Http",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": true,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/logs/remove_function_body-log.txt",
+  "stderr_file": null,
+  "pool": null,
+  "description": "decodeFileBlock_Http: removing function bodies from project sources",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "ebacf09c-8519-4833-a0d9-b9df55adb02e",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/03442658-1a36-441e-90c0-50c3d9358264/status/ebacf09c-8519-4833-a0d9-b9df55adb02e.json"
+}

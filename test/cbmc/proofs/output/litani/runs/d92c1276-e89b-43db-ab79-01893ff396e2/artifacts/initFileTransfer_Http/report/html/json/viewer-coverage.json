@@ -1,0 +1,98 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "initFileTransfer_Http": {
+          "49": "hit",
+          "50": "hit",
+          "51": "hit",
+          "54": "both",
+          "57": "hit",
+          "60": "hit",
+          "63": "both",
+          "65": "hit",
+          "72": "hit",
+          "73": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c": {
+        "init": {
+          "31": "hit",
+          "33": "hit",
+          "34": "hit"
+        },
+        "initFileTransfer_Http_harness": {
+          "38": "hit",
+          "39": "hit",
+          "40": "hit",
+          "42": "hit",
+          "44": "hit",
+          "46": "hit",
+          "48": "hit",
+          "50": "hit",
+          "51": "hit",
+          "53": "hit",
+          "55": "hit",
+          "56": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "initFileTransfer_Http": {
+          "hit": 10,
+          "percentage": 1.0,
+          "total": 10
+        }
+      },
+      "test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c": {
+        "init": {
+          "hit": 3,
+          "percentage": 1.0,
+          "total": 3
+        },
+        "initFileTransfer_Http_harness": {
+          "hit": 12,
+          "percentage": 1.0,
+          "total": 12
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "49": "hit",
+        "50": "hit",
+        "51": "hit",
+        "54": "both",
+        "57": "hit",
+        "60": "hit",
+        "63": "both",
+        "65": "hit",
+        "72": "hit",
+        "73": "hit"
+      },
+      "test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c": {
+        "31": "hit",
+        "33": "hit",
+        "34": "hit",
+        "38": "hit",
+        "39": "hit",
+        "40": "hit",
+        "42": "hit",
+        "44": "hit",
+        "46": "hit",
+        "48": "hit",
+        "50": "hit",
+        "51": "hit",
+        "53": "hit",
+        "55": "hit",
+        "56": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 25,
+      "percentage": 1.0,
+      "total": 25
+    }
+  }
+}

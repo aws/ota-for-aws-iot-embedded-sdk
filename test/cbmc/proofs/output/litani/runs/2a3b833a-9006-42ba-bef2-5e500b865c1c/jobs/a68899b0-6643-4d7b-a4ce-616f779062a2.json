@@ -1,0 +1,35 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness.goto"
+  ],
+  "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/gotos/decodeFileBlock_Http_harness.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/logs/result.txt"
+  ],
+  "pipeline_name": "decodeFileBlock_Http",
+  "ci_stage": "test",
+  "cwd": null,
+  "timeout": 21600,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": [
+    "10"
+  ],
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/logs/result.txt",
+  "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/decodeFileBlock_Http/logs/result-err-log.txt",
+  "pool": null,
+  "description": "decodeFileBlock_Http: checking safety properties",
+  "profile_memory": true,
+  "profile_memory_interval": 10,
+  "tags": [
+    "stats-group:safety checks"
+  ],
+  "job_id": "a68899b0-6643-4d7b-a4ce-616f779062a2",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a3b833a-9006-42ba-bef2-5e500b865c1c/status/a68899b0-6643-4d7b-a4ce-616f779062a2.json"
+}

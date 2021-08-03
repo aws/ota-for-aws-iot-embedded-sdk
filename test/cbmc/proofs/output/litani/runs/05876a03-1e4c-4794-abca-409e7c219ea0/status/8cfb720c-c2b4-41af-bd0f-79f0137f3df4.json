@@ -1,0 +1,44 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness3.goto"
+    ],
+    "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness4.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/cleanupData_Http/gotos/cleanupData_Http_harness4.goto"
+    ],
+    "pipeline_name": "cleanupData_Http_harness",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": false,
+    "stdout_file": null,
+    "stderr_file": null,
+    "pool": null,
+    "description": "cleanupData_Http_harness: not applying loop contracts",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/05876a03-1e4c-4794-abca-409e7c219ea0/status/8cfb720c-c2b4-41af-bd0f-79f0137f3df4.json",
+    "job_id": "8cfb720c-c2b4-41af-bd0f-79f0137f3df4"
+  },
+  "complete": true,
+  "start_time": "2021-07-28T13:31:21Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [],
+  "stderr": [],
+  "end_time": "2021-07-28T13:31:21Z"
+}

@@ -1,0 +1,31 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto"
+  ],
+  "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto"
+  ],
+  "pipeline_name": "OTA_HTTP_strerror",
+  "ci_stage": "build",
+  "cwd": null,
+  "timeout": null,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": null,
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": null,
+  "stderr_file": null,
+  "pool": null,
+  "description": "OTA_HTTP_strerror: not replacing function calls with function contracts",
+  "profile_memory": false,
+  "profile_memory_interval": 10,
+  "tags": null,
+  "job_id": "7bdb6980-a437-47e1-8d08-92bbcf9f044a",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/d8dc4f73-c17d-46d8-9495-abecf0d57065/status/7bdb6980-a437-47e1-8d08-92bbcf9f044a.json"
+}

@@ -1,0 +1,3139 @@
+{
+  "project": "AWS IoT Over-the-air Update Library",
+  "version": "1.9.0",
+  "version_major": 1,
+  "version_minor": 9,
+  "version_patch": 0,
+  "run_id": "2a08924c-687a-46f0-9430-fc47a54aa255",
+  "start_time": "2021-07-22T00:12:50Z",
+  "status": "fail",
+  "pools": {
+    "expensive": 1
+  },
+  "parallelism": {
+    "trace": [
+      {
+        "running": 10,
+        "finished": 1,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.634911Z"
+      },
+      {
+        "running": 9,
+        "finished": 2,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.643704Z"
+      },
+      {
+        "running": 8,
+        "finished": 3,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.647277Z"
+      },
+      {
+        "running": 7,
+        "finished": 4,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.649811Z"
+      },
+      {
+        "running": 6,
+        "finished": 5,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.651488Z"
+      },
+      {
+        "running": 5,
+        "finished": 6,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.653198Z"
+      },
+      {
+        "running": 4,
+        "finished": 7,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.654814Z"
+      },
+      {
+        "running": 3,
+        "finished": 8,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.656439Z"
+      },
+      {
+        "running": 2,
+        "finished": 9,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.681918Z"
+      },
+      {
+        "running": 1,
+        "finished": 10,
+        "total": 75,
+        "time": "2021-07-22T00:12:52.690314Z"
+      }
+    ],
+    "max_parallelism": 10,
+    "n_proc": 36
+  },
+  "end_time": "2021-07-22T00:12:52Z",
+  "pipelines": [
+    {
+      "name": "OTA_MQTT_strerror",
+      "ci_stages": [
+        {
+          "jobs": [
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/project_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: building project binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8657734-fa6b-456e-9759-d7f762968504.json",
+                "job_id": "c8657734-fa6b-456e-9759-d7f762968504"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c:35:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/proof_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: building proof binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/19712c34-77ad-4d1a-9871-d53f8ff70064.json",
+                "job_id": "19712c34-77ad-4d1a-9871-d53f8ff70064"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_mqtt_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c:28:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: not replacing function calls with function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "cc649ecf-ad55-4e98-97e0-2f41294b9285",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cc649ecf-ad55-4e98-97e0-2f41294b9285.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: not setting static variables to nondet",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "adac688f-6be7-49a6-94d4-0e96a2674e9b",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/adac688f-6be7-49a6-94d4-0e96a2674e9b.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: copying final goto-binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "0fa47a31-b49b-43ca-9083-ade6e315d95f",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0fa47a31-b49b-43ca-9083-ade6e315d95f.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto"
+                ],
+                "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/slice_global_inits-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: slicing global initializations",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "69a44508-7fb2-4eab-aa96-3e4006718324",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/69a44508-7fb2-4eab-aa96-3e4006718324.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto"
+                ],
+                "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/drop_unused_functions-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: dropping unused functions",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "48e57e8d-b4e3-4af8-aeb6-3eba1944551e",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/48e57e8d-b4e3-4af8-aeb6-3eba1944551e.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: not applying loop contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "6f9fe878-1a37-428d-80f7-1ddebc626dbe",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6f9fe878-1a37-428d-80f7-1ddebc626dbe.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto"
+                ],
+                "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/remove_function_body-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: removing function bodies from project sources",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "ba5b3b64-561b-45d9-b35b-822a1977ed32",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ba5b3b64-561b-45d9-b35b-822a1977ed32.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto"
+                ],
+                "command": "goto-cc  --function OTA_MQTT_strerror_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/link_proof_project-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: linking project to proof",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "fe51d1ca-bc3a-424a-8513-c99f9ee16654",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fe51d1ca-bc3a-424a-8513-c99f9ee16654.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: not checking function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 18,
+          "complete": false,
+          "status": "fail",
+          "url": "artifacts/OTA_MQTT_strerror/build",
+          "name": "build"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result-err-log.txt",
+                "pool": null,
+                "description": "OTA_MQTT_strerror: checking safety properties",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:safety checks"
+                ],
+                "job_id": "bc3ec51a-0538-40bc-b5d1-4067d609580e",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bc3ec51a-0538-40bc-b5d1-4067d609580e.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property-err-log.txt",
+                "pool": null,
+                "description": "OTA_MQTT_strerror: printing safety properties",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "0f9ab365-7921-458e-b945-f0decb9256f7",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0f9ab365-7921-458e-b945-f0decb9256f7.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage-err-log.txt",
+                "pool": null,
+                "description": "OTA_MQTT_strerror: calculating coverage",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:coverage computation"
+                ],
+                "job_id": "4dd7d701-5dec-471a-8d7a-18a289dca1f2",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4dd7d701-5dec-471a-8d7a-18a289dca1f2.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/OTA_MQTT_strerror/test",
+          "name": "test"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml"
+                ],
+                "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html"
+                ],
+                "pipeline_name": "OTA_MQTT_strerror",
+                "ci_stage": "report",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/viewer-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_MQTT_strerror: generating report",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "94f0c9d7-a308-4168-9c85-7c79094d0b2e",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/94f0c9d7-a308-4168-9c85-7c79094d0b2e.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/OTA_MQTT_strerror/report",
+          "name": "report"
+        }
+      ],
+      "url": "pipelines/OTA_MQTT_strerror",
+      "status": "fail"
+    },
+    {
+      "name": "initFileTransfer_Http",
+      "ci_stages": [
+        {
+          "jobs": [
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/proof_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: building proof binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/922c4c34-b925-4c5c-a102-a95373750acc.json",
+                "job_id": "922c4c34-b925-4c5c-a102-a95373750acc"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_http_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:28:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/project_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: building project binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/13200534-e865-4719-94f3-4c2811ad5f8e.json",
+                "job_id": "13200534-e865-4719-94f3-4c2811ad5f8e"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:34:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: not applying loop contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "07f1d40e-1485-44fb-a617-a316c1e1f8ab",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/07f1d40e-1485-44fb-a617-a316c1e1f8ab.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto"
+                ],
+                "command": "goto-cc  --function initFileTransfer_Http_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/link_proof_project-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: linking project to proof",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "30a97669-6ae0-4c83-9b7f-b4554e58591a",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/30a97669-6ae0-4c83-9b7f-b4554e58591a.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto"
+                ],
+                "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/remove_function_body-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: removing function bodies from project sources",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "2a70976b-4410-472c-af68-d968e816b4b2",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2a70976b-4410-472c-af68-d968e816b4b2.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: not replacing function calls with function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "e60236ca-5af4-4f1d-a83f-bdb74718eb31",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e60236ca-5af4-4f1d-a83f-bdb74718eb31.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: not setting static variables to nondet",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "1b706831-5ae9-4a9c-97f2-1de6771f3abe",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1b706831-5ae9-4a9c-97f2-1de6771f3abe.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: copying final goto-binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "057e1f82-2f79-43e3-a154-2fc9c1de866d",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/057e1f82-2f79-43e3-a154-2fc9c1de866d.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto"
+                ],
+                "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/slice_global_inits-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: slicing global initializations",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "e0b5f296-0398-492e-88b6-d8b5f119950d",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0b5f296-0398-492e-88b6-d8b5f119950d.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: not checking function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "53d77353-cec4-4f34-ad73-b14257d98b3c",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/53d77353-cec4-4f34-ad73-b14257d98b3c.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto"
+                ],
+                "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/drop_unused_functions-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: dropping unused functions",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "80198b71-2152-4bfa-9a22-ac1824f64bd8",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/80198b71-2152-4bfa-9a22-ac1824f64bd8.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 18,
+          "complete": false,
+          "status": "fail",
+          "url": "artifacts/initFileTransfer_Http/build",
+          "name": "build"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage-err-log.txt",
+                "pool": null,
+                "description": "initFileTransfer_Http: calculating coverage",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:coverage computation"
+                ],
+                "job_id": "b2a293e0-9460-4e2b-b801-040a46f4c2ff",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/b2a293e0-9460-4e2b-b801-040a46f4c2ff.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result-err-log.txt",
+                "pool": null,
+                "description": "initFileTransfer_Http: checking safety properties",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:safety checks"
+                ],
+                "job_id": "29bb4e8f-cc52-4605-ae8a-75e5b9e381e9",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/29bb4e8f-cc52-4605-ae8a-75e5b9e381e9.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property-err-log.txt",
+                "pool": null,
+                "description": "initFileTransfer_Http: printing safety properties",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "cab79090-368a-484f-8141-f1e90a4713bf",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cab79090-368a-484f-8141-f1e90a4713bf.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/initFileTransfer_Http/test",
+          "name": "test"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml"
+                ],
+                "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html"
+                ],
+                "pipeline_name": "initFileTransfer_Http",
+                "ci_stage": "report",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/viewer-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "initFileTransfer_Http: generating report",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "06d2316e-24f1-4eaf-b8d7-946d7d56a410",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/06d2316e-24f1-4eaf-b8d7-946d7d56a410.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/initFileTransfer_Http/report",
+          "name": "report"
+        }
+      ],
+      "url": "pipelines/initFileTransfer_Http",
+      "status": "fail"
+    },
+    {
+      "name": "OTA_HTTP_strerror",
+      "ci_stages": [
+        {
+          "jobs": [
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/proof_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: building proof binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18e02a22-464b-45f5-ae87-abce7a0fb144.json",
+                "job_id": "18e02a22-464b-45f5-ae87-abce7a0fb144"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_http_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c:29:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/project_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: building project binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/01c4ae30-59fb-4c90-81c4-e830cd843c09.json",
+                "job_id": "01c4ae30-59fb-4c90-81c4-e830cd843c09"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:34:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: not setting static variables to nondet",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: not applying loop contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "6ebe2560-3c63-4b40-a31d-7242e2bbdc60",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6ebe2560-3c63-4b40-a31d-7242e2bbdc60.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto"
+                ],
+                "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/slice_global_inits-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: slicing global initializations",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "12131278-8b64-4563-a3bc-8eaf9f007f58",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/12131278-8b64-4563-a3bc-8eaf9f007f58.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto"
+                ],
+                "command": "goto-cc  --function OTA_HTTP_strerror_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/link_proof_project-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: linking project to proof",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "bf70ea29-410d-4881-aedd-2fc0fa4ea42f",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bf70ea29-410d-4881-aedd-2fc0fa4ea42f.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto"
+                ],
+                "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/drop_unused_functions-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: dropping unused functions",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "c8a00678-3805-472f-bd58-3fe2149a4cde",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8a00678-3805-472f-bd58-3fe2149a4cde.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: not checking function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "2e2303f4-c9f2-43c7-8783-d672bfd984b4",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2e2303f4-c9f2-43c7-8783-d672bfd984b4.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto"
+                ],
+                "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/remove_function_body-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: removing function bodies from project sources",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "96e3ae0d-bc99-44d3-9552-a9fb2b990f6f",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/96e3ae0d-bc99-44d3-9552-a9fb2b990f6f.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: not replacing function calls with function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: copying final goto-binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "c9eb184f-f34c-42d8-91b0-84bc3fc1d644",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c9eb184f-f34c-42d8-91b0-84bc3fc1d644.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 18,
+          "complete": false,
+          "status": "fail",
+          "url": "artifacts/OTA_HTTP_strerror/build",
+          "name": "build"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result-err-log.txt",
+                "pool": null,
+                "description": "OTA_HTTP_strerror: checking safety properties",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:safety checks"
+                ],
+                "job_id": "4bbfb2e9-21a2-4649-a831-8f33d757a6ea",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4bbfb2e9-21a2-4649-a831-8f33d757a6ea.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property-err-log.txt",
+                "pool": null,
+                "description": "OTA_HTTP_strerror: printing safety properties",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "a6cfc542-040c-4d12-8b77-a561500ad5da",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a6cfc542-040c-4d12-8b77-a561500ad5da.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage-err-log.txt",
+                "pool": null,
+                "description": "OTA_HTTP_strerror: calculating coverage",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:coverage computation"
+                ],
+                "job_id": "f72ee1c9-97e7-4edd-bbee-0f6b8059098a",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f72ee1c9-97e7-4edd-bbee-0f6b8059098a.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/OTA_HTTP_strerror/test",
+          "name": "test"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml"
+                ],
+                "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html"
+                ],
+                "pipeline_name": "OTA_HTTP_strerror",
+                "ci_stage": "report",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/viewer-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "OTA_HTTP_strerror: generating report",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "1c234d08-a21d-47e3-bfc1-d72a23e731d3",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1c234d08-a21d-47e3-bfc1-d72a23e731d3.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/OTA_HTTP_strerror/report",
+          "name": "report"
+        }
+      ],
+      "url": "pipelines/OTA_HTTP_strerror",
+      "status": "fail"
+    },
+    {
+      "name": "setDataInterface",
+      "ci_stages": [
+        {
+          "jobs": [
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/project_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: building project binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/8d76b57f-24f6-46dd-8752-b68aa2639fb6.json",
+                "job_id": "8d76b57f-24f6-46dd-8752-b68aa2639fb6"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_interface_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c:33:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/proof_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: building proof binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fb9ef28e-0f1e-4145-84b5-633233389b79.json",
+                "job_id": "fb9ef28e-0f1e-4145-84b5-633233389b79"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_interface_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c:28:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: not replacing function calls with function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "a0ac334d-c6fd-4287-b703-4b54ef4c4d0f",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a0ac334d-c6fd-4287-b703-4b54ef4c4d0f.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto"
+                ],
+                "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/slice_global_inits-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: slicing global initializations",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "f14c86d9-5559-40e4-b13c-22496e4c363e",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f14c86d9-5559-40e4-b13c-22496e4c363e.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto"
+                ],
+                "command": "goto-cc  --function setDataInterface_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/link_proof_project-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: linking project to proof",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "43ffb573-8f31-4c1a-9969-e36c673af221",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/43ffb573-8f31-4c1a-9969-e36c673af221.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: not applying loop contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto"
+                ],
+                "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/drop_unused_functions-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: dropping unused functions",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "14e53e2c-0ad1-440d-8ac9-306d9cae5a10",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/14e53e2c-0ad1-440d-8ac9-306d9cae5a10.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: not checking function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "ee6303ad-9006-4f8e-a31f-e2bd6362d60c",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ee6303ad-9006-4f8e-a31f-e2bd6362d60c.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto"
+                ],
+                "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/remove_function_body-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: removing function bodies from project sources",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "739f5719-fef0-49f0-90bc-e52b69447a6c",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/739f5719-fef0-49f0-90bc-e52b69447a6c.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: copying final goto-binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "f584f47e-f039-4f17-8de4-ce6422cd06fa",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f584f47e-f039-4f17-8de4-ce6422cd06fa.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: not setting static variables to nondet",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "2c3df356-0622-4fcf-a3c7-b83f97bb9102",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2c3df356-0622-4fcf-a3c7-b83f97bb9102.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 18,
+          "complete": false,
+          "status": "fail",
+          "url": "artifacts/setDataInterface/build",
+          "name": "build"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property-err-log.txt",
+                "pool": null,
+                "description": "setDataInterface: printing safety properties",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "5c201f84-fbec-49a9-b048-b3283b94afd7",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5c201f84-fbec-49a9-b048-b3283b94afd7.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result-err-log.txt",
+                "pool": null,
+                "description": "setDataInterface: checking safety properties",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:safety checks"
+                ],
+                "job_id": "ab66ec40-5f06-4013-ba48-00ace552f470",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ab66ec40-5f06-4013-ba48-00ace552f470.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage-err-log.txt",
+                "pool": null,
+                "description": "setDataInterface: calculating coverage",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:coverage computation"
+                ],
+                "job_id": "098e4837-d16e-422d-8a1c-fd47412a42fb",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/098e4837-d16e-422d-8a1c-fd47412a42fb.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/setDataInterface/test",
+          "name": "test"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml"
+                ],
+                "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html"
+                ],
+                "pipeline_name": "setDataInterface",
+                "ci_stage": "report",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/viewer-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setDataInterface: generating report",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "51328bd4-c395-4dd3-847c-8e9cad723e51",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/51328bd4-c395-4dd3-847c-8e9cad723e51.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/setDataInterface/report",
+          "name": "report"
+        }
+      ],
+      "url": "pipelines/setDataInterface",
+      "status": "fail"
+    },
+    {
+      "name": "setControlInterface",
+      "ci_stages": [
+        {
+          "jobs": [
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/project_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: building project binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/60e10287-23b7-4486-be14-f5376a12d50f.json",
+                "job_id": "60e10287-23b7-4486-be14-f5376a12d50f"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_interface_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c:33:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "wrapper_arguments": {
+                "subcommand": "exec",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c"
+                ],
+                "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/proof_sources-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: building proof binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f41cfaa1-5b41-4d90-9278-815c54d4d0b4.json",
+                "job_id": "f41cfaa1-5b41-4d90-9278-815c54d4d0b4"
+              },
+              "complete": true,
+              "start_time": "2021-07-22T00:12:52Z",
+              "timeout_reached": false,
+              "command_return_code": 1,
+              "memory_trace": {},
+              "loaded_outcome_dict": null,
+              "outcome": "fail",
+              "wrapper_return_code": 1,
+              "stdout": [
+                "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_interface_private.h:32,",
+                "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c:28:",
+                "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+                "   42 |     #include \"ota_config.h\"",
+                "      |              ^~~~~~~~~~~~~~",
+                "compilation terminated.",
+                "preprocessing has failed"
+              ],
+              "stderr": [],
+              "end_time": "2021-07-22T00:12:52Z",
+              "duration_str": "00s",
+              "duration": 0
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto"
+                ],
+                "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/drop_unused_functions-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: dropping unused functions",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "e0d16dbf-55fa-4a91-97ef-609b27d9a4e0",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0d16dbf-55fa-4a91-97ef-609b27d9a4e0.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: not replacing function calls with function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "03d70c04-6f69-442c-8eda-dea964182cfd",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/03d70c04-6f69-442c-8eda-dea964182cfd.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto"
+                ],
+                "command": "goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/remove_function_body-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: removing function bodies from project sources",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "3e73b894-a2a3-4b83-9165-fc1498ab4182",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/3e73b894-a2a3-4b83-9165-fc1498ab4182.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto"
+                ],
+                "command": "goto-cc  --function setControlInterface_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/link_proof_project-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: linking project to proof",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "95803338-06ed-4476-ad5a-caf5ab0791b4",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/95803338-06ed-4476-ad5a-caf5ab0791b4.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: not applying loop contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto"
+                ],
+                "command": "goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/slice_global_inits-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: slicing global initializations",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "18111aeb-be47-4eb4-ab97-4bbf781928bb",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18111aeb-be47-4eb4-ab97-4bbf781928bb.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: not checking function contracts",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "247f332f-3494-41ec-bd83-05fdf1f4673d",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/247f332f-3494-41ec-bd83-05fdf1f4673d.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: not setting static variables to nondet",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "676b61f8-1459-49e6-86b4-298e21a856d2",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/676b61f8-1459-49e6-86b4-298e21a856d2.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto"
+                ],
+                "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "build",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": null,
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: copying final goto-binary",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "733e7f9a-48d6-4a51-a718-b144c01326fd",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/733e7f9a-48d6-4a51-a718-b144c01326fd.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 18,
+          "complete": false,
+          "status": "fail",
+          "url": "artifacts/setControlInterface/build",
+          "name": "build"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result-err-log.txt",
+                "pool": null,
+                "description": "setControlInterface: checking safety properties",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:safety checks"
+                ],
+                "job_id": "892584c5-ac74-4621-9c4e-9a158d78fe26",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/892584c5-ac74-4621-9c4e-9a158d78fe26.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": 21600,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage-err-log.txt",
+                "pool": null,
+                "description": "setControlInterface: calculating coverage",
+                "profile_memory": true,
+                "profile_memory_interval": 10,
+                "tags": [
+                  "stats-group:coverage computation"
+                ],
+                "job_id": "f86302e7-c2ae-4b66-a4f3-718c805b9617",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f86302e7-c2ae-4b66-a4f3-718c805b9617.json"
+              },
+              "duration_str": null
+            },
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto"
+                ],
+                "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "test",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": [
+                  "10"
+                ],
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": false,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml",
+                "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property-err-log.txt",
+                "pool": null,
+                "description": "setControlInterface: printing safety properties",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "cd3e1383-813c-4ff6-b3b3-9087fe6ece8a",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cd3e1383-813c-4ff6-b3b3-9087fe6ece8a.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/setControlInterface/test",
+          "name": "test"
+        },
+        {
+          "jobs": [
+            {
+              "complete": false,
+              "wrapper_arguments": {
+                "subcommand": "add-job",
+                "verbose": false,
+                "very_verbose": false,
+                "inputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml",
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml"
+                ],
+                "command": "  cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html",
+                "outputs": [
+                  "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html"
+                ],
+                "pipeline_name": "setControlInterface",
+                "ci_stage": "report",
+                "cwd": null,
+                "timeout": null,
+                "timeout_ok": false,
+                "timeout_ignore": false,
+                "ignore_returns": null,
+                "ok_returns": null,
+                "outcome_table": null,
+                "interleave_stdout_stderr": true,
+                "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/viewer-log.txt",
+                "stderr_file": null,
+                "pool": null,
+                "description": "setControlInterface: generating report",
+                "profile_memory": false,
+                "profile_memory_interval": 10,
+                "tags": null,
+                "job_id": "1739222e-230b-4414-a948-360a04632005",
+                "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1739222e-230b-4414-a948-360a04632005.json"
+              },
+              "duration_str": null
+            }
+          ],
+          "progress": 0,
+          "complete": false,
+          "status": "success",
+          "url": "artifacts/setControlInterface/report",
+          "name": "report"
+        }
+      ],
+      "url": "pipelines/setControlInterface",
+      "status": "fail"
+    }
+  ]
+}

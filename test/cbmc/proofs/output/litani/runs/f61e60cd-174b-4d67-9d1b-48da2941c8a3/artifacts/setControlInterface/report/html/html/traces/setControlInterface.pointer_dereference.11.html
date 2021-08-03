@@ -1,0 +1,162 @@
+
+<html>
+  <head>
+    <title>setControlInterface.pointer_dereference.11</title>
+    <link rel="stylesheet" type="text/css" href="../viewer.css">
+  </head>
+
+  <body>
+    <h2>Error trace for property setControlInterface.pointer_dereference.11</h2>
+
+    <div id="trace-header">
+    <div id="trace-description">
+    <p>
+      Property that failed:
+      <ul>
+        <li> Name: setControlInterface.pointer_dereference.11
+        <li> Description: dereference failure: pointer outside object bounds in pControlInterface->updateJobStatus
+        <li> Location: Function <a href="../source/ota_interface.c.html#63">setControlInterface</a>, File <a href="../source/ota_interface.c.html">source/ota_interface.c</a>, Line <a href="../source/ota_interface.c.html#69">69</a>
+      </ul>
+    </p>
+    </div>
+
+    <div id="trace-navigation">
+    <p>
+      Trace navigation tips:
+      <ul>
+        <li>
+          <strong>Shift-Click: Hide function steps:</strong>
+          Shift-click on any step of a function to toggle the display
+          of function steps (hide or display steps).
+          This corresponds to stepping over a function in a debugger.
+          <em>Example:</em> Shift-click on any step of malloc to hide
+          the initialization of the struct members being malloc'd.
+        </li>
+        <li>
+          <strong>Shift-Alt-Click: Focus on function steps:</strong>
+          Shift-Alt-click on any step of a function to hide all steps
+          of all functions not currently on the call stack.
+          This corresponds to viewing the call stack in a debugger.
+          <em>Example:</em> Shift-Alt-click on a failure step to the display the
+          most direct path from the initial state to the failure.
+        </li>
+      </ul>
+    </p>
+    </div>
+    </div>
+
+    <div class="trace">
+
+      
+
+        
+
+        
+
+        <div id="step1" class="step">
+        <div class="header">Step 1: Function <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#30">setControlInterface_harness</a>, File <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html">test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#32">32</a></div>
+        
+        <div class="code">OtaControlInterface_t * pControlInterface;</div>
+        
+        <div class="cbmc">pControlInterface = ((OtaControlInterface_t *)NULL) (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step2" class="step">
+        <div class="header">Step 2: Function <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#30">setControlInterface_harness</a>, File <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html">test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#33">33</a></div>
+        
+        <div class="code">OtaControlInterface_t controlInterface;</div>
+        
+        <div class="cbmc">controlInterface = { .requestJob=controlInterface!0@1#1..requestJob, .updateJobStatus=controlInterface!0@1#1..updateJobStatus,     .cleanup=controlInterface!0@1#1..cleanup } ({ ?, ?, ? })</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step3" class="step">
+        <div class="header">Step 3: Function <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#30">setControlInterface_harness</a>, File <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html">test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#35">35</a></div>
+        
+        <div class="code">pControlInterface = &amp;pControlInterface;</div>
+        
+        <div class="cbmc">pControlInterface = (OtaControlInterface_t *)&pControlInterface!0@1 (00000010 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step4" class="step">
+        <div class="header">Step 4: Function <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#30">setControlInterface_harness</a>, File <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html">test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c.html#37">37</a></div>
+        
+        <div class="code">setControlInterface( pControlInterface );</div>
+        
+        <div class="cbmc">pControlInterface = (OtaControlInterface_t *)&pControlInterface!0@1 (00000010 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step5" class="step">
+        <div class="header">Step 5: Function <a href="../source/ota_interface.c.html#63">setControlInterface</a>, File <a href="../source/ota_interface.c.html">source/ota_interface.c</a>, Line <a href="../source/ota_interface.c.html#68">68</a></div>
+        
+        <div class="code">pControlInterface-&gt;requestJob = requestJob_Mqtt;</div>
+        
+        <div class="cbmc">(OtaErr_t (*)(OtaAgentContext_t *))pControlInterface = (OtaErr_t (*)(OtaAgentContext_t *))(OtaControlInterface_t *)requestJob_Mqtt (?)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step6" class="step">
+        <div class="header">Step 6: Function <a href="../source/ota_interface.c.html#63">setControlInterface</a>, File <a href="../source/ota_interface.c.html">source/ota_interface.c</a>, Line <a href="../source/ota_interface.c.html#69">69</a></div>
+        
+        <div class="code">pControlInterface-&gt;updateJobStatus = updateJobStatus_Mqtt;</div>
+        
+        <div class="cbmc">failure: Unnamed: dereference failure: pointer outside object bounds in pControlInterface->updateJobStatus</div>
+        </div>
+
+        
+
+        
+
+      
+    </div>
+  </body>
+  <script type="text/javascript" src="../viewer.js"></script>
+</html>

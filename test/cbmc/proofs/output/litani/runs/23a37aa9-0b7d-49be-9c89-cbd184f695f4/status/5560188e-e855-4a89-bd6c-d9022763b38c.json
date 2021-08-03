@@ -1,0 +1,44 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness4.goto"
+    ],
+    "command": "cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto"
+    ],
+    "pipeline_name": "requestDataBlock_Http",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": false,
+    "stdout_file": null,
+    "stderr_file": null,
+    "pool": null,
+    "description": "requestDataBlock_Http: not setting static variables to nondet",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/23a37aa9-0b7d-49be-9c89-cbd184f695f4/status/5560188e-e855-4a89-bd6c-d9022763b38c.json",
+    "job_id": "5560188e-e855-4a89-bd6c-d9022763b38c"
+  },
+  "complete": true,
+  "start_time": "2021-07-22T20:59:08Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [],
+  "stderr": [],
+  "end_time": "2021-07-22T20:59:08Z"
+}

@@ -1,0 +1,53 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c"
+    ],
+    "command": "goto-cc  --export-file-local-symbols  /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE=\"(SIZE_MAX>>(CBMC_OBJECT_BITS+1))\" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto"
+    ],
+    "pipeline_name": "OTA_MQTT_strerror",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/proof_sources-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "OTA_MQTT_strerror: building proof binary",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/19712c34-77ad-4d1a-9871-d53f8ff70064.json",
+    "job_id": "19712c34-77ad-4d1a-9871-d53f8ff70064"
+  },
+  "complete": true,
+  "start_time": "2021-07-22T00:12:52Z",
+  "timeout_reached": false,
+  "command_return_code": 1,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "fail",
+  "wrapper_return_code": 1,
+  "stdout": [
+    "In file included from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h:37,",
+    "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_mqtt_private.h:32,",
+    "                 from /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c:28:",
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h:42:14: fatal error: ota_config.h: No such file or directory",
+    "   42 |     #include \"ota_config.h\"",
+    "      |              ^~~~~~~~~~~~~~",
+    "compilation terminated.",
+    "preprocessing has failed"
+  ],
+  "stderr": [],
+  "end_time": "2021-07-22T00:12:52Z"
+}

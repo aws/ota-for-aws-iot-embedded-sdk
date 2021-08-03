@@ -1,0 +1,12 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c": [
+        "setDataInterface_harness"
+      ],
+      "source/ota_interface.c": [
+        "setDataInterface"
+      ]
+    }
+  }
+}

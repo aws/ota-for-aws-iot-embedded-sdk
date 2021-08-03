@@ -1,0 +1,2456 @@
+{
+  "viewer-property": {
+    "properties": {
+      "stringBuilder_harness.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned * in numStrings * sizeof(char *) /*8ul*/ ",
+        "expression": "!overflow(\"*\", size_t, numStrings, sizeof(char *) /*8ul*/ )",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 47
+        }
+      },
+      "stringBuilder_harness.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.1": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.2": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.3": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.4": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.5": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.6": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 58
+        }
+      },
+      "stringBuilder_harness.overflow.3": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in i + 1ul",
+        "expression": "!overflow(\"+\", size_t, i, 1ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 56
+        }
+      },
+      "stringBuilder_harness.overflow.4": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in numStrings - (unsigned long int)1",
+        "expression": "!overflow(\"-\", size_t, numStrings, 1ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.overflow.5": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!(numStrings + 18446744073709551615ul >= 9223372036854775808ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.7": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.8": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.9": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.10": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.11": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "POINTER_OFFSET(strings) + ((signed long int)numStrings + -1l) * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + ((unsigned long int)(signed long int)numStrings + 18446744073709551615ul) * 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.12": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)(numStrings - (unsigned long int)1)",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)numStrings + -1l == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "POINTER_OFFSET(strings) + ((signed long int)numStrings + -1l) * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + ((unsigned long int)(signed long int)numStrings + 18446744073709551615ul) * 8ul + 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)(numStrings - (unsigned long int)1)]",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)numStrings + -1l == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 62
+        }
+      },
+      "stringBuilder_harness.precondition_instance.1": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)pBuffer == NULL || (FALSE || !(POINTER_OBJECT((void *)pBuffer) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)pBuffer) && (FALSE || !(POINTER_OBJECT((void *)pBuffer) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)pBuffer) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)pBuffer) < 0l || (unsigned long int)POINTER_OFFSET((void *)pBuffer) + (unsigned long int)0 > OBJECT_SIZE((void *)pBuffer))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)pBuffer) && NULL != (void *)pBuffer ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.precondition_instance.2": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)pBuffer == NULL || IS_DYNAMIC_OBJECT((void *)pBuffer)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.precondition_instance.3": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)pBuffer == NULL || POINTER_OFFSET((void *)pBuffer) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.precondition_instance.4": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)pBuffer == NULL || __CPROVER_deallocated != (void *)pBuffer",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.precondition_instance.5": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)pBuffer == NULL || __CPROVER_malloc_object != (void *)pBuffer || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.precondition_instance.6": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)pBuffer == NULL || __CPROVER_alloca_object != (void *)pBuffer",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 67
+        }
+      },
+      "stringBuilder_harness.overflow.6": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.13": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.14": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.15": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.16": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.17": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.18": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.overflow.7": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.19": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.20": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.21": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.22": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.23": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_arithmetic.24": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((char **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!((void *)strings[(signed long int)i] == NULL) ==> !(POINTER_OBJECT(((char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((char **)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.7": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)strings[(signed long int)i] == NULL || (FALSE || !(POINTER_OBJECT((void *)strings[(signed long int)i]) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)strings[(signed long int)i]) && (FALSE || !(POINTER_OBJECT((void *)strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)strings[(signed long int)i]) < 0l || (unsigned long int)POINTER_OFFSET((void *)strings[(signed long int)i]) + (unsigned long int)0 > OBJECT_SIZE((void *)strings[(signed long int)i]))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)strings[(signed long int)i]) && NULL != (void *)strings[(signed long int)i] ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.8": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)strings[(signed long int)i] == NULL || IS_DYNAMIC_OBJECT((void *)strings[(signed long int)i])",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.9": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)strings[(signed long int)i] == NULL || POINTER_OFFSET((void *)strings[(signed long int)i]) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.10": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)strings[(signed long int)i] == NULL || __CPROVER_deallocated != (void *)strings[(signed long int)i]",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.11": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)strings[(signed long int)i] == NULL || __CPROVER_malloc_object != (void *)strings[(signed long int)i] || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.precondition_instance.12": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)strings[(signed long int)i] == NULL || __CPROVER_alloca_object != (void *)strings[(signed long int)i]",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 71
+        }
+      },
+      "stringBuilder_harness.overflow.8": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in i + 1ul",
+        "expression": "!overflow(\"+\", size_t, i, 1ul)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 69
+        }
+      },
+      "stringBuilder_harness.precondition_instance.13": {
+        "class": "precondition_instance",
+        "description": "free argument must be NULL or valid pointer",
+        "expression": "(void *)strings == NULL || (FALSE || !(POINTER_OBJECT((void *)strings) == POINTER_OBJECT(NULL))) && !IS_INVALID_POINTER((void *)strings) && (FALSE || !(POINTER_OBJECT((void *)strings) == POINTER_OBJECT(__CPROVER_deallocated))) && (FALSE || !(POINTER_OBJECT((void *)strings) == POINTER_OBJECT(__CPROVER_dead_object))) && (FALSE || !(POINTER_OFFSET((void *)strings) < 0l || (unsigned long int)POINTER_OFFSET((void *)strings) + (unsigned long int)0 > OBJECT_SIZE((void *)strings))) && (POINTER_OBJECT(NULL) == POINTER_OBJECT((void *)strings) && NULL != (void *)strings ==> FALSE)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "stringBuilder_harness.precondition_instance.14": {
+        "class": "precondition_instance",
+        "description": "free argument must be dynamic object",
+        "expression": "(void *)strings == NULL || IS_DYNAMIC_OBJECT((void *)strings)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "stringBuilder_harness.precondition_instance.15": {
+        "class": "precondition_instance",
+        "description": "free argument has offset zero",
+        "expression": "(void *)strings == NULL || POINTER_OFFSET((void *)strings) == (signed long int)0",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "stringBuilder_harness.precondition_instance.16": {
+        "class": "precondition_instance",
+        "description": "double free",
+        "expression": "(void *)strings == NULL || __CPROVER_deallocated != (void *)strings",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "stringBuilder_harness.precondition_instance.17": {
+        "class": "precondition_instance",
+        "description": "free called for new[] object",
+        "expression": "(void *)strings == NULL || __CPROVER_malloc_object != (void *)strings || !__CPROVER_malloc_is_new_array",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "stringBuilder_harness.precondition_instance.18": {
+        "class": "precondition_instance",
+        "description": "free called for stack-allocated object",
+        "expression": "(void *)strings == NULL || __CPROVER_alloca_object != (void *)strings",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/stringBuilder/stringBuilder_harness.c",
+          "function": "stringBuilder_harness",
+          "line": 73
+        }
+      },
+      "malloc.assertion.1": {
+        "class": "assertion",
+        "description": "max allocation size exceeded",
+        "expression": "malloc_size <= __CPROVER_max_malloc_size",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 26
+        }
+      },
+      "malloc.assertion.2": {
+        "class": "assertion",
+        "description": "max allocation may fail",
+        "expression": "!__CPROVER_malloc_may_fail || !should_malloc_fail",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 31
+        }
+      },
+      "strlen.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)len",
+        "expression": "!(len >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.1": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in s + (signed long int)len",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.2": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in s + (signed long int)len",
+        "expression": "!IS_INVALID_POINTER(s)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.3": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in s + (signed long int)len",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.4": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in s + (signed long int)len",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.5": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in s + (signed long int)len",
+        "expression": "POINTER_OFFSET(s) + (signed long int)len >= 0l && OBJECT_SIZE(s) >= (unsigned long int)POINTER_OFFSET(s) + (unsigned long int)(signed long int)len",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_arithmetic.6": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in s + (signed long int)len",
+        "expression": "!(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(s)) || s + (signed long int)len == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in s[(signed long int)len]",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in s[(signed long int)len]",
+        "expression": "!IS_INVALID_POINTER(s)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in s[(signed long int)len]",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in s[(signed long int)len]",
+        "expression": "!(POINTER_OBJECT(s) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in s[(signed long int)len]",
+        "expression": "POINTER_OFFSET(s) + (signed long int)len >= 0l && OBJECT_SIZE(s) >= (unsigned long int)POINTER_OFFSET(s) + (unsigned long int)(signed long int)len + 1ul",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in s[(signed long int)len]",
+        "expression": "!(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(s)) || s + (signed long int)len == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "strlen.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in len + 1ul",
+        "expression": "!overflow(\"+\", __CPROVER_size_t, len, 1ul)",
+        "location": {
+          "file": "<builtin-library-strlen>",
+          "function": "strlen",
+          "line": 18
+        }
+      },
+      "stringBuilder.pointer_arithmetic.1": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in pBuffer + (signed long int)0",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.2": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in pBuffer + (signed long int)0",
+        "expression": "!IS_INVALID_POINTER(pBuffer)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.3": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in pBuffer + (signed long int)0",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.4": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in pBuffer + (signed long int)0",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.5": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in pBuffer + (signed long int)0",
+        "expression": "POINTER_OFFSET(pBuffer) >= 0l && OBJECT_SIZE(pBuffer) >= (unsigned long int)POINTER_OFFSET(pBuffer)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.6": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in pBuffer + (signed long int)0",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(pBuffer)) || pBuffer == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pBuffer[(signed long int)0]",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pBuffer[(signed long int)0]",
+        "expression": "!IS_INVALID_POINTER(pBuffer)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pBuffer[(signed long int)0]",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pBuffer[(signed long int)0]",
+        "expression": "!(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pBuffer[(signed long int)0]",
+        "expression": "POINTER_OFFSET(pBuffer) >= 0l && OBJECT_SIZE(pBuffer) >= (unsigned long int)POINTER_OFFSET(pBuffer) + 1ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pBuffer[(signed long int)0]",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(pBuffer)) || pBuffer == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 264
+        }
+      },
+      "stringBuilder.pointer_arithmetic.7": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_arithmetic.8": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_arithmetic.9": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_arithmetic.10": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_arithmetic.11": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_arithmetic.12": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "stringBuilder.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in thisLength + curLen",
+        "expression": "!overflow(\"+\", size_t, thisLength, curLen)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 272
+        }
+      },
+      "stringBuilder.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in thisLength + curLen + (unsigned long int)1",
+        "expression": "!overflow(\"+\", size_t, thisLength + curLen, 1ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 272
+        }
+      },
+      "stringBuilder.assertion.1": {
+        "class": "assertion",
+        "description": "assertion thisLength + curLen + 1 <= bufferSizeBytes",
+        "expression": "thisLength + curLen + (unsigned long int)1 <= bufferSizeBytes",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 272
+        }
+      },
+      "stringBuilder.pointer_arithmetic.13": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.14": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.15": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.16": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.17": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.18": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.19": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.20": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.21": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.22": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.23": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.24": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.3": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in bufferSizeBytes - curLen",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !overflow(\"-\", size_t, bufferSizeBytes, curLen)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.4": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in (bufferSizeBytes - curLen) - (unsigned long int)1u",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !overflow(\"-\", size_t, bufferSizeBytes + -curLen, 1ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.5": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(bufferSizeBytes + -curLen + 18446744073709551615ul >= 9223372036854775808ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "strncat.pointer_arithmetic.1": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.2": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !IS_INVALID_POINTER(pBuffer)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.3": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.4": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.5": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> POINTER_OFFSET(pBuffer) + (signed long int)bufferSizeBytes + -((signed long int)curLen) + -1l >= 0l && OBJECT_SIZE(pBuffer) >= (unsigned long int)POINTER_OFFSET(pBuffer) + (unsigned long int)(signed long int)bufferSizeBytes + -((unsigned long int)(signed long int)curLen) + 18446744073709551615ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.6": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(pBuffer)) || pBuffer + (signed long int)bufferSizeBytes + -((signed long int)curLen) + -1l == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer.1": {
+        "class": "pointer",
+        "description": "same object violation in strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(pBuffer)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.7": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.8": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer invalid in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !IS_INVALID_POINTER(strings[(signed long int)i])",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.9": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.10": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.11": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> POINTER_OFFSET(strings[(signed long int)i]) >= 0l && OBJECT_SIZE(strings[(signed long int)i]) >= (unsigned long int)POINTER_OFFSET(strings[(signed long int)i])",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.12": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i])) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(strings[(signed long int)i])) || strings[(signed long int)i] == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "stringBuilder.pointer_arithmetic.25": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.26": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.27": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.28": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.29": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_arithmetic.30": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings + (signed long int)i",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.25": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(((const char **)NULL)))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.26": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !IS_INVALID_POINTER(strings)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.27": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.28": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.29": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> POINTER_OFFSET(strings) + (signed long int)i * 8l >= 0l && OBJECT_SIZE(strings) >= (unsigned long int)POINTER_OFFSET(strings) + (unsigned long int)(signed long int)i * 8ul + 8ul",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.pointer_dereference.30": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in strings[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(((const char **)NULL)) == POINTER_OBJECT(strings)) || strings + (signed long int)i == ((const char **)NULL)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.6": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in bufferSizeBytes - curLen",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !overflow(\"-\", size_t, bufferSizeBytes, curLen)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.7": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in (bufferSizeBytes - curLen) - (unsigned long int)1u",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !overflow(\"-\", size_t, bufferSizeBytes + -curLen, 1ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.8": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(bufferSizeBytes + -curLen + 18446744073709551615ul >= 9223372036854775808ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "strncat.pointer_arithmetic.13": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.14": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !IS_INVALID_POINTER(strings[(signed long int)i])",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.15": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.16": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(strings[(signed long int)i]) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.17": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> POINTER_OFFSET(strings[(signed long int)i]) + (signed long int)bufferSizeBytes + -((signed long int)curLen) + -1l >= 0l && OBJECT_SIZE(strings[(signed long int)i]) >= (unsigned long int)POINTER_OFFSET(strings[(signed long int)i]) + (unsigned long int)(signed long int)bufferSizeBytes + -((unsigned long int)(signed long int)curLen) + 18446744073709551615ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.18": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(strings[(signed long int)i])) || strings[(signed long int)i] + (signed long int)bufferSizeBytes + -((signed long int)curLen) + -1l == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer.2": {
+        "class": "pointer",
+        "description": "same object violation in pBuffer >= strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> POINTER_OBJECT(pBuffer) == POINTER_OBJECT(strings[(signed long int)i])",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.19": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer NULL in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.20": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer invalid in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !IS_INVALID_POINTER(pBuffer)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.21": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: deallocated dynamic object in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.22": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: dead object in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(pBuffer) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.23": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: pointer outside object bounds in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> POINTER_OFFSET(pBuffer) >= 0l && OBJECT_SIZE(pBuffer) >= (unsigned long int)POINTER_OFFSET(pBuffer)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "strncat.pointer_arithmetic.24": {
+        "class": "pointer arithmetic",
+        "description": "pointer relation: invalid integer address in pBuffer",
+        "expression": "!(POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)) ==> !(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(pBuffer)) || pBuffer == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 35
+        }
+      },
+      "stringBuilder.precondition_instance.1": {
+        "class": "precondition_instance",
+        "description": "strncat src/dst overlap",
+        "expression": "POINTER_OBJECT((const void *)pBuffer) != POINTER_OBJECT((const void *)strings[(signed long int)i]) || strings[(signed long int)i] >= pBuffer + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u) || pBuffer >= strings[(signed long int)i] + (signed long int)((bufferSizeBytes - curLen) - (unsigned long int)1u)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.9": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in bufferSizeBytes - curLen",
+        "expression": "!overflow(\"-\", size_t, bufferSizeBytes, curLen)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.10": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in (bufferSizeBytes - curLen) - (unsigned long int)1u",
+        "expression": "!overflow(\"-\", size_t, bufferSizeBytes + -curLen, 1ul)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 274
+        }
+      },
+      "stringBuilder.overflow.11": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in curLen + thisLength",
+        "expression": "!overflow(\"+\", size_t, curLen, thisLength)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 275
+        }
+      },
+      "stringBuilder.overflow.12": {
+        "class": "overflow",
+        "description": "arithmetic overflow on signed + in i + 1",
+        "expression": "!overflow(\"+\", signed int, i, 1)",
+        "location": {
+          "file": "source/ota_mqtt.c",
+          "function": "stringBuilder",
+          "line": 266
+        }
+      },
+      "strncat.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.25": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.26": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in dst + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.27": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.28": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.29": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in dst + (signed long int)i",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_arithmetic.30": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in dst[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in dst[(signed long int)i]",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i + 1ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 39
+        }
+      },
+      "strncat.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in i + 1ul",
+        "expression": "!overflow(\"+\", __CPROVER_size_t, i, 1ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 40
+        }
+      },
+      "strncat.overflow.3": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)j",
+        "expression": "!(j >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.31": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in src + (signed long int)j",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.32": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in src + (signed long int)j",
+        "expression": "!IS_INVALID_POINTER(src)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.33": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in src + (signed long int)j",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.34": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in src + (signed long int)j",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.35": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in src + (signed long int)j",
+        "expression": "POINTER_OFFSET(src) + (signed long int)j >= 0l && OBJECT_SIZE(src) >= (unsigned long int)POINTER_OFFSET(src) + (unsigned long int)(signed long int)j",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_arithmetic.36": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in src + (signed long int)j",
+        "expression": "!(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(src)) || src + (signed long int)j == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in src[(signed long int)j]",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(((const char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in src[(signed long int)j]",
+        "expression": "!IS_INVALID_POINTER(src)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in src[(signed long int)j]",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in src[(signed long int)j]",
+        "expression": "!(POINTER_OBJECT(src) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in src[(signed long int)j]",
+        "expression": "POINTER_OFFSET(src) + (signed long int)j >= 0l && OBJECT_SIZE(src) >= (unsigned long int)POINTER_OFFSET(src) + (unsigned long int)(signed long int)j + 1ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in src[(signed long int)j]",
+        "expression": "!(POINTER_OBJECT(((const char *)NULL)) == POINTER_OBJECT(src)) || src + (signed long int)j == ((const char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 46
+        }
+      },
+      "strncat.overflow.4": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.37": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.38": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in dst + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.39": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.40": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.41": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in dst + (signed long int)i",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_arithmetic.42": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in dst[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in dst[(signed long int)i]",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i + 1ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 47
+        }
+      },
+      "strncat.overflow.5": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in i + 1ul",
+        "expression": "!overflow(\"+\", __CPROVER_size_t, i, 1ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 44
+        }
+      },
+      "strncat.overflow.6": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in j + 1ul",
+        "expression": "!overflow(\"+\", __CPROVER_size_t, j, 1ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 44
+        }
+      },
+      "strncat.overflow.7": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned to signed type conversion in (signed long int)i",
+        "expression": "!(i >= 9223372036854775808ul)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.43": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer NULL in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.44": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer invalid in dst + (signed long int)i",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.45": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: deallocated dynamic object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.46": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: dead object in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.47": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: pointer outside object bounds in dst + (signed long int)i",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_arithmetic.48": {
+        "class": "pointer arithmetic",
+        "description": "pointer arithmetic: invalid integer address in dst + (signed long int)i",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(((char *)NULL)))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in dst[(signed long int)i]",
+        "expression": "!IS_INVALID_POINTER(dst)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(dst) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in dst[(signed long int)i]",
+        "expression": "POINTER_OFFSET(dst) + (signed long int)i >= 0l && OBJECT_SIZE(dst) >= (unsigned long int)POINTER_OFFSET(dst) + (unsigned long int)(signed long int)i + 1ul",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      },
+      "strncat.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in dst[(signed long int)i]",
+        "expression": "!(POINTER_OBJECT(((char *)NULL)) == POINTER_OBJECT(dst)) || dst + (signed long int)i == ((char *)NULL)",
+        "location": {
+          "file": "<builtin-library-strncat>",
+          "function": "strncat",
+          "line": 50
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "requestDataBlock_Http": {
+          "80": "hit",
+          "83": "hit",
+          "84": "hit",
+          "86": "hit",
+          "88": "both",
+          "91": "hit",
+          "94": "hit",
+          "96": "hit",
+          "98": "hit",
+          "102": "hit",
+          "106": "both",
+          "108": "hit",
+          "115": "hit",
+          "116": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "request": {
+          "33": "hit",
+          "35": "hit",
+          "36": "hit"
+        },
+        "requestDataBlock_Http_harness": {
+          "40": "hit",
+          "41": "hit",
+          "42": "hit",
+          "44": "hit",
+          "46": "hit",
+          "48": "hit",
+          "50": "hit",
+          "52": "hit",
+          "53": "hit",
+          "54": "hit",
+          "55": "hit",
+          "57": "hit",
+          "58": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "requestDataBlock_Http": {
+          "hit": 14,
+          "percentage": 1.0,
+          "total": 14
+        }
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "request": {
+          "hit": 3,
+          "percentage": 1.0,
+          "total": 3
+        },
+        "requestDataBlock_Http_harness": {
+          "hit": 13,
+          "percentage": 1.0,
+          "total": 13
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "80": "hit",
+        "83": "hit",
+        "84": "hit",
+        "86": "hit",
+        "88": "both",
+        "91": "hit",
+        "94": "hit",
+        "96": "hit",
+        "98": "hit",
+        "102": "hit",
+        "106": "both",
+        "108": "hit",
+        "115": "hit",
+        "116": "hit"
+      },
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": {
+        "33": "hit",
+        "35": "hit",
+        "36": "hit",
+        "40": "hit",
+        "41": "hit",
+        "42": "hit",
+        "44": "hit",
+        "46": "hit",
+        "48": "hit",
+        "50": "hit",
+        "52": "hit",
+        "53": "hit",
+        "54": "hit",
+        "55": "hit",
+        "57": "hit",
+        "58": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 30,
+      "percentage": 1.0,
+      "total": 30
+    }
+  }
+}

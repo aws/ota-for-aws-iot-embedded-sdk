@@ -1,0 +1,419 @@
+pool expensive
+  depth = 1
+rule b827e06e-74b0-45f1-8dae-7cf7b862cfda
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage report --job-id $
+      b827e06e-74b0-45f1-8dae-7cf7b862cfda --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/viewer-log.txt $
+      --description 'OTA_MQTT_strerror: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/b827e06e-74b0-45f1-8dae-7cf7b862cfda.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: generating report
+rule 428acd94-4971-4342-983a-613cf896ac9c
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      428acd94-4971-4342-983a-613cf896ac9c --description $
+      'OTA_MQTT_strerror: copying final goto-binary' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/428acd94-4971-4342-983a-613cf896ac9c.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+  description = OTA_MQTT_strerror: copying final goto-binary
+rule 238ef290-7688-4f2a-9282-01332f7baa66
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      238ef290-7688-4f2a-9282-01332f7baa66 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/drop_unused_functions-log.txt $
+      --description 'OTA_MQTT_strerror: dropping unused functions' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/238ef290-7688-4f2a-9282-01332f7baa66.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: dropping unused functions
+rule 8e268ab7-53a5-4bdf-b12b-b68695840355
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/unit-test  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      8e268ab7-53a5-4bdf-b12b-b68695840355 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/project_sources-log.txt $
+      --description 'OTA_MQTT_strerror: building project binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/8e268ab7-53a5-4bdf-b12b-b68695840355.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: building project binary
+rule 3322d5fa-a3ee-4114-ba02-1400967e9e70
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      3322d5fa-a3ee-4114-ba02-1400967e9e70 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property-err-log.txt $
+      --description 'OTA_MQTT_strerror: printing safety properties' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/3322d5fa-a3ee-4114-ba02-1400967e9e70.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --ignore-returns 10
+  description = OTA_MQTT_strerror: printing safety properties
+rule 6376675f-c755-4b52-99a4-a8973f9c7eb7
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      6376675f-c755-4b52-99a4-a8973f9c7eb7 --description $
+      'OTA_MQTT_strerror: not applying loop contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/6376675f-c755-4b52-99a4-a8973f9c7eb7.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto
+  description = OTA_MQTT_strerror: not applying loop contracts
+rule 11bdf6e6-cc9b-4bfb-b5be-401ccbf7f62a
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      11bdf6e6-cc9b-4bfb-b5be-401ccbf7f62a --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/remove_function_body-log.txt $
+      --description 'OTA_MQTT_strerror: removing function bodies $
+      from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/11bdf6e6-cc9b-4bfb-b5be-401ccbf7f62a.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: removing function bodies from $
+      project sources
+rule e01a6ae7-f5c4-4147-8dae-2f2bdebe696d
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      e01a6ae7-f5c4-4147-8dae-2f2bdebe696d --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/slice_global_inits-log.txt $
+      --description 'OTA_MQTT_strerror: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/e01a6ae7-f5c4-4147-8dae-2f2bdebe696d.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: slicing global initializations
+rule c1385234-9928-451e-b801-c9665208e82b
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      c1385234-9928-451e-b801-c9665208e82b --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage-err-log.txt $
+      --description 'OTA_MQTT_strerror: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/c1385234-9928-451e-b801-c9665208e82b.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = OTA_MQTT_strerror: calculating coverage
+rule 73b8707e-8855-4cd1-bce6-955cc44200a4
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/unit-test  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      73b8707e-8855-4cd1-bce6-955cc44200a4 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/proof_sources-log.txt $
+      --description 'OTA_MQTT_strerror: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/73b8707e-8855-4cd1-bce6-955cc44200a4.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: building proof binary
+rule f1a99742-424f-4614-9adc-b4e0953d4387
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      f1a99742-424f-4614-9adc-b4e0953d4387 --description $
+      'OTA_MQTT_strerror: not setting static variables to nondet' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/f1a99742-424f-4614-9adc-b4e0953d4387.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto
+  description = OTA_MQTT_strerror: not setting static variables to $
+      nondet
+rule 3dac8618-e697-4a67-8a10-9dae1fa50b38
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      3dac8618-e697-4a67-8a10-9dae1fa50b38 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result-err-log.txt $
+      --description 'OTA_MQTT_strerror: checking safety properties' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/3dac8618-e697-4a67-8a10-9dae1fa50b38.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = OTA_MQTT_strerror: checking safety properties
+rule 28cd1914-0a2d-490e-bca3-6ee4b7572dad
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function OTA_MQTT_strerror_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      28cd1914-0a2d-490e-bca3-6ee4b7572dad --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/link_proof_project-log.txt $
+      --description 'OTA_MQTT_strerror: linking project to proof' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/28cd1914-0a2d-490e-bca3-6ee4b7572dad.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: linking project to proof
+rule 82121500-2a19-4bc8-bfd9-ac463f426ef5
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      82121500-2a19-4bc8-bfd9-ac463f426ef5 --description $
+      'OTA_MQTT_strerror: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/82121500-2a19-4bc8-bfd9-ac463f426ef5.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto
+  description = OTA_MQTT_strerror: not checking function contracts
+rule c54c223d-4a53-4bfe-b13c-1b70d068549f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      c54c223d-4a53-4bfe-b13c-1b70d068549f --description $
+      'OTA_MQTT_strerror: not replacing function calls with $
+      function contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/c54c223d-4a53-4bfe-b13c-1b70d068549f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto
+  description = OTA_MQTT_strerror: not replacing function calls $
+      with function contracts
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/b827e06e-74b0-45f1-8dae-7cf7b862cfda.json: $
+    b827e06e-74b0-45f1-8dae-7cf7b862cfda $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/428acd94-4971-4342-983a-613cf896ac9c.json: $
+    428acd94-4971-4342-983a-613cf896ac9c $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/238ef290-7688-4f2a-9282-01332f7baa66.json: $
+    238ef290-7688-4f2a-9282-01332f7baa66 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/8e268ab7-53a5-4bdf-b12b-b68695840355.json: $
+    8e268ab7-53a5-4bdf-b12b-b68695840355 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/3322d5fa-a3ee-4114-ba02-1400967e9e70.json: $
+    3322d5fa-a3ee-4114-ba02-1400967e9e70 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/6376675f-c755-4b52-99a4-a8973f9c7eb7.json: $
+    6376675f-c755-4b52-99a4-a8973f9c7eb7 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/11bdf6e6-cc9b-4bfb-b5be-401ccbf7f62a.json: $
+    11bdf6e6-cc9b-4bfb-b5be-401ccbf7f62a $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/e01a6ae7-f5c4-4147-8dae-2f2bdebe696d.json: $
+    e01a6ae7-f5c4-4147-8dae-2f2bdebe696d $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/c1385234-9928-451e-b801-c9665208e82b.json: $
+    c1385234-9928-451e-b801-c9665208e82b $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/73b8707e-8855-4cd1-bce6-955cc44200a4.json: $
+    73b8707e-8855-4cd1-bce6-955cc44200a4 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/f1a99742-424f-4614-9adc-b4e0953d4387.json: $
+    f1a99742-424f-4614-9adc-b4e0953d4387 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/3dac8618-e697-4a67-8a10-9dae1fa50b38.json: $
+    3dac8618-e697-4a67-8a10-9dae1fa50b38 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/28cd1914-0a2d-490e-bca3-6ee4b7572dad.json: $
+    28cd1914-0a2d-490e-bca3-6ee4b7572dad $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/82121500-2a19-4bc8-bfd9-ac463f426ef5.json: $
+    82121500-2a19-4bc8-bfd9-ac463f426ef5 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/9f582bac-7ff9-45da-8096-222e042692b6/status/c54c223d-4a53-4bfe-b13c-1b70d068549f.json: $
+    c54c223d-4a53-4bfe-b13c-1b70d068549f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto
+build __litani_pipeline_name_OTA_MQTT_strerror: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt
+build __litani_ci_stage_report: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html
+build __litani_ci_stage_build: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto
+build __litani_ci_stage_test: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt

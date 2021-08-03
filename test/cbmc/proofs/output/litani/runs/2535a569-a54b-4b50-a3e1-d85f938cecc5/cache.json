@@ -1,0 +1,15 @@
+{
+  "project": "AWS IoT Over-the-air Update Library",
+  "version": "1.9.0",
+  "version_major": 1,
+  "version_minor": 9,
+  "version_patch": 0,
+  "run_id": "2535a569-a54b-4b50-a3e1-d85f938cecc5",
+  "start_time": "2021-07-19T19:13:26Z",
+  "status": "in_progress",
+  "pools": {
+    "expensive": 1
+  },
+  "jobs": [],
+  "parallelism": {}
+}

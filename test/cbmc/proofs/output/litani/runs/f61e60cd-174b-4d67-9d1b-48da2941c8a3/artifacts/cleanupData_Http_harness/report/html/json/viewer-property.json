@@ -1,0 +1,406 @@
+{
+  "viewer-property": {
+    "properties": {
+      "cleanupData_Http_harness.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pInterfaces->http",
+        "expression": "!(POINTER_OBJECT(pInterfaces) == POINTER_OBJECT(((OtaHttpInterface_t *)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pInterfaces->http",
+        "expression": "!IS_INVALID_POINTER(pInterfaces)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pInterfaces->http",
+        "expression": "!(POINTER_OBJECT(pInterfaces) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pInterfaces->http",
+        "expression": "!(POINTER_OBJECT(pInterfaces) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pInterfaces->http",
+        "expression": "POINTER_OFFSET(pInterfaces) + 104l >= 0l && OBJECT_SIZE(pInterfaces) >= (unsigned long int)POINTER_OFFSET(pInterfaces) + 128ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pInterfaces->http",
+        "expression": "!(POINTER_OBJECT(((OtaHttpInterface_t *)NULL)) == POINTER_OBJECT(pInterfaces)) || (char *)pInterfaces + 104l == ((char *)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 57
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 58
+        }
+      },
+      "cleanupData_Http_harness.assertion.1": {
+        "class": "assertion",
+        "description": "The function return should be either OtaErrNone or OtaErrCleanupDataFailed",
+        "expression": "(signed int)status == 0 || (signed int)status == 10",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c",
+          "function": "cleanupData_Http_harness",
+          "line": 64
+        }
+      },
+      "cleanupData_Http.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t * const *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(((const OtaInterfaces_t * const *)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.assertion.1": {
+        "class": "assertion",
+        "description": "assertion pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL",
+        "expression": "tmp_if_expr",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 166
+        }
+      },
+      "cleanupData_Http.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t * const *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(((const OtaInterfaces_t * const *)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx->pOtaInterface)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http",
+        "expression": "POINTER_OFFSET(pAgentCtx->pOtaInterface) + 104l >= 0l && OBJECT_SIZE(pAgentCtx->pOtaInterface) >= (unsigned long int)POINTER_OFFSET(pAgentCtx->pOtaInterface) + 128ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)) == POINTER_OBJECT(pAgentCtx->pOtaInterface)) || (char *)pAgentCtx->pOtaInterface + 104l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.deinit) == POINTER_OBJECT(((const OtaHttpDeinit)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx->pOtaInterface->http.deinit)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.deinit) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.deinit) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "POINTER_OFFSET(pAgentCtx->pOtaInterface->http.deinit) >= 0l && OBJECT_SIZE(pAgentCtx->pOtaInterface->http.deinit) >= (unsigned long int)POINTER_OFFSET(pAgentCtx->pOtaInterface->http.deinit)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "cleanupData_Http.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http.deinit",
+        "expression": "!(POINTER_OBJECT(((const OtaHttpDeinit)NULL)) == POINTER_OBJECT(pAgentCtx->pOtaInterface->http.deinit)) || pAgentCtx->pOtaInterface->http.deinit == ((const OtaHttpDeinit)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "cleanupData_Http",
+          "line": 167
+        }
+      },
+      "malloc.assertion.1": {
+        "class": "assertion",
+        "description": "max allocation size exceeded",
+        "expression": "malloc_size <= __CPROVER_max_malloc_size",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 26
+        }
+      },
+      "malloc.assertion.2": {
+        "class": "assertion",
+        "description": "max allocation may fail",
+        "expression": "!__CPROVER_malloc_may_fail || !should_malloc_fail",
+        "location": {
+          "file": "<builtin-library-malloc>",
+          "function": "malloc",
+          "line": 31
+        }
+      }
+    }
+  }
+}

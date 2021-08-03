@@ -1,0 +1,342 @@
+
+<html>
+  <head>
+    <title>cleanupData_Http.pointer_dereference.19</title>
+    <link rel="stylesheet" type="text/css" href="../viewer.css">
+  </head>
+
+  <body>
+    <h2>Error trace for property cleanupData_Http.pointer_dereference.19</h2>
+
+    <div id="trace-header">
+    <div id="trace-description">
+    <p>
+      Property that failed:
+      <ul>
+        <li> Name: cleanupData_Http.pointer_dereference.19
+        <li> Description: dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.deinit
+        <li> Location: Function <a href="../source/ota_http.c.html#162">cleanupData_Http</a>, File <a href="../source/ota_http.c.html">source/ota_http.c</a>, Line <a href="../source/ota_http.c.html#167">167</a>
+      </ul>
+    </p>
+    </div>
+
+    <div id="trace-navigation">
+    <p>
+      Trace navigation tips:
+      <ul>
+        <li>
+          <strong>Shift-Click: Hide function steps:</strong>
+          Shift-click on any step of a function to toggle the display
+          of function steps (hide or display steps).
+          This corresponds to stepping over a function in a debugger.
+          <em>Example:</em> Shift-click on any step of malloc to hide
+          the initialization of the struct members being malloc'd.
+        </li>
+        <li>
+          <strong>Shift-Alt-Click: Focus on function steps:</strong>
+          Shift-Alt-click on any step of a function to hide all steps
+          of all functions not currently on the call stack.
+          This corresponds to viewing the call stack in a debugger.
+          <em>Example:</em> Shift-Alt-click on a failure step to the display the
+          most direct path from the initial state to the failure.
+        </li>
+      </ul>
+    </p>
+    </div>
+    </div>
+
+    <div class="trace">
+
+      
+
+        
+
+        
+
+        <div id="step1" class="step">
+        <div class="header">Step 1: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#41">41</a></div>
+        
+        <div class="code">OtaAgentContext_t * pAgentCtx;</div>
+        
+        <div class="cbmc">pAgentCtx = ((OtaAgentContext_t *)NULL) (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step2" class="step">
+        <div class="header">Step 2: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#42">42</a></div>
+        
+        <div class="code">OtaHttpInterface_t pHttp;</div>
+        
+        <div class="cbmc">pHttp = { .init=((OtaHttpInit_t)NULL), .request=((OtaHttpRequest_t)NULL), .deinit=((OtaHttpDeinit)NULL) + -36028797018963968l } ({ 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000, 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000, 00000000 10000000 00000000 00000000 00000000 00000000 00000000 00000000 })</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step3" class="step">
+        <div class="header">Step 3: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#43">43</a></div>
+        
+        <div class="code">OtaInterfaces_t * pInterfaces;</div>
+        
+        <div class="cbmc">pInterfaces = ((OtaInterfaces_t *)NULL) (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step4" class="step">
+        <div class="header">Step 4: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#44">44</a></div>
+        
+        <div class="code">OtaHttpStatus_t status;</div>
+        
+        <div class="cbmc">status = /*enum*/OtaHttpSuccess (00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step5" class="step">
+        <div class="header">Step 5: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#46">46</a></div>
+        
+        <div class="code">OtaAgentContext_t agent;</div>
+        
+        <div class="cbmc">agent = { .state=agent!0@1#1..state, .pThingName=agent!0@1#1..pThingName, .$pad2=agent!0@1#1..$pad2,     .fileContext={ .pFilePath=agent!0@1#1..fileContext..pFilePath, .filePathMaxSize=agent!0@1#1..fileContext..filePathMaxSize,     .$pad2=agent!0@1#1..fileContext..$pad2,     .pFile=agent!0@1#1..fileContext..pFile,     .fileSize=agent!0@1#1..fileContext..fileSize,     .blocksRemaining=agent!0@1#1..fileContext..blocksRemaining,     .fileAttributes=agent!0@1#1..fileContext..fileAttributes,     .serverFileID=agent!0@1#1..fileContext..serverFileID,     .pJobName=agent!0@1#1..fileContext..pJobName,     .jobNameMaxSize=agent!0@1#1..fileContext..jobNameMaxSize,     .$pad10=agent!0@1#1..fileContext..$pad10,     .pStreamName=agent!0@1#1..fileContext..pStreamName,     .streamNameMaxSize=agent!0@1#1..fileContext..streamNameMaxSize,     .$pad13=agent!0@1#1..fileContext..$pad13,     .pRxBlockBitmap=agent!0@1#1..fileContext..pRxBlockBitmap,     .blockBitmapMaxSize=agent!0@1#1..fileContext..blockBitmapMaxSize,     .$pad16=agent!0@1#1..fileContext..$pad16,     .pCertFilepath=agent!0@1#1..fileContext..pCertFilepath,     .certFilePathMaxSize=agent!0@1#1..fileContext..certFilePathMaxSize,     .$pad19=agent!0@1#1..fileContext..$pad19,     .pUpdateUrlPath=agent!0@1#1..fileContext..pUpdateUrlPath,     .updateUrlMaxSize=agent!0@1#1..fileContext..updateUrlMaxSize,     .$pad22=agent!0@1#1..fileContext..$pad22,     .pAuthScheme=agent!0@1#1..fileContext..pAuthScheme,     .authSchemeMaxSize=agent!0@1#1..fileContext..authSchemeMaxSize,     .$pad25=agent!0@1#1..fileContext..$pad25,     .updaterVersion=agent!0@1#1..fileContext..updaterVersion,     .isInSelfTest=agent!0@1#1..fileContext..isInSelfTest,     .$pad28=agent!0@1#1..fileContext..$pad28,     .pProtocols=agent!0@1#1..fileContext..pProtocols,     .protocolMaxSize=agent!0@1#1..fileContext..protocolMaxSize,     .$pad31=agent!0@1#1..fileContext..$pad31,     .pDecodeMem=agent!0@1#1..fileContext..pDecodeMem,     .decodeMemMaxSize=agent!0@1#1..fileContext..decodeMemMaxSize,     .fileType=agent!0@1#1..fileContext..fileType,     .pSignature=agent!0@1#1..fileContext..pSignature }, .fileIndex=agent!0@1#1..fileIndex,     .serverFileID=agent!0@1#1..serverFileID, .pActiveJobName=agent!0@1#1..pActiveJobName,     .$pad7=agent!0@1#1..$pad7,     .pClientTokenFromJob=agent!0@1#1..pClientTokenFromJob, .timestampFromJob=agent!0@1#1..timestampFromJob,     .imageState=agent!0@1#1..imageState,     .numOfBlocksToReceive=agent!0@1#1..numOfBlocksToReceive,     .statistics={ .otaPacketsReceived=agent!0@1#1..statistics..otaPacketsReceived, .otaPacketsQueued=agent!0@1#1..statistics..otaPacketsQueued,     .otaPacketsProcessed=agent!0@1#1..statistics..otaPacketsProcessed,     .otaPacketsDropped=agent!0@1#1..statistics..otaPacketsDropped },     .requestMomentum=agent!0@1#1..requestMomentum,     .pOtaInterface=agent!0@1#1..pOtaInterface,     .OtaAppCallback=agent!0@1#1..OtaAppCallback,     .unsubscribeOnShutdown=agent!0@1#1..unsubscribeOnShutdown,     .$pad17=agent!0@1#1..$pad17 } ({ ?, ?, ?, { ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? }, ?, ?, ?, ?, ?, ?, ?, ?, { ?, ?, ?, ? }, ?, ?, ?, ?, ? })</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step6" class="step">
+        <div class="header">Step 6: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#47">47</a></div>
+        
+        <div class="code">OtaInterfaces_t interface;</div>
+        
+        <div class="cbmc">interface = { .os={ .event={ .init=interface!0@1#1..os..event..init, .send=interface!0@1#1..os..event..send,     .recv=interface!0@1#1..os..event..recv,     .deinit=interface!0@1#1..os..event..deinit,     .pEventContext=interface!0@1#1..os..event..pEventContext }, .timer={ .start=interface!0@1#1..os..timer..start, .stop=interface!0@1#1..os..timer..stop,     .delete=interface!0@1#1..os..timer..delete },     .mem={ .malloc=interface!0@1#1..os..mem..malloc, .free=interface!0@1#1..os..mem..free } }, .mqtt={ .subscribe=interface!0@1#1..mqtt..subscribe, .unsubscribe=interface!0@1#1..mqtt..unsubscribe,     .publish=interface!0@1#1..mqtt..publish },     .http={ .init=interface!0@1#1..http..init, .request=interface!0@1#1..http..request, .deinit=interface!0@1#1..http..deinit },     .pal={ .abort=interface!0@1#1..pal..abort, .createFile=interface!0@1#1..pal..createFile, .closeFile=interface!0@1#1..pal..closeFile,     .writeBlock=interface!0@1#1..pal..writeBlock,     .activate=interface!0@1#1..pal..activate,     .reset=interface!0@1#1..pal..reset,     .setPlatformImageState=interface!0@1#1..pal..setPlatformImageState, .getPlatformImageState=interface!0@1#1..pal..getPlatformImageState } } ({ { { ?, ?, ?, ?, ? }, { ?, ?, ? }, { ?, ? } }, { ?, ?, ? }, { ?, ?, ? }, { ?, ?, ?, ?, ?, ?, ?, ? } })</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step7" class="step">
+        <div class="header">Step 7: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#49">49</a></div>
+        
+        <div class="code">pAgentCtx = &amp;agent;</div>
+        
+        <div class="cbmc">pAgentCtx = &agent!0@1 (00000010 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step8" class="step">
+        <div class="header">Step 8: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#50">50</a></div>
+        
+        <div class="code">pInterfaces = &amp;interface;</div>
+        
+        <div class="cbmc">pInterfaces = &interface!0@1 (00000011 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step9" class="step">
+        <div class="header">Step 9: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#66">66</a></div>
+        
+        <div class="code">pInterfaces-&gt;http = pHttp;</div>
+        
+        <div class="cbmc">interface.http.init = ((OtaHttpInit_t)NULL) (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step10" class="step">
+        <div class="header">Step 10: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#66">66</a></div>
+        
+        <div class="code">pInterfaces-&gt;http = pHttp;</div>
+        
+        <div class="cbmc">interface.http.request = ((OtaHttpRequest_t)NULL) (00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step11" class="step">
+        <div class="header">Step 11: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#66">66</a></div>
+        
+        <div class="code">pInterfaces-&gt;http = pHttp;</div>
+        
+        <div class="cbmc">interface.http.deinit = ((OtaHttpDeinit)NULL) + -36028797018963968l (00000000 10000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step12" class="step">
+        <div class="header">Step 12: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#67">67</a></div>
+        
+        <div class="code">pAgentCtx-&gt;pOtaInterface = pInterfaces;</div>
+        
+        <div class="cbmc">agent.pOtaInterface = &interface!0@1 (00000011 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step13" class="step">
+        <div class="header">Step 13: Function <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#39">cleanupData_Http_harness</a>, File <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html">test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c</a>, Line <a href="../test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c.html#69">69</a></div>
+        
+        <div class="code">status = cleanupData_Http( pAgentCtx );</div>
+        
+        <div class="cbmc">pAgentCtx = &agent!0@1 (00000010 00000000 00000000 00000000 00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step14" class="step">
+        <div class="header">Step 14: Function <a href="../source/ota_http.c.html#162">cleanupData_Http</a>, File <a href="../source/ota_http.c.html">source/ota_http.c</a>, Line <a href="../source/ota_http.c.html#164">164</a></div>
+        
+        <div class="code">OtaHttpStatus_t httpStatus = OtaHttpSuccess;</div>
+        
+        <div class="cbmc">httpStatus = /*enum*/OtaHttpSuccess (00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step15" class="step">
+        <div class="header">Step 15: Function <a href="../source/ota_http.c.html#162">cleanupData_Http</a>, File <a href="../source/ota_http.c.html">source/ota_http.c</a>, Line <a href="../source/ota_http.c.html#164">164</a></div>
+        
+        <div class="code">OtaHttpStatus_t httpStatus = OtaHttpSuccess;</div>
+        
+        <div class="cbmc">httpStatus = /*enum*/OtaHttpSuccess (00000000 00000000 00000000 00000000)</div>
+        </div>
+
+        
+
+        
+
+      
+
+        
+
+        
+
+        <div id="step16" class="step">
+        <div class="header">Step 16: Function <a href="../source/ota_http.c.html#162">cleanupData_Http</a>, File <a href="../source/ota_http.c.html">source/ota_http.c</a>, Line <a href="../source/ota_http.c.html#167">167</a></div>
+        
+        <div class="code">httpStatus = pAgentCtx-&gt;pOtaInterface-&gt;http.deinit();</div>
+        
+        <div class="cbmc">failure: Unnamed: dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.deinit</div>
+        </div>
+
+        
+
+        
+
+      
+    </div>
+  </body>
+  <script type="text/javascript" src="../viewer.js"></script>
+</html>

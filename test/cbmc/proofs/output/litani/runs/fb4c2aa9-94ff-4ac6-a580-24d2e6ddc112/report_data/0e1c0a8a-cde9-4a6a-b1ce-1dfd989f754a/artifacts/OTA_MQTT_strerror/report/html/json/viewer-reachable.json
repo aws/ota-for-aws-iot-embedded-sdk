@@ -1,0 +1,12 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c": [
+        "OTA_MQTT_strerror_harness"
+      ],
+      "source/ota_mqtt.c": [
+        "OTA_MQTT_strerror"
+      ]
+    }
+  }
+}

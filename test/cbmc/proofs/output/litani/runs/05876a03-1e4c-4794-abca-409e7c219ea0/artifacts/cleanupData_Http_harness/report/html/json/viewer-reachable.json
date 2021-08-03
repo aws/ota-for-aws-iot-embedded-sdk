@@ -1,0 +1,13 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c": [
+        "cleanupData_Http_harness",
+        "deinit"
+      ],
+      "source/ota_http.c": [
+        "cleanupData_Http"
+      ]
+    }
+  }
+}

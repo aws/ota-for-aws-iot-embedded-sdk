@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+  <text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="WARNING">
+  <location file="&lt;builtin-library-malloc&gt;" line="6" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+  <text>warning: implicit function declaration "malloc"
+old definition in module requestDataBlock_Http_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c line 46 function requestDataBlock_Http_harness
+void * (void)
+new definition in module &lt;built-in-library&gt; file &lt;builtin-library-malloc&gt; line 6
+void * (__CPROVER_size_t malloc_size)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Rewriting existing assertions as assumptions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Starting Bounded Model Checking</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Symex: 0.00945122s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>size of program expression: 395 steps</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generated 13 VCC(s), 13 remaining after simplification</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Postprocess Equation: 3.3833e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Passing problem to propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>converting SSA</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Convert SSA: 0.00272136s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Post-processing</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Post-process: 2.3013e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>8785 variables, 644 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Solver: 0.00108189s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime decision procedure: 0.00388083s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>8785 variables, 13 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Solver: 0.00010302s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime decision procedure: 0.000122205s</text>
+</message>
+
+<goal description="block 11 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:115,116)" id="requestDataBlock_Http.coverage.11" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="115" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 10 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106,108)" id="requestDataBlock_Http.coverage.10" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:requestDataBlock_Http_harness:40-42,44,46)" id="requestDataBlock_Http_harness.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="40" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 8 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.8" status="FAILED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:requestDataBlock_Http_harness:46,48,50,52-55,57)" id="requestDataBlock_Http_harness.coverage.2" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="46" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 9 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.9" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:requestDataBlock_Http_harness:58)" id="requestDataBlock_Http_harness.coverage.3" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="58" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:request:33,35,36)" id="request.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="request" line="33" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:80,83,84,86,88)" id="requestDataBlock_Http.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="80" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88)" id="requestDataBlock_Http.coverage.2" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88)" id="requestDataBlock_Http.coverage.3" status="FAILED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 4 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88,91,94,96)" id="requestDataBlock_Http.coverage.4" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 5 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:98)" id="requestDataBlock_Http.coverage.5" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 6 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:102)" id="requestDataBlock_Http.coverage.6" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="102" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 7 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.7" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<message type="STATUS-MESSAGE">
+  <text>** 13 of 15 covered (86.7%)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>** Used 3 iterations</text>
+</message>
+
+</cprover>
+

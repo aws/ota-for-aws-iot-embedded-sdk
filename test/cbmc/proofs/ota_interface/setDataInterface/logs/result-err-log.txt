@@ -1,0 +1,12 @@
+file <builtin-library-free> line 7: error: implicit function declaration 'free'
+old definition in module 'setDataInterface_harness' file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c line 55 function setDataInterface_harness
+signed int (void)
+new definition in module '<built-in-library>' file <builtin-library-free> line 7
+void (void *ptr)
+file <builtin-library-malloc> line 6: warning: implicit function declaration "malloc"
+old definition in module setDataInterface_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c line 44 function setDataInterface_harness
+void * (void)
+new definition in module <built-in-library> file <builtin-library-malloc> line 6
+void * (__CPROVER_size_t malloc_size)
+**** WARNING: no body for function strstr
+

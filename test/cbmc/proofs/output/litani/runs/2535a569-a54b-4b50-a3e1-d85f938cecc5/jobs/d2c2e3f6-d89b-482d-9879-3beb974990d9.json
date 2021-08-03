@@ -1,0 +1,35 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto"
+  ],
+  "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/initFileTransfer_Http/logs/coverage.xml"
+  ],
+  "pipeline_name": "initFileTransfer_Http",
+  "ci_stage": "test",
+  "cwd": null,
+  "timeout": 21600,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": [
+    "10"
+  ],
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/initFileTransfer_Http/logs/coverage.xml",
+  "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/initFileTransfer_Http/logs/coverage-err-log.txt",
+  "pool": null,
+  "description": "initFileTransfer_Http: calculating coverage",
+  "profile_memory": true,
+  "profile_memory_interval": 10,
+  "tags": [
+    "stats-group:coverage computation"
+  ],
+  "job_id": "d2c2e3f6-d89b-482d-9879-3beb974990d9",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2535a569-a54b-4b50-a3e1-d85f938cecc5/status/d2c2e3f6-d89b-482d-9879-3beb974990d9.json"
+}

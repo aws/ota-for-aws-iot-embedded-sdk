@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Pipeline requestDataBlock_Http
+  </title>
+<style>
+#title{
+  background-color: #ec407a;
+  color: white;
+  padding: 2em;
+}
+h1 {
+  margin-bottom: 0em;
+}
+#subtitle {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+}
+.run-info ul {
+  list-style: none;
+}
+.run-info ul li {
+  display: inline;
+  margin-right: 6em;
+  margin-left: -3em;
+  text-transform: uppercase;
+  font-size: small;
+  color: #ec407a;
+}
+#content {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 2em;
+  color: #263238;
+  font-family: Helvetica, sans-serif;
+}
+p {
+  margin: 0;
+}
+.command-table {
+  background-color: #eceff1;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  margin-bottom: 4em;
+}
+.command-table .fail-ignored {
+  background-color: #e65100cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .success {
+  background-color: #1a237ecc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .in-progress {
+  background-color: #26323844;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-table .fail {
+  background-color: #f44336cc;
+  padding: 0.3em;
+  border-radius: 0.3em;
+}
+.command-content {
+  background-color: #eceff1;
+  padding: 1em;
+}
+.command-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.command-id-link{
+  flex-grow: 0;
+}
+.command-id-link a {
+  font-size: xx-large;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+  text-decoration: none;
+  margin-left: 0.2em;
+}
+.command-id-link a:link {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited {
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb;
+}
+.command-id-link a:visited:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:hover {
+  color: #ec407a;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb
+               0px 0px 10px #fff,
+               0px 0px 5px #ec407a,
+               0px 0px 5px #ec407a;
+}
+.command-id-link a:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-id-link a:visited:active {
+  color: #ffeb3b;
+  background-color: #00000000;
+  text-shadow: 1px  1px 0px #000000bb,
+              -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+}
+.command-description {
+  color: #26323899;
+  font-size: smaller;
+  text-align: center;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.command-invocation {
+  padding: 1em;
+  color: #fff;
+  background-color: #005662;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  text-shadow: 0 0 2px #ffccbccc;
+}
+.command-stats-table {
+  margin-top: 0.2em;
+  border-radius: 0.5em;
+  padding: 0.2em;
+  padding-top: 0.4em;
+  display: flex;
+  flex-direction: column;
+  background-color: #eae3998a;
+  color: #263238cc;
+  margin-bottom: 0.2em;
+}
+.command-stats-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  font-size: small;
+  text-transform: uppercase;
+}
+.command-stats-row p .value {
+  color: #00251aaa;
+  text-shadow: 0 0 2px #82ada944;
+  font-weight: bold;
+}
+.output-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #cfd8dc;
+  font-size: small;
+  font-family: monospace;
+  border-radius: 0.5em;
+  max-height: 20em;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.output-box xmp{
+  white-space: pre;
+}
+.stage-name p {
+  margin-left: 0.5em;
+  color: #546e7a;
+  text-shadow:  -1px  0px 0px #fff
+               ,-2px  0px 0px #ffffff99
+               ,-1px  1px 0px #ffffff99
+               ;
+  font-size: 48pt;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-weight: bold;
+  font-style: italic;
+}
+.stage-name .underline {
+  width: 100%;
+  height: 1.1em;
+  background-color: #546e7a;
+  margin-top: -1.6em;
+}
+.stage-name {
+  margin-top: 6em;
+  margin-bottom: 3em;
+}
+
+.outcome-table-info-box {
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+  padding: 1em;
+  color: #000a12;
+  background-color: #ffee58;
+  border-radius: 0.5em;
+}
+.outcome-table-info-box .outcome{
+  font-weight: bold;
+}
+#toc {
+  margin-bottom: 6em;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  margin-right: 3em;
+}
+.toc-title {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  margin-bottom: -1em;
+}
+.toc-section{
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  text-transform: capitalize;
+}
+.toc-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.toc-row-icon {
+  padding-right: 8px;
+}
+.status-icon-cross {
+  fill: #f44336;
+    width: 16px;
+    height: 16px;
+}
+.status-icon-tick {
+  fill: #3f51b5;
+  stroke: #ffffff77;
+  stroke-width: 1px;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress {
+  fill: #333;
+  width: 16px;
+  height: 16px;
+}
+
+.status-icon-in-progress circle {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: none
+}
+a:link {
+  color: #1e88e5;
+}
+a:visited {
+  color: #1e88e5;
+}
+a:visited:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+}
+a:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+a:visited:active {
+  background-color: #ec407a;
+  color: #fff;
+  text-decoration: none;
+}
+
+#contents-container {
+  margin-top: 6em;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+#depgraph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: flex-start;
+  flex-shrink: 7;
+}
+
+#depgraph-title p {
+  text-align: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+#depgraph-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#depgraph-preview {
+  padding: 1em;
+}
+
+.memory-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+  align-items: center;
+}
+.memory-preview {
+  width: 75%;
+}
+.memory-preview svg {
+  margin-left: -1em;
+  margin-right: -2em;
+}
+.memory-table {
+}
+.memory-title {
+  text-align: center;
+  font-style: bold;
+}
+.memory-subtitle {
+  text-transform: lowercase;
+  font-variant: small-caps;
+  text-align: center;
+  opacity: 0.8;
+}
+.memory-pad {
+  width: 1.5em;
+}
+.memory-value {
+  text-align: center;
+  margin-right: 2em;
+}
+.rss {
+  color: #ab47bc;
+}
+.vsz {
+  color: #4caf50;
+}
+
+
+@media (prefers-color-scheme: dark){
+  a:link {
+    color: #29b6f6;
+  }
+  a:visited {
+    color: #29b6f6;
+  }
+  a:visited:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:hover {
+    color: #263238;
+    background-color: #29b6f6;
+  }
+  a:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  a:visited:active {
+    color: #263238;
+    background-color: #ec407a;
+  }
+  .command-id-link a:link {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited {
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb;
+  }
+  .command-id-link a:visited:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb.
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:hover {
+    color: #ec407a;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ec407a,
+                 0px 0px 5px #ec407a;
+  }
+  .command-id-link a:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  .command-id-link a:visited:active {
+    color: #ffeb3b;
+    background-color: #00000000;
+    text-shadow: 1px  1px 0px #000000bb,
+                -1px -1px 0px #ffffffbb,
+                 0px 0px 10px #fff,
+                 0px 0px 5px #ffeb3b,
+                 0px 0px 5px #ffeb3b;
+  }
+  body {
+    color: #babdbe;
+    background-color: #263238;
+  }
+  .outcome-table-info-box p{
+    color: #000a12;
+  }
+  p {
+    color: #babdbe;
+  }
+  #subtitle {
+    color: #fff;
+  }
+  .command-table {
+    background-color: #37474f;
+  }
+  .command-content {
+    background-color: #37474f;
+  }
+  .command-invocation p {
+    color: #fff;
+  }
+  .command-stats-table {
+    background-color: #eae399d0;
+    color: #263238;
+  }
+  .command-stats-table p {
+    color: #263238;
+  }
+  .output-box {
+    color: #cfd8dccc;
+    background-color: #102027;
+  }
+  .stage-name p {
+    text-shadow: -1px  0px 0px #263238,
+                 -2px  0px 0px #26323899,
+                 -1px  1px 0px #26323899;
+  }
+  .status-icon-in-progress { fill: #ddd; }
+  .status-icon-in-progress circle { stroke: #ddd; }
+
+  /* SVG graphs */
+  g text {
+    fill: #eceff1;
+    stroke: #fff0;
+  }
+}
+</style>
+</head>
+<body>
+<div id="content">
+
+  <div id="title">
+    <h1>
+      AWS IoT Over-the-air Update Library pipeline &lsquo;requestDataBlock_Http&rsquo;
+    </h1>
+    <p id="subtitle">
+      Litani CI Dashboard
+    </p>
+  </div><!-- id="title" -->
+
+  <div class=run-info>
+    <ul>
+      <li>Pipeline status: success</li>
+      <li>2021-07-28T13:31:18Z</li>
+      <li>05876a03-1e4c-4794-abca-409e7c219ea0</li>
+    </ul>
+  </div><!-- class=run-info -->
+
+  <div id="contents-container">
+
+    <div id="toc">
+      <div class="toc-title">
+        <p>Summary of jobs for this pipeline</p>
+      </div><!-- class="toc-title" -->
+
+      
+        <div class="toc-section">
+          <p>build</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-42fdd584-e979-416c-9086-54b7d9220044">
+              
+              requestDataBlock_Http: building project binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-e2cf981e-d8f6-4657-b84f-1927893063fe">
+              
+              requestDataBlock_Http: removing function bodies from project sources
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-52ff53d2-8df6-4a92-bb0e-92ce4f6950d4">
+              
+              requestDataBlock_Http: building proof binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-1e594f43-a2dc-455c-9306-e9fb46a9d700">
+              
+              requestDataBlock_Http: linking project to proof
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-e846dc28-e307-48c9-8590-94320c6d1f08">
+              
+              requestDataBlock_Http: not applying loop contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-09904b3b-4184-4f83-b019-40a4eb24cd81">
+              
+              requestDataBlock_Http: not checking function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-b93d91d6-ccc3-410b-9859-430d8b7bbef6">
+              
+              requestDataBlock_Http: not replacing function calls with function contracts
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-3ff16f6e-8dfb-40ff-b61a-f8212629026a">
+              
+              requestDataBlock_Http: slicing global initializations
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-4bfc7129-3a7d-4059-8237-c5e75c5d0aae">
+              
+              requestDataBlock_Http: dropping unused functions
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-2426da63-d80f-40d4-9d70-ea926b04d0dc">
+              
+              requestDataBlock_Http: not setting static variables to nondet
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-fde11b0d-ed7e-43de-b10d-4f0dd1af8968">
+              
+              requestDataBlock_Http: copying final goto-binary
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>test</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-22462d98-1e6b-4489-8356-08994819645e">
+              
+              requestDataBlock_Http: printing safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-59dd743a-1862-4240-9e91-2d130aa85064">
+              
+              requestDataBlock_Http: checking safety properties
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-3111cdbc-937c-46b5-9747-05b6d15e6a24">
+              
+              requestDataBlock_Http: calculating coverage
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+        <div class="toc-section">
+          <p>report</p>
+        </div><!-- class="toc-section" -->
+        
+          <div class="toc-row">
+
+            <div class="toc-row-icon">
+              
+                <svg height="16px" width="16px" class="status-icon-tick">
+                  <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+                </svg>
+              
+            </div><!-- class="toc-row-icon" -->
+
+            <div class="toc-row-job-name">
+              <p>
+              <a href="#job-1d2177f5-b044-4b05-a1f8-4cf78ceccc66">
+              
+              requestDataBlock_Http: generating report
+              
+              </a>
+              </p>
+            </div><!-- class="toc-row-job-name" -->
+
+          </div><!-- class="toc-row" -->
+
+        
+      
+    </div><!-- id="toc" -->
+
+
+    
+    <div id="depgraph">
+      <div id="depgraph-title">
+        <p>Dependency graph for pipeline</p>
+        <p>(click for larger version)</p>
+      </div><!-- id="depgraph-title" -->
+      <a href="dependencies.svg">
+        <div id="depgraph-preview">
+          <img
+             src="dependencies.svg"
+             alt="pipeline dependency graph" />
+        </div><!-- id="depgraph-preview" -->
+      </a><!-- href="" -->
+    </div><!-- id="depgraph" -->
+    
+
+  </div><!-- id="contents-container" -->
+
+
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>build</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-42fdd584-e979-416c-9086-54b7d9220044">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-42fdd584-e979-416c-9086-54b7d9220044">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: building project binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-e2cf981e-d8f6-4657-b84f-1927893063fe">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-e2cf981e-d8f6-4657-b84f-1927893063fe">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: removing function bodies from project sources
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument   /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project1.goto'
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project2.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-52ff53d2-8df6-4a92-bb0e-92ce4f6950d4">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-52ff53d2-8df6-4a92-bb0e-92ce4f6950d4">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: building proof binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --export-file-local-symbols  -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  -DOTA_DO_NOT_USE_CUSTOM_CONFIG -DCBMC=1 -DCBMC_OBJECT_BITS=8 -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/proof1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-1e594f43-a2dc-455c-9306-e9fb46a9d700">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-1e594f43-a2dc-455c-9306-e9fb46a9d700">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: linking project to proof
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-cc  --function requestDataBlock_Http_harness /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/proof1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/project2.goto -o /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:20Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-e846dc28-e307-48c9-8590-94320c6d1f08">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-e846dc28-e307-48c9-8590-94320c6d1f08">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: not applying loop contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness3.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness4.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-09904b3b-4184-4f83-b019-40a4eb24cd81">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-09904b3b-4184-4f83-b019-40a4eb24cd81">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: not checking function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness1.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness2.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-b93d91d6-ccc3-410b-9859-430d8b7bbef6">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-b93d91d6-ccc3-410b-9859-430d8b7bbef6">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: not replacing function calls with function contracts
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness2.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness3.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-3ff16f6e-8dfb-40ff-b61a-f8212629026a">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-3ff16f6e-8dfb-40ff-b61a-f8212629026a">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: slicing global initializations
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --slice-global-inits /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness7.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto'
+Slicing away initializations of unused global variables
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness7.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-4bfc7129-3a7d-4059-8237-c5e75c5d0aae">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-4bfc7129-3a7d-4059-8237-c5e75c5d0aae">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: dropping unused functions
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto'
+Function Pointer Removal
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 63 function initFileTransfer_Http: replacing function pointer by 0 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 106 function requestDataBlock_Http: replacing function pointer by 1 possible targets
+file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 167 function cleanupData_Http: replacing function pointer by 0 possible targets
+Virtual function removal
+Cleaning inline assembler statements
+Removing unused functions
+Dropping 8 of 13 functions (5 used)
+Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness6.goto'
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-2426da63-d80f-40d4-9d70-ea926b04d0dc">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-2426da63-d80f-40d4-9d70-ea926b04d0dc">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: not setting static variables to nondet
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness4.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness5.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-fde11b0d-ed7e-43de-b10d-4f0dd1af8968">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-fde11b0d-ed7e-43de-b10d-4f0dd1af8968">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: copying final goto-binary
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cp /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness7.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:21Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>test</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-22462d98-1e6b-4489-8356-08994819645e">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-22462d98-1e6b-4489-8356-08994819645e">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: printing safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --show-properties --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:22Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:22Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.2">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;fileContext</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 72l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 256ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.3">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="59" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;fileContext</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.4">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="59" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;fileContext</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 72l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 256ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.5">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="62" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http_harness.pointer_dereference.6">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="62" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="assertion" name="requestDataBlock_Http_harness.assertion.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="67" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>The function return should be either of these values</description>
+<expression>(signed int)err == 0 || (signed int)err == 8</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.2">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.3">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.4">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.5">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.6">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)</expression>
+</property>
+
+<property class="assertion" name="requestDataBlock_Http.assertion.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>assertion pAgentCtx != NULL &amp;&amp; pAgentCtx-&gt;pOtaInterface != NULL</description>
+<expression>tmp_if_expr</expression>
+</property>
+
+<property class="overflow" name="requestDataBlock_Http.overflow.1">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="94" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>arithmetic overflow on unsigned * in currBlock * ((uint32_t)1u &lt;&lt; 12ul)</description>
+<expression>!overflow("*", uint32_t, currBlock, 4096u)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.7">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in fileContext-&gt;blocksRemaining</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(((uint32_t *)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.8">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in fileContext-&gt;blocksRemaining</description>
+<expression>!IS_INVALID_POINTER(fileContext)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.9">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in fileContext-&gt;blocksRemaining</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.10">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in fileContext-&gt;blocksRemaining</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.11">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in fileContext-&gt;blocksRemaining</description>
+<expression>POINTER_OFFSET(fileContext) + 28l &gt;= 0l &amp;&amp; OBJECT_SIZE(fileContext) &gt;= (unsigned long int)POINTER_OFFSET(fileContext) + 32ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.12">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="96" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in fileContext-&gt;blocksRemaining</description>
+<expression>!(POINTER_OBJECT(((uint32_t *)NULL)) == POINTER_OBJECT(fileContext)) || (char *)fileContext + 28l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.13">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in fileContext-&gt;fileSize</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(((uint32_t *)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.14">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in fileContext-&gt;fileSize</description>
+<expression>!IS_INVALID_POINTER(fileContext)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.15">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in fileContext-&gt;fileSize</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.16">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in fileContext-&gt;fileSize</description>
+<expression>!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.17">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in fileContext-&gt;fileSize</description>
+<expression>POINTER_OFFSET(fileContext) + 24l &gt;= 0l &amp;&amp; OBJECT_SIZE(fileContext) &gt;= (unsigned long int)POINTER_OFFSET(fileContext) + 28ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.18">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in fileContext-&gt;fileSize</description>
+<expression>!(POINTER_OBJECT(((uint32_t *)NULL)) == POINTER_OBJECT(fileContext)) || (char *)fileContext + 24l == ((char *)NULL)</expression>
+</property>
+
+<property class="overflow" name="requestDataBlock_Http.overflow.2">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>arithmetic overflow on unsigned - in fileContext-&gt;fileSize - 1u</description>
+<expression>!overflow("-", uint32_t, fileContext-&gt;fileSize, 1u)</expression>
+</property>
+
+<property class="overflow" name="requestDataBlock_Http.overflow.3">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="102" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>arithmetic overflow on unsigned + in rangeStart + ((uint32_t)1u &lt;&lt; 12ul)</description>
+<expression>!overflow("+", uint32_t, rangeStart, 4096u)</expression>
+</property>
+
+<property class="overflow" name="requestDataBlock_Http.overflow.4">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="102" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>arithmetic overflow on unsigned - in (rangeStart + ((uint32_t)1u &lt;&lt; 12ul)) - 1u</description>
+<expression>!overflow("-", uint32_t, rangeStart + 4096u, 1u)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.19">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.20">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.21">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.22">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.23">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface</description>
+<expression>POINTER_OFFSET(pAgentCtx) + 384l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.24">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface</description>
+<expression>!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.25">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.26">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx-&gt;pOtaInterface)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.27">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.28">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.29">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface) + 104l &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx-&gt;pOtaInterface) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface) + 128ul</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.30">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface-&gt;http</description>
+<expression>!(POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)) == POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface)) || (char *)pAgentCtx-&gt;pOtaInterface + 104l == ((char *)NULL)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.31">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer NULL in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.request) == POINTER_OBJECT(((const OtaHttpRequest_t)NULL)))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.32">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer invalid in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>!IS_INVALID_POINTER(pAgentCtx-&gt;pOtaInterface-&gt;http.request)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.33">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: deallocated dynamic object in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.request) == POINTER_OBJECT(__CPROVER_deallocated))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.34">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: dead object in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>!(POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.request) == POINTER_OBJECT(__CPROVER_dead_object))</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.35">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: pointer outside object bounds in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface-&gt;http.request) &gt;= 0l &amp;&amp; OBJECT_SIZE(pAgentCtx-&gt;pOtaInterface-&gt;http.request) &gt;= (unsigned long int)POINTER_OFFSET(pAgentCtx-&gt;pOtaInterface-&gt;http.request)</expression>
+</property>
+
+<property class="pointer dereference" name="requestDataBlock_Http.pointer_dereference.36">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+<description>dereference failure: invalid integer address in pAgentCtx-&gt;pOtaInterface-&gt;http.request</description>
+<expression>!(POINTER_OBJECT(((const OtaHttpRequest_t)NULL)) == POINTER_OBJECT(pAgentCtx-&gt;pOtaInterface-&gt;http.request)) || pAgentCtx-&gt;pOtaInterface-&gt;http.request == ((const OtaHttpRequest_t)NULL)</expression>
+</property>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-59dd743a-1862-4240-9e91-2d130aa85064">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-59dd743a-1862-4240-9e91-2d130aa85064">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: checking safety properties
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:22Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:23Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux
+Reading GOTO program from file
+Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 8 object bits, 56 offset bits (user-specified)
+Starting Bounded Model Checking
+Runtime Symex: 0.0158908s
+size of program expression: 174 steps
+simple slicing removed 6 assignments
+Generated 48 VCC(s), 2 remaining after simplification
+Runtime Postprocess Equation: 2.1851e-05s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.00231078s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 4.0968e-05s
+Solving with MiniSAT 2.2.1 with simplifier
+8642 variables, 785 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.000941816s
+Runtime decision procedure: 0.00331374s
+
+** Results:
+/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c function requestDataBlock_Http
+[requestDataBlock_Http.assertion.1] line 88 assertion pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL: SUCCESS
+[requestDataBlock_Http.pointer_dereference.1] line 88 dereference failure: pointer NULL in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.2] line 88 dereference failure: pointer invalid in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.3] line 88 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.4] line 88 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.5] line 88 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.6] line 88 dereference failure: invalid integer address in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.overflow.1] line 94 arithmetic overflow on unsigned * in currBlock * ((uint32_t)1u << 12ul): SUCCESS
+[requestDataBlock_Http.pointer_dereference.7] line 96 dereference failure: pointer NULL in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.pointer_dereference.8] line 96 dereference failure: pointer invalid in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.pointer_dereference.9] line 96 dereference failure: deallocated dynamic object in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.pointer_dereference.10] line 96 dereference failure: dead object in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.pointer_dereference.11] line 96 dereference failure: pointer outside object bounds in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.pointer_dereference.12] line 96 dereference failure: invalid integer address in fileContext->blocksRemaining: SUCCESS
+[requestDataBlock_Http.overflow.2] line 98 arithmetic overflow on unsigned - in fileContext->fileSize - 1u: SUCCESS
+[requestDataBlock_Http.pointer_dereference.13] line 98 dereference failure: pointer NULL in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.pointer_dereference.14] line 98 dereference failure: pointer invalid in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.pointer_dereference.15] line 98 dereference failure: deallocated dynamic object in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.pointer_dereference.16] line 98 dereference failure: dead object in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.pointer_dereference.17] line 98 dereference failure: pointer outside object bounds in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.pointer_dereference.18] line 98 dereference failure: invalid integer address in fileContext->fileSize: SUCCESS
+[requestDataBlock_Http.overflow.3] line 102 arithmetic overflow on unsigned + in rangeStart + ((uint32_t)1u << 12ul): SUCCESS
+[requestDataBlock_Http.overflow.4] line 102 arithmetic overflow on unsigned - in (rangeStart + ((uint32_t)1u << 12ul)) - 1u: SUCCESS
+[requestDataBlock_Http.pointer_dereference.19] line 106 dereference failure: pointer NULL in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.20] line 106 dereference failure: pointer invalid in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.21] line 106 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.22] line 106 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.23] line 106 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.24] line 106 dereference failure: invalid integer address in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http.pointer_dereference.25] line 106 dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.26] line 106 dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.27] line 106 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.28] line 106 dereference failure: dead object in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.29] line 106 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.30] line 106 dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http: SUCCESS
+[requestDataBlock_Http.pointer_dereference.31] line 106 dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.request: SUCCESS
+[requestDataBlock_Http.pointer_dereference.32] line 106 dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http.request: SUCCESS
+[requestDataBlock_Http.pointer_dereference.33] line 106 dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http.request: SUCCESS
+[requestDataBlock_Http.pointer_dereference.34] line 106 dereference failure: dead object in pAgentCtx->pOtaInterface->http.request: SUCCESS
+[requestDataBlock_Http.pointer_dereference.35] line 106 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http.request: SUCCESS
+[requestDataBlock_Http.pointer_dereference.36] line 106 dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http.request: SUCCESS
+
+/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c function requestDataBlock_Http_harness
+[requestDataBlock_Http_harness.pointer_dereference.1] line 54 dereference failure: dead object in pAgentCtx->fileContext: SUCCESS
+[requestDataBlock_Http_harness.pointer_dereference.2] line 54 dereference failure: pointer outside object bounds in pAgentCtx->fileContext: SUCCESS
+[requestDataBlock_Http_harness.pointer_dereference.3] line 59 dereference failure: dead object in pAgentCtx->fileContext: SUCCESS
+[requestDataBlock_Http_harness.pointer_dereference.4] line 59 dereference failure: pointer outside object bounds in pAgentCtx->fileContext: SUCCESS
+[requestDataBlock_Http_harness.pointer_dereference.5] line 62 dereference failure: dead object in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http_harness.pointer_dereference.6] line 62 dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface: SUCCESS
+[requestDataBlock_Http_harness.assertion.1] line 67 The function return should be either of these values: SUCCESS
+
+** 0 of 48 failed (1 iterations)
+VERIFICATION SUCCESSFUL
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+    <div class="command-table" id="job-3111cdbc-937c-46b5-9747-05b6d15e6a24">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-3111cdbc-937c-46b5-9747-05b6d15e6a24">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: calculating coverage
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                ['10']
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                21600
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:22Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                01s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:23Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+<text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Rewriting existing assertions as assumptions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Starting Bounded Model Checking</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Symex: 0.0130855s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>size of program expression: 181 steps</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Generated 12 VCC(s), 12 remaining after simplification</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Postprocess Equation: 1.9833e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Passing problem to propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>converting SSA</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Convert SSA: 0.00262847s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Post-processing</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Post-process: 2.5826e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>8610 variables, 687 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 0.00134428s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 0.00405001s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>8610 variables, 8 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime Solver: 0.000101027s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>Runtime decision procedure: 0.000119091s</text>
+</message>
+
+<goal description="block 11 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:115,116)" id="requestDataBlock_Http.coverage.11" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="115" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:request:34,36,37)" id="request.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="request" line="34" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 9 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.9" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:requestDataBlock_Http_harness:42-47,51,54-56,59,62,64)" id="requestDataBlock_Http_harness.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="42" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c:requestDataBlock_Http_harness:64,67,69)" id="requestDataBlock_Http_harness.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c" function="requestDataBlock_Http_harness" line="64" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:80,83,84,86,88)" id="requestDataBlock_Http.coverage.1" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="80" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88)" id="requestDataBlock_Http.coverage.2" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88)" id="requestDataBlock_Http.coverage.3" status="FAILED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 4 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:88,91,94,96)" id="requestDataBlock_Http.coverage.4" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="88" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 5 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:98)" id="requestDataBlock_Http.coverage.5" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="98" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 6 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:102)" id="requestDataBlock_Http.coverage.6" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="102" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 7 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.7" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 8 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106)" id="requestDataBlock_Http.coverage.8" status="FAILED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 10 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:requestDataBlock_Http:106,108)" id="requestDataBlock_Http.coverage.10" status="SATISFIED">
+<location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="requestDataBlock_Http" line="106" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<message type="STATUS-MESSAGE">
+<text>** 12 of 14 covered (85.7%)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+<text>** Used 3 iterations</text>
+</message>
+
+</cprover>
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+  <div class="stage">
+    <div class="stage-name">
+      <p>report</p>
+      <div class="underline"></div>
+    </div><!-- class="stage-name" -->
+
+    
+    <div class="command-table" id="job-1d2177f5-b044-4b05-a1f8-4cf78ceccc66">
+      
+      <div class="success">
+      
+        <div class="command-content">
+          <div class="command-header">
+            <div class="command-id-link">
+              <p>
+                <a href="#job-1d2177f5-b044-4b05-a1f8-4cf78ceccc66">#</a>
+              </p>
+            </div><!-- class="command-id-link" -->
+            <div class="command-description">
+              
+              <p>
+                requestDataBlock_Http: generating report
+              </p>
+              
+            </div><!-- class="command-description" -->
+          </div><!-- class="command-header" -->
+          <div class="command-invocation">
+            <p>
+            cbmc-viewer --result /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/result.txt --block /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/coverage.xml --property /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/property.xml --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto --htmldir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/html
+            </p>
+          </div><!-- class="command-invocation" -->
+
+          
+          <div class="command-stats-table">
+            <div class="command-stats-row">
+              <p>Command return code:
+              <span class="value">
+                0
+              </span></p>
+              <p>OK returns:
+              <span class="value">
+                None
+              </span></p>
+              <p>Ignored returns:
+              <span class="value">
+                None
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Timeout:
+              <span class="value">
+                None
+              </span></p>
+              <p>Timeout ok:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout ignored:
+              <span class="value">
+                False
+              </span></p>
+              <p>Timeout reached:
+              <span class="value">
+                False
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Start time:
+              <span class="value">
+                2021-07-28T13:31:23Z
+              </span></p>
+              <p>Duration:
+              <span class="value">
+                00s
+              </span></p>
+              <p>End time:
+              <span class="value">
+                2021-07-28T13:31:23Z
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+            <div class="command-stats-row">
+              <p>Command successful:
+              <span class="value">
+              
+              yes
+              
+              </span></p>
+            </div><!-- class="command-stats-row" -->
+          </div><!-- class="command-stats-table" -->
+          
+
+          
+
+
+          
+
+
+          
+          <div class="output-box"><xmp>stdout:
+            
+WARNING: --block is depricated, using --coverage /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/coverage.xml.
+WARNING: --htmldir is depricated, using --reportdir /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/html.
+WARNING: Use xml or json instead of text for better results: ['/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/requestDataBlock_Http/logs/result.txt']
+            </xmp>
+          </div><!-- class="output-box" -->
+          
+
+          
+
+        </div><!-- class="command-content" -->
+      </div><!-- class="fail" -->
+    </div><!-- id="command-table" -->
+    
+
+  </div><!-- class="stage" -->
+  
+
+
+</div><!-- id="content" -->
+</body>
+</html>

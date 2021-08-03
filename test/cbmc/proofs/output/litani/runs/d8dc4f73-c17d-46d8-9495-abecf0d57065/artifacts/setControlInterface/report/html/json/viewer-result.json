@@ -1,0 +1,48 @@
+{
+  "viewer-result": {
+    "program": "CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux",
+    "status": [
+      "CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux",
+      "Reading GOTO program from file",
+      "Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto",
+      "Generating GOTO Program",
+      "Adding CPROVER library (x86_64)",
+      "Removal of function pointers and virtual functions",
+      "Generic Property Instrumentation",
+      "Running with 8 object bits, 56 offset bits (user-specified)",
+      "Starting Bounded Model Checking",
+      "Runtime Symex: 0.00157578s",
+      "size of program expression: 54 steps",
+      "simple slicing removed 0 assignments",
+      "Generated 19 VCC(s), 0 remaining after simplification",
+      "Runtime Postprocess Equation: 1.0942e-05s",
+      "VERIFICATION SUCCESSFUL"
+    ],
+    "warning": [],
+    "results": {
+      "true": [
+        "setControlInterface.assertion.1",
+        "setControlInterface.pointer_dereference.1",
+        "setControlInterface.pointer_dereference.2",
+        "setControlInterface.pointer_dereference.3",
+        "setControlInterface.pointer_dereference.4",
+        "setControlInterface.pointer_dereference.5",
+        "setControlInterface.pointer_dereference.6",
+        "setControlInterface.pointer_dereference.7",
+        "setControlInterface.pointer_dereference.8",
+        "setControlInterface.pointer_dereference.9",
+        "setControlInterface.pointer_dereference.10",
+        "setControlInterface.pointer_dereference.11",
+        "setControlInterface.pointer_dereference.12",
+        "setControlInterface.pointer_dereference.13",
+        "setControlInterface.pointer_dereference.14",
+        "setControlInterface.pointer_dereference.15",
+        "setControlInterface.pointer_dereference.16",
+        "setControlInterface.pointer_dereference.17",
+        "setControlInterface.pointer_dereference.18"
+      ],
+      "false": []
+    },
+    "prover": "success"
+  }
+}

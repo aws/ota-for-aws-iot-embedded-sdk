@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cprover>
+<program>CBMC 5.34.0 (cbmc-5.34.0)</program>
+<message type="STATUS-MESSAGE">
+  <text>CBMC version 5.34.0 (cbmc-5.34.0) 64-bit x86_64 linux</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Reading GOTO program from file</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Reading: /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generating GOTO Program</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Adding CPROVER library (x86_64)</text>
+</message>
+
+<message type="WARNING">
+  <location file="&lt;builtin-library-malloc&gt;" line="6" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+  <text>warning: implicit function declaration "malloc"
+old definition in module initFileTransfer_Http_harness file /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c line 46 function initFileTransfer_Http_harness
+void * (void)
+new definition in module &lt;built-in-library&gt; file &lt;builtin-library-malloc&gt; line 6
+void * (__CPROVER_size_t malloc_size)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Removal of function pointers and virtual functions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generic Property Instrumentation</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Rewriting existing assertions as assumptions</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Running with 8 object bits, 56 offset bits (user-specified)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Starting Bounded Model Checking</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Symex: 0.00838004s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>size of program expression: 384 steps</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Generated 10 VCC(s), 10 remaining after simplification</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Postprocess Equation: 3.4774e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Passing problem to propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>converting SSA</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Convert SSA: 0.00255969s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Running propositional reduction</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Post-processing</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Post-process: 2.4783e-05s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Solving with MiniSAT 2.2.1 with simplifier</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>8751 variables, 227 clauses</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>SAT checker: instance is SATISFIABLE</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime Solver: 0.000918308s</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>Runtime decision procedure: 0.0036109s</text>
+</message>
+
+<goal description="block 7 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63,65)" id="initFileTransfer_Http.coverage.7" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 6 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63)" id="initFileTransfer_Http.coverage.6" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 5 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:63)" id="initFileTransfer_Http.coverage.5" status="FAILED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 4 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54,57,60,63)" id="initFileTransfer_Http.coverage.4" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54)" id="initFileTransfer_Http.coverage.3" status="FAILED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:54)" id="initFileTransfer_Http.coverage.2" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="54" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:49-51,54)" id="initFileTransfer_Http.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="49" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:init:33,35,36)" id="init.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="init" line="33" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 3 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:63,66,69)" id="initFileTransfer_Http_harness.coverage.3" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="63" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 2 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:46,50,53,56,59,60,63)" id="initFileTransfer_Http_harness.coverage.2" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="46" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 8 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c:initFileTransfer_Http:72,73)" id="initFileTransfer_Http.coverage.8" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c" function="initFileTransfer_Http" line="72" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<goal description="block 1 (lines /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c:initFileTransfer_Http_harness:40-44,46)" id="initFileTransfer_Http_harness.coverage.1" status="SATISFIED">
+  <location file="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c" function="initFileTransfer_Http_harness" line="40" working-directory="/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs"/>
+</goal>
+
+<message type="STATUS-MESSAGE">
+  <text>** 10 of 12 covered (83.3%)</text>
+</message>
+
+<message type="STATUS-MESSAGE">
+  <text>** Used 2 iterations</text>
+</message>
+
+</cprover>
+

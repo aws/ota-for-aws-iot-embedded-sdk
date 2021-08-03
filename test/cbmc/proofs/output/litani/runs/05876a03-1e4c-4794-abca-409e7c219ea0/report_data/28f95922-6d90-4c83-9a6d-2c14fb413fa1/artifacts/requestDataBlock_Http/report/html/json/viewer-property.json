@@ -1,0 +1,486 @@
+{
+  "viewer-property": {
+    "properties": {
+      "requestDataBlock_Http_harness.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->fileContext",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 54
+        }
+      },
+      "requestDataBlock_Http_harness.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->fileContext",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 72l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 256ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 54
+        }
+      },
+      "requestDataBlock_Http_harness.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->fileContext",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 59
+        }
+      },
+      "requestDataBlock_Http_harness.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->fileContext",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 72l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 256ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 59
+        }
+      },
+      "requestDataBlock_Http_harness.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 62
+        }
+      },
+      "requestDataBlock_Http_harness.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 62
+        }
+      },
+      "requestDataBlock_Http_harness.assertion.1": {
+        "class": "assertion",
+        "description": "The function return should be either of these values",
+        "expression": "(signed int)err == 0 || (signed int)err == 8",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c",
+          "function": "requestDataBlock_Http_harness",
+          "line": 67
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.1": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.2": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.3": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.4": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.5": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.6": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.assertion.1": {
+        "class": "assertion",
+        "description": "assertion pAgentCtx != NULL && pAgentCtx->pOtaInterface != NULL",
+        "expression": "tmp_if_expr",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 88
+        }
+      },
+      "requestDataBlock_Http.overflow.1": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned * in currBlock * ((uint32_t)1u << 12ul)",
+        "expression": "!overflow(\"*\", uint32_t, currBlock, 4096u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 94
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.7": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in fileContext->blocksRemaining",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(((uint32_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.8": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in fileContext->blocksRemaining",
+        "expression": "!IS_INVALID_POINTER(fileContext)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.9": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in fileContext->blocksRemaining",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.10": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in fileContext->blocksRemaining",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.11": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in fileContext->blocksRemaining",
+        "expression": "POINTER_OFFSET(fileContext) + 28l >= 0l && OBJECT_SIZE(fileContext) >= (unsigned long int)POINTER_OFFSET(fileContext) + 32ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.12": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in fileContext->blocksRemaining",
+        "expression": "!(POINTER_OBJECT(((uint32_t *)NULL)) == POINTER_OBJECT(fileContext)) || (char *)fileContext + 28l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 96
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.13": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in fileContext->fileSize",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(((uint32_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.14": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in fileContext->fileSize",
+        "expression": "!IS_INVALID_POINTER(fileContext)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.15": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in fileContext->fileSize",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.16": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in fileContext->fileSize",
+        "expression": "!(POINTER_OBJECT(fileContext) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.17": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in fileContext->fileSize",
+        "expression": "POINTER_OFFSET(fileContext) + 24l >= 0l && OBJECT_SIZE(fileContext) >= (unsigned long int)POINTER_OFFSET(fileContext) + 28ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.18": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in fileContext->fileSize",
+        "expression": "!(POINTER_OBJECT(((uint32_t *)NULL)) == POINTER_OBJECT(fileContext)) || (char *)fileContext + 24l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.overflow.2": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in fileContext->fileSize - 1u",
+        "expression": "!overflow(\"-\", uint32_t, fileContext->fileSize, 1u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 98
+        }
+      },
+      "requestDataBlock_Http.overflow.3": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned + in rangeStart + ((uint32_t)1u << 12ul)",
+        "expression": "!overflow(\"+\", uint32_t, rangeStart, 4096u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 102
+        }
+      },
+      "requestDataBlock_Http.overflow.4": {
+        "class": "overflow",
+        "description": "arithmetic overflow on unsigned - in (rangeStart + ((uint32_t)1u << 12ul)) - 1u",
+        "expression": "!overflow(\"-\", uint32_t, rangeStart + 4096u, 1u)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 102
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.19": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(((const OtaInterfaces_t **)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.20": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.21": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.22": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(pAgentCtx) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.23": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface",
+        "expression": "POINTER_OFFSET(pAgentCtx) + 384l >= 0l && OBJECT_SIZE(pAgentCtx) >= (unsigned long int)POINTER_OFFSET(pAgentCtx) + 392ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.24": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface",
+        "expression": "!(POINTER_OBJECT(((const OtaInterfaces_t **)NULL)) == POINTER_OBJECT(pAgentCtx)) || (char *)pAgentCtx + 384l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.25": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.26": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx->pOtaInterface)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.27": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.28": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.29": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http",
+        "expression": "POINTER_OFFSET(pAgentCtx->pOtaInterface) + 104l >= 0l && OBJECT_SIZE(pAgentCtx->pOtaInterface) >= (unsigned long int)POINTER_OFFSET(pAgentCtx->pOtaInterface) + 128ul",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.30": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http",
+        "expression": "!(POINTER_OBJECT(((const OtaHttpInterface_t *)NULL)) == POINTER_OBJECT(pAgentCtx->pOtaInterface)) || (char *)pAgentCtx->pOtaInterface + 104l == ((char *)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.31": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer NULL in pAgentCtx->pOtaInterface->http.request",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.request) == POINTER_OBJECT(((const OtaHttpRequest_t)NULL)))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.32": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer invalid in pAgentCtx->pOtaInterface->http.request",
+        "expression": "!IS_INVALID_POINTER(pAgentCtx->pOtaInterface->http.request)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.33": {
+        "class": "pointer dereference",
+        "description": "dereference failure: deallocated dynamic object in pAgentCtx->pOtaInterface->http.request",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.request) == POINTER_OBJECT(__CPROVER_deallocated))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.34": {
+        "class": "pointer dereference",
+        "description": "dereference failure: dead object in pAgentCtx->pOtaInterface->http.request",
+        "expression": "!(POINTER_OBJECT(pAgentCtx->pOtaInterface->http.request) == POINTER_OBJECT(__CPROVER_dead_object))",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.35": {
+        "class": "pointer dereference",
+        "description": "dereference failure: pointer outside object bounds in pAgentCtx->pOtaInterface->http.request",
+        "expression": "POINTER_OFFSET(pAgentCtx->pOtaInterface->http.request) >= 0l && OBJECT_SIZE(pAgentCtx->pOtaInterface->http.request) >= (unsigned long int)POINTER_OFFSET(pAgentCtx->pOtaInterface->http.request)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      },
+      "requestDataBlock_Http.pointer_dereference.36": {
+        "class": "pointer dereference",
+        "description": "dereference failure: invalid integer address in pAgentCtx->pOtaInterface->http.request",
+        "expression": "!(POINTER_OBJECT(((const OtaHttpRequest_t)NULL)) == POINTER_OBJECT(pAgentCtx->pOtaInterface->http.request)) || pAgentCtx->pOtaInterface->http.request == ((const OtaHttpRequest_t)NULL)",
+        "location": {
+          "file": "source/ota_http.c",
+          "function": "requestDataBlock_Http",
+          "line": 106
+        }
+      }
+    }
+  }
+}

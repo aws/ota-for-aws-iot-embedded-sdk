@@ -1,0 +1,16 @@
+{
+  "viewer-property": {
+    "properties": {
+      "OTA_HTTP_strerror_harness.assertion.1": {
+        "class": "assertion",
+        "description": "function cannot return null",
+        "expression": "pstr != ((const char *)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c",
+          "function": "OTA_HTTP_strerror_harness",
+          "line": 40
+        }
+      }
+    }
+  }
+}

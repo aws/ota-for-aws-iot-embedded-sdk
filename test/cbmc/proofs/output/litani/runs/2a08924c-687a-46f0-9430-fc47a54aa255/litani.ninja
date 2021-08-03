@@ -1,0 +1,2068 @@
+pool expensive
+  depth = 1
+rule bc3ec51a-0538-40bc-b5d1-4067d609580e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      bc3ec51a-0538-40bc-b5d1-4067d609580e --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result-err-log.txt $
+      --description 'OTA_MQTT_strerror: checking safety properties' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bc3ec51a-0538-40bc-b5d1-4067d609580e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = OTA_MQTT_strerror: checking safety properties
+rule 07f1d40e-1485-44fb-a617-a316c1e1f8ab
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 07f1d40e-1485-44fb-a617-a316c1e1f8ab --description $
+      'initFileTransfer_Http: not applying loop contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/07f1d40e-1485-44fb-a617-a316c1e1f8ab.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto
+  description = initFileTransfer_Http: not applying loop contracts
+rule c8657734-fa6b-456e-9759-d7f762968504
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      c8657734-fa6b-456e-9759-d7f762968504 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/project_sources-log.txt $
+      --description 'OTA_MQTT_strerror: building project binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8657734-fa6b-456e-9759-d7f762968504.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: building project binary
+rule 30a97669-6ae0-4c83-9b7f-b4554e58591a
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function $
+      initFileTransfer_Http_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 30a97669-6ae0-4c83-9b7f-b4554e58591a --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/link_proof_project-log.txt $
+      --description 'initFileTransfer_Http: linking project to $
+      proof' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/30a97669-6ae0-4c83-9b7f-b4554e58591a.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: linking project to proof
+rule 19712c34-77ad-4d1a-9871-d53f8ff70064
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      19712c34-77ad-4d1a-9871-d53f8ff70064 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/proof_sources-log.txt $
+      --description 'OTA_MQTT_strerror: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/19712c34-77ad-4d1a-9871-d53f8ff70064.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: building proof binary
+rule 9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b --description $
+      'OTA_HTTP_strerror: not setting static variables to nondet' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto
+  description = OTA_HTTP_strerror: not setting static variables to $
+      nondet
+rule a0ac334d-c6fd-4287-b703-4b54ef4c4d0f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      a0ac334d-c6fd-4287-b703-4b54ef4c4d0f --description $
+      'setDataInterface: not replacing function calls with function $
+      contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a0ac334d-c6fd-4287-b703-4b54ef4c4d0f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto
+  description = setDataInterface: not replacing function calls with $
+      function contracts
+rule e0d16dbf-55fa-4a91-97ef-609b27d9a4e0
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      e0d16dbf-55fa-4a91-97ef-609b27d9a4e0 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/drop_unused_functions-log.txt $
+      --description 'setControlInterface: dropping unused $
+      functions' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0d16dbf-55fa-4a91-97ef-609b27d9a4e0.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: dropping unused functions
+rule 922c4c34-b925-4c5c-a102-a95373750acc
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 922c4c34-b925-4c5c-a102-a95373750acc --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/proof_sources-log.txt $
+      --description 'initFileTransfer_Http: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/922c4c34-b925-4c5c-a102-a95373750acc.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: building proof binary
+rule 51328bd4-c395-4dd3-847c-8e9cad723e51
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html' $
+      --pipeline-name setDataInterface --ci-stage report --job-id $
+      51328bd4-c395-4dd3-847c-8e9cad723e51 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/viewer-log.txt $
+      --description 'setDataInterface: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/51328bd4-c395-4dd3-847c-8e9cad723e51.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html $
+      --interleave-stdout-stderr
+  description = setDataInterface: generating report
+rule 0f9ab365-7921-458e-b945-f0decb9256f7
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      0f9ab365-7921-458e-b945-f0decb9256f7 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property-err-log.txt $
+      --description 'OTA_MQTT_strerror: printing safety properties' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0f9ab365-7921-458e-b945-f0decb9256f7.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --ignore-returns 10
+  description = OTA_MQTT_strerror: printing safety properties
+rule 6ebe2560-3c63-4b40-a31d-7242e2bbdc60
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      6ebe2560-3c63-4b40-a31d-7242e2bbdc60 --description $
+      'OTA_HTTP_strerror: not applying loop contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6ebe2560-3c63-4b40-a31d-7242e2bbdc60.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto
+  description = OTA_HTTP_strerror: not applying loop contracts
+rule 2a70976b-4410-472c-af68-d968e816b4b2
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 2a70976b-4410-472c-af68-d968e816b4b2 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/remove_function_body-log.txt $
+      --description 'initFileTransfer_Http: removing function $
+      bodies from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2a70976b-4410-472c-af68-d968e816b4b2.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: removing function bodies $
+      from project sources
+rule 60e10287-23b7-4486-be14-f5376a12d50f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      60e10287-23b7-4486-be14-f5376a12d50f --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/project_sources-log.txt $
+      --description 'setControlInterface: building project binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/60e10287-23b7-4486-be14-f5376a12d50f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: building project binary
+rule 12131278-8b64-4563-a3bc-8eaf9f007f58
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      12131278-8b64-4563-a3bc-8eaf9f007f58 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/slice_global_inits-log.txt $
+      --description 'OTA_HTTP_strerror: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/12131278-8b64-4563-a3bc-8eaf9f007f58.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: slicing global initializations
+rule cc649ecf-ad55-4e98-97e0-2f41294b9285
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      cc649ecf-ad55-4e98-97e0-2f41294b9285 --description $
+      'OTA_MQTT_strerror: not replacing function calls with $
+      function contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cc649ecf-ad55-4e98-97e0-2f41294b9285.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto
+  description = OTA_MQTT_strerror: not replacing function calls $
+      with function contracts
+rule adac688f-6be7-49a6-94d4-0e96a2674e9b
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      adac688f-6be7-49a6-94d4-0e96a2674e9b --description $
+      'OTA_MQTT_strerror: not setting static variables to nondet' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/adac688f-6be7-49a6-94d4-0e96a2674e9b.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto
+  description = OTA_MQTT_strerror: not setting static variables to $
+      nondet
+rule bf70ea29-410d-4881-aedd-2fc0fa4ea42f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function OTA_HTTP_strerror_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      bf70ea29-410d-4881-aedd-2fc0fa4ea42f --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/link_proof_project-log.txt $
+      --description 'OTA_HTTP_strerror: linking project to proof' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bf70ea29-410d-4881-aedd-2fc0fa4ea42f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: linking project to proof
+rule 5c201f84-fbec-49a9-b048-b3283b94afd7
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto' $
+      --pipeline-name setDataInterface --ci-stage test --job-id $
+      5c201f84-fbec-49a9-b048-b3283b94afd7 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property-err-log.txt $
+      --description 'setDataInterface: printing safety properties' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5c201f84-fbec-49a9-b048-b3283b94afd7.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+      --ignore-returns 10
+  description = setDataInterface: printing safety properties
+rule 8d76b57f-24f6-46dd-8752-b68aa2639fb6
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      8d76b57f-24f6-46dd-8752-b68aa2639fb6 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/project_sources-log.txt $
+      --description 'setDataInterface: building project binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/8d76b57f-24f6-46dd-8752-b68aa2639fb6.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: building project binary
+rule 03d70c04-6f69-442c-8eda-dea964182cfd
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      03d70c04-6f69-442c-8eda-dea964182cfd --description $
+      'setControlInterface: not replacing function calls with $
+      function contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/03d70c04-6f69-442c-8eda-dea964182cfd.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto
+  description = setControlInterface: not replacing function calls $
+      with function contracts
+rule 4bbfb2e9-21a2-4649-a831-8f33d757a6ea
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage test --job-id $
+      4bbfb2e9-21a2-4649-a831-8f33d757a6ea --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result-err-log.txt $
+      --description 'OTA_HTTP_strerror: checking safety properties' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4bbfb2e9-21a2-4649-a831-8f33d757a6ea.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = OTA_HTTP_strerror: checking safety properties
+rule b2a293e0-9460-4e2b-b801-040a46f4c2ff
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage test $
+      --job-id b2a293e0-9460-4e2b-b801-040a46f4c2ff --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage-err-log.txt $
+      --description 'initFileTransfer_Http: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/b2a293e0-9460-4e2b-b801-040a46f4c2ff.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = initFileTransfer_Http: calculating coverage
+rule 94f0c9d7-a308-4168-9c85-7c79094d0b2e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage report --job-id $
+      94f0c9d7-a308-4168-9c85-7c79094d0b2e --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/viewer-log.txt $
+      --description 'OTA_MQTT_strerror: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/94f0c9d7-a308-4168-9c85-7c79094d0b2e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: generating report
+rule e60236ca-5af4-4f1d-a83f-bdb74718eb31
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id e60236ca-5af4-4f1d-a83f-bdb74718eb31 --description $
+      'initFileTransfer_Http: not replacing function calls with $
+      function contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e60236ca-5af4-4f1d-a83f-bdb74718eb31.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto
+  description = initFileTransfer_Http: not replacing function calls $
+      with function contracts
+rule ab66ec40-5f06-4013-ba48-00ace552f470
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto' $
+      --pipeline-name setDataInterface --ci-stage test --job-id $
+      ab66ec40-5f06-4013-ba48-00ace552f470 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result-err-log.txt $
+      --description 'setDataInterface: checking safety properties' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ab66ec40-5f06-4013-ba48-00ace552f470.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = setDataInterface: checking safety properties
+rule 1b706831-5ae9-4a9c-97f2-1de6771f3abe
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 1b706831-5ae9-4a9c-97f2-1de6771f3abe --description $
+      'initFileTransfer_Http: not setting static variables to $
+      nondet' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1b706831-5ae9-4a9c-97f2-1de6771f3abe.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto
+  description = initFileTransfer_Http: not setting static variables $
+      to nondet
+rule 3e73b894-a2a3-4b83-9165-fc1498ab4182
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      3e73b894-a2a3-4b83-9165-fc1498ab4182 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/remove_function_body-log.txt $
+      --description 'setControlInterface: removing function bodies $
+      from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/3e73b894-a2a3-4b83-9165-fc1498ab4182.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: removing function bodies from $
+      project sources
+rule 892584c5-ac74-4621-9c4e-9a158d78fe26
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto' $
+      --pipeline-name setControlInterface --ci-stage test --job-id $
+      892584c5-ac74-4621-9c4e-9a158d78fe26 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result-err-log.txt $
+      --description 'setControlInterface: checking safety $
+      properties' --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/892584c5-ac74-4621-9c4e-9a158d78fe26.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = setControlInterface: checking safety properties
+rule f14c86d9-5559-40e4-b13c-22496e4c363e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      f14c86d9-5559-40e4-b13c-22496e4c363e --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/slice_global_inits-log.txt $
+      --description 'setDataInterface: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f14c86d9-5559-40e4-b13c-22496e4c363e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: slicing global initializations
+rule 95803338-06ed-4476-ad5a-caf5ab0791b4
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function $
+      setControlInterface_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      95803338-06ed-4476-ad5a-caf5ab0791b4 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/link_proof_project-log.txt $
+      --description 'setControlInterface: linking project to proof' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/95803338-06ed-4476-ad5a-caf5ab0791b4.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: linking project to proof
+rule 0fa47a31-b49b-43ca-9083-ade6e315d95f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      0fa47a31-b49b-43ca-9083-ade6e315d95f --description $
+      'OTA_MQTT_strerror: copying final goto-binary' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0fa47a31-b49b-43ca-9083-ade6e315d95f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+  description = OTA_MQTT_strerror: copying final goto-binary
+rule 29bb4e8f-cc52-4605-ae8a-75e5b9e381e9
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --trace $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage test $
+      --job-id 29bb4e8f-cc52-4605-ae8a-75e5b9e381e9 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result-err-log.txt $
+      --description 'initFileTransfer_Http: checking safety $
+      properties' --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/29bb4e8f-cc52-4605-ae8a-75e5b9e381e9.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+      --ignore-returns 10 --tags 'stats-group:safety checks' $
+      --profile-memory
+  description = initFileTransfer_Http: checking safety properties
+rule 69a44508-7fb2-4eab-aa96-3e4006718324
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      69a44508-7fb2-4eab-aa96-3e4006718324 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/slice_global_inits-log.txt $
+      --description 'OTA_MQTT_strerror: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/69a44508-7fb2-4eab-aa96-3e4006718324.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: slicing global initializations
+rule 13200534-e865-4719-94f3-4c2811ad5f8e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 13200534-e865-4719-94f3-4c2811ad5f8e --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/project_sources-log.txt $
+      --description 'initFileTransfer_Http: building project $
+      binary' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/13200534-e865-4719-94f3-4c2811ad5f8e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: building project binary
+rule 48e57e8d-b4e3-4af8-aeb6-3eba1944551e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      48e57e8d-b4e3-4af8-aeb6-3eba1944551e --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/drop_unused_functions-log.txt $
+      --description 'OTA_MQTT_strerror: dropping unused functions' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/48e57e8d-b4e3-4af8-aeb6-3eba1944551e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: dropping unused functions
+rule 6f9fe878-1a37-428d-80f7-1ddebc626dbe
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      6f9fe878-1a37-428d-80f7-1ddebc626dbe --description $
+      'OTA_MQTT_strerror: not applying loop contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6f9fe878-1a37-428d-80f7-1ddebc626dbe.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto
+  description = OTA_MQTT_strerror: not applying loop contracts
+rule 057e1f82-2f79-43e3-a154-2fc9c1de866d
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 057e1f82-2f79-43e3-a154-2fc9c1de866d --description $
+      'initFileTransfer_Http: copying final goto-binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/057e1f82-2f79-43e3-a154-2fc9c1de866d.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+  description = initFileTransfer_Http: copying final goto-binary
+rule 06d2316e-24f1-4eaf-b8d7-946d7d56a410
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html' $
+      --pipeline-name initFileTransfer_Http --ci-stage report $
+      --job-id 06d2316e-24f1-4eaf-b8d7-946d7d56a410 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/viewer-log.txt $
+      --description 'initFileTransfer_Http: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/06d2316e-24f1-4eaf-b8d7-946d7d56a410.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: generating report
+rule f41cfaa1-5b41-4d90-9278-815c54d4d0b4
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      f41cfaa1-5b41-4d90-9278-815c54d4d0b4 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/proof_sources-log.txt $
+      --description 'setControlInterface: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f41cfaa1-5b41-4d90-9278-815c54d4d0b4.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: building proof binary
+rule c8a00678-3805-472f-bd58-3fe2149a4cde
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      c8a00678-3805-472f-bd58-3fe2149a4cde --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/drop_unused_functions-log.txt $
+      --description 'OTA_HTTP_strerror: dropping unused functions' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8a00678-3805-472f-bd58-3fe2149a4cde.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: dropping unused functions
+rule 2e2303f4-c9f2-43c7-8783-d672bfd984b4
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      2e2303f4-c9f2-43c7-8783-d672bfd984b4 --description $
+      'OTA_HTTP_strerror: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2e2303f4-c9f2-43c7-8783-d672bfd984b4.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto
+  description = OTA_HTTP_strerror: not checking function contracts
+rule f86302e7-c2ae-4b66-a4f3-718c805b9617
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto' $
+      --pipeline-name setControlInterface --ci-stage test --job-id $
+      f86302e7-c2ae-4b66-a4f3-718c805b9617 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage-err-log.txt $
+      --description 'setControlInterface: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f86302e7-c2ae-4b66-a4f3-718c805b9617.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = setControlInterface: calculating coverage
+rule fb9ef28e-0f1e-4145-84b5-633233389b79
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      fb9ef28e-0f1e-4145-84b5-633233389b79 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/proof_sources-log.txt $
+      --description 'setDataInterface: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fb9ef28e-0f1e-4145-84b5-633233389b79.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: building proof binary
+rule 1c234d08-a21d-47e3-bfc1-d72a23e731d3
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage report --job-id $
+      1c234d08-a21d-47e3-bfc1-d72a23e731d3 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/viewer-log.txt $
+      --description 'OTA_HTTP_strerror: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1c234d08-a21d-47e3-bfc1-d72a23e731d3.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: generating report
+rule 2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5 --description $
+      'setControlInterface: not applying loop contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto
+  description = setControlInterface: not applying loop contracts
+rule 96e3ae0d-bc99-44d3-9552-a9fb2b990f6f
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      96e3ae0d-bc99-44d3-9552-a9fb2b990f6f --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/remove_function_body-log.txt $
+      --description 'OTA_HTTP_strerror: removing function bodies $
+      from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/96e3ae0d-bc99-44d3-9552-a9fb2b990f6f.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: removing function bodies from $
+      project sources
+rule 18e02a22-464b-45f5-ae87-abce7a0fb144
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      18e02a22-464b-45f5-ae87-abce7a0fb144 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/proof_sources-log.txt $
+      --description 'OTA_HTTP_strerror: building proof binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18e02a22-464b-45f5-ae87-abce7a0fb144.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: building proof binary
+rule a6cfc542-040c-4d12-8b77-a561500ad5da
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage test --job-id $
+      a6cfc542-040c-4d12-8b77-a561500ad5da --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property-err-log.txt $
+      --description 'OTA_HTTP_strerror: printing safety properties' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a6cfc542-040c-4d12-8b77-a561500ad5da.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+      --ignore-returns 10
+  description = OTA_HTTP_strerror: printing safety properties
+rule 43ffb573-8f31-4c1a-9969-e36c673af221
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function setDataInterface_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      43ffb573-8f31-4c1a-9969-e36c673af221 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/link_proof_project-log.txt $
+      --description 'setDataInterface: linking project to proof' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/43ffb573-8f31-4c1a-9969-e36c673af221.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: linking project to proof
+rule cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93 --description $
+      'OTA_HTTP_strerror: not replacing function calls with $
+      function contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto
+  description = OTA_HTTP_strerror: not replacing function calls $
+      with function contracts
+rule c9eb184f-f34c-42d8-91b0-84bc3fc1d644
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      c9eb184f-f34c-42d8-91b0-84bc3fc1d644 --description $
+      'OTA_HTTP_strerror: copying final goto-binary' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c9eb184f-f34c-42d8-91b0-84bc3fc1d644.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+  description = OTA_HTTP_strerror: copying final goto-binary
+rule cab79090-368a-484f-8141-f1e90a4713bf
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage test $
+      --job-id cab79090-368a-484f-8141-f1e90a4713bf --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property-err-log.txt $
+      --description 'initFileTransfer_Http: printing safety $
+      properties' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cab79090-368a-484f-8141-f1e90a4713bf.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+      --ignore-returns 10
+  description = initFileTransfer_Http: printing safety properties
+rule f72ee1c9-97e7-4edd-bbee-0f6b8059098a
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage test --job-id $
+      f72ee1c9-97e7-4edd-bbee-0f6b8059098a --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage-err-log.txt $
+      --description 'OTA_HTTP_strerror: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f72ee1c9-97e7-4edd-bbee-0f6b8059098a.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = OTA_HTTP_strerror: calculating coverage
+rule 0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1 --description $
+      'setDataInterface: not applying loop contracts' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto
+  description = setDataInterface: not applying loop contracts
+rule 14e53e2c-0ad1-440d-8ac9-306d9cae5a10
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      14e53e2c-0ad1-440d-8ac9-306d9cae5a10 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/drop_unused_functions-log.txt $
+      --description 'setDataInterface: dropping unused functions' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/14e53e2c-0ad1-440d-8ac9-306d9cae5a10.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: dropping unused functions
+rule e0b5f296-0398-492e-88b6-d8b5f119950d
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id e0b5f296-0398-492e-88b6-d8b5f119950d --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/slice_global_inits-log.txt $
+      --description 'initFileTransfer_Http: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0b5f296-0398-492e-88b6-d8b5f119950d.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: slicing global initializations
+rule 53d77353-cec4-4f34-ad73-b14257d98b3c
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 53d77353-cec4-4f34-ad73-b14257d98b3c --description $
+      'initFileTransfer_Http: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/53d77353-cec4-4f34-ad73-b14257d98b3c.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto
+  description = initFileTransfer_Http: not checking function contracts
+rule 098e4837-d16e-422d-8a1c-fd47412a42fb
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto' $
+      --pipeline-name setDataInterface --ci-stage test --job-id $
+      098e4837-d16e-422d-8a1c-fd47412a42fb --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage-err-log.txt $
+      --description 'setDataInterface: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/098e4837-d16e-422d-8a1c-fd47412a42fb.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = setDataInterface: calculating coverage
+rule 18111aeb-be47-4eb4-ab97-4bbf781928bb
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --slice-global-inits $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      18111aeb-be47-4eb4-ab97-4bbf781928bb --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/slice_global_inits-log.txt $
+      --description 'setControlInterface: slicing global $
+      initializations' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18111aeb-be47-4eb4-ab97-4bbf781928bb.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+      --interleave-stdout-stderr
+  description = setControlInterface: slicing global initializations
+rule ba5b3b64-561b-45d9-b35b-822a1977ed32
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      ba5b3b64-561b-45d9-b35b-822a1977ed32 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/remove_function_body-log.txt $
+      --description 'OTA_MQTT_strerror: removing function bodies $
+      from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ba5b3b64-561b-45d9-b35b-822a1977ed32.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: removing function bodies from $
+      project sources
+rule 80198b71-2152-4bfa-9a22-ac1824f64bd8
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument  --drop-unused-functions $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto' $
+      --pipeline-name initFileTransfer_Http --ci-stage build $
+      --job-id 80198b71-2152-4bfa-9a22-ac1824f64bd8 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/drop_unused_functions-log.txt $
+      --description 'initFileTransfer_Http: dropping unused $
+      functions' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/80198b71-2152-4bfa-9a22-ac1824f64bd8.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+      --interleave-stdout-stderr
+  description = initFileTransfer_Http: dropping unused functions
+rule ee6303ad-9006-4f8e-a31f-e2bd6362d60c
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      ee6303ad-9006-4f8e-a31f-e2bd6362d60c --description $
+      'setDataInterface: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ee6303ad-9006-4f8e-a31f-e2bd6362d60c.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto
+  description = setDataInterface: not checking function contracts
+rule fe51d1ca-bc3a-424a-8513-c99f9ee16654
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --function OTA_MQTT_strerror_harness $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      fe51d1ca-bc3a-424a-8513-c99f9ee16654 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/link_proof_project-log.txt $
+      --description 'OTA_MQTT_strerror: linking project to proof' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fe51d1ca-bc3a-424a-8513-c99f9ee16654.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      --interleave-stdout-stderr
+  description = OTA_MQTT_strerror: linking project to proof
+rule 247f332f-3494-41ec-bd83-05fdf1f4673d
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      247f332f-3494-41ec-bd83-05fdf1f4673d --description $
+      'setControlInterface: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/247f332f-3494-41ec-bd83-05fdf1f4673d.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto
+  description = setControlInterface: not checking function contracts
+rule 5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage build --job-id $
+      5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e --description $
+      'OTA_MQTT_strerror: not checking function contracts' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto
+  description = OTA_MQTT_strerror: not checking function contracts
+rule cd3e1383-813c-4ff6-b3b3-9087fe6ece8a
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8  $
+      --malloc-may-fail --malloc-fail-null --bounds-check $
+      --conversion-check --div-by-zero-check --float-overflow-check $
+      --nan-check --pointer-check --pointer-overflow-check $
+      --pointer-primitive-check --signed-overflow-check $
+      --undefined-shift-check --unsigned-overflow-check $
+      --unwinding-assertions --show-properties --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto' $
+      --pipeline-name setControlInterface --ci-stage test --job-id $
+      cd3e1383-813c-4ff6-b3b3-9087fe6ece8a --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property-err-log.txt $
+      --description 'setControlInterface: printing safety $
+      properties' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cd3e1383-813c-4ff6-b3b3-9087fe6ece8a.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+      --ignore-returns 10
+  description = setControlInterface: printing safety properties
+rule 739f5719-fef0-49f0-90bc-e52b69447a6c
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-instrument   $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      739f5719-fef0-49f0-90bc-e52b69447a6c --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/remove_function_body-log.txt $
+      --description 'setDataInterface: removing function bodies $
+      from project sources' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/739f5719-fef0-49f0-90bc-e52b69447a6c.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+      --interleave-stdout-stderr
+  description = setDataInterface: removing function bodies from $
+      project sources
+rule 676b61f8-1459-49e6-86b4-298e21a856d2
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      676b61f8-1459-49e6-86b4-298e21a856d2 --description $
+      'setControlInterface: not setting static variables to nondet' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/676b61f8-1459-49e6-86b4-298e21a856d2.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto
+  description = setControlInterface: not setting static variables $
+      to nondet
+rule 1739222e-230b-4414-a948-360a04632005
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc-viewer --result $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+      --block $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+      --property $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+      --srcdir /home/ubuntu/ota-for-aws-iot-embedded-sdk --goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+      --htmldir $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html' $
+      --pipeline-name setControlInterface --ci-stage report $
+      --job-id 1739222e-230b-4414-a948-360a04632005 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/viewer-log.txt $
+      --description 'setControlInterface: generating report' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1739222e-230b-4414-a948-360a04632005.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html $
+      --interleave-stdout-stderr
+  description = setControlInterface: generating report
+rule 01c4ae30-59fb-4c90-81c4-e830cd843c09
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'goto-cc  --export-file-local-symbols  $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include $
+      -I/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include  $
+      -DCBMC=1 -DCBMC_OBJECT_BITS=8 $
+      -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))" $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c $
+      -o $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto' $
+      --pipeline-name OTA_HTTP_strerror --ci-stage build --job-id $
+      01c4ae30-59fb-4c90-81c4-e830cd843c09 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/project_sources-log.txt $
+      --description 'OTA_HTTP_strerror: building project binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/01c4ae30-59fb-4c90-81c4-e830cd843c09.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+      --interleave-stdout-stderr
+  description = OTA_HTTP_strerror: building project binary
+rule 4dd7d701-5dec-471a-8d7a-18a289dca1f2
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cbmc  --unwind 1  --flush --object-bits 8 $
+      --malloc-may-fail --malloc-fail-null --cover location $
+      --xml-ui $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto' $
+      --pipeline-name OTA_MQTT_strerror --ci-stage test --job-id $
+      4dd7d701-5dec-471a-8d7a-18a289dca1f2 --stdout-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --stderr-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage-err-log.txt $
+      --description 'OTA_MQTT_strerror: calculating coverage' $
+      --timeout 21600 --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4dd7d701-5dec-471a-8d7a-18a289dca1f2.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+      --ignore-returns 10 --tags 'stats-group:coverage computation' $
+      --profile-memory
+  description = OTA_MQTT_strerror: calculating coverage
+rule 733e7f9a-48d6-4a51-a718-b144c01326fd
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto' $
+      --pipeline-name setControlInterface --ci-stage build --job-id $
+      733e7f9a-48d6-4a51-a718-b144c01326fd --description $
+      'setControlInterface: copying final goto-binary' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/733e7f9a-48d6-4a51-a718-b144c01326fd.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto
+  description = setControlInterface: copying final goto-binary
+rule f584f47e-f039-4f17-8de4-ce6422cd06fa
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      f584f47e-f039-4f17-8de4-ce6422cd06fa --description $
+      'setDataInterface: copying final goto-binary' --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f584f47e-f039-4f17-8de4-ce6422cd06fa.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto
+  description = setDataInterface: copying final goto-binary
+rule 2c3df356-0622-4fcf-a3c7-b83f97bb9102
+  command = $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/litani/litani $
+      exec --command 'cp $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto' $
+      --pipeline-name setDataInterface --ci-stage build --job-id $
+      2c3df356-0622-4fcf-a3c7-b83f97bb9102 --description $
+      'setDataInterface: not setting static variables to nondet' $
+      --status-file $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2c3df356-0622-4fcf-a3c7-b83f97bb9102.json $
+      --profile-memory-interval 10 --inputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto $
+      --outputs $
+      /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto
+  description = setDataInterface: not setting static variables to $
+      nondet
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bc3ec51a-0538-40bc-b5d1-4067d609580e.json: $
+    bc3ec51a-0538-40bc-b5d1-4067d609580e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/07f1d40e-1485-44fb-a617-a316c1e1f8ab.json: $
+    07f1d40e-1485-44fb-a617-a316c1e1f8ab $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8657734-fa6b-456e-9759-d7f762968504.json: $
+    c8657734-fa6b-456e-9759-d7f762968504 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_mqtt.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/30a97669-6ae0-4c83-9b7f-b4554e58591a.json: $
+    30a97669-6ae0-4c83-9b7f-b4554e58591a $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/19712c34-77ad-4d1a-9871-d53f8ff70064.json: $
+    19712c34-77ad-4d1a-9871-d53f8ff70064 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b.json: $
+    9f2f9fc8-f3a5-4abd-8d5e-87781d0ddc8b $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a0ac334d-c6fd-4287-b703-4b54ef4c4d0f.json: $
+    a0ac334d-c6fd-4287-b703-4b54ef4c4d0f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0d16dbf-55fa-4a91-97ef-609b27d9a4e0.json: $
+    e0d16dbf-55fa-4a91-97ef-609b27d9a4e0 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/922c4c34-b925-4c5c-a102-a95373750acc.json: $
+    922c4c34-b925-4c5c-a102-a95373750acc $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/51328bd4-c395-4dd3-847c-8e9cad723e51.json: $
+    51328bd4-c395-4dd3-847c-8e9cad723e51 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0f9ab365-7921-458e-b945-f0decb9256f7.json: $
+    0f9ab365-7921-458e-b945-f0decb9256f7 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6ebe2560-3c63-4b40-a31d-7242e2bbdc60.json: $
+    6ebe2560-3c63-4b40-a31d-7242e2bbdc60 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2a70976b-4410-472c-af68-d968e816b4b2.json: $
+    2a70976b-4410-472c-af68-d968e816b4b2 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/60e10287-23b7-4486-be14-f5376a12d50f.json: $
+    60e10287-23b7-4486-be14-f5376a12d50f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/12131278-8b64-4563-a3bc-8eaf9f007f58.json: $
+    12131278-8b64-4563-a3bc-8eaf9f007f58 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cc649ecf-ad55-4e98-97e0-2f41294b9285.json: $
+    cc649ecf-ad55-4e98-97e0-2f41294b9285 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/adac688f-6be7-49a6-94d4-0e96a2674e9b.json: $
+    adac688f-6be7-49a6-94d4-0e96a2674e9b $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/bf70ea29-410d-4881-aedd-2fc0fa4ea42f.json: $
+    bf70ea29-410d-4881-aedd-2fc0fa4ea42f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5c201f84-fbec-49a9-b048-b3283b94afd7.json: $
+    5c201f84-fbec-49a9-b048-b3283b94afd7 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/8d76b57f-24f6-46dd-8752-b68aa2639fb6.json: $
+    8d76b57f-24f6-46dd-8752-b68aa2639fb6 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/03d70c04-6f69-442c-8eda-dea964182cfd.json: $
+    03d70c04-6f69-442c-8eda-dea964182cfd $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4bbfb2e9-21a2-4649-a831-8f33d757a6ea.json: $
+    4bbfb2e9-21a2-4649-a831-8f33d757a6ea $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/b2a293e0-9460-4e2b-b801-040a46f4c2ff.json: $
+    b2a293e0-9460-4e2b-b801-040a46f4c2ff $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/94f0c9d7-a308-4168-9c85-7c79094d0b2e.json: $
+    94f0c9d7-a308-4168-9c85-7c79094d0b2e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e60236ca-5af4-4f1d-a83f-bdb74718eb31.json: $
+    e60236ca-5af4-4f1d-a83f-bdb74718eb31 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ab66ec40-5f06-4013-ba48-00ace552f470.json: $
+    ab66ec40-5f06-4013-ba48-00ace552f470 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1b706831-5ae9-4a9c-97f2-1de6771f3abe.json: $
+    1b706831-5ae9-4a9c-97f2-1de6771f3abe $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/3e73b894-a2a3-4b83-9165-fc1498ab4182.json: $
+    3e73b894-a2a3-4b83-9165-fc1498ab4182 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/892584c5-ac74-4621-9c4e-9a158d78fe26.json: $
+    892584c5-ac74-4621-9c4e-9a158d78fe26 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f14c86d9-5559-40e4-b13c-22496e4c363e.json: $
+    f14c86d9-5559-40e4-b13c-22496e4c363e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/95803338-06ed-4476-ad5a-caf5ab0791b4.json: $
+    95803338-06ed-4476-ad5a-caf5ab0791b4 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0fa47a31-b49b-43ca-9083-ade6e315d95f.json: $
+    0fa47a31-b49b-43ca-9083-ade6e315d95f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/29bb4e8f-cc52-4605-ae8a-75e5b9e381e9.json: $
+    29bb4e8f-cc52-4605-ae8a-75e5b9e381e9 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/69a44508-7fb2-4eab-aa96-3e4006718324.json: $
+    69a44508-7fb2-4eab-aa96-3e4006718324 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/13200534-e865-4719-94f3-4c2811ad5f8e.json: $
+    13200534-e865-4719-94f3-4c2811ad5f8e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/48e57e8d-b4e3-4af8-aeb6-3eba1944551e.json: $
+    48e57e8d-b4e3-4af8-aeb6-3eba1944551e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/6f9fe878-1a37-428d-80f7-1ddebc626dbe.json: $
+    6f9fe878-1a37-428d-80f7-1ddebc626dbe $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/057e1f82-2f79-43e3-a154-2fc9c1de866d.json: $
+    057e1f82-2f79-43e3-a154-2fc9c1de866d $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/06d2316e-24f1-4eaf-b8d7-946d7d56a410.json: $
+    06d2316e-24f1-4eaf-b8d7-946d7d56a410 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f41cfaa1-5b41-4d90-9278-815c54d4d0b4.json: $
+    f41cfaa1-5b41-4d90-9278-815c54d4d0b4 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c8a00678-3805-472f-bd58-3fe2149a4cde.json: $
+    c8a00678-3805-472f-bd58-3fe2149a4cde $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2e2303f4-c9f2-43c7-8783-d672bfd984b4.json: $
+    2e2303f4-c9f2-43c7-8783-d672bfd984b4 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f86302e7-c2ae-4b66-a4f3-718c805b9617.json: $
+    f86302e7-c2ae-4b66-a4f3-718c805b9617 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fb9ef28e-0f1e-4145-84b5-633233389b79.json: $
+    fb9ef28e-0f1e-4145-84b5-633233389b79 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/setDataInterface_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1c234d08-a21d-47e3-bfc1-d72a23e731d3.json: $
+    1c234d08-a21d-47e3-bfc1-d72a23e731d3 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5.json: $
+    2683a1b4-cd25-4703-b4e8-8a5a55ccf4c5 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/96e3ae0d-bc99-44d3-9552-a9fb2b990f6f.json: $
+    96e3ae0d-bc99-44d3-9552-a9fb2b990f6f $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18e02a22-464b-45f5-ae87-abce7a0fb144.json: $
+    18e02a22-464b-45f5-ae87-abce7a0fb144 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/a6cfc542-040c-4d12-8b77-a561500ad5da.json: $
+    a6cfc542-040c-4d12-8b77-a561500ad5da $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/43ffb573-8f31-4c1a-9969-e36c673af221.json: $
+    43ffb573-8f31-4c1a-9969-e36c673af221 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93.json: $
+    cbfe3e4f-9bd3-4537-bf4a-a14c5e0c8d93 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/c9eb184f-f34c-42d8-91b0-84bc3fc1d644.json: $
+    c9eb184f-f34c-42d8-91b0-84bc3fc1d644 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cab79090-368a-484f-8141-f1e90a4713bf.json: $
+    cab79090-368a-484f-8141-f1e90a4713bf $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f72ee1c9-97e7-4edd-bbee-0f6b8059098a.json: $
+    f72ee1c9-97e7-4edd-bbee-0f6b8059098a $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1.json: $
+    0c2b9f68-db1d-4efe-a45a-14c14f3fa0f1 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/14e53e2c-0ad1-440d-8ac9-306d9cae5a10.json: $
+    14e53e2c-0ad1-440d-8ac9-306d9cae5a10 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/e0b5f296-0398-492e-88b6-d8b5f119950d.json: $
+    e0b5f296-0398-492e-88b6-d8b5f119950d $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/53d77353-cec4-4f34-ad73-b14257d98b3c.json: $
+    53d77353-cec4-4f34-ad73-b14257d98b3c $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/098e4837-d16e-422d-8a1c-fd47412a42fb.json: $
+    098e4837-d16e-422d-8a1c-fd47412a42fb $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/18111aeb-be47-4eb4-ab97-4bbf781928bb.json: $
+    18111aeb-be47-4eb4-ab97-4bbf781928bb $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ba5b3b64-561b-45d9-b35b-822a1977ed32.json: $
+    ba5b3b64-561b-45d9-b35b-822a1977ed32 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/80198b71-2152-4bfa-9a22-ac1824f64bd8.json: $
+    80198b71-2152-4bfa-9a22-ac1824f64bd8 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/ee6303ad-9006-4f8e-a31f-e2bd6362d60c.json: $
+    ee6303ad-9006-4f8e-a31f-e2bd6362d60c $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/fe51d1ca-bc3a-424a-8513-c99f9ee16654.json: $
+    fe51d1ca-bc3a-424a-8513-c99f9ee16654 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/247f332f-3494-41ec-bd83-05fdf1f4673d.json: $
+    247f332f-3494-41ec-bd83-05fdf1f4673d $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e.json: $
+    5e5f8fc0-fb5f-4322-9588-4ee15d8d7f3e $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/cd3e1383-813c-4ff6-b3b3-9087fe6ece8a.json: $
+    cd3e1383-813c-4ff6-b3b3-9087fe6ece8a $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/739f5719-fef0-49f0-90bc-e52b69447a6c.json: $
+    739f5719-fef0-49f0-90bc-e52b69447a6c $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/676b61f8-1459-49e6-86b4-298e21a856d2.json: $
+    676b61f8-1459-49e6-86b4-298e21a856d2 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/1739222e-230b-4414-a948-360a04632005.json: $
+    1739222e-230b-4414-a948-360a04632005 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/01c4ae30-59fb-4c90-81c4-e830cd843c09.json: $
+    01c4ae30-59fb-4c90-81c4-e830cd843c09 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/4dd7d701-5dec-471a-8d7a-18a289dca1f2.json: $
+    4dd7d701-5dec-471a-8d7a-18a289dca1f2 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/733e7f9a-48d6-4a51-a718-b144c01326fd.json: $
+    733e7f9a-48d6-4a51-a718-b144c01326fd $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/f584f47e-f039-4f17-8de4-ce6422cd06fa.json: $
+    f584f47e-f039-4f17-8de4-ce6422cd06fa $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto
+build $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2a08924c-687a-46f0-9430-fc47a54aa255/status/2c3df356-0622-4fcf-a3c7-b83f97bb9102.json: $
+    2c3df356-0622-4fcf-a3c7-b83f97bb9102 $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto
+build __litani_pipeline_name_OTA_MQTT_strerror: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt
+build __litani_pipeline_name_initFileTransfer_Http: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt
+build __litani_pipeline_name_OTA_HTTP_strerror: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt
+build __litani_pipeline_name_setDataInterface: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt
+build __litani_pipeline_name_setControlInterface: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt
+build __litani_ci_stage_test: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/logs/result.txt $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/coverage.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/property.xml $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/logs/result.txt
+build __litani_ci_stage_build: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/OTA_HTTP_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/gotos/setControlInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/proof1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/gotos/setDataInterface_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness3.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness4.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness5.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness6.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/OTA_MQTT_strerror_harness7.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project1.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/project2.goto $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/gotos/proof1.goto
+build __litani_ci_stage_report: phony $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/OTA_HTTP_strerror/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setDataInterface/html $
+    /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/html

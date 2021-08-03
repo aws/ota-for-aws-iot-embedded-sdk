@@ -1,0 +1,38 @@
+{
+  "viewer-source": {
+    "root": "/home/ubuntu/ota-for-aws-iot-embedded-sdk",
+    "all_files": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_http_interface.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_interface_private.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_mqtt_interface.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_mqtt_private.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_os_interface.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_platform_interface.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/include/ota_private.h",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_interface.c",
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c",
+      "/usr/include/assert.h",
+      "/usr/include/string.h",
+      "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h",
+      "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h",
+      "/usr/include/x86_64-linux-gnu/bits/types.h",
+      "/usr/include/x86_64-linux-gnu/bits/types/FILE.h",
+      "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h",
+      "/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h",
+      "/usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h"
+    ],
+    "files": [
+      "source/include/ota.h",
+      "source/include/ota_http_interface.h",
+      "source/include/ota_interface_private.h",
+      "source/include/ota_mqtt_interface.h",
+      "source/include/ota_mqtt_private.h",
+      "source/include/ota_os_interface.h",
+      "source/include/ota_platform_interface.h",
+      "source/include/ota_private.h",
+      "source/ota_interface.c",
+      "test/cbmc/proofs/ota_interface/setControlInterface/setControlInterface_harness.c"
+    ]
+  }
+}

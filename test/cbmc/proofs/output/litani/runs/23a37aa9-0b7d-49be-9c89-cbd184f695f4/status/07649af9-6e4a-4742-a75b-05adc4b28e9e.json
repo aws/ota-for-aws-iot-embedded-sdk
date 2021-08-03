@@ -1,0 +1,55 @@
+{
+  "wrapper_arguments": {
+    "subcommand": "exec",
+    "verbose": false,
+    "very_verbose": false,
+    "inputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto"
+    ],
+    "command": "goto-instrument  --drop-unused-functions /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto",
+    "outputs": [
+      "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto"
+    ],
+    "pipeline_name": "initFileTransfer_Http",
+    "ci_stage": "build",
+    "cwd": null,
+    "timeout": null,
+    "timeout_ok": false,
+    "timeout_ignore": false,
+    "ignore_returns": null,
+    "ok_returns": null,
+    "outcome_table": null,
+    "interleave_stdout_stderr": true,
+    "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/logs/drop_unused_functions-log.txt",
+    "stderr_file": null,
+    "pool": null,
+    "description": "initFileTransfer_Http: dropping unused functions",
+    "profile_memory": false,
+    "profile_memory_interval": 10,
+    "tags": null,
+    "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/23a37aa9-0b7d-49be-9c89-cbd184f695f4/status/07649af9-6e4a-4742-a75b-05adc4b28e9e.json",
+    "job_id": "07649af9-6e4a-4742-a75b-05adc4b28e9e"
+  },
+  "complete": true,
+  "start_time": "2021-07-22T20:59:08Z",
+  "timeout_reached": false,
+  "command_return_code": 0,
+  "memory_trace": {},
+  "loaded_outcome_dict": null,
+  "outcome": "success",
+  "wrapper_return_code": 0,
+  "stdout": [
+    "Reading GOTO program from '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness5.goto'",
+    "Function Pointer Removal",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 106 function requestDataBlock_Http: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 167 function cleanupData_Http: replacing function pointer by 0 possible targets",
+    "file /home/ubuntu/ota-for-aws-iot-embedded-sdk/source/ota_http.c line 63 function initFileTransfer_Http: replacing function pointer by 1 possible targets",
+    "Virtual function removal",
+    "Cleaning inline assembler statements",
+    "Removing unused functions",
+    "Dropping 8 of 14 functions (6 used)",
+    "Writing GOTO program to '/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/ota_http/initFileTransfer_Http/gotos/initFileTransfer_Http_harness6.goto'"
+  ],
+  "stderr": [],
+  "end_time": "2021-07-22T20:59:08Z"
+}

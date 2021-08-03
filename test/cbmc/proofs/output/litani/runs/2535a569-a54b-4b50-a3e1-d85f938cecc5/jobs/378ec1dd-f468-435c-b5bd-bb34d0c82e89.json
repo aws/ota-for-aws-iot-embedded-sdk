@@ -1,0 +1,35 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto"
+  ],
+  "command": "cbmc  --unwind 1  --flush --object-bits 8  --malloc-may-fail --malloc-fail-null --bounds-check --conversion-check --div-by-zero-check --float-overflow-check --nan-check --pointer-check --pointer-overflow-check --pointer-primitive-check --signed-overflow-check --undefined-shift-check --unsigned-overflow-check --unwinding-assertions --trace /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/requestDataBlock_Http/gotos/requestDataBlock_Http_harness.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/requestDataBlock_Http/logs/result.txt"
+  ],
+  "pipeline_name": "requestDataBlock_Http",
+  "ci_stage": "test",
+  "cwd": null,
+  "timeout": 21600,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": [
+    "10"
+  ],
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/requestDataBlock_Http/logs/result.txt",
+  "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/requestDataBlock_Http/logs/result-err-log.txt",
+  "pool": null,
+  "description": "requestDataBlock_Http: checking safety properties",
+  "profile_memory": true,
+  "profile_memory_interval": 10,
+  "tags": [
+    "stats-group:safety checks"
+  ],
+  "job_id": "378ec1dd-f468-435c-b5bd-bb34d0c82e89",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2535a569-a54b-4b50-a3e1-d85f938cecc5/status/378ec1dd-f468-435c-b5bd-bb34d0c82e89.json"
+}

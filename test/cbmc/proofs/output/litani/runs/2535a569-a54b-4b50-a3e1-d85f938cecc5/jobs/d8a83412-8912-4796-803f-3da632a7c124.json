@@ -1,0 +1,35 @@
+{
+  "subcommand": "add-job",
+  "verbose": false,
+  "very_verbose": false,
+  "inputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/gotos/setControlInterface_harness.goto"
+  ],
+  "command": "cbmc  --unwind 1  --flush --object-bits 8 --malloc-may-fail --malloc-fail-null --cover location --xml-ui /home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/gotos/setControlInterface_harness.goto",
+  "outputs": [
+    "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/coverage.xml"
+  ],
+  "pipeline_name": "setControlInterface",
+  "ci_stage": "test",
+  "cwd": null,
+  "timeout": 21600,
+  "timeout_ok": false,
+  "timeout_ignore": false,
+  "ignore_returns": [
+    "10"
+  ],
+  "ok_returns": null,
+  "outcome_table": null,
+  "interleave_stdout_stderr": false,
+  "stdout_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/coverage.xml",
+  "stderr_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/setControlInterface/logs/coverage-err-log.txt",
+  "pool": null,
+  "description": "setControlInterface: calculating coverage",
+  "profile_memory": true,
+  "profile_memory_interval": 10,
+  "tags": [
+    "stats-group:coverage computation"
+  ],
+  "job_id": "d8a83412-8912-4796-803f-3da632a7c124",
+  "status_file": "/home/ubuntu/ota-for-aws-iot-embedded-sdk/test/cbmc/proofs/output/litani/runs/2535a569-a54b-4b50-a3e1-d85f938cecc5/status/d8a83412-8912-4796-803f-3da632a7c124.json"
+}

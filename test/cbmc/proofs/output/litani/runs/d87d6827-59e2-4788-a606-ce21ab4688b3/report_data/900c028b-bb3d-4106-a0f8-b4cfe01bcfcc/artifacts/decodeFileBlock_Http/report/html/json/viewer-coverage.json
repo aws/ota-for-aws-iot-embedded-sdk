@@ -1,0 +1,127 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "decodeFileBlock_Http": {
+          "130": "hit",
+          "132": "hit",
+          "135": "hit",
+          "139": "hit",
+          "143": "hit",
+          "144": "hit",
+          "145": "hit",
+          "148": "hit",
+          "150": "hit",
+          "153": "hit",
+          "156": "hit",
+          "157": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c": {
+        "decodeFileBlock_Http_harness": {
+          "33": "hit",
+          "35": "hit",
+          "36": "hit",
+          "37": "hit",
+          "38": "hit",
+          "39": "hit",
+          "40": "hit",
+          "41": "hit",
+          "43": "hit",
+          "44": "hit",
+          "45": "hit",
+          "46": "hit",
+          "49": "hit",
+          "50": "hit",
+          "51": "hit",
+          "54": "hit",
+          "55": "hit",
+          "59": "hit",
+          "62": "hit",
+          "63": "hit",
+          "67": "hit",
+          "70": "hit",
+          "74": "hit",
+          "78": "hit",
+          "82": "hit",
+          "84": "hit",
+          "85": "hit",
+          "88": "hit",
+          "92": "hit",
+          "93": "hit",
+          "94": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "decodeFileBlock_Http": {
+          "hit": 12,
+          "percentage": 1.0,
+          "total": 12
+        }
+      },
+      "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c": {
+        "decodeFileBlock_Http_harness": {
+          "hit": 31,
+          "percentage": 1.0,
+          "total": 31
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "130": "hit",
+        "132": "hit",
+        "135": "hit",
+        "139": "hit",
+        "143": "hit",
+        "144": "hit",
+        "145": "hit",
+        "148": "hit",
+        "150": "hit",
+        "153": "hit",
+        "156": "hit",
+        "157": "hit"
+      },
+      "test/cbmc/proofs/ota_http/decodeFileBlock_Http/decodeFileBlock_Http_harness.c": {
+        "33": "hit",
+        "35": "hit",
+        "36": "hit",
+        "37": "hit",
+        "38": "hit",
+        "39": "hit",
+        "40": "hit",
+        "41": "hit",
+        "43": "hit",
+        "44": "hit",
+        "45": "hit",
+        "46": "hit",
+        "49": "hit",
+        "50": "hit",
+        "51": "hit",
+        "54": "hit",
+        "55": "hit",
+        "59": "hit",
+        "62": "hit",
+        "63": "hit",
+        "67": "hit",
+        "70": "hit",
+        "74": "hit",
+        "78": "hit",
+        "82": "hit",
+        "84": "hit",
+        "85": "hit",
+        "88": "hit",
+        "92": "hit",
+        "93": "hit",
+        "94": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 43,
+      "percentage": 1.0,
+      "total": 43
+    }
+  }
+}

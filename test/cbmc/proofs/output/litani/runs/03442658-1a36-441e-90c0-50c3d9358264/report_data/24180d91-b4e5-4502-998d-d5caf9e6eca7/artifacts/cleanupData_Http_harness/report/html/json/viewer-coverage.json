@@ -1,0 +1,92 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "cleanupData_Http": {
+          "164": "hit",
+          "166": "both",
+          "167": "both",
+          "170": "hit",
+          "172": "hit",
+          "173": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c": {
+        "cleanupData_Http_harness": {
+          "41": "hit",
+          "42": "hit",
+          "43": "hit",
+          "44": "hit",
+          "46": "hit",
+          "47": "hit",
+          "51": "hit",
+          "54": "hit",
+          "57": "hit",
+          "58": "hit",
+          "60": "hit",
+          "63": "hit",
+          "66": "hit"
+        },
+        "deinit": {
+          "33": "hit",
+          "35": "hit",
+          "36": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "cleanupData_Http": {
+          "hit": 6,
+          "percentage": 1.0,
+          "total": 6
+        }
+      },
+      "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c": {
+        "cleanupData_Http_harness": {
+          "hit": 13,
+          "percentage": 1.0,
+          "total": 13
+        },
+        "deinit": {
+          "hit": 3,
+          "percentage": 1.0,
+          "total": 3
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "164": "hit",
+        "166": "both",
+        "167": "both",
+        "170": "hit",
+        "172": "hit",
+        "173": "hit"
+      },
+      "test/cbmc/proofs/ota_http/cleanupData_Http/cleanupData_Http_harness.c": {
+        "33": "hit",
+        "35": "hit",
+        "36": "hit",
+        "41": "hit",
+        "42": "hit",
+        "43": "hit",
+        "44": "hit",
+        "46": "hit",
+        "47": "hit",
+        "51": "hit",
+        "54": "hit",
+        "57": "hit",
+        "58": "hit",
+        "60": "hit",
+        "63": "hit",
+        "66": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 22,
+      "percentage": 1.0,
+      "total": 22
+    }
+  }
+}

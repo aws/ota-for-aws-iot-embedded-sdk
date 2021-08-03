@@ -1,0 +1,16 @@
+{
+  "viewer-property": {
+    "properties": {
+      "OTA_MQTT_strerror_harness.assertion.1": {
+        "class": "assertion",
+        "description": "Function return cannot be NULL",
+        "expression": "pstr != ((const char *)NULL)",
+        "location": {
+          "file": "test/cbmc/proofs/ota_mqtt/OTA_MQTT_strerror/OTA_MQTT_strerror_harness.c",
+          "function": "OTA_MQTT_strerror_harness",
+          "line": 39
+        }
+      }
+    }
+  }
+}

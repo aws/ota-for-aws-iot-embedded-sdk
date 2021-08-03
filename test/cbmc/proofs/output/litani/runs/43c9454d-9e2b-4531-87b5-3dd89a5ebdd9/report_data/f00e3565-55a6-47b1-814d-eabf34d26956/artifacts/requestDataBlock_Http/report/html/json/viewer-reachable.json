@@ -1,0 +1,13 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_http/requestDataBlock_Http/requestDataBlock_Http_harness.c": [
+        "request",
+        "requestDataBlock_Http_harness"
+      ],
+      "source/ota_http.c": [
+        "requestDataBlock_Http"
+      ]
+    }
+  }
+}

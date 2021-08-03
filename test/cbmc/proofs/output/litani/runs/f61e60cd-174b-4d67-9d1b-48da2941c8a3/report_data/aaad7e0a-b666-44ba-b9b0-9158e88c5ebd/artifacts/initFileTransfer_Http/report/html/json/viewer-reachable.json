@@ -1,0 +1,13 @@
+{
+  "viewer-reachable": {
+    "reachable": {
+      "test/cbmc/proofs/ota_http/initFileTransfer_Http/initFileTransfer_Http_harness.c": [
+        "init",
+        "initFileTransfer_Http_harness"
+      ],
+      "source/ota_http.c": [
+        "initFileTransfer_Http"
+      ]
+    }
+  }
+}

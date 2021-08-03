@@ -1,0 +1,85 @@
+{
+  "viewer-coverage": {
+    "coverage": {
+      "source/ota_http.c": {
+        "OTA_HTTP_strerror": {
+          "177": "hit",
+          "179": "hit",
+          "181": "hit",
+          "182": "hit",
+          "183": "hit",
+          "185": "hit",
+          "186": "hit",
+          "187": "hit",
+          "189": "hit",
+          "190": "hit",
+          "191": "hit",
+          "193": "hit",
+          "194": "hit",
+          "195": "hit",
+          "198": "hit",
+          "202": "hit",
+          "203": "hit"
+        }
+      },
+      "test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c": {
+        "OTA_HTTP_strerror_harness": {
+          "33": "hit",
+          "34": "hit",
+          "36": "hit",
+          "40": "hit",
+          "41": "hit"
+        }
+      }
+    },
+    "function_coverage": {
+      "source/ota_http.c": {
+        "OTA_HTTP_strerror": {
+          "hit": 17,
+          "percentage": 1.0,
+          "total": 17
+        }
+      },
+      "test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c": {
+        "OTA_HTTP_strerror_harness": {
+          "hit": 5,
+          "percentage": 1.0,
+          "total": 5
+        }
+      }
+    },
+    "line_coverage": {
+      "source/ota_http.c": {
+        "177": "hit",
+        "179": "hit",
+        "181": "hit",
+        "182": "hit",
+        "183": "hit",
+        "185": "hit",
+        "186": "hit",
+        "187": "hit",
+        "189": "hit",
+        "190": "hit",
+        "191": "hit",
+        "193": "hit",
+        "194": "hit",
+        "195": "hit",
+        "198": "hit",
+        "202": "hit",
+        "203": "hit"
+      },
+      "test/cbmc/proofs/ota_http/OTA_HTTP_strerror/OTA_HTTP_strerror_harness.c": {
+        "33": "hit",
+        "34": "hit",
+        "36": "hit",
+        "40": "hit",
+        "41": "hit"
+      }
+    },
+    "overall_coverage": {
+      "hit": 22,
+      "percentage": 1.0,
+      "total": 22
+    }
+  }
+}
