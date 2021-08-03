@@ -28,6 +28,12 @@
 #ifndef OTA_HTTP_INTERFACE_H
 #define OTA_HTTP_INTERFACE_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* Standard library includes. */
 #include <stddef.h>
 #include <stdint.h>
@@ -132,5 +138,11 @@ typedef struct OtaHttpInterface
     OtaHttpRequest_t request; /*!< @brief Reference to HTTP data request. */
     OtaHttpDeinit deinit;     /*!< @brief Reference to HTTP deinitialize. */
 } OtaHttpInterface_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_HTTP_INTERFACE_H */

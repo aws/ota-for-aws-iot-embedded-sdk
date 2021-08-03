@@ -279,6 +279,7 @@ malloc
 maxattempts
 maxfragmentlength
 mcu
+md
 mem
 memcpy
 messagebuffersize

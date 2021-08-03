@@ -29,6 +29,12 @@
 #ifndef OTA_PRIVATE_H
 #define OTA_PRIVATE_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
 #include <stdio.h>
@@ -429,5 +435,11 @@ typedef struct OtaEventMsg
     OtaEventData_t * pEventData; /*!< Event status message. */
     OtaEvent_t eventId;          /*!< Identifier for the event. */
 } OtaEventMsg_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_PRIVATE_H */

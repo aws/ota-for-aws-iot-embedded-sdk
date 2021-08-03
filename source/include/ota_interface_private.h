@@ -28,6 +28,12 @@
 #ifndef OTA_INTERFACE_PRIVATE_H
 #define OTA_INTERFACE_PRIVATE_H
 
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
+
 /* OTA includes. */
 #include "ota.h"
 #include "ota_private.h"
@@ -107,5 +113,11 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
  */
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_INTERFACE_PRIVATE_H */
