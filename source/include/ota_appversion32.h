@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -27,6 +27,12 @@
 
 #ifndef IOT_APPVERSION32_H
 #define IOT_APPVERSION32_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /* Standard includes. */
 #include <stdint.h>
@@ -65,5 +71,11 @@ typedef struct
 } AppVersion32_t;
 
 extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef IOT_APPVERSION32_H */

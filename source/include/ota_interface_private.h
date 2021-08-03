@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -27,6 +27,12 @@
 
 #ifndef OTA_INTERFACE_PRIVATE_H
 #define OTA_INTERFACE_PRIVATE_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /* OTA includes. */
 #include "ota.h"
@@ -107,5 +113,11 @@ void setControlInterface( OtaControlInterface_t * pControlInterface );
  */
 OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                            const uint8_t * pProtocol );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_INTERFACE_PRIVATE_H */

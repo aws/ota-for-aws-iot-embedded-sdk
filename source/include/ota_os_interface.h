@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -28,6 +28,12 @@
 
 #ifndef OTA_OS_INTERFACE_H
 #define OTA_OS_INTERFACE_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 
 /**
@@ -267,9 +273,13 @@ typedef struct OtaEventInterface
  */
 typedef struct OtaTimerInterface
 {
-    OtaStartTimer_t start;   /*!< @brief Timer start state. */
-    OtaStopTimer_t stop;     /*!< @brief Timer stop state. */
-    OtaDeleteTimer_t delete; /*!< @brief Delete timer. */
+    OtaStartTimer_t start;            /*!< @brief Timer start state. */
+    OtaStopTimer_t stop;              /*!< @brief Timer stop state. */
+    #ifndef __cplusplus
+        OtaDeleteTimer_t delete;      /*!< @brief Delete timer. */
+    #else
+        OtaDeleteTimer_t deleteTimer; /*!< @brief Delete timer for C++ builds. */
+    #endif
 } OtaTimerInterface_t;
 
 /**
@@ -297,5 +307,11 @@ typedef struct OtaOSInterface
     OtaTimerInterface_t timer; /*!< @brief OTA Timer interface. */
     OtaMallocInterface_t mem;  /*!< @brief OTA memory interface. */
 } OtaOSInterface_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_OS_INTERFACE_H */

@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -209,13 +209,15 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
  * @param[in] status Status of the operation.
  * @param[in] reason Reason for failure or the new firmware version.
  * @param[in] subReason Error code due to which the operation failed.
+ * @param[in] previousVersion Version from which the new version was updated.
  * @return uint32_t Size of the message.
  */
 static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              size_t msgBufferSize,
                                              OtaJobStatus_t status,
                                              int32_t reason,
-                                             int32_t subReason );
+                                             int32_t subReason,
+                                             uint32_t previousVersion );
 
 /**
  * @brief Build a string from a set of strings
@@ -687,15 +689,20 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
                                              size_t msgBufferSize,
                                              OtaJobStatus_t status,
                                              int32_t reason,
-                                             int32_t subReason )
+                                             int32_t subReason,
+                                             uint32_t previousVersion )
 {
     uint32_t msgSize = 0;
     char reasonString[ U32_MAX_LEN + 1 ];
     char subReasonString[ U32_MAX_LEN + 1 ];
-    char versionMajorString[ U32_MAX_LEN + 1 ];
-    char versionMinorString[ U32_MAX_LEN + 1 ];
-    char versionBuildString[ U32_MAX_LEN + 1 ];
-    AppVersion32_t newVersion;
+    char newVersionMajorString[ U32_MAX_LEN + 1 ];
+    char newVersionMinorString[ U32_MAX_LEN + 1 ];
+    char newVersionBuildString[ U32_MAX_LEN + 1 ];
+    char prevVersionMajorString[ U32_MAX_LEN + 1 ];
+    char prevVersionMinorString[ U32_MAX_LEN + 1 ];
+    char prevVersionBuildString[ U32_MAX_LEN + 1 ];
+
+    AppVersion32_t newVersion = { 0 }, prevVersion = { 0 };
 
     /* NULL-terminated list of payload string parts */
     /* NOTE: this must conform to the following format, do not add spaces, etc. */
@@ -716,15 +723,22 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     /*       "\"reason\":\"%s v%u.%u.%u\"}}" */
     const char * pPayloadPartsStatusSucceeded[] =
     {
-        NULL, /* Job status string not available at compile time, initialized below. */
+        NULL,                                         /* Job status string not available at compile time, initialized below. */
         "\"reason\":\"",
-        NULL, /*  Reason string not available at compile time, initialized below. */
+        NULL,                                         /*  Reason string not available at compile time, initialized below. */
         "  v",
-        NULL, /* Version major string not available at compile time, initialized below. */
+        NULL,                                         /* Version major string not available at compile time, initialized below. */
         ".",
-        NULL, /* Version minor string not available at compile time, initialized below. */
+        NULL,                                         /* Version minor string not available at compile time, initialized below. */
         ".",
-        NULL, /* Version build string not available at compile time, initialized below. */
+        NULL,                                         /* Version build string not available at compile time, initialized below. */
+        "\",\"" OTA_JSON_UPDATED_BY_KEY_ONLY "\":\"", /* Expands to `","updatedBy":` */
+        "  v",
+        NULL,                                         /* Previous version major string not available at compile time, initialized below. */
+        ".",
+        NULL,                                         /* Previous version minor string not available at compile time, initialized below. */
+        ".",
+        NULL,                                         /* Previous version build string not available at compile time, initialized below. */
         "\"}}",
         NULL
     };
@@ -747,12 +761,10 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     assert( pMsgBuffer != NULL );
 
     newVersion.u.signedVersion32 = subReason;
+    prevVersion.u.signedVersion32 = ( int32_t ) previousVersion;
 
     ( void ) stringBuilderUInt32Hex( reasonString, sizeof( reasonString ), ( uint32_t ) reason );
     ( void ) stringBuilderUInt32Hex( subReasonString, sizeof( subReasonString ), ( uint32_t ) subReason );
-    ( void ) stringBuilderUInt32Decimal( versionMajorString, sizeof( versionMajorString ), newVersion.u.x.major );
-    ( void ) stringBuilderUInt32Decimal( versionMinorString, sizeof( versionMinorString ), newVersion.u.x.minor );
-    ( void ) stringBuilderUInt32Decimal( versionBuildString, sizeof( versionBuildString ), newVersion.u.x.build );
 
     /* FailedWithVal uses a numeric OTA error code and sub-reason code to cover
      * the case where there may be too many description strings to reasonably
@@ -773,12 +785,25 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
      */
     else if( status == JobStatusSucceeded )
     {
+        /* New version string.*/
+        ( void ) stringBuilderUInt32Decimal( newVersionMajorString, sizeof( newVersionMajorString ), newVersion.u.x.major );
+        ( void ) stringBuilderUInt32Decimal( newVersionMinorString, sizeof( newVersionMinorString ), newVersion.u.x.minor );
+        ( void ) stringBuilderUInt32Decimal( newVersionBuildString, sizeof( newVersionBuildString ), newVersion.u.x.build );
+
+        /* Updater version string.*/
+        ( void ) stringBuilderUInt32Decimal( prevVersionMajorString, sizeof( prevVersionMajorString ), prevVersion.u.x.major );
+        ( void ) stringBuilderUInt32Decimal( prevVersionMinorString, sizeof( prevVersionMinorString ), prevVersion.u.x.minor );
+        ( void ) stringBuilderUInt32Decimal( prevVersionBuildString, sizeof( prevVersionMinorString ), prevVersion.u.x.build );
+
         pPayloadParts = pPayloadPartsStatusSucceeded;
         pPayloadParts[ 0 ] = pOtaJobStatusStrings[ status ];
         pPayloadParts[ 2 ] = pOtaJobReasonStrings[ reason ];
-        pPayloadParts[ 4 ] = versionMajorString;
-        pPayloadParts[ 6 ] = versionMinorString;
-        pPayloadParts[ 8 ] = versionBuildString;
+        pPayloadParts[ 4 ] = newVersionMajorString;
+        pPayloadParts[ 6 ] = newVersionMinorString;
+        pPayloadParts[ 8 ] = newVersionBuildString;
+        pPayloadParts[ 11 ] = prevVersionMajorString;
+        pPayloadParts[ 13 ] = prevVersionMinorString;
+        pPayloadParts[ 15 ] = prevVersionBuildString;
     }
     else
     {
@@ -939,7 +964,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
     {
         /* The potential values for status are constant at compile time. */
         assert( status < NumJobStatusMappings );
-        msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason );
+        msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason, pAgentCtx->fileContext.updaterVersion );
     }
 
     if( msgSize > 0U )
