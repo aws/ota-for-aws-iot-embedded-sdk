@@ -31,11 +31,11 @@
 void OTA_HTTP_strerror_harness()
 {
     OtaHttpStatus_t status;
-    const char * pstr = NULL;
+    const char * pErrorMsg = NULL;
 
-    pstr = OTA_HTTP_strerror( status );
+    pErrorMsg = OTA_HTTP_strerror( status );
 
     /* The function returns a string which is never a NULL. If it does, then
      *  there is a problem. */
-    __CPROVER_assert( pstr != NULL, "function cannot return null" );
+    __CPROVER_assert( pErrorMsg != NULL, "function cannot return null" );
 }
