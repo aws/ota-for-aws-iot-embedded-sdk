@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -28,6 +28,12 @@
 
 #ifndef OTA_PRIVATE_H
 #define OTA_PRIVATE_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /* Standard includes. */
 /* For FILE type in OtaFileContext_t.*/
@@ -429,5 +435,11 @@ typedef struct OtaEventMsg
     OtaEventData_t * pEventData; /*!< Event status message. */
     OtaEvent_t eventId;          /*!< Identifier for the event. */
 } OtaEventMsg_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_PRIVATE_H */

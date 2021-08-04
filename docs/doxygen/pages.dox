@@ -85,7 +85,7 @@ Currently, the OTA library has the following direct dependencies:
 @section ota_memory_requirements Memory Requirements
 @brief Memory requirements of the OTA library.
 
-@include{doc} size_table.html
+@include{doc} size_table.md
 
  */
 

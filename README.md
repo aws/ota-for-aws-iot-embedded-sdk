@@ -4,7 +4,7 @@ The OTA library enables you to manage the notification of a newly available upda
 
 This library has gone through code quality checks including verification that no function has a [GNU Complexity](https://www.gnu.org/software/complexity/manual/complexity.html) score over 8. This library has also undergone static code analysis from [Coverity static analysis](https://scan.coverity.com/).
 
-See memory requirements for this library [here](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html#ota_memory_requirements).
+See memory requirements for this library [here](./docs/doxygen/include/size_table.md).
 
 **AWS IoT Over-the-air Update Library v3.0.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.0.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
 
@@ -57,13 +57,12 @@ The following table lists equivalent API function signatures in v2.0.0 (Release 
 | v2.0.0 (Release Candidate) | v3.0.0 | Notes |
 | :-: | :-: | :-: |
 | `OtaState_t OTA_Shutdown( uint32_t ticksToWait );` | `OtaState_t OTA_Shutdown( uint32_t ticksToWait, uint8_t unsubscribeFlag );` | `unsubscribeFlag` indicates if unsubscribe operations should be performed from the job topics when shutdown is called. Set this as 1 to unsubscribe, 0 otherwise. |
-## Reference examples
 
-Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for a reference example on POSIX:
+### How to migrate from version 1.0.0 to version 3.0.0 for OTA applications
 
-| Platform | Location |
-| :-: | :-: |
-| POSIX | [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota) |
+Refer to [OTA Migration document](https://docs.aws.amazon.com/freertos/latest/portingguide/porting-migration-ota.html) for the summary of updates to the API.
+[Migration document for OTA PAL](https://docs.aws.amazon.com/freertos/latest/portingguide/porting-migration-ota-pal.html) also provides a summary of updates required for upgrading the OTA-PAL to work with v3.0.0 of the library.
+
 ## Porting
 
 In order to support AWS IoT Over-the-air Updates on your device, it is necessary to provide the following components:
@@ -73,9 +72,34 @@ In order to support AWS IoT Over-the-air Updates on your device, it is necessary
 
 1. [MQTT Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_mqtt)
 
+For enabling data transfer over HTTP dataplane the following component should also be provided:
+
 1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
 
-## Generating documentation
+**NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be provided.
+## Reference examples
+
+Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for reference examples on POSIX and FreeRTOS:
+
+| Platform | Location |
+| :-: | :-: |
+| POSIX | [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota) |
+| FreeRTOS | [FreeRTOS/FreeRTOS](https://github.com/FreeRTOS/FreeRTOS/tree/main/FreeRTOS-Plus/Demo/AWS/Ota_Windows_Simulator) | 
+| FreeRTOS | [FreeRTOS AWS Reference Integrations](https://github.com/aws/amazon-freertos/tree/main/demos/ota) |
+
+## Documentation
+
+### Existing Documentation
+
+For pre-generated documentation, please see the documentation linked in the locations below:
+
+| Location |
+| :-: |
+| [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C#releases-and-documentation) |
+| [FreeRTOS.org](https://freertos.org/Documentation/api-ref/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html) |
+
+Note that the latest included version of coreMQTT may differ across repositories.
+### Generating documentation
 
 The Doxygen references were created using Doxygen version 1.8.20. To generate the
 Doxygen pages, please run the following command from the root of this repository:

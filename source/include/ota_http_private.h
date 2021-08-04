@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -27,6 +27,12 @@
 
 #ifndef OTA_HTTP_H
 #define OTA_HTTP_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /* OTA includes. */
 #include "ota.h"
@@ -106,5 +112,11 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx );
  * @return The string representation of the status.
  */
 const char * OTA_HTTP_strerror( OtaHttpStatus_t status );
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_HTTP_H */

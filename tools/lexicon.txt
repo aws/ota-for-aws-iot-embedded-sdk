@@ -111,6 +111,7 @@ defgroup
 deinit
 deinitialize
 deinitializing
+deletetimer
 destlen
 destoffset
 developerguide
@@ -282,6 +283,7 @@ malloc
 maxattempts
 maxfragmentlength
 mcu
+md
 mem
 memcpy
 messagebuffersize

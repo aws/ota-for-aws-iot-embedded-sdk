@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -27,6 +27,12 @@
 
 #ifndef OTA_MQTT_INTERFACE_H
 #define OTA_MQTT_INTERFACE_H
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /* Standard library includes. */
 #include <stddef.h>
@@ -158,5 +164,11 @@ typedef struct OtaMqttInterface
     OtaMqttUnsubscribe_t unsubscribe; /*!< @brief interface for unsubscribing to MQTT topics. */
     OtaMqttPublish_t publish;         /*!< @brief Interface for publishing MQTT messages. */
 } OtaMqttInterface_t;
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* ifndef OTA_MQTT_INTERFACE_H */

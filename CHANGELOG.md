@@ -1,11 +1,9 @@
 # Changelog for AWS IoT Over-the-air Update Library
 
-## main
-
-### Minor Changes
-
+### v3.1.0 (August 2021)
+ - [#232](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/232) Add updater version to the status details when job succeeds
+ - [#216](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/216), [#213](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/213), [#226](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/226), [#234](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/234) Misc fixes to remove compiler warnings and resolve build failures on certain platforms.
  - [#200](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/200) Add type cast for logging variable of type size_t
-
 ## v3.0.0 (March 2021)
 
 ### Updates
