@@ -81,6 +81,6 @@ void decodeFileBlock_Http_harness()
                       "Function return should be either None or invalid argument" );
 
     /* Free allocated memory. */
-    free( *pPayload);
+    free( *pPayload );
     free( pMessageBuffer );
 }
