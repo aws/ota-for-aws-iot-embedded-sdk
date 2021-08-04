@@ -40,7 +40,6 @@ void setDataInterface_harness()
      *  and thus size variable cannot exceed OTA_PROTOCOL_BUFFER_SIZE. */
     __CPROVER_assume( protocolBufferSize <= OTA_PROTOCOL_BUFFER_SIZE );
 
-    /* Initialize the variable. */
     pProtocol = ( uint8_t * ) malloc( protocolBufferSize );
     pDataInterface = &dataInterface;
 
