@@ -1,0 +1,862 @@
+# -*- mode: makefile -*-
+# The first line sets the emacs major mode to Makefile
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+################################################################
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy
+# of the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the
+# License.
+
+################################################################
+# This file Makefile.common defines the basic work flow for cbmc proofs.
+#
+# The intention is that the goal of your project is to write proofs
+# for a collection of functions in a source tree.
+#
+# To use this file
+#   1. Edit the variable definitions in Section I below as appropriate for
+#      your project, your proofs, and your source tree.
+#   2. For each function for which you are writing a proof,
+#      a. Create a subdirectory <DIR>.
+#      b. Write a proof harness (a function) with the name <HARNESS_ENTRY>
+#         in a file with the name <DIR>/<HARNESS_FILE>.c
+#      c. Write a makefile with the name <DIR>/Makefile that looks
+#         something like
+#
+#         HARNESS_FILE=<HARNESS_FILE>
+#         HARNESS_ENTRY=<HARNESS_ENTRY>
+#         PROOF_UID=<PROOF_UID>
+#
+#         PROJECT_SOURCES += $(SRCDIR)/libraries/api_1.c
+#         PROJECT_SOURCES += $(SRCDIR)/libraries/api_2.c
+#
+#         PROOF_SOURCES += $(PROOFDIR)/harness.c
+#         PROOF_SOURCES += $(SRCDIR)/cbmc/proofs/stub_a.c
+#         PROOF_SOURCES += $(SRCDIR)/cbmc/proofs/stub_b.c
+#
+#         UNWINDSET += foo.0:3
+#         UNWINDSET += bar.1:6
+#
+#         REMOVE_FUNCTION_BODY += api_stub_a
+#         REMOVE_FUNCTION_BODY += api_stub_b
+#
+#         DEFINES = -DDEBUG=0
+#
+#         include ../Makefile.common
+#
+#      d. Change directory to <DIR> and run make
+#
+# Dependency handling in this file may not be perfect. Consider
+# running "make clean" or "make veryclean" before "make report" if you
+# get results that are hard to explain.
+
+SHELL=/bin/bash
+
+default: report
+
+################################################################
+################################################################
+## Section I: This section gives common variable definitions.
+##
+## Feel free to edit these definitions for your project.
+##
+## Definitions specific to a proof (generally definitions defined
+## below with ?= like PROJECT_SOURCES listing the project source files
+## required by the proof) should be defined in the proof Makefile.
+##
+## Remember that this Makefile is intended to be included from the
+## Makefile in your proof directory, so all relative pathnames should
+## be relative to your proof directory.
+##
+
+# Absolute path to the directory containing this Makefile.common
+# See https://ftp.gnu.org/old-gnu/Manuals/make-3.80/html_node/make_17.html
+#
+# Note: We compute the absolute paths to the makefiles in MAKEFILE_LIST
+# before we filter the list of makefiles for %/Makefile.common.
+# Otherwise an invocation of the form "make -f Makefile.common" will set
+# MAKEFILE_LIST to "Makefile.common" which will fail to match the
+# pattern %/Makefile.common.
+#
+MAKEFILE_PATHS = $(foreach makefile,$(MAKEFILE_LIST),$(abspath $(makefile)))
+PROOF_ROOT = $(dir $(filter %/Makefile.common,$(MAKEFILE_PATHS)))
+
+CBMC_ROOT = $(shell dirname $(PROOF_ROOT))
+PROOF_STUB = $(CBMC_ROOT)/stubs
+PROOF_SOURCE = $(CBMC_ROOT)/sources
+
+# Project-specific definitions to override default definitions below
+#   * Makefile-project-defines will never be overwritten
+#   * Makefile-template-defines will be overwritten each time the
+#     proof templates are updated
+sinclude $(PROOF_ROOT)/Makefile-project-defines
+sinclude $(PROOF_ROOT)/Makefile-template-defines
+
+# SRCDIR is the path to the root of the source tree
+SRCDIR ?= $(abspath ../..)
+
+# PROOFDIR is the path to the directory containing the proof harness
+PROOFDIR ?= $(abspath .)
+
+# Path to the root of the cbmc project.
+#
+# Projects generally have a directory $(CBMCDIR) with subdirectories
+# $(CBMCDIR)/proofs containing the proofs and maybe $(CBMCDIR)/stubs
+# containing the stubs used in the proof.  This Makefile is generally
+# at $(CBMCDIR)/proofs/Makefile.common.
+CBMCDIR ?= $(PROOF_ROOT)/cbmc
+
+# Default CBMC flags used for property checking and coverage checking
+CBMCFLAGS += --unwind 1 $(CBMC_UNWINDSET) --flush
+
+# Do property checking with the external SAT solver given by
+# EXTERNAL_SAT_SOLVER.  Do coverage checking with the default solver,
+# since coverage checking requires the use of an incremental solver.
+# The EXTERNAL_SAT_SOLVER variable is typically set (if it is at all)
+# as an environment variable or as a makefile variable in
+# Makefile-project-defines.
+#
+# For a particular proof, if the default solver is faster, do property
+# checking with the default solver by including this definition in the
+# proof Makefile:
+#         USE_EXTERNAL_SAT_SOLVER =
+#
+ifneq ($(strip $(EXTERNAL_SAT_SOLVER)),)
+   USE_EXTERNAL_SAT_SOLVER ?= --external-sat-solver $(EXTERNAL_SAT_SOLVER)
+endif
+CHECKFLAGS += $(USE_EXTERNAL_SAT_SOLVER)
+
+# Job pools
+# For version of Litani that are new enough (where `litani print-capabilities`
+# prints "pools"), proofs for which `EXPENSIVE = true` is set can be added to a
+# "job pool" that restricts how many expensive proofs are run at a time. All
+# other proofs will be built in parallel as usual.
+#
+# In more detail: all compilation, instrumentation, and report jobs are run with
+# full parallelism as usual, even for expensive proofs. The CBMC jobs for
+# non-expensive proofs are also run in parallel. The only difference is that the
+# CBMC safety checks and coverage checks for expensive proofs are run with a
+# restricted parallelism level. At any one time, only N of these jobs are run at
+# once, amongst all the proofs.
+#
+# To configure N, Litani needs to be initialized with a pool called "expensive".
+# For example, to only run two CBMC safety/coverage jobs at a time from amongst
+# all the proofs, you would initialize litani like
+#         litani init --pools expensive:2
+# The run-cbmc-proofs.py script takes care of this initialization through the
+# --expensive-jobs-parallelism flag.
+#
+# To enable this feature, set
+# the ENABLE_POOLS variable when running Make, like
+#         `make ENABLE_POOLS=true report`
+# The run-cbmc-proofs.py script takes care of this through the
+# --restrict-expensive-jobs flag.
+
+ifeq ($(strip $(ENABLE_POOLS)),)
+  POOL =
+else ifeq ($(strip $(EXPENSIVE)),)
+  POOL =
+else
+  POOL = --pool expensive
+endif
+
+# Similar to the pool feature above. If Litani is new enough, enable
+# profiling CBMC's memory use.
+ifeq ($(strip $(ENABLE_MEMORY_PROFILING)),)
+  MEMORY_PROFILING =
+else
+  MEMORY_PROFILING = --profile-memory
+endif
+
+# Property checking flags
+#
+# Each variable below controls a specific property checking flag
+# within CBMC. If desired, a property flag can be disabled within
+# a particular proof by nulling the corresponding variable. For
+# instance, the following line:
+#
+#     CHECK_FLAG_POINTER_CHECK =
+#
+# would disable the --pointer-check CBMC flag within:
+#   * an entire project when added to Makefile-project-defines
+#   * a specific proof when added to the harness Makefile
+
+CBMC_FLAG_MALLOC_MAY_FAIL ?= --malloc-may-fail
+CBMC_FLAG_MALLOC_FAIL_NULL ?= --malloc-fail-null
+CBMC_FLAG_BOUNDS_CHECK ?= --bounds-check
+CBMC_FLAG_CONVERSION_CHECK ?= --conversion-check
+CBMC_FLAG_DIV_BY_ZERO_CHECK ?= --div-by-zero-check
+CBMC_FLAG_FLOAT_OVERFLOW_CHECK ?= --float-overflow-check
+CBMC_FLAG_NAN_CHECK ?= --nan-check
+CBMC_FLAG_POINTER_CHECK ?= --pointer-check
+CBMC_FLAG_POINTER_OVERFLOW_CHECK ?= --pointer-overflow-check
+CBMC_FLAG_POINTER_PRIMITIVE_CHECK ?= --pointer-primitive-check
+CBMC_FLAG_SIGNED_OVERFLOW_CHECK ?= --signed-overflow-check
+CBMC_FLAG_UNDEFINED_SHIFT_CHECK ?= --undefined-shift-check
+CBMC_FLAG_UNSIGNED_OVERFLOW_CHECK ?= --unsigned-overflow-check
+CBMC_FLAG_UNWINDING_ASSERTIONS ?= --unwinding-assertions
+
+# CBMC flags used for property checking
+
+CHECKFLAGS += $(CBMC_FLAG_MALLOC_MAY_FAIL)
+CHECKFLAGS += $(CBMC_FLAG_MALLOC_FAIL_NULL)
+CHECKFLAGS += $(CBMC_FLAG_BOUNDS_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_CONVERSION_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_DIV_BY_ZERO_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_FLOAT_OVERFLOW_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_NAN_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_POINTER_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_POINTER_OVERFLOW_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_POINTER_PRIMITIVE_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_SIGNED_OVERFLOW_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_UNDEFINED_SHIFT_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_UNSIGNED_OVERFLOW_CHECK)
+CHECKFLAGS += $(CBMC_FLAG_UNWINDING_ASSERTIONS)
+
+# CBMC flags used for coverage checking
+
+COVERFLAGS += $(CBMC_FLAG_MALLOC_MAY_FAIL)
+COVERFLAGS += $(CBMC_FLAG_MALLOC_FAIL_NULL)
+
+# Additional CBMC flag to CBMC control verbosity.
+#
+# Meaningful values are
+# 0 none
+# 1 only errors
+# 2 + warnings
+# 4 + results
+# 6 + status/phase information
+# 8 + statistical information
+# 9 + progress information
+# 10 + debug info
+#
+# Uncomment the following line or set in Makefile-project-defines
+# CBMC_VERBOSITY ?= --verbosity 4
+
+# Additional CBMC flag to control how CBMC treats static variables.
+#
+# NONDET_STATIC is a list of flags of the form --nondet-static
+# and --nondet-static-exclude VAR.  The --nondet-static flag causes
+# CBMC to initialize static variables with unconstrained value
+# (ignoring initializers and default zero-initialization).  The
+# --nondet-static-exclude VAR excludes VAR for the variables
+# initialized with unconstrained values.
+NONDET_STATIC ?= ""
+
+# Flags to pass to goto-cc for compilation and linking
+COMPILE_FLAGS ?=
+LINK_FLAGS ?=
+
+# Preprocessor include paths -I...
+INCLUDES ?=
+
+# Preprocessor definitions -D...
+DEFINES ?=
+
+# CBMC object model
+#
+# CBMC_OBJECT_BITS is the number of bits in a pointer CBMC uses for
+# the id of the object to which a pointer is pointing.  CBMC uses 8
+# bits for the object id by default. The remaining bits in the pointer
+# are used for offset into the object.  This limits the size of the
+# objects that CBMC can model.  This Makefile defines this bound on
+# object size to be CBMC_MAX_OBJECT_SIZE.  You are likely to get
+# unexpected results if you try to malloc an object larger than this
+# bound.
+CBMC_OBJECT_BITS ?= 8
+
+# CBMC loop unwinding (Normally set in the proof Makefile)
+#
+# UNWINDSET is a list of pairs of the form foo.1:4 meaning that
+# CBMC should unwind loop 1 in function foo no more than 4 times.
+# For historical reasons, the number 4 is one more than the number
+# of times CBMC actually unwinds the loop.
+UNWINDSET ?=
+
+# CBMC function removal (Normally set set in the proof Makefile)
+#
+# REMOVE_FUNCTION_BODY is a list of function names.  CBMC will "undefine"
+# the function, and CBMC will treat the function as having no side effects
+# and returning an unconstrained value of the appropriate return type.
+# The list should include the names of functions being stubbed out.
+REMOVE_FUNCTION_BODY ?=
+
+# The project source files (Normally set set in the proof Makefile)
+#
+# PROJECT_SOURCES is the list of project source files to compile,
+# including the source file defining the function under test.
+PROJECT_SOURCES ?=
+
+# The proof source files (Normally set in the proof Makefile)
+#
+# PROOF_SOURCES is the list of proof source files to compile, including
+# the proof harness, and including any function stubs being used.
+PROOF_SOURCES ?=
+
+# The number of seconds that CBMC should be allowed to run for before
+# being forcefully terminated. Currently, this is set to be less than
+# the time limit for a CodeBuild job, which is eight hours. If a proof
+# run takes longer than the time limit of the CI environment, the
+# environment will halt the proof run without updating the Litani
+# report, making the proof run appear to "hang".
+CBMC_TIMEOUT ?= 21600
+
+# Proof writers could add function contracts in their source code.
+# These contracts are ignored by default, but may be enabled in two distinct
+# contexts using the following two variables:
+# 1. To check whether one or more function contracts are sound with respect to
+#    the function implementation, CHECK_FUNCTION_CONTRACTS should be a list of
+#    function names.
+# 2. To replace calls to certain functions with their correspondent function
+#    contracts, USE_FUNCTION_CONTRACTS should be a list of function names.
+#    One must check separately whether a function contract is sound before
+#    replacing it in calling contexts.
+CHECK_FUNCTION_CONTRACTS ?= ""
+CBMC_CHECK_FUNCTION_CONTRACTS := $(patsubst %,--enforce-contract %, $(CHECK_FUNCTION_CONTRACTS))
+
+USE_FUNCTION_CONTRACTS ?= ""
+CBMC_USE_FUNCTION_CONTRACTS := $(patsubst %,--replace-call-with-contract %, $(USE_FUNCTION_CONTRACTS))
+
+# Similarly, proof writers could also add loop contracts in their source code
+# to obtain unbounded correctness proofs. Unlike function contracts, loop
+# contracts are not reusable and thus are checked and used simultaneously.
+# These contracts are also ignored by default, but may be enabled by setting
+# the APPLY_LOOP_CONTRACTS variable to 1.
+APPLY_LOOP_CONTRACTS ?= 0
+
+################################################################
+################################################################
+## Section II: This section is for project-specific definitions
+
+
+################################################################
+################################################################
+## Section II: This section defines the process of running a proof
+##
+## There should be no reason to edit anything below this line.
+
+################################################################
+# Paths
+
+CBMC ?= cbmc
+GOTO_ANALYZER ?= goto-analyzer
+GOTO_CC ?= goto-cc
+GOTO_INSTRUMENT ?= goto-instrument
+VIEWER ?= cbmc-viewer
+MAKE_SOURCE ?= make-source
+VIEWER2 ?= cbmc-viewer
+CMAKE ?= cmake
+ARPA ?= @echo "You must set ARPA in Makefile-project-defines to run arpa in this project"; false
+
+GOTODIR ?= $(PROOFDIR)/gotos
+LOGDIR ?= $(PROOFDIR)/logs
+
+PROJECT ?= project
+PROOF ?= proof
+
+HARNESS_GOTO ?= $(GOTODIR)/$(HARNESS_FILE)
+PROJECT_GOTO ?= $(GOTODIR)/$(PROJECT)
+PROOF_GOTO ?= $(GOTODIR)/$(PROOF)
+
+ARPA_BLDDIR ?= $(abspath $(PROOFDIR)/arpa_cmake)
+ARPA_COMP_CMDS ?= $(ARPA_BLDDIR)/compile_commands.json
+
+################################################################
+# Useful macros for values that are hard to reference
+SPACE :=$() $()
+COMMA :=,
+
+################################################################
+# Set C compiler defines
+
+CBMCFLAGS += --object-bits $(CBMC_OBJECT_BITS)
+
+DEFINES += -DCBMC=1
+DEFINES += -DCBMC_OBJECT_BITS=$(CBMC_OBJECT_BITS)
+DEFINES += -DCBMC_MAX_OBJECT_SIZE="(SIZE_MAX>>(CBMC_OBJECT_BITS+1))"
+
+# CI currently assumes cbmc invocation has at most one --unwindset
+ifdef UNWINDSET
+  ifneq ($(strip $(UNWINDSET)),"")
+    CBMC_UNWINDSET := --unwindset $(subst $(SPACE),$(COMMA),$(strip $(UNWINDSET)))
+  endif
+endif
+CBMC_REMOVE_FUNCTION_BODY := $(patsubst %,--remove-function-body %, $(REMOVE_FUNCTION_BODY))
+
+################################################################
+# Build targets that make the relevant .goto files
+
+# Compile project sources
+$(PROJECT_GOTO)1.goto: $(PROJECT_SOURCES)
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_CC) $(CBMC_VERBOSITY) --export-file-local-symbols $(COMPILE_FLAGS) $(INCLUDES) $(DEFINES) $^ -o $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/project_sources-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): building project binary"
+
+# Compile proof sources
+$(PROOF_GOTO)1.goto: $(PROOF_SOURCES)
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_CC) $(CBMC_VERBOSITY) --export-file-local-symbols $(COMPILE_FLAGS) $(INCLUDES) $(DEFINES) $^ -o $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/proof_sources-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): building proof binary"
+
+# Optionally remove function bodies from project sources
+$(PROJECT_GOTO)2.goto: $(PROJECT_GOTO)1.goto
+ifeq ($(REMOVE_FUNCTION_BODY),"")
+	$(LITANI) add-job \
+	  --command 'cp $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): not removing function bodies from project sources"
+else
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) $(CBMC_REMOVE_FUNCTION_BODY) $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/remove_function_body-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): removing function bodies from project sources"
+endif
+
+# Link project and proof sources into the proof harness
+$(HARNESS_GOTO)1.goto: $(PROOF_GOTO)1.goto $(PROJECT_GOTO)2.goto
+	$(LITANI) add-job \
+	  --command '$(GOTO_CC) $(CBMC_VERBOSITY) --function $(HARNESS_ENTRY) $^ -o $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/link_proof_project-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): linking project to proof"
+
+# Optionally check function contracts
+$(HARNESS_GOTO)2.goto: $(HARNESS_GOTO)1.goto
+ifeq ($(CHECK_FUNCTION_CONTRACTS),"")
+	$(LITANI) add-job \
+	  --command 'cp $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): not checking function contracts"
+else
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) $(CBMC_CHECK_FUNCTION_CONTRACTS) $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/check_function_contracts-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): checking function contracts"
+endif
+
+# Optionally replace function calls with function contracts
+$(HARNESS_GOTO)3.goto: $(HARNESS_GOTO)2.goto
+ifeq ($(USE_FUNCTION_CONTRACTS),"")
+	$(LITANI) add-job \
+	  --command 'cp $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): not replacing function calls with function contracts"
+else
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) $(CBMC_USE_FUNCTION_CONTRACTS) $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/use_function_contracts-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): replacing function calls with function contracts"
+endif
+
+# Optionally apply loop contracts
+$(HARNESS_GOTO)4.goto: $(HARNESS_GOTO)3.goto
+ifneq ($(APPLY_LOOP_CONTRACTS),1)
+	$(LITANI) add-job \
+	  --command 'cp $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): not applying loop contracts"
+else
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) --apply-loop-contracts $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/apply_loop_contracts-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): applying loop contracts"
+endif
+
+# Optionally fill static variable with unconstrained values
+$(HARNESS_GOTO)5.goto: $(HARNESS_GOTO)4.goto
+ifeq ($(NONDET_STATIC),"")
+	$(LITANI) add-job \
+	  --command 'cp $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): not setting static variables to nondet"
+else
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) $(NONDET_STATIC) $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/nondet_static-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): setting static variables to nondet"
+endif
+
+# Omit unused functions (sharpens coverage calculations)
+$(HARNESS_GOTO)6.goto: $(HARNESS_GOTO)5.goto
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) --drop-unused-functions $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/drop_unused_functions-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): dropping unused functions"
+
+# Omit initialization of unused global variables (reduces problem size)
+$(HARNESS_GOTO)7.goto: $(HARNESS_GOTO)6.goto
+	$(LITANI) add-job \
+	  --command \
+	    '$(GOTO_INSTRUMENT) $(CBMC_VERBOSITY) --slice-global-inits $^ $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --stdout-file $(LOGDIR)/slice_global_inits-log.txt \
+	  --interleave-stdout-stderr \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): slicing global initializations"
+
+# Final name for proof harness
+$(HARNESS_GOTO).goto: $(HARNESS_GOTO)7.goto
+	$(LITANI) add-job \
+	  --command 'cp $< $@' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage build \
+	  --description "$(PROOF_UID): copying final goto-binary"
+
+################################################################
+# Targets to run Arpa
+
+$(ARPA_BLDDIR):
+	$(CMAKE) $(ARPA_CMAKE_FLAGS) \
+	  -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+	  -B $(ARPA_BLDDIR) \
+	  -S $(SRCDIR)
+
+arpa: $(ARPA_BLDDIR)
+	$(ARPA) run -cc $(ARPA_COMP_CMDS) -r $(SRCDIR)
+
+################################################################
+# Targets to run the analysis commands
+
+$(LOGDIR)/result.txt: $(HARNESS_GOTO).goto
+	$(LITANI) add-job \
+	  $(POOL) \
+	  --command \
+	    '$(CBMC) $(CBMC_VERBOSITY) $(CBMCFLAGS) $(CHECKFLAGS) --trace $<' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --ci-stage test \
+	  --stdout-file $@ \
+	  $(MEMORY_PROFILING) \
+	  --ignore-returns 10 \
+	  --timeout $(CBMC_TIMEOUT) \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --tags "stats-group:safety checks" \
+	  --stderr-file $(LOGDIR)/result-err-log.txt \
+	  --description "$(PROOF_UID): checking safety properties"
+
+$(LOGDIR)/result.xml: $(HARNESS_GOTO).goto
+	$(LITANI) add-job \
+	  $(POOL) \
+	  --command \
+	    '$(CBMC) $(CBMC_VERBOSITY) $(CBMCFLAGS) $(CHECKFLAGS) --trace --xml-ui $<' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --ci-stage test \
+	  --stdout-file $@ \
+	  $(MEMORY_PROFILING) \
+	  --ignore-returns 10 \
+	  --timeout $(CBMC_TIMEOUT) \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --tags "stats-group:safety checks" \
+	  --stderr-file $(LOGDIR)/result-err-log.txt \
+	  --description "$(PROOF_UID): checking safety properties"
+
+$(LOGDIR)/property.xml: $(HARNESS_GOTO).goto
+	$(LITANI) add-job \
+	  --command \
+	    '$(CBMC) $(CBMC_VERBOSITY) $(CBMCFLAGS) $(CHECKFLAGS) --show-properties --xml-ui $<' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --ci-stage test \
+	  --stdout-file $@ \
+	  --ignore-returns 10 \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --stderr-file $(LOGDIR)/property-err-log.txt \
+	  --description "$(PROOF_UID): printing safety properties"
+
+$(LOGDIR)/coverage.xml: $(HARNESS_GOTO).goto
+	$(LITANI) add-job \
+	  $(POOL) \
+	  --command \
+	    '$(CBMC) $(CBMC_VERBOSITY) $(CBMCFLAGS) $(COVERFLAGS) --cover location --xml-ui $<' \
+	  --inputs $^ \
+	  --outputs $@ \
+	  --ci-stage test \
+	  --stdout-file $@ \
+	  $(MEMORY_PROFILING) \
+	  --ignore-returns 10 \
+	  --timeout $(CBMC_TIMEOUT) \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --tags "stats-group:coverage computation" \
+	  --stderr-file $(LOGDIR)/coverage-err-log.txt \
+	  --description "$(PROOF_UID): calculating coverage"
+
+define VIEWER_CMD
+  $(VIEWER) \
+    --result $(LOGDIR)/result.txt \
+    --block $(LOGDIR)/coverage.xml \
+    --property $(LOGDIR)/property.xml \
+    --srcdir $(SRCDIR) \
+    --goto $(HARNESS_GOTO).goto \
+    --htmldir $(PROOFDIR)/html
+endef
+export VIEWER_CMD
+
+$(PROOFDIR)/html: $(LOGDIR)/result.txt $(LOGDIR)/property.xml $(LOGDIR)/coverage.xml
+	$(LITANI) add-job \
+	  --command "$$VIEWER_CMD" \
+	  --inputs $^ \
+	  --outputs $(PROOFDIR)/html \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --ci-stage report \
+	  --stdout-file $(LOGDIR)/viewer-log.txt \
+	  --interleave-stdout-stderr \
+	  --description "$(PROOF_UID): generating report"
+
+
+# Caution: run make-source before running property and coverage checking
+# The current make-source script removes the goto binary
+$(LOGDIR)/source.json:
+	mkdir -p $(dir $@)
+	$(RM) -r $(GOTODIR)
+	$(MAKE_SOURCE) --srcdir $(SRCDIR) --wkdir $(PROOFDIR) > $@
+	$(RM) -r $(GOTODIR)
+
+define VIEWER2_CMD
+  $(VIEWER2) \
+    --result $(LOGDIR)/result.xml \
+    --coverage $(LOGDIR)/coverage.xml \
+    --property $(LOGDIR)/property.xml \
+    --srcdir $(SRCDIR) \
+    --goto $(HARNESS_GOTO).goto \
+    --reportdir $(PROOFDIR)/report
+endef
+export VIEWER2_CMD
+
+# Omit logs/source.json from report generation until make-sources
+# works correctly with Makefiles that invoke the compiler with
+# mutliple source files at once.
+$(PROOFDIR)/report: $(LOGDIR)/result.xml $(LOGDIR)/property.xml $(LOGDIR)/coverage.xml
+	$(LITANI) add-job \
+	  --command "$$VIEWER2_CMD" \
+	  --inputs $^ \
+	  --outputs $(PROOFDIR)/report \
+	  --pipeline-name "$(PROOF_UID)" \
+	  --stdout-file $(LOGDIR)/viewer-log.txt \
+	  --interleave-stdout-stderr \
+	  --ci-stage report \
+	  --description "$(PROOF_UID): generating report"
+
+litani-path:
+	@echo $(LITANI)
+
+# ##############################################################
+# Phony Rules
+#
+#	These rules provide a convenient way to run a single proof up to a
+#	certain stage. Users can browse into a proof directory and run
+#	"make -Bj 3 report" to generate a report for just that proof, or
+#	"make goto" to build the goto binary. Under the hood, this runs litani
+#	for just that proof.
+
+_goto: $(HARNESS_GOTO).goto
+goto:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _goto
+	$(LITANI) run-build
+
+_result: $(LOGDIR)/result.txt
+result:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _result
+	$(LITANI) run-build
+
+_property: $(LOGDIR)/property.xml
+property:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _property
+	$(LITANI) run-build
+
+_coverage: $(LOGDIR)/coverage.xml
+coverage:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _coverage
+	$(LITANI) run-build
+
+_report: $(PROOFDIR)/html
+report:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _report
+	$(LITANI) run-build
+
+_report2: $(PROOFDIR)/report
+report2:
+	$(LITANI) init --project $(PROJECT_NAME)
+	$(MAKE) -B _report2
+	$(LITANI) run-build
+
+
+################################################################
+# Targets to clean up after ourselves
+clean:
+	-$(RM) $(DEPENDENT_GOTOS)
+	-$(RM) TAGS*
+	-$(RM) *~ \#*
+	-$(RM) Makefile.arpa
+	-$(RM) -r $(ARPA_BLDDIR)
+
+veryclean: clean
+	-$(RM) -r html report
+	-$(RM) -r $(LOGDIR) $(GOTODIR)
+
+.PHONY: \
+  _coverage \
+  _goto \
+  _property \
+  _report \
+  _report2 \
+  _result \
+  arpa \
+  clean \
+  coverage \
+  goto \
+  litani-path \
+  property \
+  report \
+  report2 \
+  result \
+  setup_dependencies \
+  testdeps \
+  veryclean \
+  #
+
+################################################################
+
+# Rule for generating cbmc-batch.yaml, used by the CI at
+# https://github.com/awslabs/aws-batch-cbmc/
+
+JOB_OS ?= ubuntu16
+JOB_MEMORY ?= 32000
+
+# Proofs that are expected to fail should set EXPECTED to
+# "FAILED" in their Makefile. Values other than SUCCESSFUL
+# or FAILED will cause a CI error.
+EXPECTED ?= SUCCESSFUL
+
+define yaml_encode_options
+	"$(shell echo $(1) | sed 's/ ,/ /g' | sed 's/ /;/g')"
+endef
+
+CI_FLAGS = $(CBMCFLAGS) $(CHECKFLAGS) $(COVERFLAGS)
+
+cbmc-batch.yaml:
+	@$(RM) $@
+	@echo 'build_memory: $(JOB_MEMORY)' > $@
+	@echo 'cbmcflags: $(strip $(call yaml_encode_options,$(CI_FLAGS)))' >> $@
+	@echo 'coverage_memory: $(JOB_MEMORY)' >> $@
+	@echo 'expected: $(EXPECTED)' >> $@
+	@echo 'goto: $(HARNESS_GOTO).goto' >> $@
+	@echo 'jobos: $(JOB_OS)' >> $@
+	@echo 'property_memory: $(JOB_MEMORY)' >> $@
+	@echo 'report_memory: $(JOB_MEMORY)' >> $@
+
+.PHONY: cbmc-batch.yaml
+
+################################################################
+
+# Run "make echo-proof-uid" to print the proof ID of a proof. This can be
+# used by scripts to ensure that every proof has an ID, that there are
+# no duplicates, etc.
+
+.PHONY: echo-proof-uid
+echo-proof-uid:
+	@echo $(PROOF_UID)
+
+.PHONY: echo-project-name
+echo-project-name:
+	@echo $(PROJECT_NAME)
+
+################################################################
+
+# Project-specific targets requiring values defined above
+sinclude $(PROOF_ROOT)/Makefile-project-targets
+
+# CI-specific targets to drive cbmc in CI
+sinclude $(PROOF_ROOT)/Makefile-project-testing
+
+################################################################
