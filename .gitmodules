@@ -16,4 +16,3 @@
 	path = test/cbmc/litani
 	url = https://github.com/awslabs/aws-build-accumulator.git
 	update = none
-	
