@@ -260,10 +260,10 @@ COMPILE_FLAGS ?=
 LINK_FLAGS ?=
 
 # Preprocessor include paths -I...
-INCLUDES ?=
+INCLUDES += -I$(SRCDIR)/source/include/
 
 # Preprocessor definitions -D...
-DEFINES ?=
+DEFINES += -DOTA_DO_NOT_USE_CUSTOM_CONFIG
 
 # CBMC object model
 #
