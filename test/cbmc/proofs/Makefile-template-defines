@@ -1,0 +1,11 @@
+
+# Absolute path to the root of the source tree.
+#
+SRCDIR ?= $(abspath $(PROOF_ROOT)/../../..)
+
+
+# Absolute path to the litani script.
+#
+LITANI ?= $(abspath $(PROOF_ROOT)/../litani/litani)
+PROJECT_NAME = "AWS IoT Over-the-air Update Library"
+
