@@ -27,7 +27,7 @@ Contributions via pull requests are much appreciated. Before sending us a pull r
 2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
 3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
 4. The size of the PR is small. If the issue requires sizeable code change, you can go with the following:
-    * Break down the PR into independent components and create separate PRs.
+    * Break down the PR into independent components(that do not break the library functionality) and create separate PRs.
     * Else, break down the changes into smaller commits and ensure you have a descriptive commit message.
     * Provide a helpful description of the change.
 
