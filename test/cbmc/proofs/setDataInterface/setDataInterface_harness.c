@@ -33,10 +33,10 @@ void setDataInterface_harness()
     OtaDataInterface_t dataInterface;
     OtaErr_t err;
 
-    /* The input to the setDataInterface is a buffer statically initialized in the 
-        source code with its size defined by OTA_PROTOCOL_BUFFER_SIZE. This macro is 
-        not user configurable and thus the input does not require any constraint. */
-    uint8_t pProtocol[OTA_PROTOCOL_BUFFER_SIZE];
+    /* The input to the setDataInterface is a buffer statically initialized in the
+     *  source code with its size defined by OTA_PROTOCOL_BUFFER_SIZE. This macro is
+     *  not user configurable and thus the input does not require any constraint. */
+    uint8_t pProtocol[ OTA_PROTOCOL_BUFFER_SIZE ];
 
     pDataInterface = &dataInterface;
 
@@ -46,5 +46,4 @@ void setDataInterface_harness()
      *  OtaErrInvalidDataProtocol. */
     __CPROVER_assert( ( err == OtaErrInvalidDataProtocol ) || ( err == OtaErrNone ),
                       "The function return can be either of those values." );
-
 }
