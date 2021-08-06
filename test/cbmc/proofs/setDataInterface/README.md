@@ -1,4 +1,4 @@
-setDataaInterface proof
+setDataInterface proof
 ==============
 
 This directory contains a memory safety proof for setDataInterface.
