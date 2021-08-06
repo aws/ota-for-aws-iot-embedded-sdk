@@ -1,6 +1,5 @@
 { "expected-missing-functions":
   [
-
   ],
   "proof-name": "initFileTransfer_Http",
   "proof-root": "test/cbmc/proofs"
