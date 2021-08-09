@@ -29,7 +29,7 @@ void stringBuilderUInt32Hex_harness()
     size_t bufferSizebytes;
     uint32_t value;
 
-    /* The pBufferSize is the size of the pBuffer. The pBuffer is statically initalized with
+    /* The bufferSizebytes is the size of the pBuffer. The pBuffer is statically initialized with
      *  a size of U32_MAX_LEN + 1 in all the functions which call stringBuilderUInt32Decimal. Hence,
      *  the size can never be below that. */
     __CPROVER_assume( bufferSizebytes > U32_MAX_LEN );
