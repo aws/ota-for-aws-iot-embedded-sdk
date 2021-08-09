@@ -17,20 +17,30 @@
  */
 #include "ota_mqtt_private.h"
 
-#define U32_MAX_LEN            10U   
+#define U32_MAX_LEN    10U
 
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex( char * pBuffer,
-                                      size_t bufferSizeBytes,
-                                      uint32_t value );
+                                                               size_t bufferSizeBytes,
+                                                               uint32_t value );
 
-void stringBuilderUInt32Hex_harness(){
-	char* pBuffer;
-	size_t bufferSizebytes;
-	uint32_t value;
-	
-	/* The input to the function is always a non-NULL pointer. */
-	__CPROVER_assume(pBuffer != NULL);
-	__CPROVER_assume(bufferSizebytes >= U32_MAX_LEN);
-	
-	(void) __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex(pBuffer,bufferSizebytes, value);
+void stringBuilderUInt32Hex_harness()
+{
+    char * pBuffer;
+    size_t bufferSizebytes;
+    uint32_t value;
+
+    /* The pBufferSize is the size of the pBuffer. The pBuffer is statically initalized with
+     *  a size of U32_MAX_LEN + 1 in all the functions which call stringBuilderUInt32Decimal. Hence,
+     *  the size can never be below that. */
+    __CPROVER_assume( bufferSizebytes > U32_MAX_LEN );
+
+    pBuffer = ( char * ) malloc( bufferSizebytes );
+
+    /* pBuffer is always initialized statically before passing it to the function. Hence,
+     *  it can never be NULL. */
+    __CPROVER_assume( pBuffer != NULL );
+
+    ( void ) __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex( pBuffer, bufferSizebytes, value );
+
+    free( pBuffer );
 }
