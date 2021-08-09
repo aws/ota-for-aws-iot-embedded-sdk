@@ -1,20 +1,20 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-HARNESS_ENTRY = stringBuilder_harness
+HARNESS_ENTRY = subscribeToJobNotificationTopics_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
 
 # This should be a unique identifier for this proof, and will appear on the
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
-PROOF_UID = stringBuilder
+PROOF_UID = subscribeToJobNotificationTopics
 
 DEFINES +=
 INCLUDES +=
 
 REMOVE_FUNCTION_BODY +=
-UNWINDSET +=
+UNWINDSET += strlen.0:100
 
-CBMC_FLAG_UNWINDING_ASSERTIONS =
+CBMC_FLAG_UNWINDING_ASSERTIONS=
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c

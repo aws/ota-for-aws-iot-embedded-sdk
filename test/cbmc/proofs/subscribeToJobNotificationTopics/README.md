@@ -1,7 +1,7 @@
-stringBuilder proof
+subscribeToJobNotificationTopics proof
 ==============
 
-This directory contains a memory safety proof for stringBuilder.
+This directory contains a memory safety proof for subscribeToJobNotificationTopics.
 
 To run the proof.
 -------------
