@@ -12,10 +12,13 @@ DEFINES +=
 INCLUDES +=
 
 REMOVE_FUNCTION_BODY +=
-UNWINDSET += stringBuilderUInt32Hex.unwind.0:8
+UNWINDSET += stringBuilderUInt32Hex.unwind.0:10
+
+CBMC_FLAG_UNWINDING_ASSERTIONS = 
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
+
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
