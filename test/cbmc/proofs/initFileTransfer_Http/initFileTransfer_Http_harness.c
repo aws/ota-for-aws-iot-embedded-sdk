@@ -46,13 +46,12 @@ void initFileTransfer_Http_harness()
 
     pAgentCtx = &agent;
 
-    /* Initialize the file context from the Agent context. */
     pAgentCtx->fileContext = fileContext;
 
-    /* Updating the function pointer in Http to the stub. */
+    /* The init reference in the http interface will always point to a function address and thus
+     *  can never be NULL. */
     http.init = init;
 
-    /* Update the interface and the Agent. */
     interface.http = http;
     pAgentCtx->pOtaInterface = &interface;
 
