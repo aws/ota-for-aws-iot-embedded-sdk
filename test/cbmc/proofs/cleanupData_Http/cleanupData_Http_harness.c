@@ -42,18 +42,16 @@ void cleanupData_Http_harness()
     OtaHttpInterface_t pHttp;
     OtaInterfaces_t * pInterfaces;
     OtaHttpStatus_t status;
-
     OtaAgentContext_t agent;
     OtaInterfaces_t interface;
 
     pAgentCtx = &agent;
     pInterfaces = &interface;
 
-    /* This assumption is made because the deinit function can never be NULL
-     *  It is always pointing to a function. */
+    /* The deinit reference in the pHttp interface will always be pointing to a function
+     *  address and thus can never be NULL. */
     pHttp.deinit = deinit;
 
-    /* Update the interface and the Agent. */
     pInterfaces->http = pHttp;
     pAgentCtx->pOtaInterface = pInterfaces;
 
