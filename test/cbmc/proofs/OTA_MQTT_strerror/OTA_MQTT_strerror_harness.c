@@ -35,6 +35,6 @@ void OTA_MQTT_strerror_harness()
     pErrorMsg = OTA_MQTT_strerror( status );
 
     /* The caller of this function assumes that the return value is never NULL. */
-    __CPROVER_assert( pErrorMsg != NULL, 
-    "The function return is expected to be string representation of MQTT connection status and thus cannot be NULL." );
+    __CPROVER_assert( pErrorMsg != NULL,
+                      "The function return is expected to be string representation of MQTT connection status and thus cannot be NULL." );
 }
