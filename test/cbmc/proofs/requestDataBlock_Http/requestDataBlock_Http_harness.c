@@ -46,8 +46,6 @@ void requestDataBlock_Http_harness()
     OtaErr_t err;
     OtaAgentContext_t agent;
 
-    /* Allocating memory to the agent context. The agent can never be NULL since it
-     *  is a globally declared variable. */
     pAgentCtx = &agent;
 
     /* Initialize the file context field in the Agent context. */
@@ -55,15 +53,16 @@ void requestDataBlock_Http_harness()
     http.request = request;
     interface.http = http;
 
-    /* File size can never be zero and is verified in the validateAndStartJob() function.*/
+    /* requestDataBlock_Http assumes that the file size is not zero.
+     *  This is enforced by the validateAndStartJob function, which is
+     *  always called before the requestDataBlock_Http function.*/
     __CPROVER_assume( pAgentCtx->fileContext.fileSize != 0 );
 
-    /* Initialize the interface in the Agent Context. */
     pAgentCtx->pOtaInterface = &interface;
 
     err = requestDataBlock_Http( pAgentCtx );
 
-    /*Assert to check if the return from the function is of expected values. */
+    /* Assert to check if the return from the function is of expected values. */
     __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrRequestFileBlockFailed ),
                       "The function return should be either of these values" );
 }
