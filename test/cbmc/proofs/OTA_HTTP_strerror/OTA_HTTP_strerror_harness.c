@@ -38,5 +38,5 @@ void OTA_HTTP_strerror_harness()
     /* The function returns a string which is never a NULL. If it does, then
      *  there is a problem. */
     __CPROVER_assert( pErrorMsg != NULL,
-                      "The return from the function is expected to be a string representation of status and thus cannot be NULL." );
+                      "Invalid return value from OTA_MQTT_strerror: Expected a non-null value." );
 }
