@@ -79,5 +79,5 @@ void decodeFileBlock_Http_harness()
     /* Free allocated memory. */
     free( *pPayload );
     free( pMessageBuffer );
-    free(pPayload);
+    free( pPayload );
 }
