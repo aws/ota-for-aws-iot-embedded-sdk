@@ -8,7 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = setControlInterface
 
-DEFINES +=
+DEFINES += -DconfigENABLED_CONTROL_PROTOCOL=OTA_CONTROL_OVER_MQTT
 
 REMOVE_FUNCTION_BODY +=
 UNWINDSET +=
