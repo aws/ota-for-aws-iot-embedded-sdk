@@ -32,10 +32,10 @@ size_t stringBuilder( char * pBuffer,
     size_t stringLength;
 
     __CPROVER_assert(pBuffer != NULL, 
-        "pBuffer is always statically initialized in the subscribeToJobNotificationTopics and hence cannot be NULL");
+        "Unable to use pBuffer: passed pointer value is NULL.");
 
     __CPROVER_assert(strings != NULL,
-        "strings is always statically initialized in the subscribeToJobNotificationTopics and hence cannot be NULL");
+         "Unable to use strings: passed pointer value is NULL.");
 
     /* The size of the static buffer is declared inside subscribeToJobNotificationTopics 
         function. */
