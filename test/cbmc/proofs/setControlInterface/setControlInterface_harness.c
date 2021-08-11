@@ -27,6 +27,9 @@
 /* Ota interface includes. */
 #include "ota_interface_private.h"
 
+/* The controlInterface function requires this macro to be initialized to OTA_CONTROL_OVER_MQTT. */
+#define configENABLED_CONTROL_PROTOCOL OTA_CONTROL_OVER_MQTT  
+
 void setControlInterface_harness()
 {
     OtaControlInterface_t * pControlInterface;
