@@ -31,6 +31,12 @@ size_t stringBuilder( char * pBuffer,
 {
     size_t stringLength;
 
+    __CPROVER_assert(pBuffer != NULL, 
+        "pBuffer is always statically initialized in the subscribeToJobNotificationTopics and hence cannot be NULL");
+
+    __CPROVER_assert(strings != NULL,
+        "strings is always statically initialized in the subscribeToJobNotificationTopics and hence cannot be NULL");
+
     /* The size of the static buffer is declared inside subscribeToJobNotificationTopics 
         function. */
     __CPROVER_assume( stringLength > 0U && stringLength < MAX_TOPIC_NOTIFY_NEXT_BUFFER_SIZE );
@@ -64,9 +70,6 @@ void subscribeToJobNotificationTopics_harness()
     agent.pOtaInterface = &otaInterface;
 
     pAgentCtx = &agent;
-
-    /* The agent can never be NULL as it is defined as a global variable. */
-    __CPROVER_assume( pAgentCtx != NULL );
 
     ( void ) __CPROVER_file_local_ota_mqtt_c_subscribeToJobNotificationTopics( pAgentCtx );
 }
