@@ -1,20 +1,10 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
-
-/*
- * Insert copyright notice
- */
-
 /**
  * @file stringBuilderUInt32Hex_harness.c
  * @brief Implements the proof harness for stringBuilderUInt32Hex function.
  */
-
-/*
- * Insert project header files that
- *   - include the declaration of the function
- *   - include the types needed to declare function arguments
- */
+/* Include files required for mqtt interface. */
 #include "ota_mqtt_private.h"
 
 #define U32_MAX_LEN    10U
