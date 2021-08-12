@@ -1,19 +1,8 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
-
-/*
- * Insert copyright notice
- */
-
 /**
  * @file stringBuilder_harness.c
  * @brief Implements the proof harness for stringBuilder function.
- */
-
-/*
- * Insert project header files that
- *   - include the declaration of the function
- *   - include the types needed to declare function arguments
  */
 #include "ota_mqtt_private.h"
 
