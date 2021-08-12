@@ -32,8 +32,10 @@ void stringBuilder_harness()
     size_t numStrings;
     size_t stringSize;
     size_t i;
+    size_t stringLength;
 
-    /* The size of the pBuffer is always equal to the bufferSizeBytes. */
+    /* The pBuffer is always statically allocated with a size greater than 0. */
+    __CPROVER_assume(bufferSizeBytes > 0);
     pBuffer = ( char * ) malloc( bufferSizeBytes );
 
     /* pBuffer can never be NULL since it it always initialized by a null character. */
@@ -49,7 +51,7 @@ void stringBuilder_harness()
      *  passing to the function. */
     __CPROVER_assume( strings != NULL );
     
-    for( i = 0; i < numStrings; ++i )
+    for( i = 0; i < numStrings-1; ++i )
     {   
         strings[ i ] = ( char * ) malloc( stringSize );
     }
@@ -57,9 +59,7 @@ void stringBuilder_harness()
     /* Strings array is always passed with a NULL string at the end. */
     __CPROVER_assume( strings[ numStrings - 1 ] == NULL );
 
-    i = __CPROVER_file_local_ota_mqtt_c_stringBuilder( pBuffer, bufferSizeBytes, strings );
-
-    assert(i == ((numStrings - 1)*stringSize)); 
+    __CPROVER_file_local_ota_mqtt_c_stringBuilder( pBuffer, bufferSizeBytes, strings );
 
     /* Free the allocated memory. */
     free( pBuffer );
