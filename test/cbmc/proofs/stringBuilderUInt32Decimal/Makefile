@@ -12,9 +12,8 @@ DEFINES +=
 INCLUDES +=
 
 REMOVE_FUNCTION_BODY +=
-UNWINDSET += stringBuilderUInt32Decimal.0:10
-
-CBMC_FLAG_UNWINDING_ASSERTIONS =
+UNWINDSET +=  __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal.0:40
+UNWINDSET +=  __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal.1:40
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
