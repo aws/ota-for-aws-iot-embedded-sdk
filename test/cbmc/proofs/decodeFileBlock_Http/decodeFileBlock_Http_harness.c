@@ -47,7 +47,7 @@ void decodeFileBlock_Http_harness()
 
     /* These variables can never be NULL since they have been declared
      * statically in the decodeAndStoreDataBlock() function. It is the only function that calls
-     * decodeFileBlock function.  */
+     * decodeFileBlock_Http function.  */
     pFileId = &fileId;
     pBlockId = &blockId;
     pBlockSize = &blockSize;
