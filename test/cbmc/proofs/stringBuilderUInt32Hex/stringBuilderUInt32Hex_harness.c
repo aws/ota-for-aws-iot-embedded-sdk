@@ -1,5 +1,6 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file stringBuilderUInt32Hex_harness.c
  * @brief Implements the proof harness for stringBuilderUInt32Hex function.
