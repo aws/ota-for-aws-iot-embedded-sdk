@@ -45,8 +45,9 @@ void decodeFileBlock_Http_harness()
     int32_t blockSize;
     size_t payloadSize;
 
-    /* Initializing the unconstrained variables. These variables can never be NUll
-     *  since they have been declared statically in the decodeAndStoreDataBlock() function. */
+    /* These variables can never be NULL since they have been declared
+     * statically in the decodeAndStoreDataBlock() function. It is the only function that calls
+     * decodeFileBlock function.  */
     pFileId = &fileId;
     pBlockId = &blockId;
     pBlockSize = &blockSize;
@@ -59,8 +60,8 @@ void decodeFileBlock_Http_harness()
     *pPayload = ( char * ) malloc( messageSize );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
-    /* size can never be NULL since it is a pointer to the payload buffer which is initialized
-     *  statically in the ingestDataBlock() Function. */
+    /* The memory address pointed by the pPayload can never be NULL since it is initialized in the
+     *  decodeAndStoreDataBlock function.  */
     __CPROVER_assume( *pPayload != NULL );
 
     pPayloadSize = &payloadSize;
@@ -74,7 +75,7 @@ void decodeFileBlock_Http_harness()
 
     /* Assert because the function cannot return values other OtaErrNone and OtaErrInvalidArg. */
     __CPROVER_assert( ( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ) ),
-                      "Function return should be either None or invalid argument" );
+                      "Invalid function return value: Expected value should be either OtaErrNone or OtaErrInvalidArg." );
 
     /* Free allocated memory. */
     free( *pPayload );
