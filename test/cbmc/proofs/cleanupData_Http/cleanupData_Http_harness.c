@@ -60,5 +60,5 @@ void cleanupData_Http_harness()
     /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */
     __CPROVER_assert( ( status == OtaErrNone ) ||
                       ( status == OtaErrCleanupDataFailed ),
-                      "The function return should be either OtaErrNone or OtaErrCleanupDataFailed" );
+                      "Invalid return value from cleanupData_Http: Expected either OtaErrNone or OtaErrCleanupDataFailed." );
 }
