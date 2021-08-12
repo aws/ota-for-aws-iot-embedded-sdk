@@ -60,5 +60,5 @@ void initFileTransfer_Http_harness()
     /* The function should either return OtaErrNone or OtaErrCleanupDataFailed. */
     __CPROVER_assert( ( status == OtaErrNone ) ||
                       ( status == OtaErrInitFileTransferFailed ),
-                      "The function return should be either OtaErrNone or OtaErrCleanupDataFailed" );
+                      "Invalid return value from initFileTransfer_Http:Expected value is either OtaErrNone or OtaErrInitFileTransferFailed." );
 }
