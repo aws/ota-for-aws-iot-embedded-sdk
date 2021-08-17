@@ -5,7 +5,7 @@
  * @file subscribeToJobNotificationTopics_harness.c
  * @brief Implements the proof harness for subscribeToJobNotificationTopics function.
  */
-/* Inclue files required for mqtt interface. */
+/* Include files required for mqtt interface. */
 #include "ota_mqtt_private.h"
 
 /* Maximum size of the pBuffer for subscribeToJobNotificationTopics function. */
