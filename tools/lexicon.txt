@@ -739,6 +739,8 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
+stringbuilder
 strlength
 struct
 structs
@@ -796,6 +798,7 @@ unistd
 unsignedversion32
 unsubscribeflag
 unsubscribeonshutdown
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
