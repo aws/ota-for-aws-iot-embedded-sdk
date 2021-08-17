@@ -1,7 +1,7 @@
 
 # Absolute path to the root of the source tree.
 #
-SRCDIR ?= $(abspath $(PROOF_ROOT)/../../../../ota-for-aws-iot-embedded-sdk/)
+SRCDIR ?= $(abspath $(PROOF_ROOT)/../../../)
 
 
 # Absolute path to the litani script.
