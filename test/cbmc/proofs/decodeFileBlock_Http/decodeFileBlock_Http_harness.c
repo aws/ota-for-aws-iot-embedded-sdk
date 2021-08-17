@@ -46,7 +46,7 @@ void decodeFileBlock_Http_harness()
     size_t payloadSize;
 
     /* These variables can never be NULL since they have been declared
-     * statically in the decodeAndStoreDataBlock() function. It is the only function that calls
+     * statically in the decodeAndStoreDataBlock function. It is the only function that calls
      * decodeFileBlock_Http function.  */
     pFileId = &fileId;
     pBlockId = &blockId;
@@ -67,7 +67,7 @@ void decodeFileBlock_Http_harness()
     pPayloadSize = &payloadSize;
 
     /* pMessageBuffer is an statically declared event message buffer which is passed from processDataHandler
-     * to the decodeAndStoreDatBlock function. */
+     * to the decodeAndStoreDataBlock function. */
     __CPROVER_assume( pMessageBuffer != NULL );
 
     err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId,
