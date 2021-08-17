@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+buildStatusMessageReceiving proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for buildStatusMessageReceiving.
 
 To run the proof.
 -------------

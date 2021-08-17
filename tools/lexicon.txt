@@ -41,6 +41,7 @@ br
 buf
 buffersizebytes
 bufferused
+buildstatusmessagereceiving
 bytesreceived
 bytessent
 bytestorecv
@@ -739,6 +740,8 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringbuilder
+stringsize
 strlength
 struct
 structs
