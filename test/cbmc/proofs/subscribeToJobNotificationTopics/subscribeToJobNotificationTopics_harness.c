@@ -1,44 +1,34 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
 
-/*
- * Insert copyright notice
- */
-
 /**
  * @file subscribeToJobNotificationTopics_harness.c
  * @brief Implements the proof harness for subscribeToJobNotificationTopics function.
  */
-
-/*
- * Insert project header files that
- *   - include the declaration of the function
- *   - include the types needed to declare function arguments
- */
-
-/* Inclue files required for the function. */
+/* Inclue files required for mqtt interface. */
 #include "ota_mqtt_private.h"
 
-#define MAX_TOPIC_NOTIFY_NEXT_BUFFER_SIZE   96U
+/* Maximum size of the pBuffer for subscribeToJobNotificationTopics function. */
+#define MAX_TOPIC_NOTIFY_NEXT_BUFFER_SIZE    96U
 
 /* Mangled Name for static function subscribeToJobNotificationTopics. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx );
 
 /* Stubs required for the test functions. */
-size_t stringBuilder( char * pBuffer,
-                      size_t bufferSizeBytes,
-                      const char * strings[] )
+size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
+                                                      size_t bufferSizeBytes,
+                                                      const char * strings[] )
 {
     size_t stringLength;
 
-    __CPROVER_assert(pBuffer != NULL, 
-        "Unable to use pBuffer: passed pointer value is NULL.");
+    __CPROVER_assert( pBuffer != NULL,
+                      "Unable to use pBuffer: passed pointer value is NULL." );
 
-    __CPROVER_assert(strings != NULL,
-         "Unable to use strings: passed pointer value is NULL.");
+    __CPROVER_assert( strings != NULL,
+                      "Unable to use strings: passed pointer value is NULL." );
 
-    /* The size of the static buffer is declared inside subscribeToJobNotificationTopics 
-        function. */
+    /* The size of the static pbuffer is declared inside subscribeToJobNotificationTopics
+     * function. */
     __CPROVER_assume( stringLength > 0U && stringLength < MAX_TOPIC_NOTIFY_NEXT_BUFFER_SIZE );
 
     return stringLength;
@@ -62,11 +52,10 @@ void subscribeToJobNotificationTopics_harness()
 
     OtaInterfaces_t otaInterface;
 
-    /* Initialize the mqtt interface with the resepctive subscribe
-        function. */
+    /* subscribe reference inside the mqtt interface is expected to be initialized by
+     * the user and thus assumed to be non-NULL.*/
     otaInterface.mqtt.subscribe = subscribe;
 
-    /* Initialize the agent with the interface. */
     agent.pOtaInterface = &otaInterface;
 
     pAgentCtx = &agent;
