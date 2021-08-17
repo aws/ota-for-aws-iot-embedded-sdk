@@ -20,5 +20,5 @@ void harness()
 {
     /* Insert argument declarations */
 
-    <__FUNCTION_NAME__> ( /* Insert arguments */ );
+    < __FUNCTION_NAME__ > ( /* Insert arguments */ );
 }
