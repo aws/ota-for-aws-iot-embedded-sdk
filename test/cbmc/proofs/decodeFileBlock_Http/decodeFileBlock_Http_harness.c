@@ -61,23 +61,22 @@ void decodeFileBlock_Http_harness()
     pMessageBuffer = ( uint8_t * ) malloc( messageSize );
 
     /* The memory address pointed by the pPayload can never be NULL since it is initialized in the
-     *  decodeAndStoreDataBlock function.  */
+     * decodeAndStoreDataBlock function.  */
     __CPROVER_assume( *pPayload != NULL );
 
     pPayloadSize = &payloadSize;
 
-    /* This assumption is made because the pMessageBuffer is always pointing to a
-     *  static array. */
+    /* pMessageBuffer is an statically declared event message buffer which is passed from processDataHandler
+     * to the decodeAndStoreDatBlock function. */
     __CPROVER_assume( pMessageBuffer != NULL );
 
     err = decodeFileBlock_Http( pMessageBuffer, messageSize, pFileId,
                                 pBlockId, pBlockSize, pPayload, pPayloadSize );
 
-    /* Assert because the function cannot return values other OtaErrNone and OtaErrInvalidArg. */
+    /* The function cannot return values other than OtaErrNone and OtaErrInvalidArg. */
     __CPROVER_assert( ( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ) ),
                       "Invalid function return value: Expected value should be either OtaErrNone or OtaErrInvalidArg." );
 
-    /* Free allocated memory. */
     free( *pPayload );
     free( pMessageBuffer );
     free( pPayload );
