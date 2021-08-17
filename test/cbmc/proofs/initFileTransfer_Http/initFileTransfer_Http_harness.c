@@ -48,8 +48,8 @@ void initFileTransfer_Http_harness()
 
     pAgentCtx->fileContext = fileContext;
 
-    /* The init reference in the http interface will always point to a function address and thus
-     *  can never be NULL. */
+    /* The init reference in the http interface is expected to be initialized by the user and is enforced in
+       the initFileTransfer_Http function. */
     http.init = init;
 
     interface.http = http;
