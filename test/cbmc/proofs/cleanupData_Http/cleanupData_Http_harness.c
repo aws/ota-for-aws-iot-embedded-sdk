@@ -48,8 +48,8 @@ void cleanupData_Http_harness()
     pAgentCtx = &agent;
     pInterfaces = &interface;
 
-    /* The deinit reference in the pHttp interface will always be pointing to a function
-     *  address and thus can never be NULL. */
+    /* The deinit function in the http interface is expected to be initialized by the user and
+     * hence cannot be NULL.*/
     pHttp.deinit = deinit;
 
     pInterfaces->http = pHttp;
