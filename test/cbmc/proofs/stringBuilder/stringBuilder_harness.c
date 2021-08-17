@@ -1,5 +1,6 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file stringBuilder_harness.c
  * @brief Implements the proof harness for stringBuilder function.
@@ -23,14 +24,14 @@ void stringBuilder_harness()
     size_t stringLength;
 
     /* The pBuffer is statically allocated with a non-zero size before passing it to the stringBuilder function.*/
-    __CPROVER_assume(bufferSizeBytes > 0);
+    __CPROVER_assume( bufferSizeBytes > 0 );
     pBuffer = ( char * ) malloc( bufferSizeBytes );
 
     /* pBuffer can never be NULL since it it always initialized before passing it to the stringBuilder function. */
     __CPROVER_assume( pBuffer != NULL );
 
     /* The minimum and the maximum number of strings inside the numStrings is 11. */
-    __CPROVER_assume( numStrings > 0 && numStrings < UINT32_MAX);
+    __CPROVER_assume( numStrings > 0 && numStrings < UINT32_MAX );
 
     /* Initializing an array of strings with size numStrings. */
     strings = ( char ** ) malloc( numStrings * sizeof( char * ) );
@@ -38,9 +39,9 @@ void stringBuilder_harness()
     /* The strings array cannot be NULL as it is always initialized before
      *  passing to the function. */
     __CPROVER_assume( strings != NULL );
-    
-    for( i = 0; i < numStrings-1; ++i )
-    {   
+
+    for( i = 0; i < numStrings - 1; ++i )
+    {
         strings[ i ] = ( char * ) malloc( stringSize );
     }
 
