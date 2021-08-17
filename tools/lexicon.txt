@@ -28,6 +28,7 @@ bitmaplen
 bitmask
 blockbitmapmaxsize
 blockbitmapsize
+blockid
 blockindex
 blockindex
 blockoffset
@@ -47,6 +48,7 @@ bytestosend
 c89
 c90
 ca
+cbmc
 cbor
 cborarray
 cborerror
@@ -98,6 +100,7 @@ cwd
 datablock
 datacallback
 datalength
+decodeandstoredatablock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -113,6 +116,7 @@ destlen
 destoffset
 developerguide
 didn
+div
 dns
 docmodel
 docparam
@@ -548,6 +552,7 @@ pfilepath
 pfinalfile
 pformat
 phostname
+phttp
 pjobdocjson
 pjobid
 pjobname
@@ -702,6 +707,7 @@ sendtimeout
 sendtimeoutms
 serverfileid
 serverinfo
+setcontrolinterface
 setdatainterface
 setimagestate
 setplatformimagestate
@@ -715,6 +721,7 @@ snihostname
 sockaddr
 sockets_invalid_parameter
 socketstatus
+spdx
 srand
 src
 ssl
@@ -801,6 +808,7 @@ urlsize
 useraborthandler
 ustopiclen
 utils
+validateandstartjob
 validatedatablock
 valuelength
 verifyactivejobstatus
