@@ -740,6 +740,8 @@ streamnamemaxsize
 streamnamesize
 strerror
 strlength
+stringbuilder
+stringsize
 struct
 structs
 sublicense
@@ -796,6 +798,7 @@ unistd
 unsignedversion32
 unsubscribeflag
 unsubscribeonshutdown
+unsubscribefromjobnotificationtopic
 updatedby
 updatefilepath
 updatefilepathsize
