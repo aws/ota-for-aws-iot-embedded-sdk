@@ -13,7 +13,6 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
 
 void stringBuilder_harness()
 {
-    /* Insert argument declarations */
     char * pBuffer;
     size_t bufferSizeBytes;
     char ** strings;
@@ -23,11 +22,11 @@ void stringBuilder_harness()
     size_t i;
     size_t stringLength;
 
-    /* The pBuffer is always statically allocated with a size greater than 0. */
+    /* The pBuffer is statically allocated with a non-zero size before passing it to the stringBuilder function.*/
     __CPROVER_assume(bufferSizeBytes > 0);
     pBuffer = ( char * ) malloc( bufferSizeBytes );
 
-    /* pBuffer can never be NULL since it it always initialized by a null character. */
+    /* pBuffer can never be NULL since it it always initialized before passing it to the stringBuilder function. */
     __CPROVER_assume( pBuffer != NULL );
 
     /* The minimum and the maximum number of strings inside the numStrings is 11. */
