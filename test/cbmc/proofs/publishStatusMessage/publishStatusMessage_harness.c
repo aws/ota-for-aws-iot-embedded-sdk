@@ -1,5 +1,6 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file publishStatusMessage_harness.c
  * @brief Implements the proof harness for publishStatusMessage function.
@@ -7,7 +8,7 @@
 /* Include headers for mqtt interface. */
 #include "ota_mqtt_private.h"
 
-#define TOPIC_JOB_STATUS_BUFFER_SIZE    222U             /*!< Max buffer size of pBuffer in publishStatusMessage function. */
+#define TOPIC_JOB_STATUS_BUFFER_SIZE    222U            /*!< Max buffer size of pBuffer in publishStatusMessage function. */
 #define OTA_STATUS_MSG_MAX_SIZE         128U            /*!< Max length of a job status message to the service. */
 
 /* Declaration of the test function with the mangled name. */
@@ -18,8 +19,8 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( OtaAgentCo
 
 /* Stubs required for the test function. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
-                      size_t bufferSizeBytes,
-                      const char * strings[] )
+                                                      size_t bufferSizeBytes,
+                                                      const char * strings[] )
 {
     size_t stringSize;
 
@@ -63,7 +64,7 @@ void publishStatusMessage_harness()
     OtaInterfaces_t otaInterface;
 
     /* pMsg is declared statically in the updateJobStatus_Mqtt and passed to publishStatusMessage function. */
-    char pMsg[ OTA_STATUS_MSG_MAX_SIZE ];   
+    char pMsg[ OTA_STATUS_MSG_MAX_SIZE ];
     uint32_t msgSize;
     uint8_t qos;
 
