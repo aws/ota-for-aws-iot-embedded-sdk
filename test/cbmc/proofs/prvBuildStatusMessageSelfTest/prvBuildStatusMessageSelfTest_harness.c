@@ -68,7 +68,7 @@ void prvBuildStatusMessageSelfTest_harness()
      * is JobStatusInProgress. */
     __CPROVER_assume( status == JobStatusInProgress );
 
-    /* reason variable follows the values ranging from 0 to 6. */
+    /* Since reason is of OtaJobReason_t datatype it follows the values ranging from 0 to 6.*/
     __CPROVER_assume( reason >= 0 && reason < 6 );
 
     ( void ) __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageSelfTest( pMsg,
