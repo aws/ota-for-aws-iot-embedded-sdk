@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+updateJobStatus_Mqtt proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for updateJobStatus_Mqtt.
 
 To run the proof.
 -------------
