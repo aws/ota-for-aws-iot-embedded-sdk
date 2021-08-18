@@ -325,6 +325,7 @@ noninfringement
 numblocks
 numblocksrequest
 numjobparams
+numjobstatusmappings
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
@@ -637,6 +638,7 @@ processdatahandler
 processjobhandler
 prootcapath
 protocolmaxsize
+prvbuildstatusmessagefinish
 prvpal
 prxblockbitmap
 prxstreamtopic
@@ -739,6 +741,8 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringbuilder
+stringsize
 strlength
 struct
 structs
@@ -778,6 +782,7 @@ transportsectionimplementation
 transportsectionoverview
 transportstruct
 ttimer
+typecasted
 twe
 ublockindex
 ublocksize
