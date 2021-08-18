@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+cleanupControl_Mqtt proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for cleanupControl_Mqtt.
 
 To run the proof.
 -------------
