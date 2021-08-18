@@ -25,7 +25,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     size_t stringSize;
 
     /* pBuffer is initialized in updateJobStatus_Mqtt function before passing it to the
-     * stringBuilder function in prvBuildStatusMessageFinish and thus cannot be NULL. */
+    * stringBuilder function in prvBuildStatusMessageFinish and thus cannot be NULL. */
     __CPROVER_assert( pBuffer != NULL,
                       "Unable to use pBuffer: passed pointer value is NULL." );
 
