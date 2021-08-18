@@ -637,6 +637,7 @@ processdatahandler
 processjobhandler
 prootcapath
 protocolmaxsize
+prvbuildstatusmessageselftest
 prvpal
 prxblockbitmap
 prxstreamtopic
@@ -739,6 +740,8 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringbuilder
+stringsize
 strlength
 struct
 structs

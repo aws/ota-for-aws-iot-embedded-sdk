@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+prvBuildStatusMessageSelfTest proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for prvBuildStatusMessageSelfTest.
 
 To run the proof.
 -------------
