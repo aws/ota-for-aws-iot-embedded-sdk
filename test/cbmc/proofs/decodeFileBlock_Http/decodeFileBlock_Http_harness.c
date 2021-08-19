@@ -57,7 +57,7 @@ void decodeFileBlock_Http_harness()
     /* pPayload cannot point to NULL since it is always initialized in the ingestDataBlock function. */
     __CPROVER_assume( pPayload != NULL );
 
-    *pPayload = ( char * ) malloc( messageSize * sizeof( uint8_t ) );
+    *pPayload = ( char * ) malloc( messageSize * sizeof( char ) );
     pMessageBuffer = ( uint8_t * ) malloc( messageSize * sizeof( uint8_t ) );
 
     /* The memory address pointed by the pPayload can never be NULL since it is initialized in the
