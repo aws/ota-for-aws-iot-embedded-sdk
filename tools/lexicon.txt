@@ -739,6 +739,8 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringbuilder
+stringsize
 strlength
 struct
 structs
@@ -779,6 +781,7 @@ transportsectionoverview
 transportstruct
 ttimer
 twe
+typecasted
 ublockindex
 ublocksize
 ucqos
