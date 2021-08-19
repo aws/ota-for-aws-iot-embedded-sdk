@@ -27,7 +27,7 @@ void stringBuilderUInt32Decimal_harness()
      * the size can never be below that. */
     __CPROVER_assume( bufferSizebytes > U32_MAX_LEN );
 
-    pBuffer = ( char * ) malloc( bufferSizebytes );
+    pBuffer = ( char * ) malloc( bufferSizebytes * sizeof( char ) );
 
     /* pBuffer is always initialized statically before passing it to the function. Hence,
      * it can never be NULL. */
