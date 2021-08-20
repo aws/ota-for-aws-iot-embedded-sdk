@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+decodeBase64IndexBuffer proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for decodeBase64IndexBuffer.
 
 To run the proof.
 -------------
