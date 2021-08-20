@@ -1,6 +1,0 @@
-{ "expected-missing-functions":
-  [
-  ],
-  "proof-name": "<__FUNCTION_NAME__>",
-  "proof-root": "test/cbmc/proofs"
-}
