@@ -740,7 +740,6 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
-stringbuilder
 stringsize
 strlength
 struct
