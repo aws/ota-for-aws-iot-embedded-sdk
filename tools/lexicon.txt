@@ -328,6 +328,8 @@ numjobparams
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numpadding
+numwhitespace
 ok
 onlinepubs
 opengroup
