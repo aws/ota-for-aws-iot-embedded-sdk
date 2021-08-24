@@ -1,10 +1,5 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
-
-/*
- * Insert copyright notice
- */
-
 /**
  * @file updateBase64DecodingBuffer_harness.c
  * @brief Implements the proof harness for updateBase64DecodingBuffer function.
