@@ -29,8 +29,8 @@ void updateBase64DecodingBuffer_harness()
      * base64Index which is enforced in ota_base64.c. */
     __CPROVER_assume( base64Index < SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND );
 
-    /* The numDataInBuffer is always is less than UINT32_MAX since the variable
-     * increments to a maximum of UINT32_MAX times. */
+    /* The maximum number of data in the pBase64IndexBuffer should not
+    exceed UINT32_MAX. */
     __CPROVER_assume( numDataInBuffer < UINT32_MAX );
 
     __CPROVER_file_local_ota_base64_c_updateBase64DecodingBuffer( base64Index, pBase64IndexBuffer, pNumDataInBuffer );
