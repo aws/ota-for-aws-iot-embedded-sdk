@@ -329,6 +329,7 @@ numjobparams
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numstrings
 ok
 onlinepubs
 opengroup
@@ -741,6 +742,7 @@ streamnamemaxsize
 streamnamesize
 strerror
 stringsize
+stringbuilder
 strlength
 struct
 structs
