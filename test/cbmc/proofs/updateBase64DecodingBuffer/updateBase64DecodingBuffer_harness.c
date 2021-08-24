@@ -1,5 +1,6 @@
 /* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
 /* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file updateBase64DecodingBuffer_harness.c
  * @brief Implements the proof harness for updateBase64DecodingBuffer function.
@@ -30,7 +31,7 @@ void updateBase64DecodingBuffer_harness()
     __CPROVER_assume( base64Index < SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND );
 
     /* The maximum number of data in the pBase64IndexBuffer should not
-    exceed UINT32_MAX. */
+     * exceed UINT32_MAX. */
     __CPROVER_assume( numDataInBuffer < UINT32_MAX );
 
     __CPROVER_file_local_ota_base64_c_updateBase64DecodingBuffer( base64Index, pBase64IndexBuffer, pNumDataInBuffer );
