@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+initFileTransfer_Mqtt proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for initFileTransfer_Mqtt.
 
 To run the proof.
 -------------
