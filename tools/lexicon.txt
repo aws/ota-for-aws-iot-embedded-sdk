@@ -329,6 +329,7 @@ numjobstatusmappings
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numstrings
 ok
 onlinepubs
 opengroup
