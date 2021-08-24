@@ -116,7 +116,9 @@ jobs:
         uses: FreeRTOS/CI-CD-Github-Actions/formatting@main
         with:
           path: ./
-          exclude-dirs: docs
+          exclude-dirs: |
+            docs
+            .github
 
   git-secrets:
     runs-on: ubuntu-latest
