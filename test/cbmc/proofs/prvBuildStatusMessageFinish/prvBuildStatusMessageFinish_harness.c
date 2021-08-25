@@ -17,7 +17,7 @@ uint32_t __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageFinish( char * pMs
                                                                       int32_t subReason,
                                                                       uint32_t previousVersion );
 
-/* Stubs required for the test function. */
+/* Stub required to populate and generate strings for testing the function. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
