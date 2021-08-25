@@ -1,7 +1,7 @@
-<__FUNCTION_NAME__> proof
+OTA_CBOR_Decode_GetStreamResponseMessage proof
 ==============
 
-This directory contains a memory safety proof for <__FUNCTION_NAME__>.
+This directory contains a memory safety proof for OTA_CBOR_Decode_GetStreamResponseMessage.
 
 To run the proof.
 -------------
