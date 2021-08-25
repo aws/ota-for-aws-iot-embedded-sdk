@@ -14,7 +14,7 @@
 /* Declaration of the test function with the mangled name. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx );
 
-/* Stubs required for the test function. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -39,6 +39,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringSize;
 }
 
+/* Stub to user defined MQTT-Unsubscribe operation. */
 OtaMqttStatus_t unsubscribe( const char * pTopicFilter,
                              uint16_t topicFilterLength,
                              uint8_t ucQoS )
