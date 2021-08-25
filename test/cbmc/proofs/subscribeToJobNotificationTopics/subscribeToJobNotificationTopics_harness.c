@@ -14,7 +14,7 @@
 /* Mangled Name for static function subscribeToJobNotificationTopics. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx );
 
-/* Stubs required for the test functions. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -34,6 +34,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringLength;
 }
 
+/* Stub to user defined MQTT-Subscribe operation. */
 OtaMqttStatus_t subscribe( const char * pTopicFilter,
                            uint16_t topicFilterLength,
                            uint8_t ucQoS )
@@ -55,7 +56,6 @@ void subscribeToJobNotificationTopics_harness()
     /* subscribe reference inside the mqtt interface is expected to be initialized by
      * the user and thus assumed to be non-NULL.*/
     otaInterface.mqtt.subscribe = subscribe;
-
     agent.pOtaInterface = &otaInterface;
 
     pAgentCtx = &agent;
