@@ -24,7 +24,7 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( OtaAgentCo
     return mqttStatus;
 }
 
-/* Stub to populate the buffer with job status message and return the msfbufferSize. */
+/* Stub to populate the buffer with job status message and return the msgbufferSize. */
 uint32_t __CPROVER_file_local_ota_mqtt_c_buildStatusMessageReceiving( char * pMsgBuffer,
                                                                       size_t msgBufferSize,
                                                                       OtaJobStatus_t status,
