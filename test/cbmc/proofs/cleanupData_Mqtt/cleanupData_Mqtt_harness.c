@@ -8,7 +8,7 @@
 /* Include headers for mqtt interface. */
 #include "ota_mqtt_private.h"
 
-/* Stub required for the test function. */
+/* Stub required for to unsubscribe from the firmware receive topic. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx )
 {
     OtaMqttStatus_t mqttStatus;
