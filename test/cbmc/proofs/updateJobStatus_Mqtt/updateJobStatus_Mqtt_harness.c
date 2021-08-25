@@ -8,6 +8,7 @@
 /* Include headers for mqtt interface. */
 #include "ota_mqtt_private.h"
 
+/* Stub required to publish status message over mqtt. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( OtaAgentContext_t * pAgentCtx,
                                                                       const char * pMsg,
                                                                       uint32_t msgSize,
@@ -23,6 +24,7 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( OtaAgentCo
     return mqttStatus;
 }
 
+/* Stub to populate the buffer with job status message and return the msfbufferSize. */
 uint32_t __CPROVER_file_local_ota_mqtt_c_buildStatusMessageReceiving( char * pMsgBuffer,
                                                                       size_t msgBufferSize,
                                                                       OtaJobStatus_t status,
@@ -43,6 +45,7 @@ uint32_t __CPROVER_file_local_ota_mqtt_c_buildStatusMessageReceiving( char * pMs
     return bufferSize;
 }
 
+/* populate the message buffer with status to indicate device in self test. */
 uint32_t __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageSelfTest( char * pMsgBuffer,
                                                                         size_t msgBufferSize,
                                                                         OtaJobStatus_t status,
@@ -63,6 +66,7 @@ uint32_t __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageSelfTest( char * p
     return bufferSize;
 }
 
+/* populate the buffer with response message with the status of job. */
 uint32_t __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageFinish( char * pMsgBuffer,
                                                                       size_t msgBufferSize,
                                                                       OtaJobStatus_t status,
