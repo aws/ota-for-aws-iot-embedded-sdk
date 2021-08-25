@@ -41,7 +41,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
 
     return stringSize;
 }
-
+/* Stub required to convert a hexadecimal number into a string. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex( char * pBuffer,
                                                                size_t bufferSizeBytes,
                                                                uint32_t value )
@@ -51,6 +51,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex( char * pBuffer,
     return buffersize;
 }
 
+/* Stub required to convert a decimal number into a string. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal( char * pBuffer,
                                                                    size_t bufferSizeBytes,
                                                                    uint32_t value )
@@ -68,7 +69,6 @@ void prvBuildStatusMessageFinish_harness()
     int32_t reason;
     int32_t subReason;
     uint32_t previousVersion;
-
 
     /* The pMsg if statically defined in the updateJobStatus_Mqtt with its size
      * defined by OTA_STATUS_MSG_MAX_SIZE.*/
