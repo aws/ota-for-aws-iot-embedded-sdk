@@ -2584,13 +2584,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Decode the file block if space is allocated. */
-    if( payloadSize > 0u )
+    if( ( payloadSize > 0u ) && ( payloadSize >= messageSize ) )
     {
-        if( messageSize <= OTA_FILE_BLOCK_SIZE )
-        {
-            assert( ( payloadSize >= messageSize ) );
-        }
-
         /* Decode the file block received. */
         if( OtaErrNone != otaDataInterface.decodeFileBlock(
                 pRawMsg,
@@ -2611,7 +2606,8 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     }
     else
     {
-        /* If the block is expected, but we could not allocate space. */
+        /* If the block is expected, but we could not allocate space or
+         * the space allocated is not large enough to contain the message. */
         if( eIngestResult == IngestResultUninitialized )
         {
             eIngestResult = IngestResultNoDecodeMemory;
