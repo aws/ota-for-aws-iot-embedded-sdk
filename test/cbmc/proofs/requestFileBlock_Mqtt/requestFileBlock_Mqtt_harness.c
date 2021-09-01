@@ -8,6 +8,7 @@
 /* Include headers for mqtt interface.*/
 #include "ota_mqtt_private.h"
 
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -32,6 +33,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringSize;
 }
 
+/* Stub to encode the stream request message. */
 bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               size_t messageBufferSize,
                                               size_t * pEncodedMessageSize,
@@ -48,15 +50,16 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
     return cborEncodeRet;
 }
 
-OtaMqttStatus_t publish( const char * const pacTopic,
-                         uint16_t usTopicLen,
-                         const char * pcMsg,
-                         uint32_t ulMsgSize,
-                         uint8_t ucQoS )
+/* Stub to user defined MQTT-publish operation. */
+OtaMqttStatus_t stubMqttPublish( const char * const pacTopic,
+                                 uint16_t usTopicLen,
+                                 const char * pcMsg,
+                                 uint32_t ulMsgSize,
+                                 uint8_t ucQoS )
 {
-    OtaMqttStatus_t status;
+    OtaMqttStatus_t mqttstatus;
 
-    return status;
+    return mqttstatus;
 }
 
 /*****************************************************************************/
@@ -69,8 +72,7 @@ void requestFileBlock_Mqtt_harness()
 
     /* publish reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
-    mqtt.publish = publish;
-    otaInterface.mqtt = mqtt;
+    otaInterface.mqtt.publish = stubMqttPublish;
 
     /* requestFileBlock_Mqtt is called only when there is a firmware image available.
      * The size of the image is always less than 4GB. */
@@ -81,6 +83,7 @@ void requestFileBlock_Mqtt_harness()
     __CPROVER_assume( agent.fileContext.serverFileID < INT32_MAX );
 
     agent.pOtaInterface = &otaInterface;
+
     /* OTA agent is defined as a global variable in ota.c and thus cannot be NULL.*/
     pAgentCtx = &agent;
 
