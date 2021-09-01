@@ -81,4 +81,7 @@ void base64Decode_harness()
     pResultLen = &resultLen;
 
     ( void ) base64Decode( pDest, destLen, pResultLen, pEncodedData, encodedLen );
+
+    free( pDest );
+    free( pEncodedData );
 }
