@@ -8,11 +8,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = OTA_CBOR_Encode_GetStreamRequestMessage
 
-DEFINES +=
 INCLUDES += -I$(SRCDIR)/source/dependency/3rdparty/tinycbor/src/
-
-REMOVE_FUNCTION_BODY +=
-UNWINDSET +=
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_cbor.c

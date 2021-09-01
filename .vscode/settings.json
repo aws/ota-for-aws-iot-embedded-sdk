@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "ota_mqtt_private.h": "c",
-        "ota_cbor_private.h": "c"
-    }
-}
