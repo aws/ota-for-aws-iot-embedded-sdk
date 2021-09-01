@@ -2607,7 +2607,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     else
     {
         /* If the block is expected, but we could not allocate space or
-         * the space allocated is not large enough to contain the message. */
+         * the space allocated is not large enough to store the message. */
         if( eIngestResult == IngestResultUninitialized )
         {
             eIngestResult = IngestResultNoDecodeMemory;
