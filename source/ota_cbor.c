@@ -93,7 +93,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     {
         cborResult = CborUnknownError;
     }
-  
+
     /* Initialize the parser. */
     if( CborNoError == cborResult )
     {
