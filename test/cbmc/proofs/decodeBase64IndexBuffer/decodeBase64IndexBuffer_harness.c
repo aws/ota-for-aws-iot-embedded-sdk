@@ -61,4 +61,6 @@ void decodeBase64IndexBuffer_harness()
     __CPROVER_assume( base64IndexBuffer < ( 1 << MAX_BITS_IN_DECODE_BUFFER ) );
 
     ( void ) __CPROVER_file_local_ota_base64_c_decodeBase64IndexBuffer( pBase64IndexBuffer, pNumDataInBuffer, pDest, destLen, pOutputLen );
+
+    free(pDest);
 }
