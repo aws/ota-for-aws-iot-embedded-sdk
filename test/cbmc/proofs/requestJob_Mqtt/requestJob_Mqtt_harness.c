@@ -58,10 +58,10 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_subscribeToJobNotificationTopics
 
 /* Stub to user defined MQTT-publish operation. */
 OtaMqttStatus_t stubMqttPublish( const char * const pacTopic,
-                         uint16_t usTopicLen,
-                         const char * pcMsg,
-                         uint32_t ulMsgSize,
-                         uint8_t ucQoS )
+                                 uint16_t usTopicLen,
+                                 const char * pcMsg,
+                                 uint32_t ulMsgSize,
+                                 uint8_t ucQoS )
 {
     OtaMqttStatus_t mqttstatus;
 
