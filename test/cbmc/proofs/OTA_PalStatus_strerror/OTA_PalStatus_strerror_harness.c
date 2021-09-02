@@ -29,14 +29,13 @@
 
 void OTA_PalStatus_strerror_harness()
 {
-    char* str = NULL; 
+    char * str = NULL;
     OtaPalMainStatus_t status;
 
-    str = OTA_PalStatus_strerror(status);
+    str = OTA_PalStatus_strerror( status );
 
     /* OTA_PalStatus_strerror returns a string which is never a NULL. If it does, then
      * there is a problem. */
-    __CPROVER_assert(str != NULL, 
-        "Invalid return value from OTA_MQTT_strerror: Expected a non-null value.");
-
+    __CPROVER_assert( str != NULL,
+                      "Invalid return value from OTA_MQTT_strerror: Expected a non-null value." );
 }
