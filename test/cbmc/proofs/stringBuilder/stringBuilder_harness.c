@@ -30,11 +30,15 @@ void stringBuilder_harness()
     /* pBuffer can never be NULL since it it always initialized before passing it to the stringBuilder function. */
     __CPROVER_assume( pBuffer != NULL );
 
-    /* The minimum and the maximum number of strings inside the numStrings is 11. */
+    /* The minimum and the maximum number of strings inside the numStrings are 0 and 11. */
     __CPROVER_assume( numStrings > 0 && numStrings < UINT32_MAX );
 
     /* Initializing an array of strings with size numStrings. */
     strings = ( char ** ) malloc( numStrings * sizeof( char * ) );
+
+    /* The size of each string inside the strings array passed to the stringBuilder
+     * function is greater than 0. */
+    __CPROVER_assume( stringSize > 0 );
 
     /* The strings array cannot be NULL as it is always initialized before
      *  passing to the function. */
@@ -43,6 +47,11 @@ void stringBuilder_harness()
     for( i = 0; i < numStrings - 1; ++i )
     {
         strings[ i ] = ( char * ) malloc( stringSize );
+
+        /* The strings inside the strings array are defined before passing it to
+         * the stringBuilder function. */
+        __CPROVER_assume( strings[ i ] != NULL );
+        strings[ i ][ stringSize - 1 ] = '\0';
     }
 
     /* Strings array is always passed with a NULL string at the end. */
@@ -53,7 +62,7 @@ void stringBuilder_harness()
     /* Free the allocated memory. */
     free( pBuffer );
 
-    for( i = 0; i < numStrings; ++i )
+    for( i = 0; i < numStrings - 1; ++i )
     {
         free( strings[ i ] );
     }
