@@ -26,7 +26,5 @@ void cleanupData_Mqtt_harness()
     OtaAgentContext_t agent;
 
     /* OTA agent is declared globally in ota.c and thus cannot be NULL. */
-    pAgentCtx = &agent;
-
-    ( void ) cleanupData_Mqtt( pAgentCtx );
+    ( void ) cleanupData_Mqtt( &agent );
 }
