@@ -9,6 +9,14 @@
 #include "cbor.h"
 #include "ota_cbor_private.h"
 
+/* Stub to return CBORerror type. */
+CborError returnCborError()
+{
+    CborError err;
+
+    return err;
+}
+
 /* Stub to initialize the cbor parser. */
 CborError cbor_parser_init( const uint8_t * buffer,
                             size_t size,
@@ -16,9 +24,7 @@ CborError cbor_parser_init( const uint8_t * buffer,
                             CborParser * parser,
                             CborValue * it )
 {
-    CborError err;
-
-    return err;
+    return returnCborError();
 }
 
 /* Stub to map the value with CborMapType. */
@@ -32,40 +38,32 @@ CborError cbor_value_map_find_value( const CborValue * map,
                                      const char * string,
                                      CborValue * element )
 {
-    CborError err;
-
-    return err;
+    return returnCborError();
 }
 
 /* Stub to check the datatype of the value. */
 CborError __CPROVER_file_local_ota_cbor_c_checkDataType( CborType expectedType,
                                                          CborValue * cborValue )
 {
-    CborError err;
-
-    return err;
+    return returnCborError();
 }
 
 /* Stub to get the integer from cborvalue. */
 CborError __CPROVER_file_local_cbor_h_cbor_value_get_int( const CborValue * value,
                                                           int * result )
 {
-    CborError err;
-
-    return err;
+    return returnCborError();
 }
 
 /* Stub to calculate the string length that value points at and store it in len. */
 CborError cbor_value_calculate_string_length( const CborValue * value,
                                               size_t * len )
 {
-    CborError err;
-
     size_t stringSize;
 
     *len = stringSize;
 
-    return err;
+    return returnCborError();
 }
 
 /* Stub to copy the byte string to the buffer. */
@@ -74,9 +72,7 @@ CborError __CPROVER_file_local_cbor_h_cbor_value_copy_byte_string( const CborVal
                                                                    size_t * buflen,
                                                                    CborValue * next )
 {
-    CborError err;
-
-    return err;
+    return returnCborError();
 }
 
 void OTA_CBOR_Decode_GetStreamResponseMessage_harness()
@@ -104,4 +100,17 @@ void OTA_CBOR_Decode_GetStreamResponseMessage_harness()
     }
 
     OTA_CBOR_Decode_GetStreamResponseMessage( pMessageBuffer, messageSize, pFileId, pBlockId, pBlockSize, pPayload, pPayloadSize );
+
+    free( pMessageBuffer );
+    free( pFileId );
+    free( pBlockId );
+    free( pBlockSize );
+    free( pPayloadSize );
+
+    if( pPayload != NULL )
+    {
+        free( *pPayload );
+    }
+
+    free( pPayload );
 }
