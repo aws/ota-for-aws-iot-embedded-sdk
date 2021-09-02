@@ -30,7 +30,7 @@
 void OTA_OsStatus_strerror_harness()
 {
     char * str = NULL;
-    OtaPalMainStatus_t status;
+    OtaOsStatus_t status;
 
     str = OTA_OsStatus_strerror( status );
 
