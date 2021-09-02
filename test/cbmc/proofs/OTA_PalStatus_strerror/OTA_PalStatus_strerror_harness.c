@@ -37,5 +37,5 @@ void OTA_PalStatus_strerror_harness()
     /* OTA_PalStatus_strerror returns a string which is never a NULL. If it does, then
      * there is a problem. */
     __CPROVER_assert( str != NULL,
-                      "Invalid return value from OTA_MQTT_strerror: Expected a non-null value." );
+                      "Invalid return value from OTA_PalStatus_strerror: Expected a non-null value." );
 }
