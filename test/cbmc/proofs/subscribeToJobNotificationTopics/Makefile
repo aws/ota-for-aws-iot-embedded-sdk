@@ -8,6 +8,8 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = subscribeToJobNotificationTopics
 
+REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_mqtt_c_stringBuilder
+
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
