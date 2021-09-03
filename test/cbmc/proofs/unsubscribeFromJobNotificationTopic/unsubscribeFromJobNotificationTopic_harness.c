@@ -57,7 +57,6 @@ void unsubscribeFromJobNotificationTopic_harness()
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
 
-
     /* unsubscribe reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
     otaInterface.mqtt.unsubscribe = unsubscribe;
