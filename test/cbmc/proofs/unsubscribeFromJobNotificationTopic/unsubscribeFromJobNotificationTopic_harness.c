@@ -54,16 +54,13 @@ OtaMqttStatus_t unsubscribe( const char * pTopicFilter,
 void unsubscribeFromJobNotificationTopic_harness()
 {
     OtaAgentContext_t * pAgentCtx;
-    OtaMqttInterface_t mqtt;
-
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
 
 
     /* unsubscribe reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
-    mqtt.unsubscribe = unsubscribe;
-    otaInterface.mqtt = mqtt;
+    otaInterface.mqtt.unsubscribe = unsubscribe;
 
     agent.pOtaInterface = &otaInterface;
     pAgentCtx = &agent;
