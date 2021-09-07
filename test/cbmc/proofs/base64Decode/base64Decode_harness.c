@@ -7,6 +7,7 @@
  */
 /* Include headers for base64 decoding. */
 #include "ota_base64_private.h"
+#include <stdlib.h>
 
 #define VALID_BASE64_SYMBOL_INDEX_RANGE_MAX    63U
 
@@ -69,7 +70,8 @@ void base64Decode_harness()
     size_t resultLen;
 
     /* the base64decode function is used to decode the PEM signature and
-     * the maximum size of the decoded signature is 256. */
+     * the maximum size of the decoded signature is 256.This limit is kept
+     * to have a control on unwinding of loop in base64Decode function. */
     __CPROVER_assume( destLen <= MAX_DECODE_BUFFER_SIZE );
 
     /* the maximum size of the encoded buffer is calculate to fit. */
