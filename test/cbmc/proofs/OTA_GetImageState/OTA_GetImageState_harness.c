@@ -35,6 +35,6 @@ void OTA_GetImageState_harness()
 
     /* OTA_GetImageState returns the values which follow OtaImageState_t enum. If it does, then
      * there is a problem. */
-    __CPROVER_assert( state < 0 || state > 4,
+    __CPROVER_assert( state <= 0 || state > 4,
                       "Invalid return value from OTA_GetImageState: Expected a value from OTAImageState_t enum." );
 }
