@@ -8,6 +8,7 @@
 /* Include headers for cbor parsing. */
 #include "cbor.h"
 #include "ota_cbor_private.h"
+#include <stdlib.h>
 
 #define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /*!< @brief Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
