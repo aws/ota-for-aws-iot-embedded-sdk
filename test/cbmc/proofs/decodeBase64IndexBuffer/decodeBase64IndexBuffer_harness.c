@@ -55,11 +55,6 @@ void decodeBase64IndexBuffer_harness()
      * The minimum and maximum number of bytes stored in the buffer are defined. */
     __CPROVER_assume( *pNumDataInBuffer >= MIN_VALID_ENCODED_DATA_SIZE && *pNumDataInBuffer <= MAX_NUM_BASE64_DATA );
 
-    /* The maximum number of sextet in the base64IndexBuffer is 4. The total
-     * number of bytes occupied to store all the 4 sextets in a single 4 Byte buffer is
-     * 24. Thus the value of base64IndexBuffer cannot exceed 1 << MAX_BITS_IN_DECODE_BUFFER. */
-    __CPROVER_assume( base64IndexBuffer < ( 1 << MAX_BITS_IN_DECODE_BUFFER ) );
-
     ( void ) __CPROVER_file_local_ota_base64_c_decodeBase64IndexBuffer( pBase64IndexBuffer, pNumDataInBuffer, pDest, destLen, pOutputLen );
 
     free( pDest );
