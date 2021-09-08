@@ -25,7 +25,13 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include "ota.c"
+
+bool OTA_SignalEvent(const OtaEventMsg_t *const pEventMsg)
+{
+    bool status;
+
+    return status;
+}
 
 void OTA_Resume_harness()
 {
