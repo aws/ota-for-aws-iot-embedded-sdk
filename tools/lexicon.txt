@@ -329,7 +329,9 @@ numjobstatusmappings
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numpadding
 numstrings
+numwhitespace
 ok
 onlinepubs
 opengroup
@@ -479,6 +481,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+outputlen
 pacdata
 pactivejobname
 pactopic
