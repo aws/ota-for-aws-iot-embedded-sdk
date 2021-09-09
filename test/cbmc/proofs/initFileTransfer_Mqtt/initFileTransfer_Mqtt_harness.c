@@ -12,7 +12,7 @@
 #define TOPIC_STREAM_DATA_BUFFER_SIZE    96U
 
 
-/* Stubs required for the test functions. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -32,6 +32,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringLength;
 }
 
+/* Stub to a user defined MQTT-subscribe function. */
 OtaMqttStatus_t subscribe( const char * pTopicFilter,
                            uint16_t topicFilterLength,
                            uint8_t ucQoS )
@@ -45,16 +46,13 @@ OtaMqttStatus_t subscribe( const char * pTopicFilter,
 
 void initFileTransfer_Mqtt_harness()
 {
-    OtaAgentContext_t * pAgentCtx;
     OtaAgentContext_t agent;
     OtaFileContext_t filecontext;
     OtaInterfaces_t pOtaInterface;
-    OtaMqttInterface_t mqtt;
 
     /* subscribe reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
-    mqtt.subscribe = subscribe;
-    pOtaInterface.mqtt = mqtt;
+    pOtaInterface.mqtt.subscribe = subscribe;
     agent.pOtaInterface = &pOtaInterface;
 
     /* initFileTransfer_Mqtt function is only called when there is a file
@@ -62,7 +60,5 @@ void initFileTransfer_Mqtt_harness()
     agent.fileContext = filecontext;
 
     /* OTA agent is defined as a global variable in ota.c and thus cannot be NULL.*/
-    pAgentCtx = &agent;
-
-    initFileTransfer_Mqtt( pAgentCtx );
+    initFileTransfer_Mqtt( &agent );
 }
