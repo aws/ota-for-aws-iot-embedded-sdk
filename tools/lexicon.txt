@@ -41,6 +41,7 @@ br
 buf
 buffersizebytes
 bufferused
+buildstatusmessagereceiving
 bytesreceived
 bytessent
 bytestorecv
@@ -641,6 +642,7 @@ processdatahandler
 processjobhandler
 prootcapath
 protocolmaxsize
+prvbuildstatusmessagefinish
 prvbuildstatusmessageselftest
 prvpal
 prxblockbitmap
@@ -659,6 +661,7 @@ ptimername
 ptopicbuffer
 ptopicfilter
 ptr
+publishstatusmessage
 punused
 pupdatefile
 pupdatefilepath
@@ -744,6 +747,7 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
 stringbuilder
 stringsize
 strlength
@@ -786,6 +790,7 @@ transportsectionoverview
 transportstruct
 ttimer
 twe
+typecasted
 ublockindex
 ublocksize
 ucqos
@@ -802,7 +807,9 @@ uniqueclientid
 unistd
 unsignedversion32
 unsubscribeflag
+unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
