@@ -747,6 +747,7 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
 stringbuilder
 stringsize
 strlength
@@ -808,6 +809,7 @@ unsignedversion32
 unsubscribeflag
 unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
