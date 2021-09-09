@@ -748,6 +748,7 @@ streamnamemaxsize
 streamnamesize
 strerror
 stringbuilder
+stringsize
 strlength
 struct
 structs
@@ -788,6 +789,7 @@ transportsectionoverview
 transportstruct
 ttimer
 twe
+typecasted
 ublockindex
 ublocksize
 ucqos
@@ -804,6 +806,7 @@ uniqueclientid
 unistd
 unsignedversion32
 unsubscribeflag
+unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
 updatedby
 updatefilepath
