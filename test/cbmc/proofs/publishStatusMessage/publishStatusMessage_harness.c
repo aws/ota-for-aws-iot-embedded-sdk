@@ -17,7 +17,7 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( OtaAgentCo
                                                                       uint32_t msgSize,
                                                                       uint8_t qos );
 
-/* Stubs required for the test function. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -42,6 +42,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringSize;
 }
 
+/* Stub to user defined MQTT-publish operation. */
 OtaMqttStatus_t publish( const char * const pacTopic,
                          uint16_t usTopicLen,
                          const char * pcMsg,
@@ -57,9 +58,6 @@ OtaMqttStatus_t publish( const char * const pacTopic,
 
 void publishStatusMessage_harness()
 {
-    OtaAgentContext_t * pAgentCtx;
-    OtaMqttInterface_t mqtt;
-
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
 
@@ -70,14 +68,10 @@ void publishStatusMessage_harness()
 
     /* publish reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
-    mqtt.publish = publish;
-    otaInterface.mqtt = mqtt;
+    otaInterface.mqtt.publish = publish;
 
     agent.pOtaInterface = &otaInterface;
-    pAgentCtx = &agent;
 
     /* The agent can never be NULL as it is defined as a global variable. */
-    __CPROVER_assume( pAgentCtx != NULL );
-
-    ( void ) __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( pAgentCtx, pMsg, msgSize, qos );
+    ( void ) __CPROVER_file_local_ota_mqtt_c_publishStatusMessage( &agent, pMsg, msgSize, qos );
 }
