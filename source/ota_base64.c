@@ -349,9 +349,9 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
          * significant bits and ending at the least significant bits. */
         if( numDataInBuffer == MAX_NUM_BASE64_DATA )
         {
-            pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFFU;
-            pDest[ outputLen + 1U ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
-            pDest[ outputLen + 2U ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
+            pDest[ outputLen ] = ( uint8_t ) ( ( base64IndexBuffer >> SIZE_OF_TWO_OCTETS ) & 0xFFU );
+            pDest[ outputLen + 1U ] = ( uint8_t ) ( ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU );
+            pDest[ outputLen + 2U ] = ( uint8_t ) ( base64IndexBuffer & 0xFFU );
             outputLen += 3U;
         }
 
@@ -369,8 +369,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
             if( returnVal == Base64Success )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_THREE_SEXTETS;
-                pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU;
-                pDest[ outputLen + 1U ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
+                pDest[ outputLen ] = ( uint8_t ) ( ( base64IndexBuffer >> SIZE_OF_ONE_OCTET ) & 0xFFU );
+                pDest[ outputLen + 1U ] = ( uint8_t ) ( base64IndexBuffer & 0xFFU );
                 outputLen += 2U;
             }
         }
@@ -389,7 +389,7 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
             if( returnVal == Base64Success )
             {
                 base64IndexBuffer = base64IndexBuffer >> SIZE_OF_PADDING_WITH_TWO_SEXTETS;
-                pDest[ outputLen ] = ( uint8_t ) base64IndexBuffer & 0xFFU;
+                pDest[ outputLen ] = ( uint8_t ) ( base64IndexBuffer & 0xFFU );
                 outputLen += 1U;
             }
         }
