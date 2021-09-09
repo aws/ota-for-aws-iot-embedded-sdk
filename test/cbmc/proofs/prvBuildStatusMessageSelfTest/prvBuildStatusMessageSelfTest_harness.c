@@ -16,7 +16,7 @@ uint32_t __CPROVER_file_local_ota_mqtt_c_prvBuildStatusMessageSelfTest( char * p
                                                                         OtaJobStatus_t status,
                                                                         int32_t reason );
 
-/* Stubs required for the test function. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -40,7 +40,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
 
     return stringSize;
 }
-
+/* Stub required to convert a hexadecimal number into a string. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Hex( char * pBuffer,
                                                                size_t bufferSizeBytes,
                                                                uint32_t value )
