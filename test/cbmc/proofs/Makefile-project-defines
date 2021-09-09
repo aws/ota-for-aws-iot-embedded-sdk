@@ -27,7 +27,7 @@ SRCDIR = $(abspath $(PROOF_ROOT)/../../..)
 # You will want to decide what order that comes in relative to the other
 # include directories in your project.
 #
-INCLUDES = -I$(SRCDIR)/source/include -I$(SRCDIR)/test/unit-test
+INCLUDES += -I$(SRCDIR)/source/include -I$(SRCDIR)/test/unit-test
 
 # Preprocessor definitions -D...
 # DEFINES =
