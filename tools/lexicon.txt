@@ -758,6 +758,7 @@ struct
 structs
 sublicense
 subreason
+subscribetojobnotificationtopics
 suspendhandler
 suspendtimeout
 sys
