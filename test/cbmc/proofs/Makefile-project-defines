@@ -13,6 +13,8 @@
 # Makefile.common.
 ################################################################
 
+SRCDIR = $(abspath $(PROOF_ROOT)/../../..)
+
 # Flags to pass to goto-cc for compilation (typically those passed to gcc -c)
 # COMPILE_FLAGS =
 
@@ -25,7 +27,7 @@
 # You will want to decide what order that comes in relative to the other
 # include directories in your project.
 #
-# INCLUDES =
+INCLUDES = -I$(SRCDIR)/source/include -I$(SRCDIR)/test/unit-test
 
 # Preprocessor definitions -D...
 # DEFINES =
