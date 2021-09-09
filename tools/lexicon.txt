@@ -54,6 +54,7 @@ cbor
 cborarray
 cborerror
 cbormap
+cbormaptype
 cborstring
 cborvalue
 cborwork
@@ -270,6 +271,7 @@ jobstatusinprogress
 jobstatusrejected
 json
 lastupdatedat
+len
 lf
 li
 linux
@@ -748,6 +750,7 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
 stringbuilder
 stringsize
 strlength
@@ -810,6 +813,7 @@ unsignedversion32
 unsubscribeflag
 unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
