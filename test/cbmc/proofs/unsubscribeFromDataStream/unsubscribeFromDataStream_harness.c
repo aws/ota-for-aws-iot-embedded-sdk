@@ -14,7 +14,7 @@
 /* Declaration of the test function with the mangled name. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromDataStream( const OtaAgentContext_t * pAgentCtx );
 
-/* Stubs required for the test function. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -39,7 +39,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringSize;
 }
 
-/* This is a stub of an mqtt interface function required for the proof. */
+/* Stub to user defined MQTT-unsubscribe operation. */
 OtaMqttStatus_t unsubscribe( const char * pTopicFilter,
                              uint16_t topicFilterLength,
                              uint8_t ucQoS )
@@ -53,22 +53,15 @@ OtaMqttStatus_t unsubscribe( const char * pTopicFilter,
 
 void unsubscribeFromDataStream_harness()
 {
-    OtaAgentContext_t * pAgentCtx;
-    OtaMqttInterface_t mqtt;
-
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
 
     /* unsubscribe reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL.*/
-    mqtt.unsubscribe = unsubscribe;
-    otaInterface.mqtt = mqtt;
+    otaInterface.mqtt.unsubscribe = unsubscribe;
 
     agent.pOtaInterface = &otaInterface;
-    pAgentCtx = &agent;
 
     /* The agent can never be NULL as it is defined as a global variable in ota.c. */
-    __CPROVER_assume( pAgentCtx != NULL );
-
-    ( void ) __CPROVER_file_local_ota_mqtt_c_unsubscribeFromDataStream( pAgentCtx );
+    ( void ) __CPROVER_file_local_ota_mqtt_c_unsubscribeFromDataStream( &agent );
 }
