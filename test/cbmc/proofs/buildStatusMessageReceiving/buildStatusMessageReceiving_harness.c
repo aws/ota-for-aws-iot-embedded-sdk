@@ -17,7 +17,7 @@ uint32_t __CPROVER_file_local_ota_mqtt_c_buildStatusMessageReceiving( char * pMs
                                                                       OtaJobStatus_t status,
                                                                       const OtaFileContext_t * pOTAFileCtx );
 
-/* Stubs required for the test function. */
+/* Stub required to combine a set of strings(to form a topic). */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
@@ -42,6 +42,7 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
     return stringSize;
 }
 
+/* Stub required to convert a decimal number into a string. */
 size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal( char * pBuffer,
                                                                    size_t bufferSizeBytes,
                                                                    uint32_t value )
