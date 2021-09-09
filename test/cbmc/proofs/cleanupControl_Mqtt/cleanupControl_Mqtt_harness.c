@@ -8,7 +8,7 @@
 /* Include headers for mqtt interface. */
 #include "ota_mqtt_private.h"
 
-/* Stub required for the test function. */
+/* Stub required to unsubscribe from a job notification topic function. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx )
 {
     OtaMqttStatus_t mqttStatus;
@@ -23,11 +23,8 @@ OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTo
 
 void cleanupControl_Mqtt_harness()
 {
-    OtaAgentContext_t * pAgentCtx;
     OtaAgentContext_t agent;
 
     /* OTA agent is declared as a global variable in ota.c and thus cannot be NULL. */
-    pAgentCtx = &agent;
-
-    ( void ) cleanupControl_Mqtt( pAgentCtx );
+    ( void ) cleanupControl_Mqtt( &agent );
 }

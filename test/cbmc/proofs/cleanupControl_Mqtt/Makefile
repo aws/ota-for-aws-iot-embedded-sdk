@@ -8,12 +8,6 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = cleanupControl_Mqtt
 
-DEFINES +=
-INCLUDES +=
-
-REMOVE_FUNCTION_BODY +=
-UNWINDSET +=
-
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
