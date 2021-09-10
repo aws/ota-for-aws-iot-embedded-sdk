@@ -5,6 +5,9 @@
  * @file stringBuilderUInt32Decimal_harness.c
  * @brief Implements the proof harness for stringBuilderUInt32Decimal function.
  */
+
+#include <stdlib.h>
+
 /* Include files required for mqtt interface. */
 #include "ota_mqtt_private.h"
 

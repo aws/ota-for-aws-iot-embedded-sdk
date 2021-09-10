@@ -41,6 +41,7 @@ br
 buf
 buffersizebytes
 bufferused
+buildstatusmessagereceiving
 bytesreceived
 bytessent
 bytestorecv
@@ -53,6 +54,7 @@ cbor
 cborarray
 cborerror
 cbormap
+cbormaptype
 cborstring
 cborvalue
 cborwork
@@ -269,6 +271,7 @@ jobstatusinprogress
 jobstatusrejected
 json
 lastupdatedat
+len
 lf
 li
 linux
@@ -328,7 +331,9 @@ numjobparams
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numpadding
 numstrings
+numwhitespace
 ok
 onlinepubs
 opengroup
@@ -478,6 +483,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+outputlen
 pacdata
 pactivejobname
 pactopic
@@ -638,6 +644,8 @@ processdatahandler
 processjobhandler
 prootcapath
 protocolmaxsize
+prvbuildstatusmessagefinish
+prvbuildstatusmessageselftest
 prvpal
 prxblockbitmap
 prxstreamtopic
@@ -655,6 +663,7 @@ ptimername
 ptopicbuffer
 ptopicfilter
 ptr
+publishstatusmessage
 punused
 pupdatefile
 pupdatefilepath
@@ -740,12 +749,15 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
 stringbuilder
+stringsize
 strlength
 struct
 structs
 sublicense
 subreason
+subscribetojobnotificationtopics
 suspendhandler
 suspendtimeout
 sys
@@ -781,6 +793,7 @@ transportsectionoverview
 transportstruct
 ttimer
 twe
+typecasted
 ublockindex
 ublocksize
 ucqos
@@ -797,7 +810,9 @@ uniqueclientid
 unistd
 unsignedversion32
 unsubscribeflag
+unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
