@@ -50,6 +50,7 @@ void subscribeToJobNotificationTopics_harness()
 {
     OtaAgentContext_t agent;
     OtaAgentContext_t * pAgentCtx;
+  
     OtaInterfaces_t otaInterface;
 
     /* subscribe reference inside the mqtt interface is expected to be initialized by
