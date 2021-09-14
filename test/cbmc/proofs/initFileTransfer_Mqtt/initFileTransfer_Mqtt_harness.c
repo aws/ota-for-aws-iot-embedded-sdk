@@ -48,15 +48,15 @@ void initFileTransfer_Mqtt_harness()
 {
     OtaAgentContext_t agent;
     OtaFileContext_t filecontext;
-    OtaInterfaces_t pOtaInterface;
+    OtaInterfaces_t OtaInterface;
 
-    /* subscribe reference to the mqtt function is expected to be assigned by the user and thus
-     * assumed not to be NULL. */
-    pOtaInterface.mqtt.subscribe = subscribe;
-    agent.pOtaInterface = &pOtaInterface;
+    /* Subscribe reference to the MQTT function is expected to be assigned by
+     * the user and thus assumed not to be NULL. */
+    OtaInterface.mqtt.subscribe = subscribe;
+    agent.pOtaInterface = &OtaInterface;
 
     /* initFileTransfer_Mqtt function is only called when there is a file
-     * ready to be downloaded. Thus filecontext cannot be NULL */
+     * ready to be downloaded. Thus filecontext cannot be NULL. */
     agent.fileContext = filecontext;
 
     /* OTA agent is defined as a global variable in ota.c and thus cannot be NULL.*/
