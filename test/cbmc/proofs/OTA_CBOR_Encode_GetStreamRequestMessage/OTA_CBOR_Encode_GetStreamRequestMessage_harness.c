@@ -108,4 +108,9 @@ void OTA_CBOR_Encode_GetStreamRequestMessage_harness()
     OTA_CBOR_Encode_GetStreamRequestMessage( pMessageBuffer, messageBufferSize, pEncodedMessageSize,
                                              pClientToken,
                                              fileId, blockSize, blockOffset, pBlockBitmap, blockBitmapSize, numOfBlocksRequested );
+
+    free(pMessageBuffer);
+    free(pEncodedMessageSize);
+    free(pClientToken);
+    free(pBlockBitmap);
 }
