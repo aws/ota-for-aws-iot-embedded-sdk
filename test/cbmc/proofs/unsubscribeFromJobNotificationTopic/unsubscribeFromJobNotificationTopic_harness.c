@@ -9,7 +9,7 @@
 #include "ota_mqtt_private.h"
 
 /* Max buffer size of pBuffer in unsubscribeFromJobNotificationTopic function. */
-#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE    96                         /*!< Max buffer size for `jobs/notify-next` topic. */
+#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE    96                         
 
 /* Declaration of the test function with the mangled name. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTopic( const OtaAgentContext_t * pAgentCtx );
