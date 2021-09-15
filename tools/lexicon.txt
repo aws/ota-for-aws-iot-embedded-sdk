@@ -330,6 +330,7 @@ noninfringement
 numblocks
 numblocksrequest
 numjobparams
+numjobstatusmappings
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
@@ -795,6 +796,7 @@ transportsectionimplementation
 transportsectionoverview
 transportstruct
 ttimer
+typecasted
 twe
 typecasted
 ublockindex
