@@ -53,7 +53,6 @@ OtaMqttStatus_t unsubscribe( const char * pTopicFilter,
 
 void unsubscribeFromJobNotificationTopic_harness()
 {
-    OtaAgentContext_t * pAgentCtx;
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
 
@@ -62,10 +61,7 @@ void unsubscribeFromJobNotificationTopic_harness()
     otaInterface.mqtt.unsubscribe = unsubscribe;
 
     agent.pOtaInterface = &otaInterface;
-    pAgentCtx = &agent;
 
     /* The agent can never be NULL as it is defined as a global variable. */
-    __CPROVER_assume( pAgentCtx != NULL );
-
-    ( void ) __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTopic( pAgentCtx );
+    ( void ) __CPROVER_file_local_ota_mqtt_c_unsubscribeFromJobNotificationTopic( &agent );
 }
