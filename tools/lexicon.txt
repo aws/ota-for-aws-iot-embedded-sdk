@@ -65,6 +65,7 @@ certfilepathsize
 checkforupdate
 cli
 clienttoken
+clienttokensize
 closefile
 closefilehandler
 cmock
@@ -80,6 +81,7 @@ configurably
 connectsuccessindex
 const
 constantspage
+container
 contextbase
 contextbaseaddr
 contextsize
@@ -547,6 +549,7 @@ pdocmodel
 pdocmodel
 pem
 pencodeddata
+pencodedmessage
 pencodedmessagesize
 peventcontext
 peventctx
