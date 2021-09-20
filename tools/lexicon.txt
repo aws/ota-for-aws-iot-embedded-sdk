@@ -757,6 +757,8 @@ stringsize
 stringbuilder
 stringsize
 strlength
+stringbuilder
+stringsize
 struct
 structs
 sublicense
@@ -817,6 +819,7 @@ unsignedversion32
 unsubscribeflag
 unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromjobnotificationtopic
 unsubscribefromdatastream
 updatedby
 updatefilepath
