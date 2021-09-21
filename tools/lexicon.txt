@@ -65,6 +65,7 @@ certfilepathsize
 checkforupdate
 cli
 clienttoken
+clienttokensize
 closefile
 closefilehandler
 cmock
@@ -80,6 +81,7 @@ configurably
 connectsuccessindex
 const
 constantspage
+container
 contextbase
 contextbaseaddr
 contextsize
@@ -547,6 +549,7 @@ pdocmodel
 pdocmodel
 pem
 pencodeddata
+pencodedmessage
 pencodedmessagesize
 peventcontext
 peventctx
@@ -754,6 +757,8 @@ stringsize
 stringbuilder
 stringsize
 strlength
+stringbuilder
+stringsize
 struct
 structs
 sublicense
@@ -814,6 +819,7 @@ unsignedversion32
 unsubscribeflag
 unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromjobnotificationtopic
 unsubscribefromdatastream
 updatedby
 updatefilepath
