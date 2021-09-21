@@ -98,9 +98,11 @@ cr
 createfile
 createfileforrx
 crt
+crxlock
 crypto
 csdk
 css
+ctxlock
 currblock
 currentstate
 cwd
@@ -311,6 +313,7 @@ misra
 mockoseventsendthenstop
 modelparamtype
 modelparamtypestringindoc
+mpu
 mqtt
 mqttinterface
 mqttpublish
@@ -321,6 +324,7 @@ msgbuffersize
 msgsize
 msgtailsize
 msgvalidity
+mutex
 mutexes
 mutexhandle
 mynetworkrecvimplementation
@@ -536,6 +540,7 @@ pbuffer
 pc
 pcallbacks
 pcertfilepath
+pchead
 pcjobtopic
 pcjson
 pclientcertpath
@@ -549,6 +554,10 @@ pconnection
 pconnectioncontext
 pcontextbase
 pcontrolinterface
+pcreadfrom
+pctail
+pctaskname
+pcwriteto
 pctimername
 pctopicbuffer
 pcur
@@ -561,6 +570,11 @@ pdestoffset
 pdestsizeoffset
 pdocmodel
 pdocmodel
+pdtrue
+pvtimerid
+pxcallbackfunction
+pxstack
+pxtopofstack
 pem
 pencodeddata
 pencodedmessage
@@ -703,6 +717,7 @@ pxprevious
 qos
 querykeylength
 queuedat
+queueunlocked
 ramdom
 rand
 rangeend
@@ -810,6 +825,7 @@ tls
 tlscontext
 tlsrecv
 tlssend
+tmrtimercontrol
 todo
 toolchain
 topicfilter
@@ -830,6 +846,8 @@ typecasted
 uart
 ublockindex
 ublocksize
+ucstaticallyallocated
+ucstatus
 ucqos
 udp
 ul
@@ -862,6 +880,12 @@ usb
 useraborthandler
 ustopiclen
 utils
+uxitemsize
+uxlength    
+uxmessageswaiting
+uxpriority
+uxrecursivecallcount
+uxtimernumber
 validateandstartjob
 validatedatablock
 valuelength
@@ -872,8 +896,18 @@ writeblock
 www
 wifi
 xaa
+xeventlistitem
 xitemvalue
 xlist
 xlistend
+xmpusettings
+xmutexholder
+xqueue
+xsemaphore
+xstatelistitem
+xtaskswaitingtoreceive
+xtaskswaitingtosend
+xtimerlistitem
+xtimerperiodinticks
 xyz
 zg
