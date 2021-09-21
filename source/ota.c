@@ -2584,7 +2584,7 @@ static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Decode the file block if space is allocated. */
-    if( payloadSize >= 0 )
+    if( payloadSize > 0u )
     {
         /* Decode the file block received. */
         if( OtaErrNone != otaDataInterface.decodeFileBlock(
