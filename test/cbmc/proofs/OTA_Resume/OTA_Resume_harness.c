@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OTA_Resume_harness.c
  * @brief Implements the proof harness for OTA_Resume function.
@@ -26,7 +27,7 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
-bool OTA_SignalEvent(const OtaEventMsg_t *const pEventMsg)
+bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 {
     bool status;
 
