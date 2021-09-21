@@ -128,7 +128,8 @@
 #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP    ( configTFM_INTERRUPT_LATENCY + 1 )
 /* Subtract the TF-M interrupt latency to make sure actual sleep time is shorter than the expected idle time. */
 #define configPRE_SUPPRESS_TICKS_AND_SLEEP_PROCESSING( xExpectedIdleTime ) \
-    do {                                                                   \
+    do                                                                     \
+    {                                                                      \
         if( xExpectedIdleTime > configTFM_INTERRUPT_LATENCY )              \
         xExpectedIdleTime -= configTFM_INTERRUPT_LATENCY;                  \
         }                                                                  \
