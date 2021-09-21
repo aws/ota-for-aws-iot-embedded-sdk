@@ -24,6 +24,9 @@
  * @file decodeFileBlock_Http_harness.c
  * @brief Implements the proof harness for decodeFileBlock_Http function.
  */
+
+#include <stdlib.h>
+
 /* Http interface includes. */
 #include "ota_http_private.h"
 
@@ -52,7 +55,7 @@ void decodeFileBlock_Http_harness()
     pBlockId = &blockId;
     pBlockSize = &blockSize;
 
-    pPayload = ( char ** ) malloc( sizeof( char * ) );
+    pPayload = ( uint8_t ** ) malloc( sizeof( char * ) );
 
     /* pPayload cannot point to NULL since it is always initialized in the ingestDataBlock function. */
     __CPROVER_assume( pPayload != NULL );

@@ -480,6 +480,8 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
     };
 
     assert( pAgentCtx != NULL );
+    assert( pAgentCtx->pOtaInterface != NULL );
+    assert( pAgentCtx->pOtaInterface->mqtt.unsubscribe != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
 
