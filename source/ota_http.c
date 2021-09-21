@@ -132,7 +132,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
     assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
             pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
 
-    if( messageSize > OTA_FILE_BLOCK_SIZE )
+    if( ( messageSize > OTA_FILE_BLOCK_SIZE ) && ( messageSize < pPayloadSize ) )
     {
         LogError( ( "Incoming file block size %d larger than block size %d.",
                     ( int ) messageSize, ( int ) OTA_FILE_BLOCK_SIZE ) );
