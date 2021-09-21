@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "ota_mqtt_private.h": "c"
-    },
-    "C_Cpp.errorSquiggles": "Disabled"
-}
