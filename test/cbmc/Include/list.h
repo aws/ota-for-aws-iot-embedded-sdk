@@ -1,6 +1,9 @@
 #ifndef LIST_H
 #define LIST_H
 
+/* Data structures required for CBMC proofs of FreeRTOS dependent
+ * functions in OTA. */
+
 #ifndef configLIST_VOLATILE
     #define configLIST_VOLATILE
 #endif /* configSUPPORT_CROSS_MODULE_OPTIMISATION */
@@ -18,7 +21,6 @@
 
 #endif
 
-/* Definition of ListItem_t from the FreeRTOS kernel.*/
 struct xLIST_ITEM
 {
     listFIRST_LIST_ITEM_INTEGRITY_CHECK_VALUE           /*< Set to a known value if configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */
@@ -31,7 +33,6 @@ struct xLIST_ITEM
 };
 typedef struct xLIST_ITEM ListItem_t;                   /* For some reason lint wants this as two separate definitions. */
 
-/* Definition of MiniListItem_t from the FreeRTOS kernel. */
 struct xMINI_LIST_ITEM
 {
     listFIRST_LIST_ITEM_INTEGRITY_CHECK_VALUE /*< Set to a known value if configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */
@@ -41,7 +42,6 @@ struct xMINI_LIST_ITEM
 };
 typedef struct xMINI_LIST_ITEM MiniListItem_t;
 
-/* Definition of List_t from the FreeRTOS kernel. */
 typedef struct xLIST
 {
     listFIRST_LIST_INTEGRITY_CHECK_VALUE      /*< Set to a known value if configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */

@@ -2,6 +2,10 @@
 #define INC_FREERTOS_H
 
 #include "FreeRTOSConfig.h"
+#include <stdint.h>
+
+/* Data types required for CBMC proofs of FreeRTOS dependent
+ * functions in OTA. */
 
 /**
  * @brief Type definitions
@@ -24,7 +28,6 @@ typedef unsigned long    UBaseType_t;
 #define pdFALSE              ( ( BaseType_t ) 0 )
 #define pdTRUE               ( ( BaseType_t ) 1 )
 
-/* Definition of StaticMiniListItem_t taken from the FreeRTOS kernel. */
 struct xSTATIC_MINI_LIST_ITEM
 {
     #if ( configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES == 1 )
@@ -35,7 +38,6 @@ struct xSTATIC_MINI_LIST_ITEM
 };
 typedef struct xSTATIC_MINI_LIST_ITEM StaticMiniListItem_t;
 
-/* Definition of StaticList_t taken from the FreeRTOS kernel. */
 typedef struct xSTATIC_LIST
 {
     #if ( configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES == 1 )

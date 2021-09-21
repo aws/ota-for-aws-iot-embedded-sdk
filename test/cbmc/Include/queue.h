@@ -1,5 +1,8 @@
-#include "task.h"
+#ifndef QUEUE_H
+#define QUEUE_H
 
-/* Using old naming convention so as not to break kernel aware debuggers. */
+/* Data structures required for the CBMC proofs of freeRTOS functions in OTA. */
 struct QueueDefinition;
 typedef struct QueueDefinition * QueueHandle_t;
+
+#endif

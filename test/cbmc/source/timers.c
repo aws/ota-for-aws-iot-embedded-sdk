@@ -1,7 +1,10 @@
 #include "FreeRTOS.h"
+#include "task.h"
 #include "timers.h"
 #include "queue.h"
 
+/* Data structures required for CBMC proofs of FreeRTOS dependent
+ * functions in OTA. */
 #if ( configUSE_TIMERS == 1 )
     /* The definition of the timers themselves. */
     typedef struct tmrTimerControl                  /* The old naming convention is used to prevent breaking kernel aware debuggers. */
@@ -17,7 +20,5 @@
         uint8_t ucStatus;                           /*<< Holds bits to say if the timer was statically allocated or not, and if it is active or not. */
     } xTIMER;
 
-/* The old xTIMER name is maintained above then typedefed to the new Timer_t
- * name below to enable the use of older kernel aware debuggers. */
     typedef xTIMER Timer_t;
 #endif /* if ( configUSE_TIMERS == 1 ) */
