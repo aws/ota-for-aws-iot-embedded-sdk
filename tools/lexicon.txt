@@ -881,7 +881,7 @@ useraborthandler
 ustopiclen
 utils
 uxitemsize
-uxlength    
+uxlength
 uxmessageswaiting
 uxpriority
 uxrecursivecallcount
