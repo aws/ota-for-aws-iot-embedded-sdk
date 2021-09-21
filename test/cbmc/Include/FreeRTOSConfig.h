@@ -102,13 +102,13 @@ extern void vAssertCalled(const char * pcFile,
 /* Memory allocation configuration */
 #define configSUPPORT_DYNAMIC_ALLOCATION            1
 #define configSUPPORT_STATIC_ALLOCATION             1
-/* The default heap allocation scheme is heap_3.c. Per FreeRTOS documenation https://www.freertos.org/a00111.html#heap_3
+/* The default heap allocation scheme is heap_3.c. Per FreeRTOS documentation https://www.freertos.org/a00111.html#heap_3
  * the following define has no effect. If the heap allocation scheme is changed uncomment the following line.
  */
 //#define configTOTAL_HEAP_SIZE                       ((size_t)(208 * 1024))
 
 /* This define is Cypress specific (not specified by FreeRTOS)and is internally
- * used by the Cypress clib_support library to choose whether to supspend the scheduler (heap_3 scheme) or
+ * used by the Cypress clib_support library to choose whether to suspend the scheduler (heap_3 scheme) or
  * uses mutexes (for other schemes) to guard direct memory allocation (malloc and free) calls depending on
  * the heap allocation scheme. The default configured heap allocation scheme is heap_3.c. If a different
  * allocation scheme is selected this define should be removed for better performance.

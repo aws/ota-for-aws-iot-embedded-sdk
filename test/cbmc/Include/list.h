@@ -18,7 +18,7 @@
 
 #endif
 
-/* Defintion of ListItem_t from the FreeRTOS kernel.*/
+/* Definition of ListItem_t from the FreeRTOS kernel.*/
 struct xLIST_ITEM
 {
     listFIRST_LIST_ITEM_INTEGRITY_CHECK_VALUE           /*< Set to a known value if configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */

@@ -69,6 +69,8 @@ clienttokensize
 closefile
 closefilehandler
 cmock
+cmsis
+co
 colspan
 com
 completecallback
@@ -76,6 +78,7 @@ cond
 config
 configassert
 configpagestyle
+configprintf
 configs
 configurably
 connectsuccessindex
@@ -109,9 +112,11 @@ decodemem
 decodememmaxsize
 decodememorysize
 deduplicate
+deepsleep
 defaultotacompletecallback
 defaultotacompletecallback
 defgroup
+definition
 deinit
 deinitialize
 deinitializing
@@ -139,6 +144,7 @@ docparseerrparamkeynotinmodel
 docparseerrtoomanyparams
 docparseerrunknown
 docparseerruserbufferinsuffcient
+documentation
 doesn't
 doxygen
 eagain
@@ -156,6 +162,7 @@ enums
 errno
 errornumber
 establishconnection
+ethernet
 eventid
 eventmsg
 ewouldblock
@@ -218,6 +225,7 @@ httpinit
 httpinterface
 httprequest
 https
+iar
 iblocksize
 ifndef
 imagestate
@@ -254,6 +262,7 @@ ip
 ip
 isinselftest
 iso
+isrs
 jobcallback
 jobdoc
 jobdoclength
@@ -283,6 +292,7 @@ loginfo
 logpath
 logwarn
 longjmp
+mac
 mainpage
 malloc
 maxattempts
@@ -311,6 +321,7 @@ msgbuffersize
 msgsize
 msgtailsize
 msgvalidity
+mutexes
 mutexhandle
 mynetworkrecvimplementation
 mynetworksendimplementation
@@ -323,6 +334,7 @@ nan
 nano
 nanosleep
 networkcontext
+netmask
 newversion
 nextjittermax
 nextstate
@@ -339,6 +351,7 @@ numstrings
 numwhitespace
 ok
 onlinepubs
+opendns
 opengroup
 openssl
 openssl_invalid_parameter
@@ -520,6 +533,7 @@ pblocksize
 pbody
 pbodydef
 pbuffer
+pc
 pcallbacks
 pcertfilepath
 pcjobtopic
@@ -590,6 +604,7 @@ pnumdatainbuffer
 pnumpadding
 pnumwhitespace
 popensslcredentials
+portasm
 portsleep
 posix
 potaagentstatestrings
@@ -655,6 +670,7 @@ prxblockbitmap
 prxstreamtopic
 pserverinfo
 psignature
+psoc
 psrckey
 pssl
 psslcontext
@@ -675,10 +691,15 @@ pupdatejob
 pupdateurlpath
 pvalueinjson
 pvcallback
+pvowner
 pvportmalloc
 pxconnection
+pxcontainer
 pxcontrolinterface
 pxdatainterface
+pxindex
+pxnext
+pxprevious
 qos
 querykeylength
 queuedat
@@ -702,6 +723,7 @@ requestmomentum
 requesttimercallback
 resetdevice
 resumehandler
+retarget
 retryutilsretriesexhausted
 retryutilssuccess
 returnstatus
@@ -764,16 +786,20 @@ structs
 sublicense
 subreason
 subscribetojobnotificationtopics
+suspend
 suspendhandler
 suspendtimeout
 sys
+tcb
 tcp
 tcpsocket
 tcpsocketcontext
 td
 testclient
+tf
 thingname
 thisisaclienttoken
+tickless
 tickstowait
 timeinseconds
 timerhandle
@@ -801,9 +827,11 @@ ttimer
 typecasted
 twe
 typecasted
+uart
 ublockindex
 ublocksize
 ucqos
+udp
 ul
 ulblockindex
 ulblocksize
@@ -830,6 +858,7 @@ updateurl
 updateurlmaxsize
 url
 urlsize
+usb
 useraborthandler
 ustopiclen
 utils
@@ -841,6 +870,10 @@ versionnumber
 vportfree
 writeblock
 www
+wifi
 xaa
+xitemvalue
+xlist
+xlistend
 xyz
 zg
