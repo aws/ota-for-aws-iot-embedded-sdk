@@ -81,6 +81,7 @@ typedef enum OtaErr
     OtaErrUninitialized,          /*!< @brief The error code has not yet been set by a logic path. */
     OtaErrPanic,                  /*!< @brief Unrecoverable Firmware error. Probably should log error and reboot. */
     OtaErrInvalidArg,             /*!< @brief API called with invalid argument. */
+    OtaErrFailedtoStoreBlock,     /*!< @brief Error occured when the size of the message is greater than the storage buffer size. */
     OtaErrAgentStopped,           /*!< @brief Returned when operations are performed that requires OTA Agent running & its stopped. */
     OtaErrSignalEventFailed,      /*!< @brief Failed to send event to OTA state machine. */
     OtaErrRequestJobFailed,       /*!< @brief Failed to request the job document. */

@@ -132,25 +132,34 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
     assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
             pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
 
-    if( ( messageSize > OTA_FILE_BLOCK_SIZE ) && ( messageSize < *pPayloadSize ) )
+    if( messageSize > *pPayloadSize )
     {
-        LogError( ( "Incoming file block size %d larger than block size %d.",
-                    ( int ) messageSize, ( int ) OTA_FILE_BLOCK_SIZE ) );
-        err = OtaErrInvalidArg;
+        LogError( ( "Incoming file block size %d is larger than buffer size %d.",
+                    ( int ) messageSize, ( int ) ( *pPayloadSize ) ) );
+        err = OtaErrFailedtoStoreBlock;
     }
     else
     {
-        *pFileId = 0;
-        *pBlockId = ( int32_t ) currBlock;
-        *pBlockSize = ( int32_t ) messageSize;
+        if( ( messageSize > OTA_FILE_BLOCK_SIZE ) )
+        {
+            LogError( ( "Incoming file block size %d larger than block size %d.",
+                        ( int ) messageSize, ( int ) OTA_FILE_BLOCK_SIZE ) );
+            err = OtaErrInvalidArg;
+        }
+        else
+        {
+            *pFileId = 0;
+            *pBlockId = ( int32_t ) currBlock;
+            *pBlockSize = ( int32_t ) messageSize;
 
-        /* The data received over HTTP does not require any decoding. */
-        ( void ) memcpy( *pPayload, pMessageBuffer, messageSize );
+            /* The data received over HTTP does not require any decoding. */
+            ( void ) memcpy( *pPayload, pMessageBuffer, messageSize );
 
-        *pPayloadSize = messageSize;
+            *pPayloadSize = messageSize;
 
-        /* Current block is processed, set the file block to next. */
-        currBlock++;
+            /* Current block is processed, set the file block to next. */
+            currBlock++;
+        }
     }
 
     return err;
