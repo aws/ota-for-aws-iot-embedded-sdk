@@ -1,12 +1,12 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-HARNESS_ENTRY = Malloc_FreeRTOS_harness
+HARNESS_ENTRY = Free_FreeRTOS_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
 
 # This should be a unique identifier for this proof, and will appear on the
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
-PROOF_UID = Malloc_FreeRTOS_harness
+PROOF_UID = Free_FreeRTOS_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
 INCLUDES += -I$(SRCDIR)/test/cbmc/Include/

@@ -19,25 +19,22 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 /**
- * @file Malloc_FreeRTOS_harness.c
- * @brief Implements the proof harness for Malloc_FreeRTOS function.
+ * @file Free_FreeRTOS_harness.c
+ * @brief Implements the proof harness for Free_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 
 /* Stub to simulate the behavior of Malloc in FreeRTOS. */
-int pvPortMalloc( size_t size )
-{
-    int mem;
+int vPortFree(void* ptr){
+    int status;
 
-    return mem;
+    return status;
 }
 
-void Malloc_FreeRTOS_harness()
+void Free_FreeRTOS_harness()
 {
-    size_t size;
-
-    Malloc_FreeRTOS( size );
+    void * ptr; 
+    Free_FreeRTOS(ptr);
 }

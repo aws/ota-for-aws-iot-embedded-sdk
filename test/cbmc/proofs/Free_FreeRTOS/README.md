@@ -1,7 +1,7 @@
-Malloc_FreeRTOS proof
+Free_FreeRTOS proof
 ==============
 
-This directory contains a memory safety proof for Malloc_FreeRTOS.
+This directory contains a memory safety proof for Free_FreeRTOS.
 
 To run the proof.
 -------------
