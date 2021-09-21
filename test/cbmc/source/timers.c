@@ -17,7 +17,7 @@
         uint8_t ucStatus;                           /*<< Holds bits to say if the timer was statically allocated or not, and if it is active or not. */
     } xTIMER;
 
-    /* The old xTIMER name is maintained above then typedefed to the new Timer_t
+/* The old xTIMER name is maintained above then typedefed to the new Timer_t
  * name below to enable the use of older kernel aware debuggers. */
     typedef xTIMER Timer_t;
-#endif
+#endif /* if ( configUSE_TIMERS == 1 ) */

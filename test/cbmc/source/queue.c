@@ -14,15 +14,17 @@ typedef struct SemaphoreData
     UBaseType_t uxRecursiveCallCount; /*< Maintains a count of the number of times a recursive mutex has been recursively 'taken' when the structure is used as a mutex. */
 } SemaphoreData_t;
 
-struct QueueDefinition{
-    int8_t * pcHead;           /*< Points to the beginning of the queue storage area. */
-    int8_t * pcWriteTo;        /*< Points to the free next place in the storage area. */
+struct QueueDefinition
+{
+    int8_t * pcHead;    /*< Points to the beginning of the queue storage area. */
+    int8_t * pcWriteTo; /*< Points to the free next place in the storage area. */
 
     union
     {
         QueuePointers_t xQueue;     /*< Data required exclusively when this structure is used as a queue. */
         SemaphoreData_t xSemaphore; /*< Data required exclusively when this structure is used as a semaphore. */
-    } u;
+    }
+    u;
 
     List_t xTasksWaitingToSend;             /*< List of tasks that are blocked waiting to post onto this queue.  Stored in priority order. */
     List_t xTasksWaitingToReceive;          /*< List of tasks that are blocked waiting to read from this queue.  Stored in priority order. */
@@ -46,4 +48,4 @@ struct QueueDefinition{
         UBaseType_t uxQueueNumber;
         uint8_t ucQueueType;
     #endif
-}; 
+};

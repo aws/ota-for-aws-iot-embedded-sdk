@@ -9,4 +9,3 @@ typedef struct tskTaskControlBlock * TaskHandle_t;
  * conform.
  */
 typedef BaseType_t (* TaskHookFunction_t)( void * );
-

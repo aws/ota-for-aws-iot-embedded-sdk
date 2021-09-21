@@ -6,23 +6,23 @@
 /**
  * @brief Type definitions
  */
-    #define portBASE_TYPE    int
-    #define portSTACK_TYPE    uint32_t
+#define portBASE_TYPE     int
+#define portSTACK_TYPE    uint32_t
 
-    typedef portBASE_TYPE    BaseType_t;
-    typedef portSTACK_TYPE   StackType_t;
-    typedef unsigned long    UBaseType_t;
+typedef portBASE_TYPE    BaseType_t;
+typedef portSTACK_TYPE   StackType_t;
+typedef unsigned long    UBaseType_t;
 
-    #if ( configUSE_16_BIT_TICKS == 1 )
-        typedef uint16_t     TickType_t;
-        #define portMAX_DELAY              ( TickType_t ) 0xffff
-    #else
-        typedef uint32_t     TickType_t;
-        #define portMAX_DELAY              ( TickType_t ) 0xffffffffUL
-    #endif
+#if ( configUSE_16_BIT_TICKS == 1 )
+    typedef uint16_t     TickType_t;
+    #define portMAX_DELAY    ( TickType_t ) 0xffff
+#else
+    typedef uint32_t     TickType_t;
+    #define portMAX_DELAY    ( TickType_t ) 0xffffffffUL
+#endif
 
-    #define pdFALSE                                  ( ( BaseType_t ) 0 )
-    #define pdTRUE                                   ( ( BaseType_t ) 1 )
+#define pdFALSE              ( ( BaseType_t ) 0 )
+#define pdTRUE               ( ( BaseType_t ) 1 )
 
 /* Definition of StaticMiniListItem_t taken from the FreeRTOS kernel. */
 struct xSTATIC_MINI_LIST_ITEM

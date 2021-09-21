@@ -1,12 +1,12 @@
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 
-//! Structure to store thread-local state
-struct _reent {
-    //! The ARM C library for AArch32 requires 96 bytes for thread-local state
-    uint64_t placeholder[12];
+/*! Structure to store thread-local state */
+struct _reent
+{
+    /*! The ARM C library for AArch32 requires 96 bytes for thread-local state */
+    uint64_t placeholder[ 12 ];
 };
 
 /* The old naming convention is used to prevent breaking kernel aware debuggers. */
@@ -87,4 +87,4 @@ struct tskTaskControlBlock
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iTaskErrno;
     #endif
-};     
+};
