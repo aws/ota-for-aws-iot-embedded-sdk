@@ -19,7 +19,7 @@ PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/timers.c
 PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/queue.c
 PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/task.c
 
-#NONDET_STATIC += "--nondet-static"
+NONDET_STATIC += "--nondet-static"
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

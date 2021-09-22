@@ -27,12 +27,59 @@
 #include "ota_os_freertos.h"
 #include "FreeRTOS.h"
 #include "timers.h"
+#include "ota_private.h"
 
 /* Declaration of the mangled name function created by CBMC for static functions.*/
 void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback(TimerHandle_t timer);
 
+void otaTimerCallback( OtaTimerId_t otaTimerId )
+{
+    assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
+
+    if( otaTimerId == OtaRequestTimer )
+    {
+        OtaEventMsg_t xEventMsg = { 0 };
+
+        LogDebug( ( "Self-test expired within %ums",
+                    otaconfigFILE_REQUEST_WAIT_MS ) );
+
+        xEventMsg.eventId = OtaAgentEventRequestTimer;
+
+        /* Send request timer event. */
+        if( OTA_SignalEvent( &xEventMsg ) == false )
+        {
+            LogError( ( "Failed to signal the OTA Agent to start request timer" ) );
+        }
+    }
+    else /* ( otaTimerId == OtaSelfTestTimer ) */
+    {
+        LogError( ( "Self test failed to complete within %ums",
+                    otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
+
+    }
+}
+
+bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
+{
+    bool status;
+    return status;
+}
+
 void requestTimerCallback_harness()
 {
     TimerHandle_t timer;
+    OtaTimerId_t otaTimerId;
+    char * pTimerName;
+    uint32_t timeout;
+
+    __CPROVER_assume(otaTimerId >= 0 && otaTimerId < 2);
+
+    __CPROVER_assume(timeout < UINT32_MAX / 1000);
+    
+    OtaStartTimer_FreeRTOS( otaTimerId,
+                                 pTimerName,
+                                    timeout,
+                                      otaTimerCallback );
+
     __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback(timer);
 }
