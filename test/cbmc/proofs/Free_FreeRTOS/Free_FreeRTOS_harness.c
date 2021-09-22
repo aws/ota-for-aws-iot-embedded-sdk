@@ -26,7 +26,7 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 
-/* Stub to simulate the behavior of Malloc in FreeRTOS. */
+/* Stub to simulate the behavior of Free in FreeRTOS. */
 int vPortFree(void* ptr){
     int status;
 
