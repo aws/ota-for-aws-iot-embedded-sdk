@@ -24,7 +24,7 @@
  * @file Posix_OtaStartTimer_harness.c
  * @brief Implements the proof harness for Posix_OtaStartTimer function.
  */
-/*  POSIXsss includes for OTA library. */
+/*  POSIX includes for OTA library. */
 #include "ota_os_posix.h"
 
 void Posix_OtaStartTimer_harness()
@@ -42,5 +42,5 @@ void Posix_OtaStartTimer_harness()
 
     Posix_OtaStartTimer( otaTimerId, pTimerName, timeout, callback );
 
-    free(pTimerName);
+    free( pTimerName );
 }
