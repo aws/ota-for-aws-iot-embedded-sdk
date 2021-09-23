@@ -26,6 +26,12 @@
  */
 /*  POSIX includes for OTA library. */
 #include "ota_os_posix.h"
+#include <stdlib.h>
+
+void OtaCallback( OtaTimerId_t otaTimerId )
+{
+    return;
+}
 
 void Posix_OtaStartTimer_harness()
 {
@@ -37,6 +43,9 @@ void Posix_OtaStartTimer_harness()
 
     /* The range of values for OtaTimerId_t enum is [0,2). */
     __CPROVER_assume( otaTimerId >= 0 && otaTimerId < 2 );
+
+    /* Initialize to a callback timer. */
+    callback = OtaCallback;
 
     pTimerName = ( char * ) malloc( size * sizeof( char ) );
 
