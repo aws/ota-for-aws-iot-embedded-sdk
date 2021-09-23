@@ -41,4 +41,6 @@ void Posix_OtaStartTimer_harness()
     pTimerName = ( char * ) malloc( size * sizeof( char ) );
 
     Posix_OtaStartTimer( otaTimerId, pTimerName, timeout, callback );
+
+    free(pTimerName);
 }
