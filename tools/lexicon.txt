@@ -41,6 +41,7 @@ br
 buf
 buffersizebytes
 bufferused
+buildstatusmessagereceiving
 bytesreceived
 bytessent
 bytestorecv
@@ -53,6 +54,7 @@ cbor
 cborarray
 cborerror
 cbormap
+cbormaptype
 cborstring
 cborvalue
 cborwork
@@ -63,6 +65,7 @@ certfilepathsize
 checkforupdate
 cli
 clienttoken
+clienttokensize
 closefile
 closefilehandler
 cmock
@@ -78,6 +81,7 @@ configurably
 connectsuccessindex
 const
 constantspage
+container
 contextbase
 contextbaseaddr
 contextsize
@@ -269,6 +273,7 @@ jobstatusinprogress
 jobstatusrejected
 json
 lastupdatedat
+len
 lf
 li
 linux
@@ -325,10 +330,13 @@ noninfringement
 numblocks
 numblocksrequest
 numjobparams
+numjobstatusmappings
 nummodelparams
 numofblocksrequested
 numofblockstoreceive
+numpadding
 numstrings
+numwhitespace
 ok
 onlinepubs
 opengroup
@@ -478,6 +486,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+outputlen
 pacdata
 pactivejobname
 pactopic
@@ -540,6 +549,7 @@ pdocmodel
 pdocmodel
 pem
 pencodeddata
+pencodedmessage
 pencodedmessagesize
 peventcontext
 peventctx
@@ -638,6 +648,8 @@ processdatahandler
 processjobhandler
 prootcapath
 protocolmaxsize
+prvbuildstatusmessagefinish
+prvbuildstatusmessageselftest
 prvpal
 prxblockbitmap
 prxstreamtopic
@@ -655,6 +667,7 @@ ptimername
 ptopicbuffer
 ptopicfilter
 ptr
+publishstatusmessage
 punused
 pupdatefile
 pupdatefilepath
@@ -740,12 +753,17 @@ streamname
 streamnamemaxsize
 streamnamesize
 strerror
+stringsize
 stringbuilder
+stringsize
 strlength
+stringbuilder
+stringsize
 struct
 structs
 sublicense
 subreason
+subscribetojobnotificationtopics
 suspendhandler
 suspendtimeout
 sys
@@ -780,7 +798,9 @@ transportsectionimplementation
 transportsectionoverview
 transportstruct
 ttimer
+typecasted
 twe
+typecasted
 ublockindex
 ublocksize
 ucqos
@@ -797,7 +817,10 @@ uniqueclientid
 unistd
 unsignedversion32
 unsubscribeflag
+unsubscribefromjobnotificationtopic
 unsubscribeonshutdown
+unsubscribefromjobnotificationtopic
+unsubscribefromdatastream
 updatedby
 updatefilepath
 updatefilepathsize
