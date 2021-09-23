@@ -24,7 +24,7 @@
  * @file Posix_OtaStopTimer_harness.c
  * @brief Implements the proof harness for Posix_OtaStopTimer function.
  */
-/*  FreeRTOS includes for OTA library. */
+/*  POSIX includes for OTA library. */
 #include "ota_os_posix.h"
 
 void Posix_OtaStopTimer_harness()
