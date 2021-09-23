@@ -29,6 +29,9 @@
 #include <signal.h>
 #include <stdlib.h>
 
+/* Declaration of selfTestTimerCallback function with mangled name. */
+void __CPROVER_file_local_ota_os_posix_c_selfTestTimerCallback( union sigval arg );
+
 /* Stub for Timer callback. */
 void OtaCallback( OtaTimerId_t otaTimerid )
 {
@@ -54,7 +57,7 @@ void selfTestTimerCallback_harness()
     /* Map the callback function in ota_posix.c to OtaCallback. */
     Posix_OtaStartTimer( otaTimerId, pTimerName, timeout, callback );
 
-    selfTestTimerCallback( arg );
+    __CPROVER_file_local_ota_os_posix_c_selfTestTimerCallback( arg );
 
     free( pTimerName );
 }
