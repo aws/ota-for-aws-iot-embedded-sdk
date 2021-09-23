@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file Posix_OtaDeleteTimer_harness.c
  * @brief Implements the proof harness for Posix_OtaDeleteTimer function.
@@ -31,7 +32,7 @@ void Posix_OtaDeleteTimer_harness()
     OtaTimerId_t otaTimer;
 
     /* The valid values for OtaTimerId_t enum are [0,2). */
-    __CPROVER_assume(otaTimer >= 0 && otaTimer < 2);
+    __CPROVER_assume( otaTimer >= 0 && otaTimer < 2 );
 
-    Posix_OtaDeleteTimer(otaTimer);
+    Posix_OtaDeleteTimer( otaTimer );
 }
