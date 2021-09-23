@@ -21,23 +21,15 @@
  */
 
 /**
- * @file Malloc_FreeRTOS_harness.c
- * @brief Implements the proof harness for Malloc_FreeRTOS function.
+ * @file STDC_Malloc_harness.c
+ * @brief Implements the proof harness for STDC_Malloc function.
  */
-/*  FreeRTOS includes for OTA library. */
-#include "ota_os_freertos.h"
+/*  POSIX includes for OTA library. */
+#include "ota_os_posix.h"
 
-/* Stub to simulate the behavior of Malloc in FreeRTOS. */
-int pvPortMalloc( size_t size )
-{
-    int mem;
-
-    return mem;
-}
-
-void Malloc_FreeRTOS_harness()
+void STDC_Malloc_harness()
 {
     size_t size;
 
-    Malloc_FreeRTOS( size );
+    STDC_Malloc( size );
 }

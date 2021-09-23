@@ -1,6 +1,6 @@
 { "expected-missing-functions":
   [
   ],
-  "proof-name": "Malloc_FreeRTOS",
+  "proof-name": "STDC_Malloc",
   "proof-root": "test/cbmc/proofs"
 }
