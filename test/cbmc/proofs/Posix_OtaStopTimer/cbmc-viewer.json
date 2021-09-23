@@ -1,6 +1,6 @@
 { "expected-missing-functions":
   [
   ],
-  "proof-name": "Malloc_FreeRTOS",
+  "proof-name": "Posix_OtaStopTimer",
   "proof-root": "test/cbmc/proofs"
 }

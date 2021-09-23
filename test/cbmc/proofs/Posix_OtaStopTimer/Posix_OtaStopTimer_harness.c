@@ -21,23 +21,18 @@
  */
 
 /**
- * @file Malloc_FreeRTOS_harness.c
- * @brief Implements the proof harness for Malloc_FreeRTOS function.
+ * @file Posix_OtaStopTimer_harness.c
+ * @brief Implements the proof harness for Posix_OtaStopTimer function.
  */
 /*  FreeRTOS includes for OTA library. */
-#include "ota_os_freertos.h"
+#include "ota_os_posix.h"
 
-/* Stub to simulate the behavior of Malloc in FreeRTOS. */
-int pvPortMalloc( size_t size )
+void Posix_OtaStopTimer_harness()
 {
-    int mem;
+    OtaTimerId_t otaTimer;
 
-    return mem;
-}
+    /* The valid range of values for OtaTimerId_t enum are [0,2).*/
+    __CPROVER_assume( otaTimer >= 0 && otaTimer < 2 );
 
-void Malloc_FreeRTOS_harness()
-{
-    size_t size;
-
-    Malloc_FreeRTOS( size );
+    Posix_OtaStopTimer( otaTimer );
 }

@@ -1,7 +1,7 @@
-Malloc_FreeRTOS proof
+Posix_OtaStopTimer proof
 ==============
 
-This directory contains a memory safety proof for Malloc_FreeRTOS.
+This directory contains a memory safety proof for Posix_OtaStopTimer.
 
 To run the proof.
 -------------
