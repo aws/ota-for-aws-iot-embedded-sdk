@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OtaInitEvent_FreeRTOS_harness.c
  * @brief Implements the proof harness for OtaInitEvent_FreeRTOS function.
@@ -29,11 +30,10 @@
 #include "timers.h"
 #include "queue.h"
 
- QueueHandle_t xQueueCreateStatic(
-                             UBaseType_t uxQueueLength,
-                             UBaseType_t uxItemSize,
-                             uint8_t *pucQueueStorageBuffer,
-                             StaticQueue_t *pxQueueBuffer )
+QueueHandle_t xQueueCreateStatic( UBaseType_t uxQueueLength,
+                                  UBaseType_t uxItemSize,
+                                  uint8_t * pucQueueStorageBuffer,
+                                  StaticQueue_t * pxQueueBuffer )
 {
     QueueHandle_t eventQueue;
 
@@ -42,6 +42,7 @@
 
 void OtaInitEvent_FreeRTOS_harness()
 {
-    OtaEventContext_t* pEventCtx;
-    OtaInitEvent_FreeRTOS(pEventCtx);
+    OtaEventContext_t * pEventCtx;
+
+    OtaInitEvent_FreeRTOS( pEventCtx );
 }
