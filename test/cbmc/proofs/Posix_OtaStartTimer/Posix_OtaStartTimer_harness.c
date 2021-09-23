@@ -30,7 +30,6 @@
 
 void OtaCallback( OtaTimerId_t otaTimerId )
 {
-    return;
 }
 
 void Posix_OtaStartTimer_harness()
