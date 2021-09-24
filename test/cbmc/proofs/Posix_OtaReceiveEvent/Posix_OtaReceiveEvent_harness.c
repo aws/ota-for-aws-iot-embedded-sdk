@@ -40,7 +40,7 @@ void Posix_OtaReceiveEvent_harness()
     /* pEventMsg is always of OtaEventMsg_t type. */
     pEventMsg = ( void * ) malloc( sizeof( OtaEventMsg_t ) );
 
-    /* pEventMsg is always initialized before it's use in
+    /* pEventMsg is always initialized before it is used in
      * Posix_OtaReceiveEvent. */
     __CPROVER_assume( pEventMsg != NULL );
 
