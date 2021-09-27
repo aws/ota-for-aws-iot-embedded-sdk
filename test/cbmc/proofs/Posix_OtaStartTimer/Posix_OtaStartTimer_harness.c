@@ -32,6 +32,16 @@ void OtaCallback( OtaTimerId_t otaTimerId )
 {
 }
 
+/* Stub to create new per-process timer using CLOCK_ID.  */
+int timer_create( clockid_t __clock_id,
+                  struct sigevent * __restrict __evp,
+                  timer_t * __restrict __timerid )
+{
+    int timerStatus;
+
+    return timerStatus;
+}
+
 void Posix_OtaStartTimer_harness()
 {
     OtaTimerId_t otaTimerId;
