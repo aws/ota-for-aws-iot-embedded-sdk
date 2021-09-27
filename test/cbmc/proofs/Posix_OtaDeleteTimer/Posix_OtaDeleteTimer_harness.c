@@ -27,6 +27,13 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_posix.h"
 
+int timer_delete( timer_t timer )
+{
+    int timerStatus;
+
+    return timerStatus;
+}
+
 void Posix_OtaDeleteTimer_harness()
 {
     OtaTimerId_t otaTimer;
