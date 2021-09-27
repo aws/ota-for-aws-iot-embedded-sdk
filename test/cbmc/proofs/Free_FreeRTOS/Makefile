@@ -9,15 +9,13 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = Free_FreeRTOS_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
-INCLUDES += -I$(SRCDIR)/test/cbmc/Include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/portable/CCS/ARM_CM3/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 
 PROJECT_SOURCES += $(SRCDIR)/source/portable/os/ota_os_freertos.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/timers.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/queue.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/task.c
-
 NONDET_STATIC += "--nondet-static"
 
 # If this proof is found to consume huge amounts of RAM, you can set the
