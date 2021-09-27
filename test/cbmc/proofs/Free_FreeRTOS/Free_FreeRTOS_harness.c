@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file Free_FreeRTOS_harness.c
  * @brief Implements the proof harness for Free_FreeRTOS function.
@@ -27,7 +28,8 @@
 #include "ota_os_freertos.h"
 
 /* Stub to simulate the behavior of Free in FreeRTOS. */
-int vPortFree(void* ptr){
+int vPortFree( void * ptr )
+{
     int status;
 
     return status;
@@ -35,6 +37,7 @@ int vPortFree(void* ptr){
 
 void Free_FreeRTOS_harness()
 {
-    void * ptr; 
-    Free_FreeRTOS(ptr);
+    void * ptr;
+
+    Free_FreeRTOS( ptr );
 }
