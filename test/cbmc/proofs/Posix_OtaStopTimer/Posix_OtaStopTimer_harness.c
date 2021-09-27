@@ -27,6 +27,16 @@
 /*  POSIX includes for OTA library. */
 #include "ota_os_posix.h"
 
+int timer_settime( timer_t __timerid,
+                   int __flags,
+                   const struct itimerspec * __restrict __value,
+                   struct itimerspec * __restrict __ovalue )
+{
+    int timerStatus;
+
+    return timerStatus;
+}
+
 void Posix_OtaStopTimer_harness()
 {
     OtaTimerId_t otaTimer;
