@@ -62,7 +62,7 @@ certfile
 certfilepath
 certfilepathmaxsize
 certfilepathsize
-checkDataType
+checkdatatype
 checkforupdate
 cli
 clienttoken
