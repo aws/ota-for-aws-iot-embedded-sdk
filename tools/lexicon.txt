@@ -373,6 +373,7 @@ otaagentstatesuspended
 otaagentstatewaitingforjob
 otaappcallback
 otabuffer
+otacallback
 otaclose
 otaconfigallowdowngrade
 otacontrolinterface
