@@ -27,7 +27,7 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 
-/* Stub to simulate the behavior of Free in FreeRTOS. */
+/* Stub to free dynamically allocated memory in FreeRTOS. */
 int vPortFree( void * ptr )
 {
     int status;

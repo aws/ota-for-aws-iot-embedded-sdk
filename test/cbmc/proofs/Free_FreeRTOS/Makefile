@@ -16,7 +16,6 @@ INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/portable/CCS/ARM_CM3/
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 
 PROJECT_SOURCES += $(SRCDIR)/source/portable/os/ota_os_freertos.c
-NONDET_STATIC += "--nondet-static"
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
