@@ -26,18 +26,17 @@
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
+#include <stdlib.h>
 
-/* Stub to free dynamically allocated memory in FreeRTOS. */
-int vPortFree( void * ptr )
+void vPortFree( void * ptr )
 {
-    int status;
-
-    return status;
+    free( ptr );
 }
 
 void Free_FreeRTOS_harness()
 {
-    void * ptr;
+    size_t size;
+    void * ptr = ( void * ) malloc( size );
 
     Free_FreeRTOS( ptr );
 }
