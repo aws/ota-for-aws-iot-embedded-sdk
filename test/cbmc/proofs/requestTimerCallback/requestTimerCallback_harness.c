@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file requestTimerCallback_harness.c
  * @brief Implements the proof harness for requestTimerCallback function.
@@ -29,12 +30,12 @@
 #include "timers.h"
 
 /* Declaration of the mangled name function created by CBMC for static functions.*/
-void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback(TimerHandle_t timer);
+void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( TimerHandle_t timer );
 
 void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
-    __CPROVER_assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ), 
-                            "Invalid OtaTimerId: Expected OtaRequestTimer");
+    __CPROVER_assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ),
+                      "Invalid OtaTimerId: Expected OtaRequestTimer" );
 }
 
 void requestTimerCallback_harness()
@@ -46,23 +47,23 @@ void requestTimerCallback_harness()
     size_t thingNameSize;
     uint32_t timeout;
 
-    pTimerName = (const char*)malloc(thingNameSize * sizeof(char));
+    pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
 
     callback = otaTimerCallback;
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
-    __CPROVER_assume(otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer);
+    __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 
     /* To avoid integer overflow in pdMs_TO_TICKS. */
-    __CPROVER_assume(timeout < (UINT32_MAX / configTICK_RATE_HZ));
-    
+    __CPROVER_assume( timeout < ( UINT32_MAX / configTICK_RATE_HZ ) );
+
     /* OtaStartTimer_FreeRTOS initializes the function pointer OtaTimerCallback. */
     OtaStartTimer_FreeRTOS( otaTimerId,
-                                 pTimerName,
-                                    timeout,
-                                      callback );
+                            pTimerName,
+                            timeout,
+                            callback );
 
-    __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback(timer);
+    __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( timer );
 
-    free(pTimerName);
+    free( pTimerName );
 }
