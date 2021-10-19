@@ -21,21 +21,22 @@
  */
 
 /**
- * @file OTA_OsStatus_strerror_harness.c
- * @brief Implements the proof harness for OTA_OsStatus_strerror function.
+ * @file Free_FreeRTOS_harness.c
+ * @brief Implements the proof harness for Free_FreeRTOS function.
  */
-/*  Ota Agent includes. */
-#include "ota.h"
+/*  FreeRTOS includes for OTA library. */
+#include "ota_os_freertos.h"
+#include <stdlib.h>
 
-void OTA_OsStatus_strerror_harness()
+void vPortFree( void * ptr )
 {
-    char * str = NULL;
-    OtaOsStatus_t status;
+    free( ptr );
+}
 
-    str = OTA_OsStatus_strerror( status );
+void Free_FreeRTOS_harness()
+{
+    size_t size;
+    void * ptr = ( void * ) malloc( size );
 
-    /* OTA_OsStatus_strerror returns a string which is never a NULL. If it does, then
-     * there is a problem. */
-    __CPROVER_assert( str != NULL,
-                      "Invalid return value from OTA_OsStatus_strerror: Expected a non-null value." );
+    Free_FreeRTOS( ptr );
 }
