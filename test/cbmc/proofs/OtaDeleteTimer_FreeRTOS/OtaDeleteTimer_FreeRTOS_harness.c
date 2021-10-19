@@ -32,8 +32,8 @@ void OtaDeleteTimer_FreeRTOS_harness()
     OtaTimerId_t otaTimerId;
     OtaOsStatus_t status;
 
-    /* The valid range of values for OtaTimerId_t enum is [0,2) */
-    __CPROVER_assume( otaTimerId >= 0 && otaTimerId < 2 );
+    /* otaTimerId can only have values of OtaTimerId_t enumeration. */
+    __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 
     status = OtaDeleteTimer_FreeRTOS( otaTimerId );
 
