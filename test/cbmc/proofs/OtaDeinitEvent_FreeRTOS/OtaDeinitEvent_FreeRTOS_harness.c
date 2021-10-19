@@ -31,6 +31,10 @@
 void OtaDeinitEvent_FreeRTOS_harness()
 {
     OtaEventContext_t * pEventCtx;
+    OtaOsStatus_t osStatus;
 
-    OtaDeinitEvent_FreeRTOS( pEventCtx );
+    osStatus = OtaDeinitEvent_FreeRTOS( pEventCtx );
+
+    __CPROVER_assert( osStatus == OtaOsSuccess,
+                      "Invalid return value: OtaDeinitEvent_FreeRTOS should return OtaOsSuccess" );
 }
