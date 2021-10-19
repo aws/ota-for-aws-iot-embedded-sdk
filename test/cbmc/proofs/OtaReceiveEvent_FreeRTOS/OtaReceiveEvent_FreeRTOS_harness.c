@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,6 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OtaReceiveEvent_FreeRTOS_harness.c
  * @brief Implements the proof harness for OtaReceiveEvent_FreeRTOS function.
@@ -26,24 +27,23 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 #include "ota_private.h"
-#include "FreeRTOS.h"
-#include "queue.h"
-
-BaseType_t xQueueReceive(QueueHandle_t xQueue,
-                               void *pvBuffer,
-                               TickType_t xTicksToWait
-                            )
-{   BaseType_t status;
-    return status;
-}
 
 void OtaReceiveEvent_FreeRTOS_harness()
 {
-    OtaEventContext_t* pEventCtx; 
-    void* pEventMsg;
+    OtaEventContext_t * pEventCtx;
+    OtaOsStatus_t osStatus;
+    void * pEventMsg;
     uint32_t timeout;
 
-    void* pEventMsg = (void *)malloc(sizeof(OtaEventMsg_t));
-    __CPROVER_assume(pEventMsg != NULL);
-    OtaReceiveEvent_FreeRTOS(pEventCtx, pEventMsg, timeout);
+    void * pEventMsg = ( void * ) malloc( sizeof( OtaEventMsg_t ) );
+
+    /* pEventMsg is statically declared before it is used in this function. */
+    __CPROVER_assume( pEventMsg != NULL );
+
+    osStatus = OtaReceiveEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
+
+    __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsEventQueueReceiveFailed,
+                      "Invalid return value: osStatus should be either OtaOsSuccess or OtaOsEventQueueReceiveFailed." );
+
+    free( pEventMsg );
 }
