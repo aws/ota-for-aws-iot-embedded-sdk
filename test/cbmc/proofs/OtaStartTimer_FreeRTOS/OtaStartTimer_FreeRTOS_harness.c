@@ -19,23 +19,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OtaStartTimer_FreeRTOS_harness.c
  * @brief Implements the proof harness for OtaStartTimer_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
+#include "FreeRTOSConfig.h"
 
 void OtaStartTimer_FreeRTOS_harness()
 {
     OtaTimerId_t otaTimerId;
-    char* pTimerName;
-    uint32_t timeout; 
+    char * pTimerName;
+    uint32_t timeout;
     OtaTimerCallback_t callback;
 
-    /* The valid range of values for OtaTimerId_t enum is [0,2) */
-    __CPROVER_assume(otaTimerId >= 0 && otaTimerId < 2);
+    OtaOsStatus_t osStatus;
 
-    OtaStartTimer_FreeRTOS(otaTimerId, pTimerName, timeout, callback);
+    /* To avoid pdMs_TO_TICKS from integer overflow. */
+    __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
+
+    /* otaTimerId can only have values of OtaTimerId_t enumeration. */
+    __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
+
+    osStatus = OtaStartTimer_FreeRTOS( otaTimerId, pTimerName, timeout, callback );
+
+    __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsTimerCreateFailed ||
+                      osStatus == OtaOsTimerStartFailed || osStatus == OtaOsTimerRestartFailed,
+                      "Invalid return value for osStatus." );
 }
-
