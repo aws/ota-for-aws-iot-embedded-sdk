@@ -1,5 +1,3 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
 
 HARNESS_ENTRY = setControlInterface_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
