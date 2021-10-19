@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,28 +19,24 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OtaStopTimer_FreeRTOS_harness.c
  * @brief Implements the proof harness for OtaStopTimer_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
-
-/* Stub for Stop the timers created using xTimerCreate() function. */
-BaseType_t xTimerStop(TimerHandle_t xTimer, TickType_t xBlockTime)
-{
-    BaseType_t status;
-    return status;
-}
 
 void OtaStopTimer_FreeRTOS_harness()
 {
     OtaTimerId_t otaTimerId;
+    OtaOsStatus_t osStatus;
 
-    /* The valid range of values for OtaTimerId_t enum is [0,2) */
-    __CPROVER_assume(otaTimerId >= 0 && otaTimerId < 2);
+    /* otaTimerId can only have values of OtaTimerId_t enumeration. */
+    __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 
-    OtaStopTimer_FreeRTOS(otaTimerId);
+    osStatus = OtaStopTimer_FreeRTOS( otaTimerId );
+
+    __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsTimerStopFailed,
+                      "Invalid return value: OtaStopTimer_FreeRTOS can return either OtaOsSuccess or OtaOsTimerStopFailed." );
 }
