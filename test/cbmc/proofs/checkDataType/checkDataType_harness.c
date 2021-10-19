@@ -45,6 +45,6 @@ void checkDataType_harness()
 
     cborResult = __CPROVER_file_local_ota_cbor_c_checkDataType( expectedType, pcborValue );
 
-    __CPROVER_assert(cborResult == CborNoError || cborResult == CborErrorIllegalType,
-                                                "Invalid cborResult value: Expected either CborNoError or CborErrorIllegalType.");
+    __CPROVER_assert( cborResult == CborNoError || cborResult == CborErrorIllegalType,
+                      "Invalid cborResult value: Expected either CborNoError or CborErrorIllegalType." );
 }
