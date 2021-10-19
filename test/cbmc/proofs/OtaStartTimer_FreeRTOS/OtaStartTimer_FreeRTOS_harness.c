@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,29 +25,6 @@
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
-
-/* Stub for creating the timer. */
-TimerHandle_t xTimerCreate(const char* const pTimerName, TickType_t xTimerperiod
-, UBaseType_t uxAutoReload, void* pvTimerId,
-TimerCallbackFunction_t pxCallbackFunction)
-{
-    TimerHandle_t timer;
-    return timer;
-}
-
-/* Stub to start the timer. */
-BaseType_t xTimerStart(TimerHandle_t xTimer, TickType_t xBlockTime){
-    BaseType_t status;
-    return status;
-}
-
-/* Stub to reset the timer. */
-BaseType_t xTimerReset(TimerHandle_t xTimer, TickType_t xBlockTime){
-    BaseType_t status;
-    return status;
-}
 
 void OtaStartTimer_FreeRTOS_harness()
 {
