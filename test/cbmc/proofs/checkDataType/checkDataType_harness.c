@@ -31,6 +31,7 @@
 CborError __CPROVER_file_local_ota_cbor_c_checkDataType( CborType expectedType,
                                                          CborValue * cborValue );
 
+
 void checkDataType_harness()
 {
     CborType expectedType;
@@ -44,32 +45,6 @@ void checkDataType_harness()
 
     cborResult = __CPROVER_file_local_ota_cbor_c_checkDataType( expectedType, pcborValue );
 
-    if( ( cborResult >= CborNoError ) && ( cborResult <= CborErrorIO ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorGarbageAtEnd ) && ( cborResult <= CborErrorGarbageAtEnd ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorGarbageAtEnd ) && ( cborResult <= CborErrorGarbageAtEnd ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorUnknownSimpleType ) && ( cborResult <= CborErrorMapKeysNotUnique ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorTooManyItems ) && ( cborResult <= CborErrorTooFewItems ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorDataTooLarge ) && ( cborResult <= CborErrorUnsupportedType ) )
-    {
-    }
-    else if( ( cborResult >= CborErrorJsonObjectKeyIsAggregate ) && ( cborResult <= CborErrorJsonNotImplemented ) )
-    {
-    }
-    else if( ( cborResult == CborErrorOutOfMemory ) || ( cborResult == CborErrorIO ) )
-    {
-    }
-    else
-    {
-        __CPROVER_assert( 0, "Invalid cborResult value." );
-    }
+    __CPROVER_assert(cborResult == CborNoError || cborResult == CborErrorIllegalType,
+                                                "Invalid cborResult value: Expected either CborNoError or CborErrorIllegalType.");
 }
