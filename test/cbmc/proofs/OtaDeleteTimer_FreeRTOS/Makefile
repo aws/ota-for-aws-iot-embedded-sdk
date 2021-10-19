@@ -1,5 +1,3 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
 
 HARNESS_ENTRY = OtaDeleteTimer_FreeRTOS_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
@@ -9,17 +7,17 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = OtaDeleteTimer_FreeRTOS_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
-INCLUDES += -I$(SRCDIR)/source/include
-INCLUDES += -I$(SRCDIR)/test/cbmc/Include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/portable/CCS/ARM_CM3/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 
 PROJECT_SOURCES += $(SRCDIR)/source/portable/os/ota_os_freertos.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/timers.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/queue.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/source/task.c
 
 NONDET_STATIC += "--nondet-static"
+
+REMOVE_FUNCTION_BODY += xTimerDelete
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
