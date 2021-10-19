@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -27,16 +27,9 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 
-/* Stub to simulate the behavior of Malloc in FreeRTOS. */
-void * pvPortMalloc( size_t size )
-{
-    int mem;
-
-    return mem;
-}
-
 void Malloc_FreeRTOS_harness()
 {
     size_t size;
+
     Malloc_FreeRTOS( size );
 }
