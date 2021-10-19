@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,24 +19,18 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 /**
  * @file OtaDeinitEvent_FreeRTOS_harness.c
  * @brief Implements the proof harness for OtaDeinitEvent_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
-#include "queue.h"
 
-void vQueueDelete(QueueHandle_t eventQueue)
-{
-    return;
-}
 
 void OtaDeinitEvent_FreeRTOS_harness()
 {
-    OtaEventContext_t* pEventCtx; 
+    OtaEventContext_t * pEventCtx;
 
-    OtaDeinitEvent_FreeRTOS(pEventCtx);
+    OtaDeinitEvent_FreeRTOS( pEventCtx );
 }
