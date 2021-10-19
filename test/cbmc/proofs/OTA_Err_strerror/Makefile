@@ -1,5 +1,3 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
 
 HARNESS_ENTRY = OTA_Err_strerror_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
