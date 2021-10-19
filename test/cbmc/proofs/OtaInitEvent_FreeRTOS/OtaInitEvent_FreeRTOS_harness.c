@@ -1,6 +1,6 @@
 /*
- * AWS IoT Over-the-air Update v3.0.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * AWS IoT Over-the-air Update v3.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -26,23 +26,14 @@
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
-#include "queue.h"
-
-QueueHandle_t xQueueCreateStatic( UBaseType_t uxQueueLength,
-                                  UBaseType_t uxItemSize,
-                                  uint8_t * pucQueueStorageBuffer,
-                                  StaticQueue_t * pxQueueBuffer )
-{
-    QueueHandle_t eventQueue;
-
-    return eventQueue;
-}
 
 void OtaInitEvent_FreeRTOS_harness()
 {
     OtaEventContext_t * pEventCtx;
+    OtaOsStatus_t osStatus;
 
-    OtaInitEvent_FreeRTOS( pEventCtx );
+    osStatus = OtaInitEvent_FreeRTOS( pEventCtx );
+
+    __CPROVER_assert( osStatus >= OtaOsSuccess && osStatus <= OtaOsTimerDeleteFailed,
+                      "Invalid enumeration value for osStatus." );
 }
