@@ -35,6 +35,10 @@ void OtaSendEvent_FreeRTOS_harness()
     void * pEventMsg;
     unsigned int timeout;
 
+    /* pEventMsg is statically initialized before OtaSendEvent_FreeRTOS function
+     * is called. */
+    __CPROVER_assume( pEventMsg != NULL );
+
     osStatus = OtaSendEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
 
     __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsEventQueueSendFailed,
