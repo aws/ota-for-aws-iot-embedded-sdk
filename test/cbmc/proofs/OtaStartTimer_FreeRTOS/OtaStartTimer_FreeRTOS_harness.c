@@ -49,7 +49,7 @@ void OtaStartTimer_FreeRTOS_harness()
      * OtaStartTiemr_FreeRTOS. */
     __CPROVER_assume( callback != NULL );
 
-    /* To avoid pdMs_TO_TICKS from integer overflow. */
+    /* To avoid pdMS_TO_TICKS from integer overflow. */
     __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
