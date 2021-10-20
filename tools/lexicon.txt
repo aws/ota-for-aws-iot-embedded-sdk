@@ -490,6 +490,7 @@ otapalsignaturecheckfailed
 otapalsuberr
 otapalsuccess
 otapaluninitialized
+otarequesttimer
 otaselftesttimer
 otastatistics
 otatimer
