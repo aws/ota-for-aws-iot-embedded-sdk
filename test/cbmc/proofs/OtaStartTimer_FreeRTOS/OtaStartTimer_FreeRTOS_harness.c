@@ -28,14 +28,26 @@
 #include "ota_os_freertos.h"
 #include "FreeRTOSConfig.h"
 
+void otaCallback( otaTimerId_t otaTimerId )
+{
+    __CPROVER_assert( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
+}
+
 void OtaStartTimer_FreeRTOS_harness()
 {
     OtaTimerId_t otaTimerId;
     char * pTimerName;
     uint32_t timeout;
-    OtaTimerCallback_t callback;
-
+    OtaTimerCallback_t callback = otaCallback;
     OtaOsStatus_t osStatus;
+
+    /* pTimerName is always initialized to OtaRequestTimer or OtaSelfTestTimer
+     * before passing it to OtaStartTimer_FreeRTOS function. */
+    __CPROVER_assume( pTimerName != NULL );
+
+    /* callback is statically defined in ota.c before passing it to
+     * OtaStartTiemr_FreeRTOS. */
+    __CPROVER_assume( callback != NULL );
 
     /* To avoid pdMs_TO_TICKS from integer overflow. */
     __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
