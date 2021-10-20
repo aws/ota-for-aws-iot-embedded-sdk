@@ -4,7 +4,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 
 # This should be a unique identifier for this proof, and will appear on the
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
-PROOF_UID = selfTestTimerCallback_harness
+PROOF_UID = FreeRTOS_selfTestTimerCallback_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
 INCLUDES += -I$(SRCDIR)/test/cbmc/FreeRTOS-Kernel/include/
