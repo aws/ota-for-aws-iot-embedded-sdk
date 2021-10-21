@@ -30,7 +30,8 @@
 
 void otaCallback( OtaTimerId_t otaTimerId )
 {
-    __CPROVER_assert( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
+    __CPROVER_assert( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer,
+                      "Invalid otaTimerId: otaTimerId should have values of OtaTimerId_t enum." );
 }
 
 void OtaStartTimer_FreeRTOS_harness()
