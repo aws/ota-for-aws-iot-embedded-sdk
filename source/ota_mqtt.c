@@ -364,6 +364,9 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
 
     assert( pAgentCtx != NULL );
 
+    /* Suppress warnings about unused variables. */
+    ( void ) pOtaJobsNotifyNextTopicTemplate;
+
     topicStringParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
 
     topicLen = ( uint16_t ) stringBuilder(
@@ -543,6 +546,9 @@ static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
     assert( pAgentCtx != NULL );
     /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
     assert( pMsg != NULL );
+
+    /* Suppress warnings about unused variables. */
+    ( void ) pOtaJobStatusTopicTemplate;
 
     /* Build the dynamic job status topic . */
 
@@ -871,6 +877,10 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
+    /* Suppress warnings about unused variables. */
+    ( void ) pOtaJobsGetNextTopicTemplate;
+    ( void ) pOtaGetNextJobMsgTemplate;
+
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pPayloadParts[ 1 ] = reqCounterString;
     pPayloadParts[ 3 ] = ( const char * ) pAgentCtx->pThingName;
@@ -1019,6 +1029,9 @@ OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
 
     assert( pAgentCtx != NULL );
 
+    /* Suppress warnings about unused variables. */
+    ( void ) pOtaStreamDataTopicTemplate;
+
     pFileContext = &( pAgentCtx->fileContext );
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pTopicParts[ 3 ] = ( const char * ) pFileContext->pStreamName;
@@ -1088,6 +1101,9 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
     };
 
     assert( pAgentCtx != NULL );
+
+    /* Suppress warnings about unused variables. */
+    ( void ) pOtaGetStreamTopicTemplate;
 
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
