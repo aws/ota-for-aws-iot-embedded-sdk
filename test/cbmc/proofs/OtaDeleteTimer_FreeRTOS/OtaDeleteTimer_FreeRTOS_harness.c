@@ -37,5 +37,5 @@ void OtaDeleteTimer_FreeRTOS_harness()
 
     status = OtaDeleteTimer_FreeRTOS( otaTimerId );
 
-    __CPROVER_assert( status >= OtaOsSuccess && status <= OtaOsTimerDeleteFailed, "Invalid value for OtaOsStats_t type." );
+    __CPROVER_assert( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ), "Invalid value for OtaOsStats_t type." );
 }
