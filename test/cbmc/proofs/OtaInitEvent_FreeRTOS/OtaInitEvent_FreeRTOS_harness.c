@@ -34,6 +34,6 @@ void OtaInitEvent_FreeRTOS_harness()
 
     osStatus = OtaInitEvent_FreeRTOS( pEventCtx );
 
-    __CPROVER_assert( osStatus >= OtaOsSuccess && osStatus <= OtaOsTimerDeleteFailed,
+    __CPROVER_assert( ( osStatus >= OtaOsSuccess ) && ( osStatus <= OtaOsTimerDeleteFailed ),
                       "Invalid enumeration value for osStatus." );
 }
