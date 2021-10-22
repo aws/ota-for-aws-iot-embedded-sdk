@@ -27,9 +27,17 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 
+void * pvPortMalloc( size_t size )
+{
+    return malloc( size );
+}
+
 void Malloc_FreeRTOS_harness()
 {
     size_t size;
+    void * ptr;
 
-    Malloc_FreeRTOS( size );
+    ptr = Malloc_FreeRTOS( size );
+
+    free( ptr );
 }
