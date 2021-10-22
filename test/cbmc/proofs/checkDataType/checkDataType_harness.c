@@ -35,15 +35,10 @@ CborError __CPROVER_file_local_ota_cbor_c_checkDataType( CborType expectedType,
 void checkDataType_harness()
 {
     CborType expectedType;
-    CborValue * pcborValue;
     CborValue cborvalue;
     CborError cborResult;
 
-    /* cborvalue is always statically initialized in OTA_CBOR_Decode_GetStreamResponseMessage
-     * before checkDataType is called. */
-    pcborValue = &cborvalue;
-
-    cborResult = __CPROVER_file_local_ota_cbor_c_checkDataType( expectedType, pcborValue );
+    cborResult = __CPROVER_file_local_ota_cbor_c_checkDataType( expectedType, &cborvalue );
 
     __CPROVER_assert( cborResult == CborNoError || cborResult == CborErrorIllegalType,
                       "Invalid cborResult value: Expected either CborNoError or CborErrorIllegalType." );
