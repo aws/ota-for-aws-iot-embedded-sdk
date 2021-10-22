@@ -42,14 +42,11 @@ void selfTestTimerCallback_harness()
 {
     TimerHandle_t timer;
     OtaTimerId_t otaTimerId;
-    OtaTimerCallback_t callback;
     const char * pTimerName;
     size_t thingNameSize;
     uint32_t timeout;
 
     pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
-
-    callback = otaTimerCallback;
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
     __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
@@ -61,7 +58,7 @@ void selfTestTimerCallback_harness()
     OtaStartTimer_FreeRTOS( otaTimerId,
                             pTimerName,
                             timeout,
-                            callback );
+                            otaTimerCallback );
 
     __CPROVER_file_local_ota_os_freertos_c_selfTestTimerCallback( timer );
 
