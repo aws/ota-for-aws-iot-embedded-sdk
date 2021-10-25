@@ -42,6 +42,10 @@ void OtaStartTimer_FreeRTOS_harness()
     OtaTimerCallback_t callback = otaCallback;
     OtaOsStatus_t osStatus;
 
+    size_t size;
+
+    pTimerName = ( char * ) malloc( size * sizeof( char ) );
+
     /* pTimerName is always initialized to OtaRequestTimer or OtaSelfTestTimer
      * before passing it to OtaStartTimer_FreeRTOS function. */
     __CPROVER_assume( pTimerName != NULL );
@@ -61,4 +65,6 @@ void OtaStartTimer_FreeRTOS_harness()
     __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsTimerCreateFailed ||
                       osStatus == OtaOsTimerStartFailed || osStatus == OtaOsTimerRestartFailed,
                       "Invalid return value for osStatus." );
+
+    free( pTimerName );
 }

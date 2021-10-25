@@ -125,7 +125,7 @@ void vConfigureTimerForRunTimeStats( void );
 extern void vAssertCalled( const char * pcFile,
                            uint32_t ulLine );
 #ifndef configASSERT
-    #define configASSERT( x )    if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ )
+    #define configASSERT( x )    __CPROVER_assert( x, "Assertion Failed. " );
 #endif
 
 /* The function that implements FreeRTOS printf style output, and the macro
