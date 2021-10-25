@@ -3196,9 +3196,9 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
                 ticks--;
             }
         }
-        
+
         /* Deinitialize the event mechanism. */
-        otaAgent.pOtaInterface->os.event.deinit(&eventMsg);
+        otaAgent.pOtaInterface->os.event.deinit( &eventMsg );
     }
     else
     {
