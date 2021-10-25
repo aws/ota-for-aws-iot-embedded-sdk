@@ -3159,7 +3159,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
                          uint8_t unsubscribeFlag )
 {
     OtaEventMsg_t eventMsg = { 0 };
-    OtaEventContext_t * eventContext;
+    OtaEventContext_t * eventContext = NULL;
 
     uint32_t ticks = ticksToWait;
 
