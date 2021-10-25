@@ -2737,6 +2737,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
 static void agentShutdownCleanup( void )
 {
     uint32_t index;
+    OtaEventContext_t * pEventCtx = NULL;
 
     otaAgent.state = OtaAgentStateShuttingDown;
 
@@ -2759,6 +2760,9 @@ static void agentShutdownCleanup( void )
     {
         ( void ) otaClose( &( otaAgent.fileContext ) );
     }
+
+    /* Deinitialize event mechanism. */
+    otaAgent.pOtaInterface->os.event.deinit( pEventCtx );
 
     /*
      * Clear active job name.
