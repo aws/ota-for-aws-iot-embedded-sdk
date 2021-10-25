@@ -3159,6 +3159,8 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
                          uint8_t unsubscribeFlag )
 {
     OtaEventMsg_t eventMsg = { 0 };
+    OtaEventContext_t * eventContext;
+
     uint32_t ticks = ticksToWait;
 
     LogDebug( ( "Number of ticks to idle while the OTA Agent shuts down: "
@@ -3198,7 +3200,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
         }
 
         /* Deinitialize the event mechanism. */
-        otaAgent.pOtaInterface->os.event.deinit( &eventMsg );
+        otaAgent.pOtaInterface->os.event.deinit( eventContext );
     }
     else
     {
