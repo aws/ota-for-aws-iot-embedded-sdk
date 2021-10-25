@@ -62,6 +62,7 @@ certfile
 certfilepath
 certfilepathmaxsize
 certfilepathsize
+checkdatatype
 checkforupdate
 cli
 clienttoken
@@ -69,6 +70,7 @@ clienttokensize
 closefile
 closefilehandler
 cmock
+co
 colspan
 com
 completecallback
@@ -76,6 +78,7 @@ cond
 config
 configassert
 configpagestyle
+configprintf
 configs
 configurably
 connectsuccessindex
@@ -156,6 +159,7 @@ enums
 errno
 errornumber
 establishconnection
+ethernet
 eventid
 eventmsg
 ewouldblock
@@ -188,6 +192,7 @@ fontname
 fontsize
 fopen
 freertos
+freertosipconfig
 freertos.org
 functionname
 functionpage
@@ -195,6 +200,7 @@ functionpointers
 functionspage
 functiontofail
 gcc
+generater
 getaddrinfo
 getagentstate
 getcwd
@@ -285,6 +291,7 @@ logwarn
 longjmp
 mainpage
 malloc
+mac
 maxattempts
 maxfragmentlength
 mcu
@@ -322,6 +329,7 @@ mytlscontext
 nan
 nano
 nanosleep
+netmask
 networkcontext
 newversion
 nextjittermax
@@ -339,6 +347,7 @@ numstrings
 numwhitespace
 ok
 onlinepubs
+opendns
 opengroup
 openssl
 openssl_invalid_parameter
@@ -521,6 +530,7 @@ pblocksize
 pbody
 pbodydef
 pbuffer
+pc
 pcallbacks
 pcertfilepath
 pcjobtopic
@@ -737,6 +747,7 @@ sockaddr
 sockets_invalid_parameter
 socketstatus
 spdx
+sprintf
 srand
 src
 ssl
@@ -802,9 +813,11 @@ ttimer
 typecasted
 twe
 typecasted
+uart
 ublockindex
 ublocksize
 ucqos
+udp
 ul
 ulblockindex
 ulblocksize
@@ -834,12 +847,15 @@ urlsize
 useraborthandler
 ustopiclen
 utils
+uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
 valuelength
 verifyactivejobstatus
 versionnumber
 vportfree
+vtasklist
+wifi
 writeblock
 www
 xaa
