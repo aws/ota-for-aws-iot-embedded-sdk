@@ -2423,7 +2423,7 @@ void test_OTA_EventProcessingTask_ShutdownAfterInit()
     OTA_EventProcessingTask( NULL );
 
     /* Test that the OTA_EventProcessingTask aborts correctly after receiving
-     * and event to shutdown the OTA Agent. */
+     * an event to shutdown the OTA Agent. */
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 /* ========================================================================== */
