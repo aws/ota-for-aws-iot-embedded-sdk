@@ -736,6 +736,7 @@ setcontrolinterface
 setdatainterface
 setimagestate
 setplatformimagestate
+shutdownflag
 shutdownhandler
 sig
 sigalrm
