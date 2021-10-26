@@ -48,6 +48,10 @@ void selfTestTimerCallback_harness()
 
     pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
 
+    /* OtaStartTimer functions requires the pTimerName and otaCallback not
+     * to be NULL. */
+    __CPROVER_assume( pTimerName != NULL );
+
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
     __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 

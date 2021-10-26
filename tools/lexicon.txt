@@ -491,7 +491,9 @@ otapalsignaturecheckfailed
 otapalsuberr
 otapalsuccess
 otapaluninitialized
+otarequesttimer
 otaselftesttimer
+otastarttimer
 otastatistics
 otatimer
 otatimercallback
