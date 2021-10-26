@@ -292,7 +292,7 @@ typedef struct OtaAppBuffer
 
 typedef struct OtaAgentContext
 {
-    OtaState_t state;                                      /*!< State of the OTA agent. */
+    volatile OtaState_t state;                             /*!< State of the OTA agent. */
     uint8_t pThingName[ otaconfigMAX_THINGNAME_LEN + 1U ]; /*!< Thing name + zero terminator. */
     OtaFileContext_t fileContext;                          /*!< Static array of OTA file structures. */
     uint32_t fileIndex;                                    /*!< Index of current file in the array. */

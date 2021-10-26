@@ -507,7 +507,7 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    1,                     /* unsubscribe flag */
+    1,                    /* unsubscribe flag */
     0                     /* shutdown flag */
 };
 
@@ -2909,13 +2909,14 @@ static void receiveAndProcessOtaEvent( void )
 void OTA_EventProcessingTask( void * pUnused )
 {
     ( void ) pUnused;
+
     /*
      * OTA Agent is ready to receive and process events so update the state to ready.
      */
 
-    otaAgent.state = OtaAgentStateReady;    
+    otaAgent.state = OtaAgentStateReady;
 
-    while(( otaAgent.state != OtaAgentStateStopped) && (otaAgent.shutdownFlag != 1))
+    while( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.shutdownFlag != 1 ) )
     {
         receiveAndProcessOtaEvent();
     }
@@ -3175,8 +3176,8 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
     {
         /* When in init state, the OTA state machine is not running yet. So directly set state to
          * stopped. */
-         otaAgent.shutdownFlag = 1 ;
-         otaAgent.state = OtaAgentStateStopped;
+        otaAgent.shutdownFlag = 1;
+        otaAgent.state = OtaAgentStateStopped;
     }
     else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
