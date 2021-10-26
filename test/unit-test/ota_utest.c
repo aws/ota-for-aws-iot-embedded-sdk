@@ -2418,8 +2418,6 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
 
 void test_OTA_EventProcessingTask_ShutdownAfterInit()
 {
-    OtaEventMsg_t otaEvent = { 0 };
-
     otaGoToState( OtaAgentStateInit );
     OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
     OTA_EventProcessingTask( NULL );
