@@ -62,6 +62,7 @@ certfile
 certfilepath
 certfilepathmaxsize
 certfilepathsize
+checkdatatype
 checkforupdate
 cli
 clienttoken
@@ -490,7 +491,9 @@ otapalsignaturecheckfailed
 otapalsuberr
 otapalsuccess
 otapaluninitialized
+otarequesttimer
 otaselftesttimer
+otastarttimer
 otastatistics
 otatimer
 otatimercallback

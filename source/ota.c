@@ -1,6 +1,6 @@
 /*
  * AWS IoT Over-the-air Update v3.1.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -656,7 +656,7 @@ static OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
                                                int32_t subReason )
 {
     OtaErr_t err = OtaErrNone;
-    OtaJobReason_t reason = 0;
+    OtaJobReason_t reason = JobReasonReceiving;
 
     if( state == OtaImageStateTesting )
     {
@@ -1544,7 +1544,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
 {
     DocParseErr_t err = DocParseErrNone;
     size_t actualLen = 0;
-    Base64Status_t base64Status = 0;
+    Base64Status_t base64Status = Base64Success;
     Sig256_t ** pSig256 = pParamAdd;
 
     /* pSig256 should point to pSignature in OtaFileContext_t, which is statically allocated. */
@@ -1899,7 +1899,9 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
     OtaErr_t err = OtaErrNone;
     AppVersion32_t previousVersion;
 
-    ( void ) previousVersion; /* For suppressing compiler-warning: unused variable. */
+    /* Suppress warning about use of uninitialized variable.  */
+    previousVersion.u.unsignedVersion32 = 0;
+    ( void ) previousVersion;
 
     /* Only check for versions if the target is self */
     if( ( otaAgent.serverFileID == 0U ) && ( otaAgent.fileContext.fileType == configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID ) )
@@ -2623,7 +2625,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
 {
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
     OtaPalMainStatus_t otaPalMainErr;
-    OtaPalSubStatus_t otaPalSubErr;
+    OtaPalSubStatus_t otaPalSubErr = 0;
 
     ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
 
