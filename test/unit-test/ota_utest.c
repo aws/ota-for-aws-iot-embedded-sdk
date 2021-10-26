@@ -2416,6 +2416,18 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_EventProcessingTask_ShutdownAfterInit()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateInit );
+    OTA_Shutdown( otaDefaultWait, unsubscribeFlag );
+    OTA_EventProcessingTask( NULL );
+
+    /* Test that the OTA_EventProcessingTask aborts correctly after receiving
+     * and event to shutdown the OTA Agent. */
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
 /* ========================================================================== */
 /* ====================== OTA MQTT and HTTP Unit Tests ====================== */
 /* ========================================================================== */
