@@ -21,50 +21,50 @@
  */
 
 /**
- * @file requestTimerCallback_harness.c
- * @brief Implements the proof harness for requestTimerCallback function.
+ * @file OtaStartTimer_FreeRTOS_harness.c
+ * @brief Implements the proof harness for OtaStartTimer_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
+#include "FreeRTOSConfig.h"
 
-/* Declaration of the mangled name function created by CBMC for static functions.*/
-void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( TimerHandle_t timer );
-
-void otaTimerCallback( OtaTimerId_t otaTimerId )
+void otaCallback( OtaTimerId_t otaTimerId )
 {
-    __CPROVER_assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ),
-                      "Invalid OtaTimerId: Expected OtaRequestTimer" );
+    __CPROVER_assert( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer,
+                      "Invalid otaTimerId: otaTimerId should have values of OtaTimerId_t enum." );
 }
 
-void requestTimerCallback_harness()
+void OtaStartTimer_FreeRTOS_harness()
 {
-    TimerHandle_t timer;
     OtaTimerId_t otaTimerId;
-    const char * pTimerName;
-    size_t thingNameSize;
+    char * pTimerName;
     uint32_t timeout;
+    OtaTimerCallback_t callback = otaCallback;
+    OtaOsStatus_t osStatus;
 
-    pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
+    size_t size;
 
-    /* OtaStartTimer functions requires the pTimerName and otaCallback not
-     * to be NULL. */
+    pTimerName = ( char * ) malloc( size * sizeof( char ) );
+
+    /* pTimerName is always initialized to OtaRequestTimer or OtaSelfTestTimer
+     * before passing it to OtaStartTimer_FreeRTOS function. */
     __CPROVER_assume( pTimerName != NULL );
+
+    /* callback is statically defined in ota.c before passing it to
+     * OtaStartTiemr_FreeRTOS. */
+    __CPROVER_assume( callback != NULL );
+
+    /* To avoid pdMS_TO_TICKS from integer overflow. */
+    __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
     __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 
-    /* To avoid integer overflow in pdMs_TO_TICKS. */
-    __CPROVER_assume( timeout < ( UINT32_MAX / configTICK_RATE_HZ ) );
+    osStatus = OtaStartTimer_FreeRTOS( otaTimerId, pTimerName, timeout, callback );
 
-    /* OtaStartTimer_FreeRTOS initializes the function pointer OtaTimerCallback. */
-    OtaStartTimer_FreeRTOS( otaTimerId,
-                            pTimerName,
-                            timeout,
-                            otaTimerCallback );
-
-    __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( timer );
+    __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsTimerCreateFailed ||
+                      osStatus == OtaOsTimerStartFailed || osStatus == OtaOsTimerRestartFailed,
+                      "Invalid return value for osStatus." );
 
     free( pTimerName );
 }
