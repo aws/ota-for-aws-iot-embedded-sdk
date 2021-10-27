@@ -30,13 +30,13 @@
 void OTA_GetStatistics_harness()
 {
     OtaErr_t err;
-    OtaAgentStatistics_t* pStatistics;
-    
-    pStatistics = (OtaAgentStatistics_t *) malloc(sizeof(OtaAgentStatistics_t));
-    
-    err = OTA_GetStatistics(pStatistics);
+    OtaAgentStatistics_t * pStatistics;
+
+    pStatistics = ( OtaAgentStatistics_t * ) malloc( sizeof( OtaAgentStatistics_t ) );
+
+    err = OTA_GetStatistics( pStatistics );
 
     /* OTA_GetStatistics only returns OtaErrNone or OtaErrInvalidArg. */
-    __CPROVER_assert((err == OtaErrNone) || (err == OtaErrInvalidArg), 
-                        "Invalid return value: err should have values from OtaErr_t enum type.");
+    __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrInvalidArg ),
+                      "Invalid return value: err should have values from OtaErr_t enum type." );
 }
