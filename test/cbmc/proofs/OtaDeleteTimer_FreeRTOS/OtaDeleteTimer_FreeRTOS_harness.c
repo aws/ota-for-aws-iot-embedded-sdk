@@ -21,50 +21,21 @@
  */
 
 /**
- * @file requestTimerCallback_harness.c
- * @brief Implements the proof harness for requestTimerCallback function.
+ * @file OtaDeleteTimer_FreeRTOS_harness.c
+ * @brief Implements the proof harness for OtaDeleteTimer_FreeRTOS function.
  */
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
-#include "FreeRTOS.h"
-#include "timers.h"
 
-/* Declaration of the mangled name function created by CBMC for static functions.*/
-void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( TimerHandle_t timer );
-
-void otaTimerCallback( OtaTimerId_t otaTimerId )
+void OtaDeleteTimer_FreeRTOS_harness()
 {
-    __CPROVER_assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ),
-                      "Invalid OtaTimerId: Expected OtaRequestTimer" );
-}
-
-void requestTimerCallback_harness()
-{
-    TimerHandle_t timer;
     OtaTimerId_t otaTimerId;
-    const char * pTimerName;
-    size_t thingNameSize;
-    uint32_t timeout;
-
-    pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
-
-    /* OtaStartTimer functions requires the pTimerName and otaCallback not
-     * to be NULL. */
-    __CPROVER_assume( pTimerName != NULL );
+    OtaOsStatus_t status;
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
     __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );
 
-    /* To avoid integer overflow in pdMs_TO_TICKS. */
-    __CPROVER_assume( timeout < ( UINT32_MAX / configTICK_RATE_HZ ) );
+    status = OtaDeleteTimer_FreeRTOS( otaTimerId );
 
-    /* OtaStartTimer_FreeRTOS initializes the function pointer OtaTimerCallback. */
-    OtaStartTimer_FreeRTOS( otaTimerId,
-                            pTimerName,
-                            timeout,
-                            otaTimerCallback );
-
-    __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( timer );
-
-    free( pTimerName );
+    __CPROVER_assert( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ), "Invalid value for OtaOsStats_t type." );
 }
