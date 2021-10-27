@@ -28,8 +28,6 @@
 #include "ota.h"
 #include "ota_cbmc.h"
 
-OtaAgentContext_t otaAgent;
-
 void OTA_GetState_harness()
 {
     OtaState_t state;
