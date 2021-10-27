@@ -514,7 +514,7 @@ static void executeHandler( uint32_t index,
         NULL,                 /* OtaAppCallback */
         1                     /* unsubscribe flag */
     };
-#endif
+#endif /* ifndef OTA_CBMC_FLAG */
 
 /**
  * @brief Transition table for the OTA state machine.

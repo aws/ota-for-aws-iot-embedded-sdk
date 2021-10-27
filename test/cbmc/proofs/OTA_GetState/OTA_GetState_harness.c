@@ -33,14 +33,14 @@ OtaAgentContext_t otaAgent;
 void OTA_GetState_harness()
 {
     OtaState_t state;
-    
+
     /* otaAgent can assume only states which are in OtaState_t enum. */
-    __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && (otaAgent.state <= OtaAgentStateAll));
+    __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && ( otaAgent.state <= OtaAgentStateAll ) );
 
     state = OTA_GetState();
 
     /* OTA_GetState returns the values which follow OtaImageState_t enum. If it does, then
      * there is a problem. */
-    __CPROVER_assert( ( state >= OtaAgentStateNoTransition ) && (state <= OtaAgentStateAll),
+    __CPROVER_assert( ( state >= OtaAgentStateNoTransition ) && ( state <= OtaAgentStateAll ),
                       "Invalid return value from OTA_GetState: Expected a value from OtaState_t enum." );
 }
