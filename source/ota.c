@@ -490,7 +490,6 @@ static void executeHandler( uint32_t index,
 /**
  * @brief This is THE OTA agent context and initialization state.
  */
-
 static OtaAgentContext_t otaAgent =
 {
     OtaAgentStateStopped, /* state */
