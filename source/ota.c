@@ -68,10 +68,6 @@
 /* Include firmware version struct definition. */
 #include "ota_appversion32.h"
 
-#ifdef OTA_CBMC_FLAG
-    #include "ota_cbmc.h"
-#endif
-
 /**
  * @brief Offset helper.
  */

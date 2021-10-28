@@ -7,6 +7,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = OTA_GetState_harness
 
 DEFINES += -DOTA_CBMC_FLAG
+DEFINES += -Dstatic=""
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/test/cbmc/include/

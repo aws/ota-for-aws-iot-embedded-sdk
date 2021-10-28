@@ -26,7 +26,8 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include "ota_cbmc.h"
+
+extern OtaAgentContext_t otaAgent;
 
 void OTA_GetState_harness()
 {
