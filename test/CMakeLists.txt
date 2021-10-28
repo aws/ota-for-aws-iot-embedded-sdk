@@ -45,15 +45,13 @@ add_library( coverity_analysis
     ${OTA_MQTT_SOURCES}
     ${OTA_HTTP_SOURCES} )
 
-# Build OTA library target without custom config dependency
-target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )
-
 # OTA include path.
 target_include_directories( coverity_analysis PUBLIC
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
     ${CMAKE_CURRENT_LIST_DIR}/unit-test
-    ${CMAKE_CURRENT_LIST_DIR}/unit-test-http )
+    ${CMAKE_CURRENT_LIST_DIR}/unit-test-http
+    "${CMAKE_CURRENT_LIST_DIR}/include" )
 target_include_directories( coverity_analysis PRIVATE
     ${OTA_INCLUDE_PRIVATE_DIRS} )
 

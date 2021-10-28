@@ -35,6 +35,7 @@ list(APPEND real_include_directories
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_PRIVATE_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
+    "${CMAKE_CURRENT_LIST_DIR}/../include"
 )
 
 # =====================  Create UnitTest Code here (edit)  =====================

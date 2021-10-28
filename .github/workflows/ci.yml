@@ -74,7 +74,18 @@ jobs:
           path: ./build/coverage.info
           line-coverage-min: 100
           branch-coverage-min: 100
-
+  build-with-default-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cmake -S test -B build/ \
+          -G "Unix Makefiles" \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DOTA_DO_NOT_USE_CUSTOM_CONFIG'
+          make -C build/ all
   doxygen:
     runs-on: ubuntu-20.04
     steps:
