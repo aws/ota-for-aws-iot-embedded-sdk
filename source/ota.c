@@ -68,6 +68,7 @@
 /* Include firmware version struct definition. */
 #include "ota_appversion32.h"
 
+
 /**
  * @brief Offset helper.
  */
