@@ -28,10 +28,22 @@
 #include "ota.h"
 
 extern OtaAgentContext_t otaAgent;
+int counter = 0;
 
 void receiveAndProcessOtaEvent(void)
 {
-    otaAgent.state = OtaAgentStateStopped;
+    OtaState_t state;
+
+    /* state must only have values of OtaState_t enum type. */
+   __CPROVER_assume(state <= OtaAgentStateNoTransition && state >= OtaAgentStateAll);
+
+    if (counter++ == 25)
+    {
+        otaAgent.state = OtaAgentStateStopped;
+    }
+    else{
+        otaAgent.state = state;
+    }
 }
 
 void OTA_EventProcessingTask_harness()
