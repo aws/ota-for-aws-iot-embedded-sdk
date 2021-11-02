@@ -26,6 +26,7 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "otaAgentStubs.c"
 
 extern OtaAgentContext_t otaAgent;
 
@@ -33,6 +34,8 @@ void OTA_ActivateNewImage_harness()
 {
     OtaErr_t err;
     OtaInterfaces_t otaInterface; 
+
+    otaInterface.pal.activate = palActivate;
 
     otaAgent.pOtaInterface = &otaInterface;
 
