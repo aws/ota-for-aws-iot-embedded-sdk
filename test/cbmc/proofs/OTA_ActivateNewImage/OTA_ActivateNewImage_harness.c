@@ -32,6 +32,9 @@ extern OtaAgentContext_t otaAgent;
 void OTA_ActivateNewImage_harness()
 {
     OtaErr_t err;
+    OtaInterfaces_t otaInterface; 
+
+    otaAgent.pOtaInterface = &otaInterface;
 
     /* otaAgent.pOtaInterface is checked in OTA_Init to be non-NULL. */
     __CPROVER_assume( otaAgent.pOtaInterface != NULL );
