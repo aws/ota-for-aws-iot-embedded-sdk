@@ -41,7 +41,7 @@ void OTA_Suspend_harness()
     otaAgent.state = state;
     otaAgent.pOtaInterface = &otaInterface;
 
-    /* OtaInterface in the otaAgent is always checked in OTA_Init to be non-NULL. */
+    /* OtaInterfaces in the otaAgent are always checked in OTA_Init to be non-NULL. */
     __CPROVER_assume( otaAgent.pOtaInterface != NULL );
 
     /* otaAgent.state must always have values of OtaState_t enum type. */
