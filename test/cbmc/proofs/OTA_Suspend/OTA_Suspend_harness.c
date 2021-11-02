@@ -26,19 +26,29 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "otaAgentStubs.c"
 
 extern OtaAgentContext_t otaAgent;
 
 void OTA_Suspend_harness()
 {
     OtaState_t state;
+    OtaErr_t err;
+    OtaInterfaces_t otaInterface;
+
+    otaInterface.os.timer.stop = timerStop;
+
     otaAgent.state = state;
+    otaAgent.pOtaInterface = &otaInterface;
 
     /* OtaInterface in the otaAgent is always checked in OTA_Init to be non-NULL. */
-    __CPROVER_assume(otaAgent.pOtaInterface != NULL);
+    __CPROVER_assume( otaAgent.pOtaInterface != NULL );
 
     /* otaAgent.state must always have values of OtaState_t enum type. */
     __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && ( otaAgent.state <= OtaAgentStateAll ) );
 
-    OTA_Suspend();
+    err = OTA_Suspend();
+
+    __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrAgentStopped ) ||
+                      ( err == OtaErrSignalEventFailed ), "Invalid return value from OTA_Suspend: Expected OtaErrNone, OtaErrAgentStopped or OtaErrSignalEventFailed." );
 }
