@@ -47,8 +47,8 @@ void OTA_Init_harness()
     /* Initialize the function pointer to a stub. */
     otaInterface.os.event.init = init;
 
-    /* The maximum size of a valid name of a thing is defined by otaconfigMAX_THINGNAME_LEN. Cases
-     * where the size is greater than maximum value is also covered. */
+    /* The maximum size of a valid name of a thing is defined by otaconfigMAX_THINGNAME_LEN. The upper bound
+     * of size is selected to consider the cases where size of the string is greater than maximum value. */
     __CPROVER_assume( size > 0 && size <= otaconfigMAX_THINGNAME_LEN + 1 );
 
     pThingName = ( uint8_t * ) malloc( sizeof( uint8_t ) * size );
