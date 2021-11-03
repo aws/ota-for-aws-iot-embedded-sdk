@@ -163,6 +163,7 @@ ethernet
 eventid
 eventmsg
 ewouldblock
+executehandler
 executionnumber
 expectedstatus
 expectedtype
@@ -498,6 +499,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+otatransitiontable
 outputlen
 pacdata
 pactivejobname
@@ -701,6 +703,7 @@ rangeend
 rangestart
 rdy
 reasontoset
+receiveandprocessotaevent
 reconnectparam
 recv
 recvtimeout
