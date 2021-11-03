@@ -63,4 +63,6 @@ void OTA_Init_harness()
 
     /* OTA_Init must always return either OtaErrNone or OtaErrUninitialized. */
     __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrUninitialized ), "Invalid Return value: Expected OtaErrNone" );
+
+    free( pThingName );
 }

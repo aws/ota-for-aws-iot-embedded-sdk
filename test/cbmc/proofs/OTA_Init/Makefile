@@ -1,4 +1,3 @@
-
 HARNESS_ENTRY = OTA_Init_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
 
