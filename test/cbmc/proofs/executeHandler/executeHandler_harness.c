@@ -45,4 +45,6 @@ void executeHandler_harness()
     __CPROVER_assume( ( index >= 0 ) && ( index <= 18 ) );
 
     __CPROVER_file_local_ota_c_executeHandler( index, pEventMsg );
+
+    free( pEventMsg );
 }
