@@ -37,6 +37,11 @@ void OTA_Shutdown_harness()
 
     otaAgent.state = state;
 
+    /* This assumption is required to have an upper bound on the unwinding of while loop in
+     * OTA_Shutdown. This does not model the exact behaviour of the code since the limiation of CBMC
+     * is that it checks concurrent code in sequential manner.*/
+    __CPROVER_assume( ticksToWait < 3 );
+
     /* otaAgent.state must only have values of OtaState_t enum type. */
     __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && ( otaAgent.state <= OtaAgentStateAll ) );
 
