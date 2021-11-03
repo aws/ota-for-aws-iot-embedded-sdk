@@ -14,13 +14,13 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
 NONDET_STATIC += "--nondet-static"
 
+UNWINDSET += strlen.0:66
+
 REMOVE_FUNCTION_BODY += setControlInterface
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeAppBuffers
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeLocalBuffers
 
 RESTRICT_FUNCTION_POINTER += OTA_Init.function_pointer_call.1/init 
-
-CBMC_FLAG_UNWINDING_ASSERTIONS = 
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

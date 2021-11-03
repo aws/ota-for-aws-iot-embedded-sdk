@@ -40,7 +40,7 @@ void OTA_Init_harness()
     OtaErr_t err;
     OtaAppBuffer_t otaBuffer;
     OtaInterfaces_t otaInterface;
-    const uint8_t * pThingName;
+    uint8_t * pThingName;
     OtaAppCallback_t otaAppCallback;
     size_t size;
 
@@ -52,6 +52,12 @@ void OTA_Init_harness()
     __CPROVER_assume( size > 0 && size <= otaconfigMAX_THINGNAME_LEN + 1 );
 
     pThingName = ( uint8_t * ) malloc( sizeof( uint8_t ) * size );
+
+    /* pThingName is a string and should end with a NULL character. */
+    if( pThingName != NULL )
+    {
+        pThingName[ size - 1 ] = '\0';
+    }
 
     err = OTA_Init( &otaBuffer, &otaInterface, pThingName, otaAppCallback );
 
