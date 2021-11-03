@@ -8,6 +8,8 @@ PROOF_UID = OTA_Shutdown_harness
 
 DEFINES += -Dstatic=""
 
+UNWINDSET += OTA_Shutdown.0:5
+
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
