@@ -31,18 +31,19 @@ extern OtaAgentContext_t otaAgent;
 
 int counter = 0;
 
-void receiveAndProcessOtaEvent(void)
+void receiveAndProcessOtaEvent( void )
 {
     OtaState_t state;
 
     /* state must only have values of OtaState_t enum type. */
-   __CPROVER_assume(state <= OtaAgentStateNoTransition && state >= OtaAgentStateAll);
+    __CPROVER_assume( state <= OtaAgentStateNoTransition && state >= OtaAgentStateAll );
 
-    if (counter++ == UNWINDING_UPPERBOUND)
+    if( counter++ == UNWINDING_UPPERBOUND )
     {
         otaAgent.state = OtaAgentStateStopped;
     }
-    else{
+    else
+    {
         otaAgent.state = state;
     }
 }
@@ -51,5 +52,5 @@ void OTA_EventProcessingTask_harness()
 {
     void * pUnused;
 
-    (void )OTA_EventProcessingTask( pUnused );
+    ( void ) OTA_EventProcessingTask( pUnused );
 }
