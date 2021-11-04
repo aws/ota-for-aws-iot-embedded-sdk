@@ -26,9 +26,16 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include "otaAgentStubs.c"
 
 extern OtaAgentContext_t otaAgent;
+
+/* Stub to activate pal interface. */
+OtaPalStatus_t palActivate( OtaFileContext_t * const pFileContext )
+{
+    OtaPalStatus_t status;
+
+    return status;
+}
 
 void OTA_ActivateNewImage_harness()
 {
@@ -38,9 +45,6 @@ void OTA_ActivateNewImage_harness()
     otaInterface.pal.activate = palActivate;
 
     otaAgent.pOtaInterface = &otaInterface;
-
-    /* otaAgent.pOtaInterface is checked in OTA_Init to be non-NULL. */
-    __CPROVER_assume( otaAgent.pOtaInterface != NULL );
 
     err = OTA_ActivateNewImage();
 

@@ -14,7 +14,6 @@ INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/include/otaAgentStubs.c
 
 RESTRICT_FUNCTION_POINTER += OTA_ActivateNewImage.function_pointer_call.1/palActivate
 
