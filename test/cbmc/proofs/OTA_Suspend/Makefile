@@ -16,7 +16,6 @@ INCLUDES += -I$(SRCDIR)/test/cbmc/include/
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
-PROJECT_SOURCES += $(SRCDIR)/test/cbmc/include/otaAgentStubs.c
 
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
 RESTRICT_FUNCTION_POINTER += OTA_Suspend.function_pointer_call.1/timerStop

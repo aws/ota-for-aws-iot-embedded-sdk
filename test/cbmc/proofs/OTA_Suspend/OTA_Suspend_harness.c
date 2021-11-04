@@ -26,9 +26,16 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include "otaAgentStubs.c"
 
 extern OtaAgentContext_t otaAgent;
+
+/* Stub for stop function in os.timer interface. */
+OtaOsStatus_t timerStop( OtaTimerId_t otaTimerId )
+{
+    OtaOsStatus_t status;
+
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+}
 
 void OTA_Suspend_harness()
 {
@@ -40,9 +47,6 @@ void OTA_Suspend_harness()
 
     otaAgent.state = state;
     otaAgent.pOtaInterface = &otaInterface;
-
-    /* OtaInterfaces in the otaAgent are always checked in OTA_Init to be non-NULL. */
-    __CPROVER_assume( otaAgent.pOtaInterface != NULL );
 
     /* otaAgent.state must always have values of OtaState_t enum type. */
     __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && ( otaAgent.state <= OtaAgentStateAll ) );
