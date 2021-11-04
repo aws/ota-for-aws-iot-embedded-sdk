@@ -56,7 +56,7 @@ void userAbortHandler_harness()
      * in the string to NULL. */
     memset( otaAgent.pActiveJobName, '-', size );
 
-    /* This ensures a Non-determinstic way of setting the size of
+    /* This ensures a Non-deterministic way of setting the size of
      * the string pActiveJobName. */
     otaAgent.pActiveJobName[ size ] = '\0';
 
