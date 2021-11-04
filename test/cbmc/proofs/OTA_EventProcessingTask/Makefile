@@ -7,6 +7,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = OTA_EventProcessingTask
 
 DEFINES += -Dstatic=""
+DEFINES += -D UNWINDING_UPPERBOUND=4
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/source/
