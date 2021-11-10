@@ -78,7 +78,7 @@
  *
  * For more information [Link](https://www.freertos.org/RTOS-task-priority.html).
  *
- * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES – 1 ) <br>
+ * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES - 1 ) <br>
  * <b>Default value:</b> Varies by platform.
  */
 #ifndef otaconfigAGENT_PRIORITY
