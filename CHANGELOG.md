@@ -1,4 +1,7 @@
 # Changelog for AWS IoT Over-the-air Update Library
+### v3.2.0 (November 2021)
+ - [#275](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276) Updated the doxygen version from 1.8.20 to 1.9.2 
+ - [#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276),[#242](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276) Add CBMC proofs for OTA interface functions. 
 
 ### v3.1.0 (August 2021)
  - [#232](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/232) Add updater version to the status details when job succeeds
