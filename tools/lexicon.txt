@@ -731,6 +731,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
