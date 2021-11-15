@@ -34,6 +34,8 @@ OtaPalStatus_t palActivate( OtaFileContext_t * const pFileContext )
 {
     OtaPalStatus_t status;
 
+    __CPROVER_assert( pFileContext != NULL,
+                      "Error: Expected a non-NULL file context. " );
     return status;
 }
 
@@ -44,6 +46,8 @@ void OTA_ActivateNewImage_harness()
 
     otaInterface.pal.activate = palActivate;
 
+    /* otaAgent.pOtaInterface can never be NULL as it is always checked at the start of the OTA
+     * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
     err = OTA_ActivateNewImage();
