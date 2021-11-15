@@ -39,7 +39,7 @@ void handleUnexpectedEvents_harness()
 
     pEventMsg = ( OtaEventMsg_t * ) malloc( sizeof( OtaEventMsg_t ) );
 
-    /* pEventMsg cannot be NULL as it is statically initialized in receiveAndProcessOtaEvents
+    /* pEventMsg cannot be NULL as it is statically initialized in receiveAndProcessOtaEvent
      * before handleUnexpectedEvents function is called. */
     __CPROVER_assume( pEventMsg != NULL );
 
