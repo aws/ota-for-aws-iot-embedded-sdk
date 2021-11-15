@@ -45,10 +45,12 @@ void OTA_Suspend_harness()
 
     otaInterface.os.timer.stop = timerStop;
 
-    otaAgent.state = state;
+    /* otaAgent.pOtaInterface can never be NULL as it is always checked at the start of the OTA
+     * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
     /* otaAgent.state must always have values of OtaState_t enum type. */
+    otaAgent.state = state;
     __CPROVER_assume( ( otaAgent.state >= OtaAgentStateNoTransition ) && ( otaAgent.state <= OtaAgentStateAll ) );
 
     err = OTA_Suspend();
