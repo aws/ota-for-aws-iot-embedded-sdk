@@ -215,6 +215,7 @@ github
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -702,6 +703,7 @@ rangestart
 rdy
 reasontoset
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
