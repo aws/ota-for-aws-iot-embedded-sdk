@@ -35,8 +35,8 @@ OtaOsStatus_t timerStop( OtaTimerId_t otaTimerId )
     OtaOsStatus_t status;
 
     /* otaTimerId must only have values of OtaTimerId_t enum. */
-    __CPROVER_assert((otaTimerId == OtaRequestTimer) || (otaTimerId == OtaSelfTestTimer),
-                "Error: otaTimerId can only have values OtaRequestTimer or OtaSelfTestTimer.");
+    __CPROVER_assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ),
+                      "Error: otaTimerId can only have values OtaRequestTimer or OtaSelfTestTimer." );
 
     /* Status must only have values of OtaOsStatus_t enum. */
     __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
