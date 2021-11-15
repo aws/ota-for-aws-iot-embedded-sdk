@@ -39,7 +39,7 @@ void platformInSelftest_harness()
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
 
     /* At the start of the Agent, otaAgent.pOtaInterface is always checked to be
-     * non-NULL in the receiveAndProcessOtaEvents function. */
+     * non-NULL in the receiveAndProcessOtaEvent function. */
     otaAgent.pOtaInterface = &otaInterface;
 
     state = platformInSelftest();
