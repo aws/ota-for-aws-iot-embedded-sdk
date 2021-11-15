@@ -46,7 +46,7 @@ void initFileHandler_harness()
     otaInterface.os.timer.start = startTimerStub;
     otaInterface.os.timer.stop = stopTimerStub;
 
-    /* OtaInterface and the interfaces included in it cannot be NULL and they are
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
 
