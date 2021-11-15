@@ -216,6 +216,7 @@ github
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
 helvetica
 hostnamelength
 html
