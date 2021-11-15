@@ -48,7 +48,7 @@ void processValidFileContext_harness()
     otaInterface.os.event.send = sendEventStub;
 
     /* otaAgent.pOtaInterface can never be NULL as it is checked during the start of OTA Agent
-     * in the receiveAndProcessOtaEvents function.*/
+     * in the receiveAndProcessOtaEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
     otaAgent.fileContext = fileContext;
 

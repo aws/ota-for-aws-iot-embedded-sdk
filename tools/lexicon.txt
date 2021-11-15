@@ -661,6 +661,7 @@ previousversion
 printf
 processdatahandler
 processjobhandler
+processvalidfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
