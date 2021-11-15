@@ -43,7 +43,7 @@ void inSelfTestHandler_harness()
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.pal.reset = resetPalStub;
 
-    /* OtaInterface and the interfaces included in it cannot be NULL and they are
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
 
