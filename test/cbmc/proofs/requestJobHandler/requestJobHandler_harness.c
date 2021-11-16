@@ -47,7 +47,7 @@ void requestJobHandler_harness()
     otaInterface.os.timer.stop = stopTimerStub;
     otaInterface.os.timer.start = startTimerStub;
 
-    /* OtaInterface and the interfaces included in it cannot be NULL and they are
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
     otaAgent.requestMomentum = requestMomentum;

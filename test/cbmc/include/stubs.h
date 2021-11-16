@@ -51,5 +51,5 @@ OtaPalStatus_t resetPalStub( OtaFileContext_t * const pFileContext );
 OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                   uint32_t reasonToSet );
 
-/* Stub to request job document. */
+/* Stub to request the next available job from job service. */
 OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx );
