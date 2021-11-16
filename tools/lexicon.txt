@@ -163,6 +163,7 @@ ethernet
 eventid
 eventmsg
 ewouldblock
+executehandler
 executionnumber
 expectedstatus
 expectedtype
@@ -499,6 +500,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+otatransitiontable
 outputlen
 pacdata
 pactivejobname
@@ -660,6 +662,7 @@ previousversion
 printf
 processdatahandler
 processjobhandler
+processnullfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
@@ -702,6 +705,7 @@ rangeend
 rangestart
 rdy
 reasontoset
+receiveandprocessotaevent
 reconnectparam
 recv
 recvtimeout
@@ -729,6 +733,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
