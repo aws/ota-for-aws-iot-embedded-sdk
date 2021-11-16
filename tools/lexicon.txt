@@ -213,6 +213,7 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
