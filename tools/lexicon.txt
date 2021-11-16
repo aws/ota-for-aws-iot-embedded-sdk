@@ -381,6 +381,7 @@ otaagentstatestopped
 otaagentstatestopped
 otaagentstatesuspended
 otaagentstatewaitingforjob
+otaagentstubs
 otaappcallback
 otabuffer
 otacallback
