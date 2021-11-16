@@ -213,6 +213,7 @@ getpacketsreceived
 getplatformimagestate
 github
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
 helvetica
@@ -249,6 +250,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -266,6 +268,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
