@@ -106,6 +106,7 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
 decodemem
