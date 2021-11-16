@@ -589,6 +589,7 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
 platfrom
