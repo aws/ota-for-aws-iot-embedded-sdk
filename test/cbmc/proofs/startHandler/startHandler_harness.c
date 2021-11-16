@@ -43,7 +43,7 @@ void startHandler_harness()
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.os.timer.start = startTimerStub;
 
-    /* OtaInterface and the interfaces included in it cannot be NULL and they are
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
 
