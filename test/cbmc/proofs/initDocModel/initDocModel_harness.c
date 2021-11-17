@@ -50,6 +50,8 @@ void initDocModel_harness()
 
     err = __CPROVER_file_local_ota_c_initDocModel( pDocModel, pBodyDef, contextBaseAddr, contextSize, numJobParams );
 
+    __CPROVER_assert( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ),
+                      "Invalid return val: Expected err to have values from DocParseErr_t enum." );
     free( pDocModel );
     free( pBodyDef );
 }
