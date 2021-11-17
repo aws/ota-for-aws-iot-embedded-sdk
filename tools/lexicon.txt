@@ -858,6 +858,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
