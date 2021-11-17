@@ -108,6 +108,7 @@ datablock
 datacallback
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -858,6 +859,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
 valuelength
 verifyactivejobstatus
 versionnumber
