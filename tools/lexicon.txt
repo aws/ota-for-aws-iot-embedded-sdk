@@ -108,6 +108,7 @@ datablock
 datacallback
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -231,6 +232,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange

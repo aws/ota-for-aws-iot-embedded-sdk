@@ -44,7 +44,7 @@ void ingestDataBlockCleanup_harness()
 
     __CPROVER_assume( fileContext.blocksRemaining >= 0 );
 
-    /* Non-determinstically decide if the pRxBlockBitmap is user-defined or not. */
+    /* Non-deterministically decide if the pRxBlockBitmap is user-defined or not. */
     if( nondet_bool() )
     {
         fileContext.blockBitmapMaxSize = OTA_MAX_BLOCK_BITMAP_SIZE;
