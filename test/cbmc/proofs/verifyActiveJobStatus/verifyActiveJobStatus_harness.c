@@ -40,35 +40,66 @@ extern OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 void verifyActiveJobStatus_harness()
 {
     OtaInterfaces_t otaInterface;
-    OtaFileContext_t* pFileContext;
+    OtaFileContext_t * pFileContext;
     OtaFileContext_t * finalFile = NULL;
-    bool* pUpdateJob;
+    bool pUpdateJob;
 
     size_t jobSize;
-    uint8_t jobBuffer[OTA_JOB_ID_MAX_SIZE];
-    pFileContext = (OtaFileContext_t *)malloc(sizeof(OtaFileContext_t));
+    uint16_t updateUrlMaxSize;
 
-    __CPROVER_assume(pFileContext != NULL);
+    pFileContext = ( OtaFileContext_t * ) malloc( sizeof( OtaFileContext_t ) );
+    __CPROVER_assume( pFileContext != NULL );
+
+    /* Allocate memory to store the path of the url. */
+    otaAgent.fileContext.pUpdateUrlPath = ( uint8_t * ) malloc( sizeof( uint8_t ) * updateUrlMaxSize );
+
+    /* pJobName is used to store the name of the job and hence the size of the buffer cannot
+     * be greater than the size of otaAgent.activeJobName. */
+    pFileContext->pJobName = ( uint8_t * ) malloc( sizeof( uint8_t ) * OTA_JOB_ID_MAX_SIZE );
+
+    /* otaAgent.fileContext is passed as the fileContext to verifyActiveJobStatus and cannot
+     * have a NULL buffer. */
+    pFileContext->pUpdateUrlPath = ( uint8_t * ) malloc( sizeof( uint8_t ) * updateUrlMaxSize );
+    __CPROVER_assume( pFileContext->pUpdateUrlPath != NULL );
 
     /* Initialize job name in filecontext. */
-    __CPROVER_assume(jobSize < OTA_JOB_ID_MAX_SIZE);
+    __CPROVER_assume( jobSize < OTA_JOB_ID_MAX_SIZE );
 
-    pFileContext->pJobName[jobSize] = '\0';
-    memset(pFileContext->pJobName, 'a', jobSize);
-
-    if(nondet_bool())
+    if( pFileContext->pJobName != NULL )
     {
-        memcpy(otaAgent.pActiveJobName, pFileContext->pJobName, jobSize);
+        pFileContext->pJobName[ jobSize ] = '\0';
+        memset( pFileContext->pJobName, 'a', jobSize );
+
+        if( nondet_bool() )
+        {
+            memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, jobSize );
+        }
     }
+
+    /* To non-determinstically assume if the buffer is allocated by the user or by us. */
+    if( nondet_bool() )
+    {
+        otaAgent.fileContext.updateUrlMaxSize = 0u;
+    }
+    else
+    {
+        otaAgent.fileContext.updateUrlMaxSize = updateUrlMaxSize;
+    }
+
     /* CBMC preconditions. */
     otaInterface.os.mem.free = freeMemStub;
     otaInterface.pal.setPlatformImageState = setPlatformImageStateStub;
     otaInterface.pal.abort = abortPalStub;
     otaDataInterface.cleanup = cleanupStub;
 
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
+     * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
 
-    verifyActiveJobStatus(pFileContext,&finalFile, pUpdateJob);
+    verifyActiveJobStatus( pFileContext, &finalFile, &pUpdateJob );
 
+    free( pFileContext->pUpdateUrlPath );
+    free( pFileContext->pJobName );
     free( pFileContext );
+    free( otaAgent.fileContext.pUpdateUrlPath );
 }
