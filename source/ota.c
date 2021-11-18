@@ -2408,7 +2408,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ~bit;
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( 0xFF & ( ~bit ) );
                 bit >>= 1U;
             }
 
