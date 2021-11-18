@@ -1662,11 +1662,11 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     /* Get destination offset to parameter storage location.*/
     pParamAdd = ( uint8_t * ) pContextBase + docParam.pDestOffset;
 
+    /* Get destination buffer size to parameter storage location. */
+    pParamSizeAdd = ( void * ) ( ( uint8_t * ) pContextBase + docParam.pDestSizeOffset );
+
     if( ( ModelParamTypeStringCopy == docParam.modelParamType ) || ( ModelParamTypeArrayCopy == docParam.modelParamType ) )
     {
-        /* Get destination buffer size to parameter storage location. */
-        pParamSizeAdd = ( void * ) ( ( uint8_t * ) pContextBase + docParam.pDestSizeOffset );
-
         err = extractAndStoreArray( docParam.pSrcKey, pValueInJson, valueLength, pParamAdd, pParamSizeAdd );
     }
     else if( ModelParamTypeUInt32 == docParam.modelParamType )
@@ -2527,7 +2527,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             else
             {
                 /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~ byte ) );
+                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~ bitMask ) );
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
                 *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
