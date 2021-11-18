@@ -37,28 +37,45 @@ extern DocParseErr_t extractParameter( JsonDocParam_t docParam,
                                        const char * pValueInJson,
                                        size_t valueLength );
 
-DocParseErr_t extractAndStoreArray(const char *pKey, const char *pValueInJson, size_t valueLength, void *pParamAdd, uint32_t *pParamSizeAdd)
+DocParseErr_t extractAndStoreArray( const char * pKey,
+                                    const char * pValueInJson,
+                                    size_t valueLength,
+                                    void * pParamAdd,
+                                    uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err;
 
-    __CPROVER_assume((err >= DocParseErrUnknown) && (err <= DocParseErrInvalidToken ));
-    __CPROVER_assert(pParamAdd != NULL, "Error: Expected a Non-Null value for pParam.");
-    __CPROVER_assert(pParamSizeAdd != NULL, "Error: Expected a Non-Null value for pParamSizeAdd.");
-    __CPROVER_assert(pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson.");
+    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
+    __CPROVER_assert( pParamAdd != NULL, "Error: Expected a Non-Null value for pParam." );
+    __CPROVER_assert( pParamSizeAdd != NULL, "Error: Expected a Non-Null value for pParamSizeAdd." );
+    __CPROVER_assert( pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson." );
 
     return err;
 }
 
-DocParseErr_t decodeAndStoreKey(const char *pValueInJson, size_t valueLength, void *pParamAdd)
-{    
+DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
+                                 size_t valueLength,
+                                 void * pParamAdd )
+{
     DocParseErr_t err;
 
-    __CPROVER_assume((err >= DocParseErrUnknown) && (err <= DocParseErrInvalidToken ));
-    __CPROVER_assert(pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson.");
-    __CPROVER_assert(pParamAdd != NULL, "Error: Expected a Non-Null value for pParam.");
+    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
+    __CPROVER_assert( pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson." );
+    __CPROVER_assert( pParamAdd != NULL, "Error: Expected a Non-Null value for pParam." );
 
     return err;
-}   
+}
+
+unsigned long strtoul( const char * __restrict__ __nptr,
+                       char ** __restrict__ __endptr,
+                       int __base )
+{
+    unsigned long val;
+
+    __CPROVER_assume( val <= UINT32_MAX );
+
+    return val;
+}
 
 void extractParameter_harness()
 {
@@ -67,26 +84,39 @@ void extractParameter_harness()
     char * pValueInJson;
     size_t valueLength;
     DocParseErr_t err;
-    
+
     OtaFileContext_t fileContext;
     size_t idx;
 
     /* Pre-conditions. */
 
-    __CPROVER_assume(idx < OTA_NUM_JOB_PARAMS);
-    docParam = otaJobDocModelParamStructure[idx];
+    /* The value of docParam is taken from the fields of otaJobDocModelParamStructure which is
+     * enforced in parseJSONbyModel. */
+    __CPROVER_assume( idx < OTA_NUM_JOB_PARAMS );
+    docParam = otaJobDocModelParamStructure[ idx ];
 
-    __CPROVER_assume(valueLength != 0);
-    
-    pValueInJson = (char *)malloc(sizeof(char) * valueLength);
-    __CPROVER_assume(pValueInJson != NULL);
+    /* valueLength is the length of the parameter and thus cannot be NULL. */
+    __CPROVER_assume( valueLength != 0 );
 
-    memset(pValueInJson,'a', valueLength);
-    pValueInJson[valueLength-1] = '\0'; 
-    
-    __CPROVER_assume((docParam.pDestOffset != OTA_DONT_STORE_PARAM) && (docParam.pDestOffset != OTA_STORE_NESTED_JSON));
+    /* pValueInJson is a pointer to the parameter from the json string pJson in parseJSONbyModel
+     * function. */
+    pValueInJson = ( char * ) malloc( sizeof( char ) * valueLength );
+    __CPROVER_assume( pValueInJson != NULL );
 
+    memset( pValueInJson, 'a', valueLength );
+    pValueInJson[ valueLength - 1 ] = '\0';
+
+    /* extractParameter is only called when the pDestOffest in the docParam is set to an offset
+     * other than OTA_DONT_STORE_PARAM and OTA_STORE_NESTED_JSON. */
+    __CPROVER_assume( ( docParam.pDestOffset != OTA_DONT_STORE_PARAM ) && ( docParam.pDestOffset != OTA_STORE_NESTED_JSON ) );
+
+    /* pContextBase is a pointer to the otaAgent.fileContext which is statically initialized in ota.c */
     pContextBase = &fileContext;
 
-    err = extractParameter(docParam, pContextBase, pValueInJson, valueLength);
+    err = extractParameter( docParam, pContextBase, pValueInJson, valueLength );
+
+    __CPROVER_assert( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ),
+                      "Error: Return value from extractParameter should be of DocParseErr_t enum. " );
+
+    free( pValueInJson );
 }
