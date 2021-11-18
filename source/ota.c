@@ -2527,7 +2527,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             else
             {
                 /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~ bitMask ) );
+                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
                 pFileContext->blocksRemaining--;
                 eIngestResult = IngestResultAccepted_Continue;
                 *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
