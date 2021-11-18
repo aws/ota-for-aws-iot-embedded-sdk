@@ -29,6 +29,9 @@
 #include "core_json.h"
 #include <stdlib.h>
 
+/* validateJSON is a static function in ota.c and to expose the function to a different file
+ * CBMC mangles the name and it is required to have a declaration of the test function with the
+ * mangled name. */
 DocParseErr_t __CPROVER_file_local_ota_c_validateJSON( const char * pJson,
                                                        uint32_t messageLength );
 
