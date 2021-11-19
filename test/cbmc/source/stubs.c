@@ -156,3 +156,33 @@ OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
 
     return err;
 }
+
+OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout )
+{
+    OtaOsStatus_t status;
+
+    /* pEventMsg is statically initialized before it is passed to the send
+     * function in OTA_SignalEvent. */
+    __CPROVER_assert( pEventMsg != NULL,
+                      "Error: Expected a non-NULL event Context." );
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}
+
