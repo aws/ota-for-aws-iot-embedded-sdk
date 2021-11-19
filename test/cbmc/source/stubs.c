@@ -173,3 +173,15 @@ OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
 
     return status;
 }
+
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}
