@@ -20,6 +20,14 @@ set( TINYCBOR_SOURCES
 set(TINYCBOR_INCLUDE_DIRS
     "${CMAKE_CURRENT_LIST_DIR}/source/dependency/3rdparty/tinycbor/src"
 )
+# Use C99 for tinycbor as it is incompatible with C90
+if(CMAKE_C_STANDARD LESS 99)
+    set_source_files_properties(
+        ${TINYCBOR_SOURCES}
+        PROPERTIES
+        COMPILE_FLAGS "-std=gnu99"
+    )
+endif()
 
 # OTA library source files, including 3rdparties.
 set( OTA_SOURCES
