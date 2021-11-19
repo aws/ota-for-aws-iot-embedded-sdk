@@ -106,7 +106,7 @@ void extractParameter_harness()
     memset( pValueInJson, 'a', valueLength );
     pValueInJson[ valueLength - 1 ] = '\0';
 
-    /* extractParameter is only called when the pDestOffest in the docParam is set to an offset
+    /* extractParameter is only called when the pDestOffset in the docParam is set to an offset
      * other than OTA_DONT_STORE_PARAM and OTA_STORE_NESTED_JSON. */
     __CPROVER_assume( ( docParam.pDestOffset != OTA_DONT_STORE_PARAM ) && ( docParam.pDestOffset != OTA_STORE_NESTED_JSON ) );
 
