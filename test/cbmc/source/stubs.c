@@ -135,4 +135,33 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     __CPROVER_assert( pEventMsg != NULL, "Error: Expected non-NULL pEventMsg value." );
 
     return retVal;
+
+OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                             void * pEventMsg,
+                             uint32_t timeout )
+{
+    OtaEventMsg_t eventMsg;
+    OtaOsStatus_t status;
+
+    pEventMsg = &eventMsg;
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                              OtaJobStatus_t status,
+                              int32_t reason,
+                              int32_t subReason )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
 }

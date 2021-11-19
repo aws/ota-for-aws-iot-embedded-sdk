@@ -53,3 +53,14 @@ OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
 
 /* Stub to request the next available job from job service. */
 OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx );
+
+/* Stub to receive Events .*/
+OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                             void * pEventMsg,
+                             uint32_t timeout );
+
+/* Stub to update the job status. */
+OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                              OtaJobStatus_t status,
+                              int32_t reason,
+                              int32_t subReason );
