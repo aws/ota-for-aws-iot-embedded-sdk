@@ -64,3 +64,11 @@ OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
                               OtaJobStatus_t status,
                               int32_t reason,
                               int32_t subReason );
+
+/* Stub to send events. */
+OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout );
+
+/* Stub to cleanup Data and Control plane. */
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx );
