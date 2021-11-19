@@ -136,32 +136,32 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 
     return retVal;
 
-OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
-                             void * pEventMsg,
-                             uint32_t timeout )
-{
-    OtaEventMsg_t eventMsg;
-    OtaOsStatus_t status;
+    OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                                 void * pEventMsg,
+                                 uint32_t timeout )
+    {
+        OtaEventMsg_t eventMsg;
+        OtaOsStatus_t status;
 
-    pEventMsg = &eventMsg;
+        pEventMsg = &eventMsg;
 
-    /* status must have values only from the OtaOsStatus_t enum. */
-    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+        /* status must have values only from the OtaOsStatus_t enum. */
+        __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
 
-    return status;
-}
+        return status;
+    }
 
-OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
-                              OtaJobStatus_t status,
-                              int32_t reason,
-                              int32_t subReason )
-{
-    OtaErr_t err;
+    OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                                  OtaJobStatus_t status,
+                                  int32_t reason,
+                                  int32_t subReason )
+    {
+        OtaErr_t err;
 
-    /* err must have values only from the OtaErr_t enum. */
-    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+        /* err must have values only from the OtaErr_t enum. */
+        __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
 
-    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+        __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
 
-    return err;
-}
+        return err;
+    }
