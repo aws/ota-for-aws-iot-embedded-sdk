@@ -72,3 +72,116 @@ OtaOsStatus_t stopTimerStub( OtaTimerId_t otaTimerId )
 
     return status;
 }
+
+OtaPalImageState_t getPlatformImageStateStub( OtaFileContext_t * const pFileContext )
+{
+    OtaPalImageState_t state;
+
+    /* state must have values of OtaPalImageState_t enum. */
+    __CPROVER_assume( ( state >= OtaPalImageStateUnknown ) && ( state <= OtaPalImageStateInvalid ) );
+
+    __CPROVER_assert( pFileContext != NULL,
+                      "Error: pFileContext in the otaAgent is statically initialized and hence cannot be NULL." );
+
+    return state;
+}
+
+void otaAppCallback( OtaJobEvent_t eEvent,
+                     const void * pData )
+{
+}
+
+OtaPalStatus_t resetPalStub( OtaFileContext_t * const pFileContext )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values only from the OtaPalStatus_t enum. */
+    __CPROVER_assume( ( status >= 0 ) && ( status <= UINT32_MAX ) );
+
+    __CPROVER_assert( pFileContext != NULL, "Error: Expected pFileContext to be not NULL" );
+
+    return status;
+}
+
+OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
+                                  uint32_t reasonToSet )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    return err;
+}
+
+OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL,
+                      "Error: Agent Context should be defined before calling the function." );
+
+    return err;
+}
+
+OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                             void * pEventMsg,
+                             uint32_t timeout )
+{
+    OtaEventMsg_t eventMsg;
+    OtaOsStatus_t status;
+
+    pEventMsg = &eventMsg;
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                              OtaJobStatus_t status,
+                              int32_t reason,
+                              int32_t subReason )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}
+
+OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout )
+{
+    OtaOsStatus_t status;
+
+    /* pEventMsg is statically initialized before it is passed to the send
+     * function in OTA_SignalEvent. */
+    __CPROVER_assert( pEventMsg != NULL,
+                      "Error: Expected a non-NULL event Context." );
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}

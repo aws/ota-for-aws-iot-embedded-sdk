@@ -36,3 +36,39 @@ OtaOsStatus_t startTimerStub( OtaTimerId_t otaTimerId,
 
 /* Stub for Timer Stop interface. */
 OtaOsStatus_t stopTimerStub( OtaTimerId_t otaTimerId );
+
+/* Stub to get the platform state from OTA PAL layer. */
+OtaPalImageState_t getPlatformImageStateStub( OtaFileContext_t * const pFileContext );
+
+/* Stub for callback from the OTA agent. */
+void otaAppCallbackStub( OtaJobEvent_t eEvent,
+                         const void * pData );
+
+/* Stub to reset the OTA PAL layer. */
+OtaPalStatus_t resetPalStub( OtaFileContext_t * const pFileContext );
+
+/* Stub to set the Image State. */
+OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
+                                  uint32_t reasonToSet );
+
+/* Stub to request the next available job from job service. */
+OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx );
+
+/* Stub to receive Events .*/
+OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                             void * pEventMsg,
+                             uint32_t timeout );
+
+/* Stub to update the job status. */
+OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                              OtaJobStatus_t status,
+                              int32_t reason,
+                              int32_t subReason );
+
+/* Stub to send events. */
+OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout );
+
+/* Stub to cleanup Data and Control plane. */
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx );
