@@ -382,7 +382,7 @@ typedef struct OtaFileContext
 {
     uint8_t * pFilePath;          /*!< @brief Update file pathname. */
     uint16_t filePathMaxSize;     /*!< @brief Maximum size of the update file path */
-    #if defined( WIN32 ) || defined( __linux__ )
+    #if defined( WIN32 ) || defined( __linux__ ) || defined( __VXWORKS__ )
         FILE * pFile;             /*!< @brief File type is stdio FILE structure after file is open for write. */
     #else
         uint8_t * pFile;          /*!< @brief File type is RAM/Flash image pointer after file is open for write. */
