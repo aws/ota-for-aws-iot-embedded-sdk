@@ -104,6 +104,17 @@ OtaPalStatus_t resetPalStub( OtaFileContext_t * const pFileContext )
     return status;
 }
 
+OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
+                                  uint32_t reasonToSet )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    return err;
+}
+
 OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t err;
