@@ -211,11 +211,12 @@
  */
 #ifndef otaconfigOTA_FILE_TYPE
     #if defined( WIN32 ) || defined( __linux__ )
-        #define otaconfigOTA_FILE_TYPE FILE
+        #define otaconfigOTA_FILE_TYPE    FILE
     #else
-        #define otaconfigOTA_FILE_TYPE uint8_t
+        #define otaconfigOTA_FILE_TYPE    uint8_t
     #endif
 #endif
+
 /**
  * @brief Flag to enable booting into updates that have an identical or lower
  * version than the current version.
