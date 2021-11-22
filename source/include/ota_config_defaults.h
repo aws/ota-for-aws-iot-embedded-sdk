@@ -201,6 +201,22 @@
 #endif
 
 /**
+ * @brief Data type to represent a file.
+ *
+ * It is used to represent a file received via OTA. The file is declared as
+ * the pointer of this type: otaconfigOTA_FILE_TYPE * pFile.
+ *
+ * <b>Possible values:</b> Any data type. <br>
+ * <b>Default value:</b> FILE on Windows or Linux, uint8_t on other platforms.
+ */
+#ifndef otaconfigOTA_FILE_TYPE
+    #if defined( WIN32 ) || defined( __linux__ )
+        #define otaconfigOTA_FILE_TYPE FILE
+    #else
+        #define otaconfigOTA_FILE_TYPE uint8_t
+    #endif
+#endif
+/**
  * @brief Flag to enable booting into updates that have an identical or lower
  * version than the current version.
  *
