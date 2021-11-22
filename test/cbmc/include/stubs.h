@@ -103,4 +103,3 @@ int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
 
 /* Stub to close a file. */
 OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext );
-
