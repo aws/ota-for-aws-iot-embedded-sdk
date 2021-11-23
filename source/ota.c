@@ -2338,6 +2338,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         /* Handle job parsing error. */
         handleJobParsingError( pFileContext, err );
     }
+    
     /* Return pointer to populated file context or NULL if it failed. */
     return pFinalFile;
 }
