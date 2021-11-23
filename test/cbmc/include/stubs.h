@@ -80,7 +80,7 @@ OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
 /* Stub to abort an OTA transfer. */
 OtaPalStatus_t abortPalStub( OtaFileContext_t * const pFileContext );
 
-/* Stub to allocated memory. */
+/* Stub to allocate memory. */
 void * mallocMemStub( size_t size );
 
 /* Stub to decode file block. */
@@ -94,3 +94,12 @@ OtaErr_t decodeFileBlockStub( const uint8_t * pMessageBuffer,
 
 /* Stub to free memory. */
 void freeMemStub( void * ptr );
+
+/* Stub to write a block. */
+int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
+                           uint32_t offset,
+                           uint8_t * const pData,
+                           uint32_t blockSize );
+
+/* Stub to close a file. */
+OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext );
