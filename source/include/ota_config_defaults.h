@@ -78,7 +78,7 @@
  *
  * For more information [Link](https://www.freertos.org/RTOS-task-priority.html).
  *
- * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES – 1 ) <br>
+ * <b>Possible values:</b> 0 to ( configMAX_PRIORITIES - 1 ) <br>
  * <b>Default value:</b> Varies by platform.
  */
 #ifndef otaconfigAGENT_PRIORITY
@@ -198,6 +198,23 @@
  */
 #ifndef otaconfigMAX_NUM_OTA_DATA_BUFFERS
     #define otaconfigMAX_NUM_OTA_DATA_BUFFERS    1U
+#endif
+
+/**
+ * @brief Data type to represent a file.
+ *
+ * It is used to represent a file received via OTA. The file is declared as
+ * the pointer of this type: otaconfigOTA_FILE_TYPE * pFile.
+ *
+ * <b>Possible values:</b> Any data type. <br>
+ * <b>Default value:</b> FILE on Windows or Linux, uint8_t on other platforms.
+ */
+#ifndef otaconfigOTA_FILE_TYPE
+    #if defined( WIN32 ) || defined( __linux__ )
+        #define otaconfigOTA_FILE_TYPE    FILE
+    #else
+        #define otaconfigOTA_FILE_TYPE    uint8_t
+    #endif
 #endif
 
 /**

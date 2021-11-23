@@ -5,6 +5,7 @@ activatenewimage
 addrinfo
 addtogroup
 afr
+agentshutdowncleanup
 allocateaddrinfolinkedlist
 alpn
 alpnprotoslen
@@ -108,6 +109,7 @@ datablock
 datacallback
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -163,6 +165,7 @@ ethernet
 eventid
 eventmsg
 ewouldblock
+executehandler
 executionnumber
 expectedstatus
 expectedtype
@@ -380,6 +383,7 @@ otaagentstatestopped
 otaagentstatestopped
 otaagentstatesuspended
 otaagentstatewaitingforjob
+otaagentstubs
 otaappcallback
 otabuffer
 otacallback
@@ -498,6 +502,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+otatransitiontable
 outputlen
 pacdata
 pactivejobname
@@ -659,6 +664,7 @@ previousversion
 printf
 processdatahandler
 processjobhandler
+processnullfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
@@ -701,6 +707,7 @@ rangeend
 rangestart
 rdy
 reasontoset
+receiveandprocessotaevent
 reconnectparam
 recv
 recvtimeout
@@ -728,6 +735,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
