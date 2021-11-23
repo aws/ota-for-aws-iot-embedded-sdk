@@ -80,7 +80,7 @@ OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
 /* Stub to abort an OTA transfer. */
 OtaPalStatus_t abortPalStub( OtaFileContext_t * const pFileContext );
 
-/* Stub to allocated memory. */
+/* Stub to allocate memory. */
 void * mallocMemStub( size_t size );
 
 /* Stub to decode file block. */
