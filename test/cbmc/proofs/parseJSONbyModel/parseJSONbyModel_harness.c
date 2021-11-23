@@ -107,7 +107,7 @@ DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
 
 void parseJSONbyModel_harness()
 {
-    /* pJson is always passed as a global buffer from OtaEventData)t which is
+    /* pJson is always passed as a global buffer from OtaEventData_t which is
      * enforced in processJobHandler. */
     DocParseErr_t parseErr;
     JsonDocModel_t docModel;
