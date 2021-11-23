@@ -27,6 +27,7 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 #include "stubs.h"
+#include <stdlib.h>
 
 extern OtaAgentContext_t otaAgent;
 extern OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData );
