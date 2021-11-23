@@ -109,6 +109,7 @@ datablock
 datacallback
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
