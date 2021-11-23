@@ -279,6 +279,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
+jsondoc 
 lastupdatedat
 len
 lf
@@ -860,6 +861,7 @@ validateandstartjob
 validatedatablock
 valuelength
 verifyactivejobstatus
+verifyRequiredParamsExtracted
 versionnumber
 vportfree
 vtasklist
