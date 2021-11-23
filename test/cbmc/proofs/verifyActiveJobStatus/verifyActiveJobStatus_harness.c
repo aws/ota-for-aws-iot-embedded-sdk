@@ -76,7 +76,7 @@ void verifyActiveJobStatus_harness()
         }
     }
 
-    /* To non-determinstically assume if the buffer is allocated by the user or by us. */
+    /* To non-deterministically assume if the buffer is allocated by the user or by us. */
     if( nondet_bool() )
     {
         otaAgent.fileContext.updateUrlMaxSize = 0u;
