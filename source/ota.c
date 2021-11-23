@@ -2332,7 +2332,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
 
         /* Let the application know to release buffer.*/
         otaAgent.OtaAppCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );
-    } 
+    }
     else
     {
         /* Handle job parsing error. */
