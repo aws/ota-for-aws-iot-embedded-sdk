@@ -35,6 +35,10 @@ OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
 {
     OtaErr_t err;
 
+    /* pFileContext is statically defined in parseJobDoc before validateUpdateVersion
+     * is called. Hence, it cannot be NULL. */
+    __CPROVER_assert( pFileContext != NULL, "Error: Expected pFileContext to be Non-NULL" );
+
     /* err can assume values of OtaErr_t enum. */
     __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
 
@@ -45,6 +49,9 @@ void handleSelfTestJobDoc_harness()
 {
     OtaFileContext_t fileContext;
     OtaInterfaces_t otaInterface;
+
+    /* To set all the fields in otaAgent to non-determinstic values. */
+    __CPROVER_havoc_object( &otaAgent );
 
     otaInterface.pal.reset = resetPalStub;
     otaAgent.OtaAppCallback = otaAppCallbackStub;
