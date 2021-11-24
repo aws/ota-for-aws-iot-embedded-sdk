@@ -50,7 +50,7 @@ void handleSelfTestJobDoc_harness()
     OtaFileContext_t fileContext;
     OtaInterfaces_t otaInterface;
 
-    /* To set all the fields in otaAgent to non-determinstic values. */
+    /* To set all the fields in otaAgent to non-deterministic values. */
     __CPROVER_havoc_object( &otaAgent );
 
     otaInterface.pal.reset = resetPalStub;
