@@ -110,6 +110,7 @@ datacallback
 datahandlercleanup
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
