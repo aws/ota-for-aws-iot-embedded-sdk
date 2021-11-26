@@ -38,9 +38,13 @@ void dataHandlerCleanup_harness()
     otaInterface.os.timer.stop = stopTimerStub;
     otaInterface.os.event.send = sendEventStub;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* otaAgent.pOtaInterface can never be NULL as it is always checked at the start of the OTA
      * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
-    ( void ) dataHandlerCleanup();
+    dataHandlerCleanup();
 }
