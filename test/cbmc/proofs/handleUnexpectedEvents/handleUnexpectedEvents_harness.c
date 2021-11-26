@@ -34,24 +34,22 @@ extern void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg );
 
 void handleUnexpectedEvents_harness()
 {
-    OtaEventMsg_t * pEventMsg;
-    OtaEvent_t eventId;
-
-    pEventMsg = ( OtaEventMsg_t * ) malloc( sizeof( OtaEventMsg_t ) );
-
-    /* pEventMsg cannot be NULL as it is statically initialized in receiveAndProcessOtaEvent
+    /* eventMsg cannot be NULL as it is statically initialized in receiveAndProcessOtaEvent
      * before handleUnexpectedEvents function is called. */
-    __CPROVER_assume( pEventMsg != NULL );
+    OtaEventMsg_t eventMsg;
 
-    /* eventId can only assume values of OtaEvent_t enum. */
-    __CPROVER_assume( ( eventId >= OtaAgentEventStart ) && ( eventId <= OtaAgentEventMax ) );
-
-    pEventMsg->eventId = eventId;
+    /* Havoc otaAgent and eventMsg to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &eventMsg );
+    __CPROVER_havoc_object( &otaAgent );
 
     /* Initialize OtaAppCallback to an empty callback function. */
     otaAgent.OtaAppCallback = otaAppCallbackStub;
 
-    ( void ) handleUnexpectedEvents( pEventMsg );
+    /* The maximum number of packets/blocks dropped by the otaAgent should be
+     * less than the file size. This assumption is valid even for file with sizes
+     * from (0, UINT32_MAX). */
+    __CPROVER_assume( otaAgent.statistics.otaPacketsDropped < UINT32_MAX );
 
-    free( pEventMsg );
+    handleUnexpectedEvents( &eventMsg );
 }
