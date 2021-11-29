@@ -37,6 +37,10 @@ void receiveAndProcessOtaEvent_harness()
     OtaInterfaces_t * otaInterface;
     OtaState_t state;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* Assume different states of the Ota Agent.*/
     __CPROVER_assume( ( state >= OtaAgentStateNoTransition ) && ( state <= OtaAgentStateAll ) );
 
@@ -50,7 +54,7 @@ void receiveAndProcessOtaEvent_harness()
     otaAgent.pOtaInterface = otaInterface;
     otaAgent.state = state;
 
-    ( void ) receiveAndProcessOtaEvent();
+    receiveAndProcessOtaEvent();
 
     free( otaInterface );
 }
