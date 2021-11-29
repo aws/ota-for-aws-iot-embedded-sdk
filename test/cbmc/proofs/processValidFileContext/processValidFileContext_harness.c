@@ -47,6 +47,10 @@ void processValidFileContext_harness()
     otaInterface.pal.reset = resetPalStub;
     otaInterface.os.event.send = sendEventStub;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* otaAgent.pOtaInterface can never be NULL as it is checked during the start of OTA Agent
      * in the receiveAndProcessOtaEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
