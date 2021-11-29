@@ -47,6 +47,10 @@ void handleJobParsingError_harness()
      * function which is again called in OTA_Init.*/
     fileContext.pJobName = &jobNameBuffer;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* This assumption is used to have nondeterministic length of the jobName String. */
     __CPROVER_assume( jobNameIdx < OTA_JOB_ID_MAX_SIZE );
 
@@ -61,5 +65,5 @@ void handleJobParsingError_harness()
 
     otaControlInterface.updateJobStatus = updateJobStatusStub;
 
-    ( void ) handleJobParsingError( &fileContext, err );
+    handleJobParsingError( &fileContext, err );
 }
