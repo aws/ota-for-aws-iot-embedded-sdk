@@ -116,6 +116,11 @@ void ingestDataBlock_harness()
     __CPROVER_assume( messageSize <= OTA_DATA_BLOCK_SIZE );
 
     /* CBMC preconditions. */
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     otaAgent.fileContext.decodeMemMaxSize = decodeMemMaxSize;
 
     otaInterface.os.mem.free = freeMemStub;
