@@ -45,7 +45,7 @@ void initFileHandler_harness()
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
      * the structure. */
-    __CPROVER_havoc_object(&otaAgent);
+    __CPROVER_havoc_object( &otaAgent );
 
     /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
@@ -57,5 +57,4 @@ void initFileHandler_harness()
      * there is a problem. */
     __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
                       "Invalid return value from initFileHandler: Expected a value from OtaErr_t enum." );
-
 }
