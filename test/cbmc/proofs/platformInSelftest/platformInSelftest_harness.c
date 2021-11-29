@@ -36,6 +36,10 @@ void platformInSelftest_harness()
     OtaInterfaces_t otaInterface;
     bool state;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
 
     /* At the start of the Agent, otaAgent.pOtaInterface is always checked to be
@@ -43,4 +47,7 @@ void platformInSelftest_harness()
     otaAgent.pOtaInterface = &otaInterface;
 
     state = platformInSelftest();
+
+    __CPROVER_assert( ( state == true ) || ( state == false ),
+                      "Error: Expected value should be a bool value. " );
 }
