@@ -204,7 +204,7 @@ OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
 OtaPalStatus_t abortPalStub( OtaFileContext_t * const pFileContext )
 {
     OtaPalStatus_t status;
-  
+
     /* status must have values of OtaPalStatus_t. */
     __CPROVER_assume( status <= UINT32_MAX );
 
