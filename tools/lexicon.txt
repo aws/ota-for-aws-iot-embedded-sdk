@@ -218,6 +218,7 @@ github
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
 helvetica
 hostnamelength
 html
@@ -860,6 +861,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
