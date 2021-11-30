@@ -219,6 +219,7 @@ github
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
 helvetica
 hostnamelength
 html
@@ -595,6 +596,7 @@ pjsondoc
 pjsonexpectedparams
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
@@ -665,6 +667,7 @@ previousversion
 printf
 processdatahandler
 processjobhandler
+processvalidfilecontext
 processnullfilecontext
 prootcapath
 protocolmaxsize
@@ -861,6 +864,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
