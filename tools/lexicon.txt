@@ -595,6 +595,7 @@ pjsondoc
 pjsonexpectedparams
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
