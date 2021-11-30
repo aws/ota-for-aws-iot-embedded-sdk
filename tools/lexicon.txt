@@ -220,6 +220,7 @@ handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
 handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -713,6 +714,7 @@ rdy
 reasontoset
 receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
