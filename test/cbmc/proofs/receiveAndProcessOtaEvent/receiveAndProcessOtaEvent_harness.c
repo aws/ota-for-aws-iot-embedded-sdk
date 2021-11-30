@@ -46,6 +46,10 @@ void receiveAndProcessOtaEvent_harness()
 
     otaInterface = ( OtaInterfaces_t * ) malloc( sizeof( OtaInterfaces_t ) );
 
+    /* Havoc otaInterface to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( otaInterface );
+
     if( otaInterface != NULL )
     {
         otaInterface->os.event.recv = recvEventStub;
