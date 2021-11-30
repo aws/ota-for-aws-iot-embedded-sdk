@@ -40,8 +40,6 @@ IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
 {
     IngestResult_t result;
 
-    __CPROVER_assume( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ) );
-
     __CPROVER_assert( pFileContext != NULL,
                       "Error: Expected a non-NUll value for pFileContext" );
 
@@ -60,8 +58,6 @@ IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
 {
     IngestResult_t result;
 
-    __CPROVER_assume( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ) );
-
     /* pPayload, pBlockSize, pBlockIndex are initialized in ingestDataBlock before this stub
      * is called and hence cannot be NULL. pFileContext and pRawMsg are statically allocated in
      * processDataHandler before ingestDataBlock is called. */
@@ -77,7 +73,6 @@ IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
                       "Error: Expected a non-NUll value for pBlockIndex" );
 
     *pPayload = ( uint8_t * ) malloc( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
-    __CPROVER_assume( *pPayload != NULL );
 
     return result;
 }
@@ -90,14 +85,11 @@ IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 {
     IngestResult_t result;
 
-    __CPROVER_assume( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ) );
-
     __CPROVER_assert( pFileContext != NULL,
                       "Error: Expected a non-NUll value for pFileContext" );
     __CPROVER_assert( pCloseResult != NULL,
                       "Error: Expected a non-NUll value for pCloseResult" );
-    __CPROVER_assert( pPayload != NULL,
-                      "Error: Expected a non-NUll value for pPayload" );
+
 
     return result;
 }
@@ -107,7 +99,6 @@ void ingestDataBlock_harness()
     OtaInterfaces_t otaInterface;
     OtaFileContext_t fileContext;
     OtaPalStatus_t closeResult;
-    IngestResult_t result;
     uint8_t rawMsg[ OTA_DATA_BLOCK_SIZE ];
     uint32_t messageSize;
 
@@ -121,13 +112,8 @@ void ingestDataBlock_harness()
      * the structure. */
     __CPROVER_havoc_object( &otaAgent );
 
-    otaAgent.fileContext.decodeMemMaxSize = decodeMemMaxSize;
-
     otaInterface.os.mem.free = freeMemStub;
     otaAgent.pOtaInterface = &otaInterface;
 
-    result = ingestDataBlock( &fileContext, rawMsg, messageSize, &closeResult );
-
-    __CPROVER_assert( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ),
-                      "Error: Return value from processValidFileContext should follow values of IngestResult_t enum." );
+    ( void ) ingestDataBlock( &fileContext, rawMsg, messageSize, &closeResult );
 }
