@@ -430,6 +430,7 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
 otajobeventactivate
 otajobeventfail
