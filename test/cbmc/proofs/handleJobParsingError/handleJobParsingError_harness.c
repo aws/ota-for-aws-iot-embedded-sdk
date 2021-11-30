@@ -53,7 +53,6 @@ void handleJobParsingError_harness()
     /* This assumption is used to have nondeterministic length of the jobName String. */
     __CPROVER_assume( jobNameIdx < OTA_JOB_ID_MAX_SIZE );
 
-    //memset( otaAgent.pActiveJobName, 'a', jobNameIdx );
     otaAgent.pActiveJobName[ jobNameIdx ] = '\0';
 
     /* err can only assume values which are of OtaJobParseErr_t enum. */
