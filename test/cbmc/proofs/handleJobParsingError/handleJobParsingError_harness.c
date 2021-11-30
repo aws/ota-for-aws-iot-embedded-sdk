@@ -27,7 +27,6 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 #include "stubs.h"
-#include "string.h"
 #include "ota_interface_private.h"
 
 extern OtaAgentContext_t otaAgent;
@@ -38,7 +37,7 @@ extern void handleJobParsingError( const OtaFileContext_t * pFileContext,
 void handleJobParsingError_harness()
 {
     OtaJobParseErr_t err;
-    OtaFileContext_t fileContext; /* pFileContext can never be NULL as it is passed a field of statically declared otaAgent struct. */
+    OtaFileContext_t fileContext; /* pFileContext can never be NULL as it is a field of statically declared otaAgent struct. */
     size_t jobNameIdx;
     uint8_t jobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];
 
@@ -54,7 +53,7 @@ void handleJobParsingError_harness()
     /* This assumption is used to have nondeterministic length of the jobName String. */
     __CPROVER_assume( jobNameIdx < OTA_JOB_ID_MAX_SIZE );
 
-    memset( otaAgent.pActiveJobName, 'a', jobNameIdx );
+    //memset( otaAgent.pActiveJobName, 'a', jobNameIdx );
     otaAgent.pActiveJobName[ jobNameIdx ] = '\0';
 
     /* err can only assume values which are of OtaJobParseErr_t enum. */
