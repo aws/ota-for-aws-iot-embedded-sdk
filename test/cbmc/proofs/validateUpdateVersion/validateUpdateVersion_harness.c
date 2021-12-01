@@ -39,10 +39,11 @@ void validateUpdateVersion_harness()
     OtaErr_t err;
 
     /* CBMC preconditions.*/
+
     /* Havoc otaAgent and otaAgent to non-deterministically set all the bytes in
      * the object. */
-    __CPROVER_havoc_object(&fileContext);
-    __CPROVER_havoc_object(&otaAgent);
+    __CPROVER_havoc_object( &fileContext );
+    __CPROVER_havoc_object( &otaAgent );
 
     err = validateUpdateVersion( &fileContext );
 
