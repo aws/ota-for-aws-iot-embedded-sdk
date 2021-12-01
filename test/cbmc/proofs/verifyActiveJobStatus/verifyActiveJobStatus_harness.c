@@ -47,6 +47,11 @@ void verifyActiveJobStatus_harness()
     size_t jobSize;
     uint16_t updateUrlMaxSize;
 
+    /* Havoc otaAgent and pFileContext to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+    __CPROVER_havoc_object( pFileContext );
+
     pFileContext = ( OtaFileContext_t * ) malloc( sizeof( OtaFileContext_t ) );
     __CPROVER_assume( pFileContext != NULL );
 
