@@ -36,6 +36,10 @@ void otaTimerCallback_harness()
     OtaTimerId_t otaTimerId;
     OtaInterfaces_t otaInterface;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* otaTimerId can only assume value of OtaTimerId_t enum. */
     __CPROVER_assume( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
 
@@ -47,5 +51,5 @@ void otaTimerCallback_harness()
      * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
-    ( void ) otaTimerCallback( otaTimerId );
+    otaTimerCallback( otaTimerId );
 }
