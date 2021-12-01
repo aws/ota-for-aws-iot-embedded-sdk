@@ -250,7 +250,7 @@ OtaErr_t decodeFileBlockStub( const uint8_t * pMessageBuffer,
     __CPROVER_assert( pFileId != NULL, "Invalid pFileId value: pFileId cannot be NULL." );
     __CPROVER_assert( pBlockId != NULL, "Invalid pBlockId value: pBlockId cannot be NULL." );
     __CPROVER_assert( pBlockSize != NULL, "Invalid pBlockSize value: pBlockSize cannot be NULL." );
-  
+
     return err;
 }
 

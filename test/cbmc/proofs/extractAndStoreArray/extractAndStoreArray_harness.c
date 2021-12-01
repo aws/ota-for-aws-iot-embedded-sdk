@@ -47,6 +47,10 @@ void extractAndStoreArray_harness()
     void * pParamAdd;
     uint32_t pParamSizeAdd;
 
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* The maximum value of valueLength is OTA_DATA_BLOCK_SIZE which is enforced
      * in getFileContextFromJob function. */
     __CPROVER_assume( valueLength < OTA_DATA_BLOCK_SIZE );
