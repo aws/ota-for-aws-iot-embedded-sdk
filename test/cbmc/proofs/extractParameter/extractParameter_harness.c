@@ -45,7 +45,6 @@ DocParseErr_t extractAndStoreArray( const char * pKey,
 {
     DocParseErr_t err;
 
-    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
     __CPROVER_assert( pParamAdd != NULL, "Error: Expected a Non-Null value for pParam." );
     __CPROVER_assert( pParamSizeAdd != NULL, "Error: Expected a Non-Null value for pParamSizeAdd." );
     __CPROVER_assert( pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson." );
@@ -59,7 +58,6 @@ DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
 {
     DocParseErr_t err;
 
-    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
     __CPROVER_assert( pValueInJson != NULL, "Error: Expected a Non-Null value for pValueInJson." );
     __CPROVER_assert( pParamAdd != NULL, "Error: Expected a Non-Null value for pParam." );
 
@@ -83,12 +81,15 @@ void extractParameter_harness()
     void * pContextBase;
     char * pValueInJson;
     size_t valueLength;
-    DocParseErr_t err;
 
     OtaFileContext_t fileContext;
     size_t idx;
 
     /* Pre-conditions. */
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
 
     /* The value of docParam is taken from the fields of otaJobDocModelParamStructure which is
      * enforced in parseJSONbyModel. */
@@ -113,10 +114,7 @@ void extractParameter_harness()
     /* pContextBase is a pointer to the otaAgent.fileContext which is statically initialized in ota.c */
     pContextBase = &fileContext;
 
-    err = extractParameter( docParam, pContextBase, pValueInJson, valueLength );
-
-    __CPROVER_assert( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ),
-                      "Error: Return value from extractParameter should be of DocParseErr_t enum. " );
+    ( void ) extractParameter( docParam, pContextBase, pValueInJson, valueLength );
 
     free( pValueInJson );
 }
