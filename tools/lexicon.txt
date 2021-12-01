@@ -313,6 +313,7 @@ mfln
 min
 misra
 mockoseventsendthenstop
+modelparams
 modelparamtype
 modelparamtypestringindoc
 mqtt
