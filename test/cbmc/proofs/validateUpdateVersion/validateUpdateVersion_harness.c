@@ -38,15 +38,11 @@ void validateUpdateVersion_harness()
     OtaFileContext_t fileContext;
     OtaErr_t err;
 
-    uint32_t serverFileId;
-    uint32_t fileType;
-    uint32_t updateVersion;
-
     /* CBMC preconditions.*/
-    fileContext.updaterVersion = updateVersion;
-
-    otaAgent.serverFileID = serverFileId;
-    otaAgent.fileContext.fileType = fileType;
+    /* Havoc otaAgent and otaAgent to non-deterministically set all the bytes in
+     * the object. */
+    __CPROVER_havoc_object(&fileContext);
+    __CPROVER_havoc_object(&otaAgent);
 
     err = validateUpdateVersion( &fileContext );
 
