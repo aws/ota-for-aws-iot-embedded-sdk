@@ -33,28 +33,17 @@ extern DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                                         size_t valueLength,
                                         void * pParamAdd );
 
-/* Stub to decode Base64 encoded data. */
-Base64Status_t base64Decode( uint8_t * pDest,
-                             const size_t destLen,
-                             size_t * pResultLen,
-                             const uint8_t * pEncodedData,
-                             const size_t encodedLen )
-{
-    Base64Status_t status;
-
-    __CPROVER_assume( ( status >= Base64Success ) && ( status <= Base64InvalidPaddingSymbol ) );
-
-    return status;
-}
-
 void decodeAndStoreKey_harness()
 {
     DocParseErr_t parseErr;
-    OtaFileContext_t * fileContext;
     const char pValueInJson[ OTA_FILE_BLOCK_SIZE ];
     size_t valueLength;
     Sig256_t value;
     void * pParamAdd;
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
 
     /* valueLength cannot exceed the size of the string buffer. */
     __CPROVER_assume( valueLength < OTA_FILE_BLOCK_SIZE );
@@ -62,7 +51,7 @@ void decodeAndStoreKey_harness()
     /* decodeAndStoreKey is called only when the value pointed in pValueInJson is of
      * Sig256_t type. pParamAdd is a pointer to the pSignature in the fileContext and hence
      * cannot be NULL. */
-    otaAgent.fileContext.pSignature = &value;
+    __CPROVER_assume( otaAgent.fileContext.pSignature != NULL );
     pParamAdd = &( otaAgent.fileContext.pSignature );
 
     parseErr = decodeAndStoreKey( pValueInJson, valueLength, pParamAdd );
