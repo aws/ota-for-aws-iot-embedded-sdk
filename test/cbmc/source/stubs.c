@@ -275,7 +275,7 @@ int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
 OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext )
 {
     OtaPalStatus_t status;
-  
+
     /* status must have values of OtaPalStatus_t. */
     __CPROVER_assume( status <= UINT32_MAX );
 
