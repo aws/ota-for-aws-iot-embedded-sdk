@@ -60,8 +60,6 @@ JSONStatus_t JSON_SearchConst( const char * buf,
     JSONStatus_t status;
     size_t value;
 
-    __CPROVER_assume( ( status >= JSONPartial ) && ( status <= JSONBadParameter ) );
-
     /* valueLength cannot exceed the length of buffer.*/
     __CPROVER_assume( value > 2u && value < OTA_FILE_BLOCK_SIZE );
 
@@ -79,8 +77,6 @@ DocParseErr_t extractParameter( JsonDocParam_t docParam,
 {
     DocParseErr_t parseErr;
 
-    __CPROVER_assume( ( parseErr >= DocParseErrUnknown ) && ( parseErr <= DocParseErrInvalidToken ) );
-
     /* pContextBase and pValueInJson are defined in parseJSONbyModel function
      * before calling extractParameter.*/
     __CPROVER_assert( pContextBase != NULL, "Error: Expected a non-NULL pContextBase value. " );
@@ -95,8 +91,6 @@ DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
 {
     DocParseErr_t parseErr;
 
-    __CPROVER_assume( ( parseErr >= DocParseErrUnknown ) && ( parseErr <= DocParseErrInvalidToken ) );
-
     /* pModelParam and pDocModel are defined in parseJSONbyModel function
      * before calling extractParameter.*/
     __CPROVER_assert( pModelParam != NULL, "Error: Expected a non-NULL pContextBase value. " );
@@ -109,12 +103,16 @@ void parseJSONbyModel_harness()
 {
     /* pJson is always passed as a global buffer from OtaEventData_t which is
      * enforced in processJobHandler. */
-    DocParseErr_t parseErr;
     JsonDocModel_t docModel;
     char pJson[ OTA_DATA_BLOCK_SIZE ];
     uint32_t messageLength;
 
     /* Preconditions. */
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     /* Length of the message cannot exceed the size of the message buffer. */
     __CPROVER_assume( messageLength < OTA_DATA_BLOCK_SIZE );
 
@@ -124,8 +122,5 @@ void parseJSONbyModel_harness()
     docModel.contextBase = &( otaAgent.fileContext );
     docModel.contextSize = sizeof( OtaFileContext_t );
 
-    parseErr = parseJSONbyModel( pJson, messageLength, &docModel );
-
-    __CPROVER_assert( ( parseErr >= DocParseErrUnknown ) && ( parseErr <= DocParseErrInvalidToken ),
-                      "Error: Expected an return value of DocParseErr_t enum. " );
+    ( void ) parseJSONbyModel( pJson, messageLength, &docModel );
 }
