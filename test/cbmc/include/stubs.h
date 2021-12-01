@@ -65,7 +65,7 @@ OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
                               int32_t reason,
                               int32_t subReason );
 
-/* Stub to send events. */
+/* Stub to send Event updates. */
 OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
                              const void * pEventMsg,
                              unsigned int timeout );
@@ -80,7 +80,7 @@ OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
 /* Stub to abort an OTA transfer. */
 OtaPalStatus_t abortPalStub( OtaFileContext_t * const pFileContext );
 
-/* Stub to allocated memory. */
+/* Stub to allocate memory. */
 void * mallocMemStub( size_t size );
 
 /* Stub to decode file block. */
