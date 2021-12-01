@@ -42,6 +42,11 @@ void otaClose_harness()
     pFileContext = ( OtaFileContext_t * ) malloc( sizeof( OtaFileContext_t ) );
 
     /* Pre-conditions. */
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     otaInterface.pal.abort = abortPalStub;
 
     if( nondet_bool() )
