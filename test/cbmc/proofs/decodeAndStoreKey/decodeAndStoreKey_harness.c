@@ -36,6 +36,7 @@ extern DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
 void decodeAndStoreKey_harness()
 {
     DocParseErr_t parseErr;
+    OtaFileContext_t * fileContext;
     const char pValueInJson[ OTA_FILE_BLOCK_SIZE ];
     size_t valueLength;
     Sig256_t value;
@@ -51,7 +52,7 @@ void decodeAndStoreKey_harness()
     /* decodeAndStoreKey is called only when the value pointed in pValueInJson is of
      * Sig256_t type. pParamAdd is a pointer to the pSignature in the fileContext and hence
      * cannot be NULL. */
-    __CPROVER_assume( otaAgent.fileContext.pSignature != NULL );
+    otaAgent.fileContext.pSignature = &value;
     pParamAdd = &( otaAgent.fileContext.pSignature );
 
     parseErr = decodeAndStoreKey( pValueInJson, valueLength, pParamAdd );
