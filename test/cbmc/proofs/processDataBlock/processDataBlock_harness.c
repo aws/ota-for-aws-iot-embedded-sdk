@@ -62,6 +62,11 @@ void processDataBlock_harness()
 
     uint32_t fileBitmapSize;
 
+    /* Havoc otaAgent and fileContext to non-deterministically set all the bytes in
+     * the object. */
+    __CPROVER_havoc_object( &otaAgent );
+    __CPROVER_havoc_object( &fileContext );
+
     /* The maximum number of Blocks is defined by the OTA_MAX_BITMAP_SIZE and the size of
      * the receiver block bitmap cannot exceed that. */
     fileContext.pRxBlockBitmap = ( uint8_t * ) malloc( OTA_MAX_BLOCK_BITMAP_SIZE );
@@ -82,4 +87,6 @@ void processDataBlock_harness()
     /* CBMC postconditions.*/
     __CPROVER_assert( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ),
                       "Error: Return value from processDataBlock should follow values of IngestResult_t enum." );
+
+    free( fileContext.pRxBlockBitmap );
 }
