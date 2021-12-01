@@ -40,19 +40,12 @@ void ingestDataBlockCleanup_harness()
     OtaPalStatus_t closeResult;
     OtaInterfaces_t otaInterface;
 
+    /* Havoc otaAgent and fileContext to non-deterministically set the bytes
+     * in the object. */
+    __CPROVER_havoc_object( &fileContext );
+    __CPROVER_havoc_object( &otaAgent );
+
     fileContext.pRxBlockBitmap = ( uint8_t * ) malloc( OTA_MAX_BLOCK_BITMAP_SIZE );
-
-    __CPROVER_assume( fileContext.blocksRemaining >= 0 );
-
-    /* Non-deterministically decide if the pRxBlockBitmap is user-defined or not. */
-    if( nondet_bool() )
-    {
-        fileContext.blockBitmapMaxSize = OTA_MAX_BLOCK_BITMAP_SIZE;
-    }
-    else
-    {
-        fileContext.blockBitmapMaxSize = 0;
-    }
 
     /* Preconditions. */
     otaInterface.os.timer.stop = stopTimerStub;
@@ -69,7 +62,7 @@ void ingestDataBlockCleanup_harness()
     __CPROVER_assert( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ),
                       "Error: Return value from ingestDataBlockCleanup should follow values of IngestResult_t enum." );
 
-    if( fileContext.blockBitmapMaxSize == OTA_MAX_BLOCK_BITMAP_SIZE )
+    if( fileContext.blockBitmapMaxSize != 0u )
     {
         free( fileContext.pRxBlockBitmap );
     }
