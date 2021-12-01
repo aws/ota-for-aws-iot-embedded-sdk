@@ -27,8 +27,7 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
-extern OtaAgentContext_t otaAgent;
-extern DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
+DocParseErr_t __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
                                                     const JsonDocModel_t * pDocModel );
 
 void verifyRequiredParamsExtracted_harness()
@@ -39,19 +38,16 @@ void verifyRequiredParamsExtracted_harness()
     JsonDocParam_t modelParams;
     DocParseErr_t err;
 
-    uint32_t paramsReceivedBitmap;
-    uint32_t paramsRequiredBitmap;
-    uint32_t numModelParams;
+    /* Havoc docModel and modelParams to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object(&docModel);
+    __CPROVER_havoc_object(&modelParams);
 
     /* The number of parameters in the jsonDoc are defined by OTA_NUM_JOB_PARAMS. */
-    __CPROVER_assume( numModelParams <= OTA_NUM_JOB_PARAMS + 1 );
+    __CPROVER_assume( docModel.numModelParams <= OTA_NUM_JOB_PARAMS + 1 );
 
     /* CBMC preconditions. */
-    docModel.paramsReceivedBitmap = paramsReceivedBitmap;
-    docModel.paramsRequiredBitmap = paramsRequiredBitmap;
-    docModel.numModelParams = numModelParams;
-
-    err = verifyRequiredParamsExtracted( &modelParams, &docModel );
+    err = __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( &modelParams, &docModel );
 
     __CPROVER_assert( ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
                       "Error: Expected return value to be either DocParseErrNone or DocParseErrMalformedDoc" );

@@ -871,7 +871,7 @@ validatedatablock
 validateupdateversion
 valuelength
 verifyactivejobstatus
-verifyRequiredParamsExtracted
+verifyrequiredparamsextracted
 versionnumber
 vportfree
 vtasklist

@@ -6,11 +6,9 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = verifyRequiredParamsExtracted
 
-DEFINES += -Dstatic=""
-
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 
-UNWINDSET += verifyRequiredParamsExtracted.0:25
+UNWINDSET += __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted.0:25
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
