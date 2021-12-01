@@ -28,7 +28,7 @@
 #include "ota.h"
 
 DocParseErr_t __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
-                                                    const JsonDocModel_t * pDocModel );
+                                                                        const JsonDocModel_t * pDocModel );
 
 void verifyRequiredParamsExtracted_harness()
 {
@@ -40,8 +40,8 @@ void verifyRequiredParamsExtracted_harness()
 
     /* Havoc docModel and modelParams to non-deterministically set all the bytes in
      * the structure. */
-    __CPROVER_havoc_object(&docModel);
-    __CPROVER_havoc_object(&modelParams);
+    __CPROVER_havoc_object( &docModel );
+    __CPROVER_havoc_object( &modelParams );
 
     /* The number of parameters in the jsonDoc are defined by OTA_NUM_JOB_PARAMS. */
     __CPROVER_assume( docModel.numModelParams <= OTA_NUM_JOB_PARAMS + 1 );
