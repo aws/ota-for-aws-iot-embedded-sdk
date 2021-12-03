@@ -41,22 +41,23 @@ extern IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
 
 void decodeAndStoreDataBlock_harness()
 {
+    /* fileContext is initialized to otaAgent.pFileContext which is statically defined in ota.c and
+     * hence can never be NULL. */
     OtaInterfaces_t otaInterface;
-    OtaFileContext_t * pFileContext;
+    OtaFileContext_t fileContext;
     uint8_t pRawMsg[ OTA_DATA_BLOCK_SIZE ];
     uint32_t msgSize;
     uint8_t * pPayload = NULL;
     uint32_t blockSize;
     uint32_t blockIndex;
-    uint32_t decodeMemMaxSize;
-
-    pFileContext = ( OtaFileContext_t * ) malloc( sizeof( OtaFileContext_t ) );
-
-    /* pFileContext is initialized to otaAgent.pFileContext which is statically defined in ota.c and
-     * hence can never be NULL. */
-    __CPROVER_assume( pFileContext != NULL );
+    IngestResult_t result;
 
     /* Pre-conditions. */
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
     otaInterface.os.timer.start = startTimerStub;
     otaInterface.os.mem.malloc = mallocMemStub;
 
@@ -65,14 +66,17 @@ void decodeAndStoreDataBlock_harness()
     /* otaAgent.pOtaInterface can never be NULL as it is always checked at the start of the OTA
      * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
-    otaAgent.fileContext.decodeMemMaxSize = decodeMemMaxSize;
 
-    decodeAndStoreDataBlock( pFileContext, pRawMsg, msgSize, &pPayload, &blockSize, &blockIndex );
-
-    if( pFileContext != NULL )
+    if( otaAgent.fileContext.decodeMemMaxSize != 0u )
     {
-        free( pFileContext );
+        otaAgent.fileContext.pDecodeMem = ( uint8_t * ) malloc( 1UL << otaconfigLOG2_FILE_BLOCK_SIZE );
     }
+
+    result = decodeAndStoreDataBlock( &fileContext, pRawMsg, msgSize, &pPayload, &blockSize, &blockIndex );
+
+    __CPROVER_assert( ( result >= IngestResultUninitialized ) &&
+                      ( result <= IngestResultDuplicate_Continue ),
+                      "Invalid return value from decodeAndStoreDataBlock:Expected value should be from IngestResult_t enum." );
 
     if( pPayload != NULL )
     {
