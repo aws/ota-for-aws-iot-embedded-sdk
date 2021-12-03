@@ -26,7 +26,6 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include <stdlib.h>
 
 bool __CPROVER_file_local_ota_c_validateDataBlock( const OtaFileContext_t * pFileContext,
                                                    uint32_t blockIndex,
@@ -34,23 +33,17 @@ bool __CPROVER_file_local_ota_c_validateDataBlock( const OtaFileContext_t * pFil
 
 void validateDataBlock_harness()
 {
-    OtaFileContext_t * pFileContext;
+    OtaFileContext_t fileContext;
     uint32_t blockIndex;
     uint32_t blockSize;
-    uint32_t fileSize;
 
-    pFileContext = ( OtaFileContext_t * ) malloc( sizeof( OtaFileContext_t ) );
+    /* Havoc fileContext to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &fileContext );
 
-    /* Pre-conditions.
-     * otaAgent.pFileContext is passed as the fileContext to validateDataBlock. This can be
-     * seen in the processDataHandler function. */
-    __CPROVER_assume( pFileContext != NULL );
+    /* The minimum and maximum size of the fileSize is (0, MAX_FILE_SIZE). MAX_FILE_SIZE is defined
+     * in the Makefile of this proof. */
+    __CPROVER_assume( ( fileContext.fileSize > 0 ) && ( fileContext.fileSize <= MAX_FILE_SIZE ) );
 
-    __CPROVER_assume( fileSize <= MAX_FILE_SIZE );
-
-    pFileContext->fileSize = fileSize;
-
-    __CPROVER_file_local_ota_c_validateDataBlock( pFileContext, blockIndex, blockSize );
-
-    free( pFileContext );
+    ( void ) __CPROVER_file_local_ota_c_validateDataBlock( &fileContext, blockIndex, blockSize );
 }

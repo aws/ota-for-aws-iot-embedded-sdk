@@ -5,7 +5,9 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # This should be a unique identifier for this proof, and will appear on the
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = validateDataBlock
-DEFINES += -DMAX_FILE_SIZE=50
+
+DEFINES += -DMAX_FILE_SIZE=16777216
+
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
