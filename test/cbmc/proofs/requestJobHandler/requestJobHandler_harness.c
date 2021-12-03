@@ -28,6 +28,7 @@
 #include "ota.h"
 #include "ota_interface_private.h"
 #include "stubs.h"
+#include <stdlib.h>
 
 extern OtaAgentContext_t otaAgent;
 extern OtaControlInterface_t otaControlInterface;
@@ -36,13 +37,14 @@ extern OtaErr_t requestJobHandler( const OtaEventData_t * pEventData );
 void requestJobHandler_harness()
 {
     OtaErr_t err;
-    OtaEventData_t eventData;
+    OtaEventData_t * pEventData;
     OtaInterfaces_t otaInterface;
-    uint32_t requestMomentum;
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
      * the structure. */
     __CPROVER_havoc_object( &otaAgent );
+
+    pEventData = ( OtaEventData_t * ) malloc( sizeof( OtaEventData_t ) );
 
     otaControlInterface.requestJob = requestJobStub;
     otaInterface.os.timer.stop = stopTimerStub;
@@ -51,12 +53,13 @@ void requestJobHandler_harness()
     /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
-    otaAgent.requestMomentum = requestMomentum;
 
-    err = requestJobHandler( &eventData );
+    err = requestJobHandler( pEventData );
 
     /* requestJobHandler returns the values which follow OtaErr_t enum. If it does not, then
      * there is a problem. */
     __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
                       "Invalid return value from requestJobHandler: Expected a value from OtaErr_t enum." );
+
+    free( pEventData );
 }
