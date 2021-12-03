@@ -272,6 +272,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
