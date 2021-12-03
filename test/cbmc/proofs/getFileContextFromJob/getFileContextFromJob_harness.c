@@ -34,7 +34,6 @@
 OtaFileContext_t fileContext;
 
 extern OtaAgentContext_t otaAgent;
-extern OtaControlInterface_t otaControlInterface;
 extern OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                                                  uint32_t messageLength );
 
@@ -89,6 +88,8 @@ void getFileContextFromJob_harness()
     size_t jobNameSize;
 
     /* Pre-conditions. */
+    __CPROVER_havoc_object( &otaAgent );
+
     __CPROVER_assume( messageLength < OTA_DATA_BLOCK_SIZE );
 
     /* The length of jobName string cannot exceed the size of buffer allocated to it. */
@@ -96,17 +97,14 @@ void getFileContextFromJob_harness()
     otaAgent.pActiveJobName[ jobNameSize ] = '\0';
     memset( otaAgent.pActiveJobName, 'a', jobNameSize );
 
-    otaInterface.pal.setPlatformImageState = setPlatformImageStateStub;
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.os.mem.free = freeMemStub;
     otaInterface.os.mem.malloc = mallocMemStub;
     otaInterface.pal.createFile = createFilePalStub;
 
-    otaControlInterface.updateJobStatus = updateJobStatusStub;
-
     /* otaAgent.pOtaInterface can never be NULL as it is always checked at the start of the OTA
      * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
-    pFileContext = getFileContextFromJob( &rawMsg, messageLength );
+    ( void ) getFileContextFromJob( &rawMsg, messageLength );
 }

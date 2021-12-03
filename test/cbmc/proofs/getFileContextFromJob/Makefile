@@ -7,7 +7,8 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = getFileContextFromJob
 
 DEFINES += -Dstatic=""
-DEFINES += -DOTA_MAX_FILE_SIZE=4161537
+DEFINES += -DOTA_MAX_FILE_SIZE=2097152
+
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
@@ -18,13 +19,12 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
 REMOVE_FUNCTION_BODY += otaClose
 REMOVE_FUNCTION_BODY += parseJobDoc
+REMOVE_FUNCTION_BODY += setImageStateWithReason
 
 RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
 RESTRICT_FUNCTION_POINTER += getFileContextFromJob.function_pointer_call.1/freeMemStub
 RESTRICT_FUNCTION_POINTER += getFileContextFromJob.function_pointer_call.2/mallocMemStub
 RESTRICT_FUNCTION_POINTER += getFileContextFromJob.function_pointer_call.3/createFilePalStub
-RESTRICT_FUNCTION_POINTER += setImageStateWithReason.function_pointer_call.1/setPlatformImageStateStub
-RESTRICT_FUNCTION_POINTER += updateJobStatusFromImageState.function_pointer_call.1/updateJobStatusStub
 
 UNWINDSET += getFileContextFromJob.0:10
 UNWINDSET += strlen.0:74
