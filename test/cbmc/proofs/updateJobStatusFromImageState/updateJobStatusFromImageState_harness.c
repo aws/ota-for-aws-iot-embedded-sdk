@@ -42,6 +42,11 @@ void updateJobStatusFromImageState_harness()
     __CPROVER_assume( ( state >= OtaImageStateUnknown ) && ( state <= OtaImageStateAborted ) );
 
     /* CBMC pre-conditions. */
+
+    /* Havoc otaControlInterface to non-deterministically set all
+     * the bytes in the object. */
+    __CPROVER_havoc_object( &otaControlInterface );
+
     otaControlInterface.updateJobStatus = updateJobStatusStub;
 
     err = updateJobStatusFromImageState( state, subReason );
