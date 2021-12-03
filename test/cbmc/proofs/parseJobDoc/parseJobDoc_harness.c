@@ -28,10 +28,10 @@
 #include "ota.h"
 #include "stubs.h"
 #include <string.h>
-#include <stdlib.h>
 #include "ota_interface_private.h"
 
 extern OtaAgentContext_t otaAgent;
+extern JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ];
 extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
                                        uint16_t numJobParams,
                                        const char * pJson,
@@ -52,7 +52,6 @@ DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
     __CPROVER_assert( contextBaseAddr != NULL,
                       "Invalid contextBaseAddr val: Expected a non-NULL value." );
 
-    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
     return err;
 }
 
@@ -66,7 +65,6 @@ DocParseErr_t parseJSONbyModel( const char * pJson,
     /* pDocModel is statically declared in parseJobDoc and hence cannot be NULL.*/
     __CPROVER_assert( pDocModel != NULL, "Error: pDocModel cannot be NULL" );
 
-    __CPROVER_assume( ( err >= DocParseErrUnknown ) && ( err <= DocParseErrInvalidToken ) );
     return err;
 }
 
@@ -87,8 +85,6 @@ OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                       bool * pUpdateJob )
 {
     OtaJobParseErr_t err;
-
-    __CPROVER_assume( ( err >= OtaJobParseErrUnknown ) && ( err <= OtaJobParseErrNoActiveJobs ) );
 
     /* Preconditions.
      * pFileContext, pFinalFile, pUpdateJob are declared in parseJobDoc before calling
@@ -111,32 +107,28 @@ void parseJobDoc_harness()
     uint16_t numJobParams;
     char * pJson;
     uint32_t messageLength;
-    uint32_t pJsonSize;
+    uint32_t jobNameSize;
     bool updateJob;
+
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
 
     /* pJsonExpectedParams is a statically defined structure in ota.c with the maximum size
      * defined by OTA_DOC_MODEL_MAX_PARAMS. */
     __CPROVER_assume( numJobParams <= OTA_DOC_MODEL_MAX_PARAMS + 1 );
 
-    /* pJsonSize is the size of message store inside the pJson buffer. The message length
-     * should always be less than the size of the buffer.*/
-    __CPROVER_assume( messageLength < pJsonSize );
+    /* The size of jobName string is always less than OTA_JOB_ID_MAX_SIZE. */
+    __CPROVER_assume( jobNameSize < OTA_JOB_ID_MAX_SIZE );
 
-    pJsonExpectedParams = ( JsonDocParam_t * ) malloc( sizeof( JsonDocParam_t ) * numJobParams );
-    pJson = ( char * ) malloc( sizeof( char ) * pJsonSize );
-
-    if( pJson != NULL )
-    {
-        pJson[ messageLength ] = '\0';
-        memset( pJson, 'a', messageLength );
-    }
+    /* Non-deterministically set the size of the pActiveJobName field
+     * in the otaAgent. */
+    otaAgent.pActiveJobName[ jobNameSize ] = '\0';
+    memset( otaAgent.pActiveJobName, 'a', jobNameSize );
 
     /* Preconditions. */
     otaAgent.OtaAppCallback = otaAppCallbackStub;
 
-    parseJobDoc( pJsonExpectedParams,
-                 numJobParams, pJson, messageLength, &updateJob );
-
-    free( pJsonExpectedParams );
-    free( pJson );
+    ( void ) parseJobDoc( otaJobDocModelParamStructure,
+                          numJobParams, pJson, messageLength, &updateJob );
 }

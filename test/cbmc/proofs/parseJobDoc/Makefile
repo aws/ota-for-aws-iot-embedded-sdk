@@ -16,6 +16,8 @@ PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
+UNWINDSET += strlen.0:74
+
 REMOVE_FUNCTION_BODY += handleCustomJob
 
 RESTRICT_FUNCTION_POINTER += parseJobDoc.function_pointer_call.1/otaAppCallbackStub
