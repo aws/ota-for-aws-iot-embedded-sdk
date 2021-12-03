@@ -5,6 +5,7 @@ activatenewimage
 addrinfo
 addtogroup
 afr
+agentshutdowncleanup
 allocateaddrinfolinkedlist
 alpn
 alpnprotoslen
@@ -106,8 +107,10 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -216,6 +219,8 @@ github
 handledatafromhttpservice
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -381,6 +386,7 @@ otaagentstatestopped
 otaagentstatestopped
 otaagentstatesuspended
 otaagentstatewaitingforjob
+otaagentstubs
 otaappcallback
 otabuffer
 otacallback
@@ -427,6 +433,7 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
 otajobeventactivate
 otajobeventfail
@@ -592,6 +599,7 @@ pjsonexpectedparams
 pjsonsize
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
@@ -662,6 +670,8 @@ previousversion
 printf
 processdatahandler
 processjobhandler
+processvalidfilecontext
+processnullfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
@@ -706,6 +716,7 @@ rdy
 reasontoset
 receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
@@ -732,6 +743,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
@@ -856,6 +868,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
