@@ -218,6 +218,7 @@ getpacketsreceived
 getplatformimagestate
 github
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
 handleselftestjobdoc
@@ -237,6 +238,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -256,6 +258,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -273,6 +276,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
