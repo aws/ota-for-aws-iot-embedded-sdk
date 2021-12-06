@@ -873,6 +873,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
