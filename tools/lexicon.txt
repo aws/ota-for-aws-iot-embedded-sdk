@@ -70,6 +70,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -671,6 +672,7 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
 processvalidfilecontext
