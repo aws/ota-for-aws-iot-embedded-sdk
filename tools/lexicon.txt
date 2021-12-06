@@ -107,6 +107,7 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
 decodefileblock
@@ -220,6 +221,7 @@ handlejobparsingerror
 handlenetworkerrors
 handlereconnect
 handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -434,6 +436,7 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
 otajobeventactivate
 otajobeventfail
@@ -715,6 +718,7 @@ rdy
 reasontoset
 receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
