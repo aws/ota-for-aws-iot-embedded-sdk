@@ -30,12 +30,12 @@
 void __CPROVER_file_local_ota_c_initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer );
 
 void initializeAppBuffers_harness()
-{   
+{
     /* OtaAgent assumes that the buffer passed to the initializeAppBuffers and OTA_Init
-    function are non-NULL. */
+     * function are non-NULL. */
     OtaAppBuffer_t otaBuffer;
 
-    __CPROVER_havoc_object(&otaBuffer);
+    __CPROVER_havoc_object( &otaBuffer );
 
-    __CPROVER_file_local_ota_c_initializeAppBuffers(&otaBuffer);
+    __CPROVER_file_local_ota_c_initializeAppBuffers( &otaBuffer );
 }
