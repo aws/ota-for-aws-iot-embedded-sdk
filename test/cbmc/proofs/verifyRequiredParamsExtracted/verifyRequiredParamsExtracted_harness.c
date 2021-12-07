@@ -43,7 +43,7 @@ void verifyRequiredParamsExtracted_harness()
     __CPROVER_havoc_object( &docModel );
     __CPROVER_havoc_object( &modelParams );
 
-    /* The number of parameters in the jsondoc are defined by OTA_NUM_JOB_PARAMS. */
+    /* The number of parameters in the json document model are defined by OTA_NUM_JOB_PARAMS. */
     __CPROVER_assume( docModel.numModelParams <= OTA_NUM_JOB_PARAMS + 1 );
 
     /* CBMC preconditions. */
