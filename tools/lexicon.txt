@@ -2,6 +2,7 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
