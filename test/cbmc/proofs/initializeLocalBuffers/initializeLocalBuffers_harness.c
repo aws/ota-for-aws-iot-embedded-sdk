@@ -32,6 +32,9 @@ extern void initializeLocalBuffers( void );
 
 void initializeLocalBuffers_harness()
 {
+    /* Havoc otaAgent to non-deterministically set the bytes in the object. */
+    __CPROVER_havoc_object( &otaAgent );
+
     initializeLocalBuffers();
 
     /* CBMC post-conditions. */
