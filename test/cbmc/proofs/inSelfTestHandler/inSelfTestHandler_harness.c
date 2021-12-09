@@ -58,6 +58,4 @@ void inSelfTestHandler_harness()
      * there is a problem. */
     __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
                       "Invalid return value from inSelfTestHandler: Expected a value from OtaErr_t enum." );
-
-    free( pEventData );
 }
