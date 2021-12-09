@@ -2,6 +2,7 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
@@ -70,6 +71,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -107,8 +109,10 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
+decodeandstorekey
 decodefileblock
 decodemem
 decodememmaxsize
@@ -216,8 +220,11 @@ getpacketsreceived
 getplatformimagestate
 github
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -233,6 +240,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -252,6 +260,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -269,6 +278,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -430,6 +440,7 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
 otajobeventactivate
 otajobeventfail
@@ -594,6 +605,7 @@ pjsondoc
 pjsonexpectedparams
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
@@ -662,8 +674,10 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
+processvalidfilecontext
 processnullfilecontext
 prootcapath
 protocolmaxsize
@@ -709,6 +723,7 @@ rdy
 reasontoset
 receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
@@ -860,6 +875,8 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
