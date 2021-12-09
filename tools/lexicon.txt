@@ -260,6 +260,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
 initializelocalbuffers
 inout
 inprogress
