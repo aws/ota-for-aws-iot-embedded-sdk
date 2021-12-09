@@ -2,6 +2,7 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
@@ -70,6 +71,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -218,6 +220,7 @@ getpacketsreceived
 getplatformimagestate
 github
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
 handleselftestjobdoc
@@ -237,6 +240,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -256,6 +260,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -273,6 +278,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -668,6 +674,7 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
 processvalidfilecontext
@@ -868,6 +875,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
