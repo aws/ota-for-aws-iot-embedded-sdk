@@ -2,6 +2,7 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
@@ -111,6 +112,7 @@ datacallback
 datahandlercleanup
 datalength
 decodeandstoredatablock
+decodeandstorekey
 decodefileblock
 decodemem
 decodememmaxsize
