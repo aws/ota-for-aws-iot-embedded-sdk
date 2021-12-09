@@ -6,6 +6,8 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = initializeLocalBuffers_harness
 
+DEFINES += -Dstatic=""
+
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c

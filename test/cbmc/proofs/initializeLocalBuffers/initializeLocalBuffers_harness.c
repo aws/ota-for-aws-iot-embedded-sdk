@@ -27,9 +27,26 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
-void __CPROVER_file_local_ota_c_initializeLocalBuffers(void);
+extern OtaAgentContext_t otaAgent;
+extern void initializeLocalBuffers( void );
 
 void initializeLocalBuffers_harness()
 {
-    __CPROVER_file_local_ota_c_initializeLocalBuffers();
+    initializeLocalBuffers();
+
+    /* CBMC post-conditions. */
+    __CPROVER_assert( otaAgent.fileContext.pJobName != NULL,
+                      "Error: Expected initializeLocalBuffers to initialize otaAgent.fileContext.pJobName to a non-NULL value." );
+
+    __CPROVER_assert( otaAgent.fileContext.pProtocols != NULL,
+                      "Error: Expected initializeLocalBuffers to initialize otaAgent.fileContext.pProtocols to a non-NULL value." );
+
+    __CPROVER_assert( otaAgent.fileContext.pSignature != NULL,
+                      "Error: Expected initializeLocalBuffers to initialize otaAgent.fileContext.pSignature to a non-NULL value." );
+
+    __CPROVER_assert( otaAgent.fileContext.jobNameMaxSize == OTA_JOB_ID_MAX_SIZE,
+                      "Error: Expected initializeLocalBuffers to set the otaAgent.fileCOntext.jobNameMaxSize field to OTA_JOB_ID_MAX_SIZE " );
+
+    __CPROVER_assert( otaAgent.fileContext.protocolMaxSize == OTA_PROTOCOL_BUFFER_SIZE,
+                      "Error: Expected initializeLocalBuffers to set the otaAgent.fileCOntext.protocolMaxSize field to OTA_PROTOCOL_BUFFER_SIZE " );
 }
