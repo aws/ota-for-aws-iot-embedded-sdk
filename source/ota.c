@@ -3072,8 +3072,6 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
     ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
     ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
 
-    assert( pOtaBuffer != NULL );
-
     /* If OTA agent is stopped then start running. */
     if( otaAgent.state == OtaAgentStateStopped )
     {

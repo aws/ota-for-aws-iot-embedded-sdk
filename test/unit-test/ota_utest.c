@@ -972,6 +972,17 @@ void test_OTA_InitNullAppBuffers()
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
 }
 
+void test_OTA_InitNullOtaAppPointer()
+{
+    OtaAppBuffer_t * otaAppBuffer = NULL;
+
+    OTA_Init( otaAppBuffer,
+              &otaInterfaces,
+              ( const uint8_t * ) pOtaDefaultClientId,
+              mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+}
+
 void test_OTA_InitZeroAppBufferSizes()
 {
     /* Test for having valid pointers with zero sizes. */
