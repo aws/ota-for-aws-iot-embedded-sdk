@@ -1230,11 +1230,11 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateRejected );
 
         jobDoc.status = JobStatusFailedWithVal;
-        jobDoc.reason = ( int32_t ) closeResult;
-        jobDoc.subReason = result;
+        jobDoc.reason = ( int32_t ) OTA_PAL_MAIN_ERR( closeResult );
+        jobDoc.subReason = ( int32_t ) OTA_PAL_SUB_ERR( closeResult );
 
         /* Update the job status with the with failure code. */
-        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) closeResult, ( int32_t ) result );
+        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) OTA_PAL_MAIN_ERR( closeResult ), ( int32_t ) OTA_PAL_SUB_ERR( closeResult ) );
 
         dataHandlerCleanup();
 

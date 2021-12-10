@@ -104,6 +104,14 @@ void processDataHandler_harness()
 
     pEventData = ( OtaEventData_t * ) malloc( sizeof( OtaEventData_t ) );
 
+    /* Havoc otaAgent. */
+    __CPROVER_havoc_object( &otaAgent );
+
+    /* The fileType and otaPacketsProcessed cannot exceed the INT32_MAX
+     * and UINT32_MAX respectively. */
+    __CPROVER_assume( otaAgent.fileContext.fileType <= INT32_MAX );
+    __CPROVER_assume( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX );
+
     /* Initialize the interface functions. */
     otaInterface.pal.setPlatformImageState = setImageState;
     otaInterface.os.timer.start = start;
