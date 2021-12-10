@@ -40,7 +40,6 @@ void processJobHandler_harness()
     /* Havoc otaAgent and eventData to non-deterministically set all the bytes
      * in the object. */
     __CPROVER_havoc_object( &otaAgent );
-    __CPROVER_havoc_object( &eventData );
 
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.os.event.send = sendEventStub;
