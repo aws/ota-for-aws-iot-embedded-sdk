@@ -35,7 +35,5 @@ void initializeAppBuffers_harness()
      * function are non-NULL. */
     OtaAppBuffer_t otaBuffer;
 
-    __CPROVER_havoc_object( &otaBuffer );
-
     __CPROVER_file_local_ota_c_initializeAppBuffers( &otaBuffer );
 }
