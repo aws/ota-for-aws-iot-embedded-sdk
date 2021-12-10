@@ -50,19 +50,33 @@ void setImageStateWithReason_harness()
 {
     OtaImageState_t stateToSet;
     OtaInterfaces_t otaInterface;
+    OtaErr_t err;
     uint32_t reasonToSet;
     size_t activeJobNameSize;
 
-    __CPROVER_havoc_object(&otaAgent);
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the object. */
+    __CPROVER_havoc_object( &otaAgent );
 
-    __CPROVER_assume(activeJobNameSize < OTA_JOB_ID_MAX_SIZE);
+    /* reasonToSet follows the values from OtaErr_t enum and hence
+     * does not exceed INT32_MAX. */
+    __CPROVER_assume( reasonToSet < INT32_MAX );
 
+    /* Non-deterministically set the size of pActiveJobName buffer. */
+    __CPROVER_assume( activeJobNameSize < OTA_JOB_ID_MAX_SIZE );
+
+    memset( otaAgent.pActiveJobName, 'a', activeJobNameSize );
+    otaAgent.pActiveJobName[ activeJobNameSize ] = '\0';
+
+    /* CBMC pre-conditions. */
     otaInterface.pal.setPlatformImageState = setPlatformImageStateStub;
 
     otaAgent.pOtaInterface = &otaInterface;
 
-    memset(otaAgent.pActiveJobName, 'a', activeJobNameSize);
-    otaAgent.pActiveJobName[activeJobNameSize] = '\0';
+    err = setImageStateWithReason( stateToSet, reasonToSet );
 
-    setImageStateWithReason(stateToSet,reasonToSet);
+    /* setImageStateWithReason returns the values which follow OtaErr_t enum. If it does not, then
+     * there is a problem. */
+    __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
+                      "Invalid return value from setImageStateWithReason: Expected a value from OtaErr_t enum." );
 }
