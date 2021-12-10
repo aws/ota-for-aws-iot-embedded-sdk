@@ -34,13 +34,17 @@ extern OtaErr_t processJobHandler( const OtaEventData_t * pEventData );
 void processJobHandler_harness()
 {
     OtaErr_t err;
-    OtaEventData_t * pEventData;
+    OtaEventData_t eventData;
     OtaInterfaces_t otaInterface;
 
-    pEventData = ( OtaEventData_t * ) malloc( sizeof( OtaEventData_t ) );
+    /* Havoc otaAgent and eventData to non-determinsitically set all the bytes
+     * in the object. */
+    __CPROVER_havoc_object( &otaAgent );
+    __CPROVER_havoc_object( &eventData );
 
-    otaInterface.os.timer.stop = stopTimerStub;
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
+    otaInterface.os.event.send = sendEventStub;
+    otaInterface.os.timer.stop = stopTimerStub;
     otaInterface.pal.reset = resetPalStub;
 
     /* OtaInterface and the interfaces included in it cannot be NULL and they are
@@ -50,12 +54,10 @@ void processJobHandler_harness()
     /* Initialize OtaAppCallback to an empty callback function. */
     otaAgent.OtaAppCallback = otaAppCallbackStub;
 
-    err = processJobHandler( pEventData );
+    err = processJobHandler( &eventData );
 
     /* processJobHandler returns the values which follow OtaErr_t enum. If it does not, then
      * there is a problem. */
     __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
                       "Invalid return value from processJobHandler: Expected a value from OtaErr_t enum." );
-
-    free( pEventData );
 }

@@ -27,6 +27,7 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 #include "stubs.h"
+#include <stdlib.h>
 
 OtaErr_t initFileTransferStub( OtaAgentContext_t * agent )
 {
@@ -47,7 +48,10 @@ OtaOsStatus_t startTimerStub( OtaTimerId_t otaTimerId,
 {
     OtaOsStatus_t status;
 
-    __CPROVER_assert( ( otaTimerId != OtaSelfTestTimer ) || ( otaTimerId != OtaRequestTimer ),
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    __CPROVER_assert( ( otaTimerId == OtaSelfTestTimer ) || ( otaTimerId == OtaRequestTimer ),
                       "Error: Expected otaTimerId to be either OtaSelfTestTimer or OtaRequestTimer." );
 
     __CPROVER_assert( pTimerName != NULL, "Error: TimerName cannot be NULL" );
@@ -61,7 +65,10 @@ OtaOsStatus_t stopTimerStub( OtaTimerId_t otaTimerId )
 {
     OtaOsStatus_t status;
 
-    __CPROVER_assert( ( otaTimerId != OtaSelfTestTimer ) || ( otaTimerId != OtaRequestTimer ),
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    __CPROVER_assert( ( otaTimerId == OtaSelfTestTimer ) || ( otaTimerId == OtaRequestTimer ),
                       "Error: Expected otaTimerId to be either OtaSelfTestTimer or OtaRequestTimer." );
 
     return status;
@@ -106,4 +113,173 @@ OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
     __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
 
     return err;
+}
+
+OtaErr_t requestJobStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL,
+                      "Error: Agent Context should be defined before calling the function." );
+
+    return err;
+}
+
+OtaOsStatus_t recvEventStub( OtaEventContext_t * pEventCtx,
+                             void * pEventMsg,
+                             uint32_t timeout )
+{
+    OtaEventMsg_t eventMsg;
+    OtaOsStatus_t status;
+
+    pEventMsg = &eventMsg;
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t updateJobStatusStub( OtaAgentContext_t * pAgentCtx,
+                              OtaJobStatus_t status,
+                              int32_t reason,
+                              int32_t subReason )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}
+
+OtaOsStatus_t sendEventStub( OtaEventContext_t * pEventCtx,
+                             const void * pEventMsg,
+                             unsigned int timeout )
+{
+    OtaOsStatus_t status;
+
+    /* pEventMsg is statically initialized before it is passed to the send
+     * function in OTA_SignalEvent. */
+    __CPROVER_assert( pEventMsg != NULL,
+                      "Error: Expected a non-NULL event Context." );
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    return status;
+}
+
+OtaErr_t cleanupStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Agent context can never be NULL." );
+
+    return err;
+}
+
+OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
+                                          OtaImageState_t eState )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values of OtaPalStatus_t. */
+    __CPROVER_assume( status <= UINT32_MAX );
+
+    __CPROVER_assert( pFileContext != NULL,
+                      "Error: pFileContext in the otaAgent is statically initialized and hence cannot be NULL." );
+
+    return status;
+}
+
+OtaPalStatus_t abortPalStub( OtaFileContext_t * const pFileContext )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values of OtaPalStatus_t. */
+    __CPROVER_assume( status <= UINT32_MAX );
+
+    __CPROVER_assert( pFileContext != NULL,
+                      "Error: pFileContext in the otaAgent is statically initialized and hence cannot be NULL." );
+
+    return status;
+}
+
+
+void * mallocMemStub( size_t size )
+{
+    void * ptr;
+
+    ptr = ( void * ) malloc( size );
+
+    return ptr;
+}
+
+OtaErr_t decodeFileBlockStub( const uint8_t * pMessageBuffer,
+                              size_t messageSize,
+                              int32_t * pFileId,
+                              int32_t * pBlockId,
+                              int32_t * pBlockSize,
+                              uint8_t ** pPayload,
+                              size_t * pPayloadSize )
+{
+    OtaErr_t err;
+
+    /* err must have values only from the OtaErr_t enum. */
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    /* Pre-conditions.
+     * pPayload and  pMessageBuffer are initialized in the ingestDataBlock before passing it to
+     * decodeAndStoreDataBlock which in turn calls decodeFileBlock Function and hence cannot
+     * be NULL.
+     * pPayloadSize, pFileId, pBlockId, pBlockSize are statically initialized in decodeAndStoreDataBlock
+     * before calling this stub and hence cannot be NULL.
+     */
+    __CPROVER_assert( pPayload != NULL, "Invalid pPayload value: pPayload cannot be NULL." );
+    __CPROVER_assert( pMessageBuffer != NULL, "Invalid pMessageBuffer value: pMessageBuffer cannot be NULL." );
+    __CPROVER_assert( pPayloadSize != NULL, "Invalid pPayloadSize value: pPayloadSize cannot be NULL." );
+    __CPROVER_assert( pFileId != NULL, "Invalid pFileId value: pFileId cannot be NULL." );
+    __CPROVER_assert( pBlockId != NULL, "Invalid pBlockId value: pBlockId cannot be NULL." );
+    __CPROVER_assert( pBlockSize != NULL, "Invalid pBlockSize value: pBlockSize cannot be NULL." );
+
+    return err;
+}
+
+void freeMemStub( void * ptr )
+{
+    free( ptr );
+}
+
+int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
+                           uint32_t offset,
+                           uint8_t * const pData,
+                           uint32_t blockSize )
+{
+    int16_t bytesWritten;
+
+    __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
+    __CPROVER_assert( pData != NULL, "Error: Expected a Non-Null value for pData" );
+
+    return bytesWritten;
+}
+
+OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values of OtaPalStatus_t. */
+    __CPROVER_assume( status <= UINT32_MAX );
+
+    __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
+
+    return status;
 }
