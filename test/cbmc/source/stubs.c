@@ -51,7 +51,7 @@ OtaOsStatus_t startTimerStub( OtaTimerId_t otaTimerId,
     /* status must have values only from the OtaOsStatus_t enum. */
     __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
 
-    __CPROVER_assert( ( otaTimerId != OtaSelfTestTimer ) || ( otaTimerId != OtaRequestTimer ),
+    __CPROVER_assert( ( otaTimerId == OtaSelfTestTimer ) || ( otaTimerId == OtaRequestTimer ),
                       "Error: Expected otaTimerId to be either OtaSelfTestTimer or OtaRequestTimer." );
 
     __CPROVER_assert( pTimerName != NULL, "Error: TimerName cannot be NULL" );
@@ -68,7 +68,7 @@ OtaOsStatus_t stopTimerStub( OtaTimerId_t otaTimerId )
     /* status must have values only from the OtaOsStatus_t enum. */
     __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
 
-    __CPROVER_assert( ( otaTimerId != OtaSelfTestTimer ) || ( otaTimerId != OtaRequestTimer ),
+    __CPROVER_assert( ( otaTimerId == OtaSelfTestTimer ) || ( otaTimerId == OtaRequestTimer ),
                       "Error: Expected otaTimerId to be either OtaSelfTestTimer or OtaRequestTimer." );
 
     return status;
