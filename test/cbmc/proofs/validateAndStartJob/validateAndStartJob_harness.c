@@ -48,7 +48,6 @@ void validateAndStartJob_harness()
     /* Havoc otaAgent and fileContext to non-deterministically set all
      * the bytes in the object. */
     __CPROVER_havoc_object( &otaAgent );
-    __CPROVER_havoc_object( &fileContext );
 
     /* Non-deterministically set the sizes of the jobName strings in
      * otaAgent and fileContext. */
