@@ -26,21 +26,43 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
-#include "stubs.h"
+#include <string.h>
 
 extern OtaAgentContext_t otaAgent;
 extern OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                                          uint32_t reasonToSet );
+
+OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
+                                          OtaImageState_t eState )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values of OtaPalStatus_t. */
+    __CPROVER_assume( status <= INT32_MAX );
+
+    __CPROVER_assert( pFileContext != NULL,
+                      "Error: pFileContext in the otaAgent is statically initialized and hence cannot be NULL." );
+
+    return status;
+}
 
 void setImageStateWithReason_harness()
 {
     OtaImageState_t stateToSet;
     OtaInterfaces_t otaInterface;
     uint32_t reasonToSet;
+    size_t activeJobNameSize;
 
     __CPROVER_havoc_object(&otaAgent);
-    
+
+    __CPROVER_assume(activeJobNameSize < OTA_JOB_ID_MAX_SIZE);
+
     otaInterface.pal.setPlatformImageState = setPlatformImageStateStub;
+
+    otaAgent.pOtaInterface = &otaInterface;
+
+    memset(otaAgent.pActiveJobName, 'a', activeJobNameSize);
+    otaAgent.pActiveJobName[activeJobNameSize] = '\0';
 
     setImageStateWithReason(stateToSet,reasonToSet);
 }
