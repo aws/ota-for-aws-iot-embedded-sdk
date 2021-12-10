@@ -106,4 +106,3 @@ OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext );
 
 /* Stub to create a file. */
 OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext );
-

@@ -295,4 +295,3 @@ OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext )
 
     return status;
 }
-
