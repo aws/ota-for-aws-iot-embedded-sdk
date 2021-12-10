@@ -37,7 +37,7 @@ void processJobHandler_harness()
     OtaEventData_t eventData;
     OtaInterfaces_t otaInterface;
 
-    /* Havoc otaAgent and eventData to non-determinsitically set all the bytes
+    /* Havoc otaAgent and eventData to non-deterministically set all the bytes
      * in the object. */
     __CPROVER_havoc_object( &otaAgent );
     __CPROVER_havoc_object( &eventData );
