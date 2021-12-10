@@ -34,28 +34,28 @@ extern OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData );
 void inSelfTestHandler_harness()
 {
     OtaErr_t err;
-    OtaEventData_t * pEventData;
+    OtaEventData_t eventData;
     OtaInterfaces_t otaInterface;
-
-    pEventData = ( OtaEventData_t * ) malloc( sizeof( OtaEventData_t ) );
 
     otaInterface.os.timer.stop = stopTimerStub;
     otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.pal.reset = resetPalStub;
 
-    /* OtaInterface and the interfaces included in it cannot be NULL and they are
+    /* Havoc otaAgent to non-deterministically set all the bytes in
+     * the structure. */
+    __CPROVER_havoc_object( &otaAgent );
+
+    /* OtaInterfaces and the interfaces included in it cannot be NULL and they are checked
      * during the initialization of OTA specifically in the OTA_Init function. */
     otaAgent.pOtaInterface = &otaInterface;
 
     /* Initialize OtaAppCallback to an empty callback function. */
     otaAgent.OtaAppCallback = otaAppCallbackStub;
 
-    err = inSelfTestHandler( pEventData );
+    err = inSelfTestHandler( &eventData );
 
     /* inSelfTestHandler returns the values which follow OtaErr_t enum. If it does not, then
      * there is a problem. */
     __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
                       "Invalid return value from inSelfTestHandler: Expected a value from OtaErr_t enum." );
-
-    free( pEventData );
 }

@@ -2,9 +2,11 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
+agentshutdowncleanup
 allocateaddrinfolinkedlist
 alpn
 alpnprotoslen
@@ -69,6 +71,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -106,8 +109,11 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
+decodeandstorekey
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -163,6 +169,7 @@ ethernet
 eventid
 eventmsg
 ewouldblock
+executehandler
 executionnumber
 expectedstatus
 expectedtype
@@ -212,9 +219,13 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -230,6 +241,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -249,6 +261,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -266,6 +279,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -380,6 +394,7 @@ otaagentstatestopped
 otaagentstatestopped
 otaagentstatesuspended
 otaagentstatewaitingforjob
+otaagentstubs
 otaappcallback
 otabuffer
 otacallback
@@ -426,6 +441,7 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
 otajobeventactivate
 otajobeventfail
@@ -498,6 +514,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+otatransitiontable
 outputlen
 pacdata
 pactivejobname
@@ -587,8 +604,10 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
@@ -657,8 +676,11 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
+processvalidfilecontext
+processnullfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
@@ -701,7 +723,9 @@ rangeend
 rangestart
 rdy
 reasontoset
+receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
@@ -728,6 +752,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
@@ -841,6 +866,7 @@ updatedby
 updatefilepath
 updatefilepathsize
 updatejobstatus
+updatejobstatusfromimagestate
 updaterversion
 updateurl
 updateurlmaxsize
@@ -852,6 +878,8 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
+validateupdateversion
 valuelength
 verifyactivejobstatus
 versionnumber
