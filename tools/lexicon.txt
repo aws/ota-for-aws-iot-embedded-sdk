@@ -604,6 +604,7 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
 platforminselftest
