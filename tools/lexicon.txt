@@ -2,6 +2,7 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
@@ -70,6 +71,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -110,6 +112,7 @@ datacallback
 datahandlercleanup
 datalength
 decodeandstoredatablock
+decodeandstorekey
 decodefileblock
 decodemem
 decodememmaxsize
@@ -163,6 +166,7 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
@@ -171,6 +175,7 @@ executionnumber
 expectedstatus
 expectedtype
 extractandstorearray
+extractparameter
 failedwithval
 faqmem
 fclose
@@ -216,7 +221,9 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
 handleselftestjobdoc
@@ -236,6 +243,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -255,6 +263,8 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -272,6 +282,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -435,6 +446,7 @@ otaimagestatetesting
 otaimagestateunknown
 otainterface
 otainterfaces
+otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
 otajobeventparsecustomjob
@@ -596,6 +608,7 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
 platforminselftest
@@ -667,6 +680,7 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
 processvalidfilecontext
@@ -856,6 +870,7 @@ updatedby
 updatefilepath
 updatefilepathsize
 updatejobstatus
+updatejobstatusfromimagestate
 updaterversion
 updateurl
 updateurlmaxsize
@@ -867,6 +882,7 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
