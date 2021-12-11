@@ -46,6 +46,16 @@ OtaPalStatus_t setPlatformImageStateStub( OtaFileContext_t * const pFileContext,
     return status;
 }
 
+OtaErr_t updateJobStatusFromImageState( OtaImageState_t state,
+                                        int32_t subReason )
+{
+    OtaErr_t err;
+
+    __CPROVER_assume( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ) );
+
+    return err;
+}
+
 void setImageStateWithReason_harness()
 {
     OtaImageState_t stateToSet;
