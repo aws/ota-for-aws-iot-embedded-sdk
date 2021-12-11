@@ -166,6 +166,7 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
@@ -174,6 +175,7 @@ executionnumber
 expectedstatus
 expectedtype
 extractandstorearray
+extractparameter
 failedwithval
 faqmem
 fclose
@@ -219,6 +221,7 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
 handlejobparsingerror
 handlenetworkerrors
@@ -260,6 +263,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
 initializelocalbuffers
 inout
 inprogress
@@ -442,6 +446,7 @@ otaimagestatetesting
 otaimagestateunknown
 otainterface
 otainterfaces
+otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
 otajobeventparsecustomjob
@@ -603,6 +608,7 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
 platforminselftest
@@ -864,6 +870,7 @@ updatedby
 updatefilepath
 updatefilepathsize
 updatejobstatus
+updatejobstatusfromimagestate
 updaterversion
 updateurl
 updateurlmaxsize
