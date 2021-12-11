@@ -166,6 +166,7 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
