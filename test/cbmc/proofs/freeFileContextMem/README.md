@@ -1,7 +1,7 @@
-decodeFileBlock_Http proof
+freeFileContextMem proof
 ==============
 
-This directory contains a memory safety proof for decodeFileBlock_Http.
+This directory contains a memory safety proof for freeFileContextMem.
 
 To run the proof.
 -------------
