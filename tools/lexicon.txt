@@ -295,6 +295,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
+jsondoc 
 lastupdatedat
 len
 lf
@@ -323,6 +324,7 @@ mfln
 min
 misra
 mockoseventsendthenstop
+modelparams
 modelparamtype
 modelparamtypestringindoc
 mqtt
@@ -887,6 +889,7 @@ validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
+verifyrequiredparamsextracted
 versionnumber
 vportfree
 vtasklist
