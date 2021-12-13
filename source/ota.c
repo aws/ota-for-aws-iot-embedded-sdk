@@ -2378,13 +2378,18 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
-
-    if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( platformInSelftest() == false ) )
+    
+    if(pUpdateFile != NULL)
     {
-        if( pUpdateFile->fileSize <= OTA_MAX_FILE_SIZE )
+        if(pUpdateFile->fileSize > OTA_MAX_FILE_SIZE)
+        {
+            err = OtaErrFileSizeOverflow;
+        }
+
+        if( ( updateJob == false ) && ( platformInSelftest() == false ) && (err == OtaErrNone))
         {
             /* Calculate how many bytes we need in our bitmap for tracking received blocks.
-             * The below calculation requires power of 2 page sizes. */
+            * The below calculation requires power of 2 page sizes. */
             numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
             bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
@@ -2410,11 +2415,11 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             if( pUpdateFile->pRxBlockBitmap != NULL )
             {
                 /* Mark as used any pages in the bitmap that are out of range, based on the file size.
-                 * This keeps us from requesting those pages during retry processing or if using a windowed
-                 * block request. It also avoids erroneously accepting an out of range data block should it
-                 * get past any safety checks.
-                 * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
-                 * last byte may be out of range and those are the bits we want to clear. */
+                * This keeps us from requesting those pages during retry processing or if using a windowed
+                * block request. It also avoids erroneously accepting an out of range data block should it
+                * get past any safety checks.
+                * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
+                * last byte may be out of range and those are the bits we want to clear. */
 
                 uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
                 uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
@@ -2447,12 +2452,8 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                 pUpdateFile = NULL;
             }
         }
-        else
-        {
-            err = OtaErrFileSizeOverflow;
-        }
     }
-
+    
     if( err != OtaErrNone )
     {
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
