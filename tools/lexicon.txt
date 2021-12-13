@@ -2,9 +2,11 @@
 abcdefghijklmnopqrstuvwxyz
 abortupdate
 activatenewimage
+activejobname
 addrinfo
 addtogroup
 afr
+agentshutdowncleanup
 allocateaddrinfolinkedlist
 alpn
 alpnprotoslen
@@ -69,6 +71,7 @@ clienttoken
 clienttokensize
 closefile
 closefilehandler
+closeresult
 cmock
 co
 colspan
@@ -106,8 +109,11 @@ currentstate
 cwd
 datablock
 datacallback
+datahandlercleanup
 datalength
 decodeandstoredatablock
+decodeandstorekey
+decodefileblock
 decodemem
 decodememmaxsize
 decodememorysize
@@ -160,13 +166,16 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
+executehandler
 executionnumber
 expectedstatus
 expectedtype
 extractandstorearray
+extractparameter
 failedwithval
 faqmem
 fclose
@@ -212,9 +221,13 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
+handlejobparsingerror
 handlenetworkerrors
 handlereconnect
+handleselftestjobdoc
+handleunexpectedevents
 helvetica
 hostnamelength
 html
@@ -230,6 +243,7 @@ imagestate
 implemenation
 inc
 ingestdatablock
+ingestdatablockcleanup
 ingestresultbaddata
 ingestresultbadfilehandle
 ingestresultblockoutofrange
@@ -249,6 +263,8 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
+initializelocalbuffers
 inout
 inprogress
 inselftesthandler
@@ -266,6 +282,7 @@ jobdoclength
 jobdocument
 jobid
 jobidlength
+jobname
 jobnamemaxsize
 jobnotificationhandler
 jobreasonaborted
@@ -278,6 +295,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
+jsondoc 
 lastupdatedat
 len
 lf
@@ -306,6 +324,7 @@ mfln
 min
 misra
 mockoseventsendthenstop
+modelparams
 modelparamtype
 modelparamtypestringindoc
 mqtt
@@ -380,6 +399,7 @@ otaagentstatestopped
 otaagentstatestopped
 otaagentstatesuspended
 otaagentstatewaitingforjob
+otaagentstubs
 otaappcallback
 otabuffer
 otacallback
@@ -426,7 +446,9 @@ otaimagestateaccepted
 otaimagestaterejected
 otaimagestatetesting
 otaimagestateunknown
+otainterface
 otainterfaces
+otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
 otajobeventparsecustomjob
@@ -498,6 +520,7 @@ otastatistics
 otatimer
 otatimercallback
 otatimerid
+otatransitiontable
 outputlen
 pacdata
 pactivejobname
@@ -587,8 +610,10 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
+platforminselftest
 platfrom
 plblockid
 plblocksize
@@ -657,8 +682,11 @@ presultlen
 pretryparams
 previousversion
 printf
+processdatablock
 processdatahandler
 processjobhandler
+processvalidfilecontext
+processnullfilecontext
 prootcapath
 protocolmaxsize
 prvbuildstatusmessagefinish
@@ -701,7 +729,9 @@ rangeend
 rangestart
 rdy
 reasontoset
+receiveandprocessotaevent
 reconnectparam
+receiveandprocessotaevent
 recv
 recvtimeout
 recvtimeoutms
@@ -728,6 +758,7 @@ rx
 rxstreamtopicbuffersize
 sd
 sdk
+searchtransition
 selftest
 selftesttimercallback
 sendtimeout
@@ -737,6 +768,7 @@ serverinfo
 setcontrolinterface
 setdatainterface
 setimagestate
+setimagestatewithreason
 setplatformimagestate
 shutdownhandler
 sig
@@ -841,6 +873,7 @@ updatedby
 updatefilepath
 updatefilepathsize
 updatejobstatus
+updatejobstatusfromimagestate
 updaterversion
 updateurl
 updateurlmaxsize
@@ -852,8 +885,11 @@ utils
 uxtaskgetsystemstate
 validateandstartjob
 validatedatablock
+validatejson
+validateupdateversion
 valuelength
 verifyactivejobstatus
+verifyrequiredparamsextracted
 versionnumber
 vportfree
 vtasklist
