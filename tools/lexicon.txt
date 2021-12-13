@@ -200,6 +200,7 @@ fixme
 fontname
 fontsize
 fopen
+freefilecontextmem
 freertos
 freertosipconfig
 freertos.org
