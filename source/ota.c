@@ -1216,9 +1216,15 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         dataHandlerCleanup();
 
-        /* Last file block processed, increment the statistics. */
-        otaAgent.statistics.otaPacketsProcessed++;
-
+        if(otaAgent.statistics.otaPacketsProcessed < UINT32_MAX)
+        {
+            /* Last file block processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsProcessed++;
+        }
+        else
+        {
+            LogError(("Error: Total OTA packets processed exceeded the unsigned integer limit. "));
+        }
         /* Let main application know that update is complete */
         otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
     }
@@ -1245,8 +1251,15 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
-            /* File block processed, increment the statistics. */
-            otaAgent.statistics.otaPacketsProcessed++;
+            if(otaAgent.statistics.otaPacketsProcessed < UINT32_MAX)
+            {
+                /* Last file block processed, increment the statistics. */
+                otaAgent.statistics.otaPacketsProcessed++;
+            }
+            else
+            {
+                LogError(("Error: Total OTA packets processed exceeded the unsigned integer limit. "));
+            }
 
             /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
@@ -2367,68 +2380,75 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( platformInSelftest() == false ) )
     {
-        /* Calculate how many bytes we need in our bitmap for tracking received blocks.
-         * The below calculation requires power of 2 page sizes. */
-        numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
-        bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
-
-        if( pUpdateFile->blockBitmapMaxSize == 0u )
+        if(pUpdateFile->fileSize <= OTA_MAX_FILE_SIZE)
         {
-            /* LCOV_EXCL_START */
+            /* Calculate how many bytes we need in our bitmap for tracking received blocks.
+            * The below calculation requires power of 2 page sizes. */
+            numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+            bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
+
+            if( pUpdateFile->blockBitmapMaxSize == 0u )
+            {
+                /* LCOV_EXCL_START */
+                if( pUpdateFile->pRxBlockBitmap != NULL )
+                {
+                    /* Free any previously allocated bitmap. */
+                    otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+                }
+
+                /* LCOV_EXCL_STOP */
+
+                pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+            }
+            else
+            {
+                assert( pUpdateFile->pRxBlockBitmap != NULL );
+                ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+            }
+
             if( pUpdateFile->pRxBlockBitmap != NULL )
             {
-                /* Free any previously allocated bitmap. */
-                otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+                /* Mark as used any pages in the bitmap that are out of range, based on the file size.
+                * This keeps us from requesting those pages during retry processing or if using a windowed
+                * block request. It also avoids erroneously accepting an out of range data block should it
+                * get past any safety checks.
+                * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
+                * last byte may be out of range and those are the bits we want to clear. */
+
+                uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
+                uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
+
+                /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
+                ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
+
+                for( index = 0U; index < numOutOfRange; index++ )
+                {
+                    pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ~bit;
+                    bit >>= 1U;
+                }
+
+                pUpdateFile->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
+
+                /* Create/Open the OTA file on the file system. */
+                palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
+
+                if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
+                {
+                    err = setImageStateWithReason( OtaImageStateAborted, palStatus );
+                    ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
+                    pUpdateFile = NULL;
+                }
             }
-
-            /* LCOV_EXCL_STOP */
-
-            pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
-        }
-        else
-        {
-            assert( pUpdateFile->pRxBlockBitmap != NULL );
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
-        }
-
-        if( pUpdateFile->pRxBlockBitmap != NULL )
-        {
-            /* Mark as used any pages in the bitmap that are out of range, based on the file size.
-             * This keeps us from requesting those pages during retry processing or if using a windowed
-             * block request. It also avoids erroneously accepting an out of range data block should it
-             * get past any safety checks.
-             * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
-             * last byte may be out of range and those are the bits we want to clear. */
-
-            uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
-            uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
-
-            /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
-
-            for( index = 0U; index < numOutOfRange; index++ )
+            else
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ~bit;
-                bit >>= 1U;
-            }
-
-            pUpdateFile->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
-
-            /* Create/Open the OTA file on the file system. */
-            palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
-
-            if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
-            {
-                err = setImageStateWithReason( OtaImageStateAborted, palStatus );
-                ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
+                /* Can't receive the image without enough memory. */
+                ( void ) otaClose( pUpdateFile );
                 pUpdateFile = NULL;
             }
         }
         else
         {
-            /* Can't receive the image without enough memory. */
-            ( void ) otaClose( pUpdateFile );
-            pUpdateFile = NULL;
+            err =  OtaErrFileSizeOverflow;
         }
     }
 
