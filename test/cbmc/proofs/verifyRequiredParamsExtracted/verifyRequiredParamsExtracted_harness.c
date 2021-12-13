@@ -46,7 +46,6 @@ void verifyRequiredParamsExtracted_harness()
     /* The number of parameters in the json document model are defined by OTA_NUM_JOB_PARAMS. */
     __CPROVER_assume( docModel.numModelParams <= OTA_NUM_JOB_PARAMS + 1 );
 
-    /* CBMC preconditions. */
     err = __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( &modelParams, &docModel );
 
     __CPROVER_assert( ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
