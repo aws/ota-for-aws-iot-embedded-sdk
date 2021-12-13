@@ -766,6 +766,7 @@ serverinfo
 setcontrolinterface
 setdatainterface
 setimagestate
+setimagestatewithreason
 setplatformimagestate
 shutdownhandler
 sig
