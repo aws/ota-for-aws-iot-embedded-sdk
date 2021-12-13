@@ -9,9 +9,19 @@ PROOF_UID = freeFileContextMem
 DEFINES += -Dstatic=""
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
+PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
+
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
+
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.1/freeMemStub
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.2/freeMemStub
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.3/freeMemStub
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.4/freeMemStub
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.5/freeMemStub
+RESTRICT_FUNCTION_POINTER += freeFileContextMem.function_pointer_call.6/freeMemStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

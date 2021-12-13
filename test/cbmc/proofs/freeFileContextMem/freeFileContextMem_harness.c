@@ -26,6 +26,7 @@
  */
 
 #include "ota.h"
+#include "stubs.h"
 #include <stdlib.h>
 
 extern OtaAgentContext_t otaAgent;
@@ -33,13 +34,14 @@ extern void freeFileContextMem( OtaFileContext_t * const pFileContext );
 
 void freeFileContextMem_harness()
 {
+    OtaInterfaces_t otaInterface;
     OtaFileContext_t fileContext;
-    size_t filePathMaxSize;
-    size_t certFilePathMaxSize;
-    size_t streamNameMaxSize;
-    size_t blockBitmapMaxSize;
-    size_t updateUrlMaxSize;
-    size_t authSchemeMaxSize;
+    uint16_t filePathMaxSize;
+    uint16_t certFilePathMaxSize;
+    uint16_t streamNameMaxSize;
+    uint16_t blockBitmapMaxSize;
+    uint16_t updateUrlMaxSize;
+    uint16_t authSchemeMaxSize;
 
     fileContext.pFilePath = ( uint8_t * ) malloc( filePathMaxSize * sizeof( uint8_t ) );
     fileContext.pCertFilepath = ( uint8_t * ) malloc( certFilePathMaxSize * sizeof( uint8_t ) );
@@ -48,6 +50,8 @@ void freeFileContextMem_harness()
     fileContext.pUpdateUrlPath = ( uint8_t * ) malloc( updateUrlMaxSize * sizeof( uint8_t ) );
     fileContext.pAuthScheme = ( uint8_t * ) malloc( authSchemeMaxSize * sizeof( uint8_t ) );
 
+    /* Non-deterministically set the size field to indicate if the buffer is user or dynamically
+     * allocated. */
     if( nondet_bool() )
     {
         fileContext.filePathMaxSize = filePathMaxSize;
@@ -63,7 +67,7 @@ void freeFileContextMem_harness()
     }
     else
     {
-        fileContext.filePathMaxSize = 0u;
+        fileContext.certFilePathMaxSize = 0u;
     }
 
     if( nondet_bool() )
@@ -102,8 +106,13 @@ void freeFileContextMem_harness()
         fileContext.authSchemeMaxSize = 0u;
     }
 
+    /* CBMC pre-conditions. */
+    otaInterface.os.mem.free = freeMemStub;
+    otaAgent.pOtaInterface = &otaInterface;
+
     freeFileContextMem( &fileContext );
 
+    /* Free memory allocated for the buffers. */
     if( fileContext.pFilePath != NULL )
     {
         free( fileContext.pFilePath );
