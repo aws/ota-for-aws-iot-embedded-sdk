@@ -1216,15 +1216,16 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         dataHandlerCleanup();
 
-        if(otaAgent.statistics.otaPacketsProcessed < UINT32_MAX)
+        if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
         {
             /* Last file block processed, increment the statistics. */
             otaAgent.statistics.otaPacketsProcessed++;
         }
         else
         {
-            LogError(("Error: Total OTA packets processed exceeded the unsigned integer limit. "));
+            LogError( ( "Error: Total OTA packets processed exceeded the unsigned integer limit. " ) );
         }
+
         /* Let main application know that update is complete */
         otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
     }
@@ -1251,14 +1252,14 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
-            if(otaAgent.statistics.otaPacketsProcessed < UINT32_MAX)
+            if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
             {
                 /* Last file block processed, increment the statistics. */
                 otaAgent.statistics.otaPacketsProcessed++;
             }
             else
             {
-                LogError(("Error: Total OTA packets processed exceeded the unsigned integer limit. "));
+                LogError( ( "Error: Total OTA packets processed exceeded the unsigned integer limit. " ) );
             }
 
             /* Reset the momentum counter since we received a good block. */
@@ -2380,10 +2381,10 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( platformInSelftest() == false ) )
     {
-        if(pUpdateFile->fileSize <= OTA_MAX_FILE_SIZE)
+        if( pUpdateFile->fileSize <= OTA_MAX_FILE_SIZE )
         {
             /* Calculate how many bytes we need in our bitmap for tracking received blocks.
-            * The below calculation requires power of 2 page sizes. */
+             * The below calculation requires power of 2 page sizes. */
             numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
             bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
@@ -2409,11 +2410,11 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             if( pUpdateFile->pRxBlockBitmap != NULL )
             {
                 /* Mark as used any pages in the bitmap that are out of range, based on the file size.
-                * This keeps us from requesting those pages during retry processing or if using a windowed
-                * block request. It also avoids erroneously accepting an out of range data block should it
-                * get past any safety checks.
-                * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
-                * last byte may be out of range and those are the bits we want to clear. */
+                 * This keeps us from requesting those pages during retry processing or if using a windowed
+                 * block request. It also avoids erroneously accepting an out of range data block should it
+                 * get past any safety checks.
+                 * Files are not always a multiple of 8 pages (8 bits/pages per byte) so some bits of the
+                 * last byte may be out of range and those are the bits we want to clear. */
 
                 uint8_t bit = 1U << ( BITS_PER_BYTE - 1U );
                 uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
@@ -2448,7 +2449,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         }
         else
         {
-            err =  OtaErrFileSizeOverflow;
+            err = OtaErrFileSizeOverflow;
         }
     }
 
