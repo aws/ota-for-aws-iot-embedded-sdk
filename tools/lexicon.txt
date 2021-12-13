@@ -166,6 +166,7 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
@@ -262,6 +263,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
 initializelocalbuffers
 inout
 inprogress
