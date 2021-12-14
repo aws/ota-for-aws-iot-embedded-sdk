@@ -12,6 +12,7 @@ INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 
 UNWINDSET += strlen.0:45
 UNWINDSET += parseJSONbyModel.0:24
+UNWINDSET += parseJSONbyModel_harness.0:15
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c

@@ -104,10 +104,13 @@ void parseJSONbyModel_harness()
     /* pJson is always passed as a global buffer from OtaEventData_t which is
      * enforced in processJobHandler. */
     JsonDocModel_t docModel;
+    JsonDocParam_t* modelParams;
     char pJson[ OTA_DATA_BLOCK_SIZE ];
     uint32_t messageLength;
+    size_t numParams;
 
     /* Preconditions. */
+    __CPROVER_assume(numParams < 10);
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
      * the structure. */
@@ -116,9 +119,27 @@ void parseJSONbyModel_harness()
     /* Length of the message cannot exceed the size of the message buffer. */
     __CPROVER_assume( messageLength < OTA_DATA_BLOCK_SIZE );
 
+    modelParams = (JsonDocParam_t * )malloc(sizeof(JsonDocParam_t) * numParams);
+    __CPROVER_assume(modelParams != NULL);
+
+    for(int i = 0; i < numParams; ++i)
+    {
+        size_t size;
+        char * temp;
+
+        __CPROVER_assume( size > 0 && size < 45);
+
+        temp = (char *)malloc(sizeof(char) * size);
+        __CPROVER_assume(temp != NULL);
+
+        temp[size-1] = '\0';
+
+        modelParams[i].pSrcKey = temp;
+    }
+
     /* Initialize the docModel. */
-    docModel.pBodyDef = otaJobDocModelParamStructure;
-    docModel.numModelParams = OTA_NUM_JOB_PARAMS;
+    docModel.pBodyDef = modelParams;
+    docModel.numModelParams = numParams;
     docModel.contextBase = &( otaAgent.fileContext );
     docModel.contextSize = sizeof( OtaFileContext_t );
 
