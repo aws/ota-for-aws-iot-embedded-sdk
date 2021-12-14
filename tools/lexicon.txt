@@ -408,6 +408,7 @@ otaerrcleanupdatafailed
 otaerrdowngradenotallowed
 otaerrfailedtodecodecbor
 otaerrfailedtoencodecbor
+otaerrfilesizeoverflow
 otaerrimagestatemismatch
 otaerrinitfiletransferfailed
 otaerrinvalidarg
