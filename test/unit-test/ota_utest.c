@@ -47,6 +47,7 @@
 #include "utest_helpers.h"
 
 /* Job document for testing. */
+#define OTA_FILE_SIZE_OVERFLOW            "4294963220"
 #define OTA_TEST_FILE_SIZE                10240
 #define OTA_TEST_FILE_NUM_BLOCKS          ( OTA_TEST_FILE_SIZE / OTA_FILE_BLOCK_SIZE + 1 )
 #define OTA_TEST_DUPLICATE_NUM_BLOCKS     3
@@ -70,6 +71,7 @@
 #define JOB_DOC_MISSING_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLength\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_DIFFERENT_FILE_TYPE       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"fileType\":2,\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_FILESIZE_OVERFLOW         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_FILE_SIZE_OVERFLOW ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE         100
@@ -3202,4 +3204,29 @@ void test_verifyActiveJobStatus_NullCleanupInterface()
     /* The verifyActiveJobStatus function is expected to safely avoid calling
      * the cleanup function if it is not defined. */
     TEST_ASSERT_EQUAL( OtaJobParseErrNone, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
+}
+
+
+void test_OTA_overflowFileSize()
+{   
+    OtaEventMsg_t eventMsg;
+    
+    /* Initialize the job doc with filesize greater than the maximum
+    allowed file size. */
+    pOtaJobDoc = JOB_DOC_FILESIZE_OVERFLOW;
+    size_t job_doc_len = strlen( pOtaJobDoc );
+    
+    eventMsg.eventId = OtaAgentEventReceivedJobDocument;
+    eventMsg.pEventData = &eventBuffer;
+
+    memcpy( eventMsg.pEventData->data, pOtaJobDoc, job_doc_len );
+    eventMsg.pEventData->dataLength = job_doc_len;
+
+    otaGoToState(OtaAgentStateWaitingForJob);
+    TEST_ASSERT_EQUAL(OtaAgentStateWaitingForJob, OTA_GetState());
+
+    OTA_SignalEvent(&eventMsg);
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL(OtaAgentStateWaitingForJob, OTA_GetState());
 }
