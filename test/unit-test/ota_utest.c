@@ -3219,3 +3219,26 @@ void test_OTA_overflowFileSize()
 
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
+
+void test_OTA_packetsProcessedOverflow()
+{
+    pOtaJobDoc = JOB_DOC_A;
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    size_t job_doc_len = strlen( pOtaJobDoc );
+    OtaEventMsg_t otaEvent = { 0 };
+
+    /* Parse success would create the file, let it invoke our mock when creating file. */
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    memcpy( otaEvent.pEventData->data, pOtaJobDoc, job_doc_len );
+    otaEvent.pEventData->dataLength = job_doc_len;
+    OTA_SignalEvent( &otaEvent );
+
+    otaAgent.statistics.otaPacketsProcessed = UINT32_MAX;
+
+    receiveAndProcessOtaEvent();
+
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+}

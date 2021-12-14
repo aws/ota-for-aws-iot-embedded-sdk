@@ -2383,10 +2383,17 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
-        if( ( pUpdateFile->blockBitmapMaxSize == 0u ) && ( pUpdateFile->pRxBlockBitmap != NULL ) )
+        /* This conditional statement has been excluded from the coverage report because one of branches in the
+         * if conditions cannot be reached because it is not possible for the code to have
+         * pUpdateFile->blockBitmapMaxSize not equal to 0 and pUpdateFile->pRxBlockBitmap equal to NULL. */
+
+        /* LCOV_EXCL_START */
+        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
         {
             otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
         }
+
+        /* LCOV_EXCL_STOP */
 
         if( pUpdateFile->blockBitmapMaxSize == 0u )
         {
@@ -2431,16 +2438,13 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                 pUpdateFile = NULL;
             }
         }
-        else
-        {
-            /* Can't receive the image without enough memory. */
-            ( void ) otaClose( pUpdateFile );
-            pUpdateFile = NULL;
-        }
     }
 
-    if( err != OtaErrNone )
+    if( ( err != OtaErrNone ) || ( ( pUpdateFile != NULL ) && ( pUpdateFile->pRxBlockBitmap == NULL ) ) )
     {
+        otaClose( pUpdateFile );
+        pUpdateFile = NULL;
+
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
