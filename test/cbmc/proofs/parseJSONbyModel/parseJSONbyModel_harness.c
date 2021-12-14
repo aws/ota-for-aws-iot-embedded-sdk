@@ -104,13 +104,14 @@ void parseJSONbyModel_harness()
     /* pJson is always passed as a global buffer from OtaEventData_t which is
      * enforced in processJobHandler. */
     JsonDocModel_t docModel;
-    JsonDocParam_t* modelParams;
+    JsonDocParam_t * modelParams;
     char pJson[ OTA_DATA_BLOCK_SIZE ];
     uint32_t messageLength;
     size_t numParams;
+    size_t idx;
 
     /* Preconditions. */
-    __CPROVER_assume(numParams < 10);
+    __CPROVER_assume( numParams < OTA_NUM_PARAMS );
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
      * the structure. */
@@ -119,22 +120,30 @@ void parseJSONbyModel_harness()
     /* Length of the message cannot exceed the size of the message buffer. */
     __CPROVER_assume( messageLength < OTA_DATA_BLOCK_SIZE );
 
-    modelParams = (JsonDocParam_t * )malloc(sizeof(JsonDocParam_t) * numParams);
-    __CPROVER_assume(modelParams != NULL);
+    /* Initialize the array of document model body functions. This is always initialized
+     * before passing to parseJSONbyModel function and hence cannot be NULL. */
+    modelParams = ( JsonDocParam_t * ) malloc( sizeof( JsonDocParam_t ) * numParams );
+    __CPROVER_assume( modelParams != NULL );
 
-    for(int i = 0; i < numParams; ++i)
+    /* Havoc object to non-deterministically set all the bytes in the
+     * object. */
+    __CPROVER_havoc_object( modelParams );
+
+    /* Initialize modelParams.pSrcKey string of non-deterministic length. */
+    for( idx = 0; idx < numParams; ++idx )
     {
         size_t size;
-        char * temp;
+        char * pStr;
 
-        __CPROVER_assume( size > 0 && size < 45);
+        /* Non-deterministically set the size of the pSrcKey. */
+        __CPROVER_assume( size > 0u && size < OTA_JSON_SRC_KEY_SIZE );
 
-        temp = (char *)malloc(sizeof(char) * size);
-        __CPROVER_assume(temp != NULL);
+        pStr = ( char * ) malloc( sizeof( char ) * size );
+        __CPROVER_assume( pStr != NULL );
 
-        temp[size-1] = '\0';
+        pStr[ size - 1 ] = '\0';
 
-        modelParams[i].pSrcKey = temp;
+        modelParams[ idx ].pSrcKey = pStr;
     }
 
     /* Initialize the docModel. */
@@ -144,4 +153,11 @@ void parseJSONbyModel_harness()
     docModel.contextSize = sizeof( OtaFileContext_t );
 
     ( void ) parseJSONbyModel( pJson, messageLength, &docModel );
+
+    for( idx = 0; idx < numParams; ++idx )
+    {
+        free( modelParams[ idx ].pSrcKey );
+    }
+
+    free( modelParams );
 }
