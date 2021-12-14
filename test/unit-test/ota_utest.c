@@ -3208,25 +3208,14 @@ void test_verifyActiveJobStatus_NullCleanupInterface()
 
 
 void test_OTA_overflowFileSize()
-{   
-    OtaEventMsg_t eventMsg;
-    
-    /* Initialize the job doc with filesize greater than the maximum
-    allowed file size. */
+{
     pOtaJobDoc = JOB_DOC_FILESIZE_OVERFLOW;
-    size_t job_doc_len = strlen( pOtaJobDoc );
-    
-    eventMsg.eventId = OtaAgentEventReceivedJobDocument;
-    eventMsg.pEventData = &eventBuffer;
 
-    memcpy( eventMsg.pEventData->data, pOtaJobDoc, job_doc_len );
-    eventMsg.pEventData->dataLength = job_doc_len;
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
-    otaGoToState(OtaAgentStateWaitingForJob);
-    TEST_ASSERT_EQUAL(OtaAgentStateWaitingForJob, OTA_GetState());
-
-    OTA_SignalEvent(&eventMsg);
+    otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
 
-    TEST_ASSERT_EQUAL(OtaAgentStateWaitingForJob, OTA_GetState());
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
