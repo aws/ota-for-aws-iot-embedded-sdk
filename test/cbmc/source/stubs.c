@@ -283,3 +283,12 @@ OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext )
 
     return status;
 }
+
+OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx )
+{
+    OtaErr_t err;
+
+    __CPROVER_assert( pAgentCtx != NULL, "Error: Expected a non-NULL value for the agent." );
+
+    return err;
+}

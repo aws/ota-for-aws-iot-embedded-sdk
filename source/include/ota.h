@@ -99,7 +99,8 @@ typedef enum OtaErr
     OtaErrUserAbort,              /*!< @brief User aborted the active OTA. */
     OtaErrFailedToEncodeCbor,     /*!< @brief Failed to encode CBOR object for requesting data block from streaming service. */
     OtaErrFailedToDecodeCbor,     /*!< @brief Failed to decode CBOR object from streaming service response. */
-    OtaErrActivateFailed          /*!< @brief Failed to activate the new image. */
+    OtaErrActivateFailed,         /*!< @brief Failed to activate the new image. */
+    OtaErrFileSizeOverflow        /*!< @brief Firmware file size greater than the max allowed size. */
 } OtaErr_t;
 
 /**
