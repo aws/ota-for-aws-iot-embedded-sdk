@@ -411,6 +411,25 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
+OtaErr_t mockDataInterfaceDecodeFileBlock( const uint8_t * pMessageBuffer,
+                                           size_t messageSize,
+                                           int32_t * pFileId,
+                                           int32_t * pBlockId,
+                                           int32_t * pBlockSize,
+                                           uint8_t ** pPayload,
+                                           size_t * pPayloadSize )
+{
+    ( void ) pMessageBuffer;
+    ( void ) messageSize;
+    ( void ) pFileId;
+    ( void ) pBlockId;
+    ( void ) pBlockSize;
+    ( void ) pPayload;
+    ( void ) pPayloadSize;
+
+    return OtaErrNone;
+}
+
 OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
 {
     ( void ) unused;
@@ -3206,7 +3225,8 @@ void test_verifyActiveJobStatus_NullCleanupInterface()
     TEST_ASSERT_EQUAL( OtaJobParseErrNone, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
 }
 
-
+/* This test is to check if the library handles the situation where the size of the
+ * file downloaded using OTA is greater than the maximum size supported by the library. */
 void test_OTA_overflowFileSize()
 {
     pOtaJobDoc = JOB_DOC_FILESIZE_OVERFLOW;
@@ -3220,25 +3240,79 @@ void test_OTA_overflowFileSize()
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
+/* This test is to check if the number of ota packets received by the device does not
+ * exceed the maximum limit of its datatype. */
 void test_OTA_packetsProcessedOverflow()
 {
-    pOtaJobDoc = JOB_DOC_A;
+    OtaEventMsg_t otaEvent;
+    OtaEventData_t eventBuffers[ OTA_TEST_FILE_NUM_BLOCKS * OTA_TEST_DUPLICATE_NUM_BLOCKS ];
+    uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
+    size_t streamingMessageSize = 0;
+    int remainingBytes = OTA_TEST_FILE_SIZE;
+    int idx = 0;
+    int dupIdx = 0;
+
     otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
 
-    size_t job_doc_len = strlen( pOtaJobDoc );
-    OtaEventMsg_t otaEvent = { 0 };
+    /* Set the event send interface to a mock function that allows events to be sent continuously
+     * because we're receiving multiple blocks in this test. */
+    otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* Parse success would create the file, let it invoke our mock when creating file. */
-    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
-    otaEvent.pEventData = &eventBuffer;
-    memcpy( otaEvent.pEventData->data, pOtaJobDoc, job_doc_len );
-    otaEvent.pEventData->dataLength = job_doc_len;
-    OTA_SignalEvent( &otaEvent );
+    /* Fill the file block. */
+    for( idx = 0; idx < ( int ) sizeof( pFileBlock ); idx++ )
+    {
+        pFileBlock[ idx ] = idx % UINT8_MAX;
+    }
+
+    /* Send blocks. */
+    idx = 0;
+
+    while( remainingBytes >= 0 )
+    {
+        /* Intentionally send duplicate blocks to test if we are handling it correctly. */
+        for( dupIdx = 0; dupIdx < OTA_TEST_DUPLICATE_NUM_BLOCKS; dupIdx++ )
+        {
+            /* Construct a AWS IoT streaming message. */
+            createOtaStreamingMessage(
+                pStreamingMessage,
+                sizeof( pStreamingMessage ),
+                idx,
+                pFileBlock,
+                min( ( uint32_t ) remainingBytes, OTA_FILE_BLOCK_SIZE ),
+                &streamingMessageSize,
+                true );
+
+            otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+            otaEvent.pEventData = &eventBuffers[ idx * OTA_TEST_DUPLICATE_NUM_BLOCKS + dupIdx ];
+            memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+            otaEvent.pEventData->dataLength = streamingMessageSize;
+            OTA_SignalEvent( &otaEvent );
+        }
+
+        idx++;
+        remainingBytes -= OTA_FILE_BLOCK_SIZE;
+    }
+
+    /* Process all of the events for receiving an MQTT message. */
+    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsProcessed );
 
     otaAgent.statistics.otaPacketsProcessed = UINT32_MAX;
 
-    receiveAndProcessOtaEvent();
+    processEntireQueue();
 
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsProcessed );
+
+    /* OTA agent should complete the update and go back to waiting for job state. */
+
+    TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( eventBuffers ) );
+
+    /* Check if received complete file. */
+    for( idx = 0; idx < OTA_TEST_FILE_SIZE; ++idx )
+    {
+        TEST_ASSERT_EQUAL( pFileBlock[ idx % sizeof( pFileBlock ) ], pOtaFileBuffer[ idx ] );
+    }
 }
