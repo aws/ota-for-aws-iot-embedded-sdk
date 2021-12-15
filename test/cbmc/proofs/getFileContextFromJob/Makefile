@@ -7,7 +7,6 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = getFileContextFromJob
 
 DEFINES += -Dstatic=""
-DEFINES += -DOTA_MAX_FILE_SIZE=2097152
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/test/cbmc/include

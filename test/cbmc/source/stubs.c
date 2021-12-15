@@ -294,6 +294,7 @@ OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext )
     __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
 
     return status;
+}
 
 OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx )
 {

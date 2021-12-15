@@ -60,7 +60,6 @@ OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
      * avoid buffer overflow. */
     __CPROVER_assume( ( fileSize > 0u ) && ( fileSize < OTA_MAX_FILE_SIZE ) );
 
-    fileContext.fileSize = fileSize;
     fileContext.pRxBlockBitmap = ( uint8_t * ) malloc( sizeof( uint8_t ) * OTA_MAX_BLOCK_BITMAP_SIZE );
 
     /* To non-deterministically select if the pRxBlockBitmap buffer was initialized by the
