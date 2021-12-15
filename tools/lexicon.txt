@@ -200,6 +200,7 @@ fixme
 fontname
 fontsize
 fopen
+freefilecontextmem
 freertos
 freertosipconfig
 freertos.org
@@ -295,6 +296,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
+jsondoc 
 lastupdatedat
 len
 lf
@@ -323,6 +325,7 @@ mfln
 min
 misra
 mockoseventsendthenstop
+modelparams
 modelparamtype
 modelparamtypestringindoc
 mqtt
@@ -412,6 +415,7 @@ otaerrcleanupdatafailed
 otaerrdowngradenotallowed
 otaerrfailedtodecodecbor
 otaerrfailedtoencodecbor
+otaerrfilesizeoverflow
 otaerrimagestatemismatch
 otaerrinitfiletransferfailed
 otaerrinvalidarg
@@ -887,6 +891,7 @@ validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
+verifyrequiredparamsextracted
 versionnumber
 vportfree
 vtasklist

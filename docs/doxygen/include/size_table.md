@@ -9,8 +9,8 @@
     </tr>
     <tr>
         <td>ota.c</td>
-        <td><center>7.9K</center></td>
-        <td><center>7.1K</center></td>
+        <td><center>8.0K</center></td>
+        <td><center>7.2K</center></td>
     </tr>
     <tr>
         <td>ota_interface.c</td>
