@@ -284,6 +284,18 @@ OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext )
     return status;
 }
 
+OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext )
+{
+    OtaPalStatus_t status;
+
+    /* status must have values of OtaPalStatus_t. */
+    __CPROVER_assume( status <= UINT32_MAX );
+
+    __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
+
+    return status;
+}
+
 OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t err;

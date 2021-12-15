@@ -104,5 +104,8 @@ int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
 /* Stub to close a file. */
 OtaPalStatus_t closeFilePalStub( OtaFileContext_t * const pFileContext );
 
+/* Stub to create a file. */
+OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext );
+
 /* Stub to request a fileblock from the Data plane. */
 OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx );
