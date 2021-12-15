@@ -166,6 +166,7 @@ errno
 errornumber
 establishconnection
 ethernet
+eventdata
 eventid
 eventmsg
 ewouldblock
@@ -174,6 +175,7 @@ executionnumber
 expectedstatus
 expectedtype
 extractandstorearray
+extractparameter
 failedwithval
 faqmem
 fclose
@@ -198,6 +200,7 @@ fixme
 fontname
 fontsize
 fopen
+freefilecontextmem
 freertos
 freertosipconfig
 freertos.org
@@ -219,6 +222,7 @@ getpacketsqueued
 getpacketsreceived
 getplatformimagestate
 github
+handlecustomjob
 handledatafromhttpservice
 handlejobparsingerror
 handlenetworkerrors
@@ -260,6 +264,7 @@ init
 initdocmodel
 initfilehandler
 initfiletransfer
+initializeappbuffers
 initializelocalbuffers
 inout
 inprogress
@@ -291,6 +296,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
+jsondoc 
 lastupdatedat
 len
 lf
@@ -319,6 +325,7 @@ mfln
 min
 misra
 mockoseventsendthenstop
+modelparams
 modelparamtype
 modelparamtypestringindoc
 mqtt
@@ -408,6 +415,7 @@ otaerrcleanupdatafailed
 otaerrdowngradenotallowed
 otaerrfailedtodecodecbor
 otaerrfailedtoencodecbor
+otaerrfilesizeoverflow
 otaerrimagestatemismatch
 otaerrinitfiletransferfailed
 otaerrinvalidarg
@@ -442,6 +450,7 @@ otaimagestatetesting
 otaimagestateunknown
 otainterface
 otainterfaces
+otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
 otajobeventparsecustomjob
@@ -603,6 +612,7 @@ pjobtopicnotifynext
 pjson
 pjsondoc
 pjsonexpectedparams
+pjsonsize
 pkey
 plaintext
 platforminselftest
@@ -760,6 +770,7 @@ serverinfo
 setcontrolinterface
 setdatainterface
 setimagestate
+setimagestatewithreason
 setplatformimagestate
 shutdownhandler
 sig
@@ -864,6 +875,7 @@ updatedby
 updatefilepath
 updatefilepathsize
 updatejobstatus
+updatejobstatusfromimagestate
 updaterversion
 updateurl
 updateurlmaxsize
@@ -879,6 +891,7 @@ validatejson
 validateupdateversion
 valuelength
 verifyactivejobstatus
+verifyrequiredparamsextracted
 versionnumber
 vportfree
 vtasklist
