@@ -3302,13 +3302,8 @@ void test_OTA_packetsProcessedOverflow()
 
     processEntireQueue();
 
-    receiveAndProcessOtaEvent();
-
-    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsProcessed );
-
     /* OTA agent should complete the update and go back to waiting for job state. */
-
-    TEST_ASSERT_EQUAL( OtaErrNone, processDataHandler( eventBuffers ) );
+    receiveAndProcessOtaEvent();
 
     /* Check if received complete file. */
     for( idx = 0; idx < OTA_TEST_FILE_SIZE; ++idx )
