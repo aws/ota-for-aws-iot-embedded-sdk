@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td><b>Total estimates</b></td>
-        <td><b><center>12.0K</center></b></td>
-        <td><b><center>10.9K</center></b></td>
+        <td><b><center>12.1K</center></b></td>
+        <td><b><center>11.0K</center></b></td>
     </tr>
 </table>

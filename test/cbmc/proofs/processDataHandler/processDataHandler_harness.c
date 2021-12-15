@@ -110,7 +110,6 @@ void processDataHandler_harness()
     /* The fileType and otaPacketsProcessed cannot exceed the INT32_MAX
      * and UINT32_MAX respectively. */
     __CPROVER_assume( otaAgent.fileContext.fileType <= INT32_MAX );
-    __CPROVER_assume( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX );
 
     /* Initialize the interface functions. */
     otaInterface.pal.setPlatformImageState = setImageState;
