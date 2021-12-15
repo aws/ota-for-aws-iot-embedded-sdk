@@ -411,25 +411,6 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
-OtaErr_t mockDataInterfaceDecodeFileBlock( const uint8_t * pMessageBuffer,
-                                           size_t messageSize,
-                                           int32_t * pFileId,
-                                           int32_t * pBlockId,
-                                           int32_t * pBlockSize,
-                                           uint8_t ** pPayload,
-                                           size_t * pPayloadSize )
-{
-    ( void ) pMessageBuffer;
-    ( void ) messageSize;
-    ( void ) pFileId;
-    ( void ) pBlockId;
-    ( void ) pBlockSize;
-    ( void ) pPayload;
-    ( void ) pPayloadSize;
-
-    return OtaErrNone;
-}
-
 OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
 {
     ( void ) unused;
