@@ -1216,8 +1216,11 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         dataHandlerCleanup();
 
-        /* Last file block processed, increment the statistics. */
-        otaAgent.statistics.otaPacketsProcessed++;
+        if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
+        {
+            /* Last file block processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsProcessed++;
+        }
 
         /* Let main application know that update is complete */
         otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
@@ -1245,8 +1248,11 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     {
         if( result == IngestResultAccepted_Continue )
         {
-            /* File block processed, increment the statistics. */
-            otaAgent.statistics.otaPacketsProcessed++;
+            if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
+            {
+                /* Last file block processed, increment the statistics. */
+                otaAgent.statistics.otaPacketsProcessed++;
+            }
 
             /* Reset the momentum counter since we received a good block. */
             otaAgent.requestMomentum = 0;
@@ -2365,24 +2371,32 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    if( ( updateJob == false ) && ( pUpdateFile != NULL ) && ( platformInSelftest() == false ) )
+    if( ( pUpdateFile != NULL ) && ( pUpdateFile->fileSize > OTA_MAX_FILE_SIZE ) )
+    {
+        err = OtaErrFileSizeOverflow;
+    }
+
+    if( ( err == OtaErrNone ) && ( updateJob == false ) && ( platformInSelftest() == false ) && ( pUpdateFile != NULL ) )
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
         numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
+        /* This conditional statement has been excluded from the coverage report because one of branches in the
+         * if conditions cannot be reached because it is not possible for the code to have
+         * pUpdateFile->blockBitmapMaxSize not equal to 0 and pUpdateFile->pRxBlockBitmap equal to NULL. */
+
+        /* LCOV_EXCL_START */
+        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
+        {
+            otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+        }
+
+        /* LCOV_EXCL_STOP */
+
         if( pUpdateFile->blockBitmapMaxSize == 0u )
         {
-            /* LCOV_EXCL_START */
-            if( pUpdateFile->pRxBlockBitmap != NULL )
-            {
-                /* Free any previously allocated bitmap. */
-                otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
-            }
-
-            /* LCOV_EXCL_STOP */
-
             pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
         }
         else
@@ -2424,16 +2438,13 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                 pUpdateFile = NULL;
             }
         }
-        else
-        {
-            /* Can't receive the image without enough memory. */
-            ( void ) otaClose( pUpdateFile );
-            pUpdateFile = NULL;
-        }
     }
 
-    if( err != OtaErrNone )
+    if( ( err != OtaErrNone ) || ( ( pUpdateFile != NULL ) && ( pUpdateFile->pRxBlockBitmap == NULL ) ) )
     {
+        otaClose( pUpdateFile );
+        pUpdateFile = NULL;
+
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
