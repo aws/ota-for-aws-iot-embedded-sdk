@@ -107,8 +107,7 @@ void processDataHandler_harness()
     /* Havoc otaAgent. */
     __CPROVER_havoc_object( &otaAgent );
 
-    /* The fileType and otaPacketsProcessed cannot exceed the INT32_MAX
-     * and UINT32_MAX respectively. */
+    /* The fileType is limited by the service to not exceed INT32_MAX */
     __CPROVER_assume( otaAgent.fileContext.fileType <= INT32_MAX );
 
     /* Initialize the interface functions. */
