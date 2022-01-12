@@ -3426,6 +3426,19 @@ OtaErr_t OTA_Resume( void )
     if( otaAgent.state != OtaAgentStateStopped )
     {
         /*
+         * Resume timers.
+         */
+        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
+                                                         "OtaSelfTestTimer",
+                                                         otaconfigSELF_TEST_RESPONSE_WAIT_MS,
+                                                         otaTimerCallback );
+
+        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                         "OtaRequestTimer",
+                                                         otaconfigFILE_REQUEST_WAIT_MS,
+                                                         otaTimerCallback );
+
+        /*
          * Send event to OTA agent task.
          */
         eventMsg.eventId = OtaAgentEventResume;
