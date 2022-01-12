@@ -3186,11 +3186,13 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 
-        /* Stop the request timer. */
+        /* Stop and delete the request timer. */
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaRequestTimer );
 
-        /* Stop the self-test timer. */
+        /* Stop and delete the self-test timer. */
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaSelfTestTimer );
 
         /*
          * Send shutdown signal to OTA Agent task.
@@ -3389,13 +3391,11 @@ OtaErr_t OTA_Suspend( void )
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
     {
-        /* Stop and delete the request timer. */
+        /* Stop the request timer. */
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
-        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaRequestTimer );
 
-        /* Stop and delete the self-test timer. */
+        /* Stop the self-test timer. */
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
-        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaSelfTestTimer );
 
         /*
          * Send event to OTA agent task.
