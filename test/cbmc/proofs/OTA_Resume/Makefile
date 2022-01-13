@@ -8,6 +8,7 @@ PROOF_UID = OTA_Resume_harness
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/source/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
