@@ -26,6 +26,9 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "stubs.h"
+
+extern OtaAgentContext_t otaAgent;
 
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 {
@@ -36,5 +39,11 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 
 void OTA_Resume_harness()
 {
+    OtaInterfaces_t otaInterface;
+
+    /* Initialize os timers. */
+    otaInterface.os.timer.start = startTimerStub;
+    otaAgent.pOtaInterface = &otaInterface;
+
     OTA_Resume();
 }
