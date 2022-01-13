@@ -13,6 +13,8 @@ INCLUDES += -I$(SRCDIR)/test/cbmc/include/
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
+DEFINES += -Dstatic=""
+
 NONDET_STATIC += "--nondet-static"
 
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
