@@ -304,3 +304,16 @@ OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx )
 
     return err;
 }
+
+OtaOsStatus_t deleteTimerStub( OtaTimerId_t otaTimerId )
+{
+    OtaOsStatus_t status;
+
+    /* status must have values only from the OtaOsStatus_t enum. */
+    __CPROVER_assume( ( status >= OtaOsSuccess ) && ( status <= OtaOsTimerDeleteFailed ) );
+
+    __CPROVER_assert( ( otaTimerId == OtaSelfTestTimer ) || ( otaTimerId == OtaRequestTimer ),
+                      "Error: Expected otaTimerId to be either OtaSelfTestTimer or OtaRequestTimer." );
+
+    return status;
+}

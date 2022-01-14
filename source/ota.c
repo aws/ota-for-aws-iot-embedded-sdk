@@ -3186,6 +3186,14 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 
+        /* Stop and delete the request timer. */
+        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaRequestTimer );
+
+        /* Stop and delete the self-test timer. */
+        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaSelfTestTimer );
+
         /*
          * Send shutdown signal to OTA Agent task.
          */
@@ -3386,6 +3394,9 @@ OtaErr_t OTA_Suspend( void )
         /* Stop the request timer. */
         ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
 
+        /* Stop the self-test timer. */
+        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+
         /*
          * Send event to OTA agent task.
          */
@@ -3416,6 +3427,19 @@ OtaErr_t OTA_Resume( void )
     /* Check if OTA Agent is running. */
     if( otaAgent.state != OtaAgentStateStopped )
     {
+        /*
+         * Resume timers.
+         */
+        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
+                                                         "OtaSelfTestTimer",
+                                                         otaconfigSELF_TEST_RESPONSE_WAIT_MS,
+                                                         otaTimerCallback );
+
+        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
+                                                         "OtaRequestTimer",
+                                                         otaconfigFILE_REQUEST_WAIT_MS,
+                                                         otaTimerCallback );
+
         /*
          * Send event to OTA agent task.
          */

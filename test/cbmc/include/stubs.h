@@ -109,3 +109,6 @@ OtaPalStatus_t createFilePalStub( OtaFileContext_t * const pFileContext );
 
 /* Stub to request a fileblock from the Data plane. */
 OtaErr_t requestFileBlockStub( OtaAgentContext_t * pAgentCtx );
+
+/* Stub to delete timer. */
+OtaOsStatus_t deleteTimerStub( OtaTimerId_t otaTimerId );

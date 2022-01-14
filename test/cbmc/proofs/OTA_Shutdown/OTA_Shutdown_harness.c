@@ -26,6 +26,7 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "stubs.h"
 
 extern OtaAgentContext_t otaAgent;
 
@@ -34,8 +35,15 @@ void OTA_Shutdown_harness()
     OtaState_t state;
     uint32_t ticksToWait;
     uint8_t unsubscribeFlag;
+    OtaInterfaces_t otaInterface;
 
     otaAgent.state = state;
+
+    /* Initialize os timers functions. */
+    otaInterface.os.timer.stop = stopTimerStub;
+    otaInterface.os.timer.delete = deleteTimerStub;
+
+    otaAgent.pOtaInterface = &otaInterface;
 
     /* This assumption is required to have an upper bound on the unwinding of while loop in
      * OTA_Shutdown. This does not model the exact behavior of the code since the limitation of CBMC
