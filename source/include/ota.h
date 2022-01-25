@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -99,8 +99,7 @@ typedef enum OtaErr
     OtaErrUserAbort,              /*!< @brief User aborted the active OTA. */
     OtaErrFailedToEncodeCbor,     /*!< @brief Failed to encode CBOR object for requesting data block from streaming service. */
     OtaErrFailedToDecodeCbor,     /*!< @brief Failed to decode CBOR object from streaming service response. */
-    OtaErrActivateFailed,         /*!< @brief Failed to activate the new image. */
-    OtaErrFileSizeOverflow        /*!< @brief Firmware file size greater than the max allowed size. */
+    OtaErrActivateFailed          /*!< @brief Failed to activate the new image. */
 } OtaErr_t;
 
 /**
@@ -172,6 +171,7 @@ typedef enum OtaJobEvent
     OtaJobEventParseCustomJob = 5, /*!< @brief OTA event for parsing custom job document. */
     OtaJobEventReceivedJob = 6,    /*!< @brief OTA event when a new valid AFT-OTA job is received. */
     OtaJobEventUpdateComplete = 7, /*!< @brief OTA event when the update is completed. */
+    OtaJobEventNoActiveJob = 8,    /*!< @brief OTA event when no active job is pending. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
