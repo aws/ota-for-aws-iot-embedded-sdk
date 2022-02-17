@@ -1157,9 +1157,6 @@ static void dataHandlerCleanup( void )
                    "event=%d",
                    eventMsg.eventId ) );
     }
-
-    /* Clear any remaining string memory holding the job name since this job is done. */
-    ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 }
 
 static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
@@ -1224,6 +1221,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         /* Let main application know that update is complete */
         otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
+
+        /* Clear any remaining string memory holding the job name since this job is done. */
+        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
     else if( result < IngestResultFileComplete )
     {
@@ -1243,6 +1243,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         /* Let main application know activate event. */
         otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
+
+        /* Clear any remaining string memory holding the job name since this job is done. */
+        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
     else
     {
