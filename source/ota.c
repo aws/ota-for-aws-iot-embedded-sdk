@@ -2733,7 +2733,7 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Free the payload if it's dynamically allocated by us. */
-    if( eIngestResult != IngestResultNullInput &&
+    if( ( eIngestResult != IngestResultNullInput ) &&
         ( otaAgent.fileContext.decodeMemMaxSize == 0u ) &&
         ( pPayload != NULL ) )
     {
