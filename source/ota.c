@@ -115,14 +115,12 @@ static OtaDataInterface_t otaDataInterface;
  * the file transfer and return the result and any available details to the caller.
  *
  * @param[in] pFileContext Information of file to be streamed.
- * @param[in] pRawMsg Raw job document.
- * @param[in] messageSize Length of document.
+ * @param[in] pEventData The event data containing the job document.
  * @param[in] pCloseResult Result of closing file in PAL.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                       const uint8_t * pRawMsg,
-                                       uint32_t messageSize,
+                                       const OtaEventData_t * pEventData,
                                        OtaPalStatus_t * pCloseResult );
 
 /**
@@ -1157,9 +1155,6 @@ static void dataHandlerCleanup( void )
                    "event=%d",
                    eventMsg.eventId ) );
     }
-
-    /* Clear any remaining string memory holding the job name since this job is done. */
-    ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
 }
 
 static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
@@ -1180,17 +1175,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
     /* Ingest data blocks received. */
-    if( pEventData != NULL )
-    {
-        result = ingestDataBlock( pFileContext,
-                                  pEventData->data,
-                                  pEventData->dataLength,
-                                  &closeResult );
-    }
-    else
-    {
-        result = IngestResultNullInput;
-    }
+    result = ingestDataBlock( pFileContext,
+                              pEventData,
+                              &closeResult );
 
     if( result == IngestResultFileComplete )
     {
@@ -1224,6 +1211,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         /* Let main application know that update is complete */
         otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
+
+        /* Clear any remaining string memory holding the job name since this job is done. */
+        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
     else if( result < IngestResultFileComplete )
     {
@@ -1243,6 +1233,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         /* Let main application know activate event. */
         otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
+
+        /* Clear any remaining string memory holding the job name since this job is done. */
+        ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
     else
     {
@@ -2701,8 +2694,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
 /* Called when the OTA agent receives a file data block message. */
 
 static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                       const uint8_t * pRawMsg,
-                                       uint32_t messageSize,
+                                       const OtaEventData_t * pEventData,
                                        OtaPalStatus_t * pCloseResult )
 {
     IngestResult_t eIngestResult = IngestResultUninitialized;
@@ -2716,9 +2708,17 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     assert( pFileContext != NULL );
     assert( pCloseResult != NULL );
 
+    if( pEventData == NULL )
+    {
+        eIngestResult = IngestResultNullInput;
+    }
+
     /* Decode the received data block. */
     /* If we have a block bitmap available then process the message. */
-    eIngestResult = decodeAndStoreDataBlock( pFileContext, pRawMsg, messageSize, &pPayload, &uBlockSize, &uBlockIndex );
+    if( eIngestResult == IngestResultUninitialized )
+    {
+        eIngestResult = decodeAndStoreDataBlock( pFileContext, pEventData->data, pEventData->dataLength, &pPayload, &uBlockSize, &uBlockIndex );
+    }
 
     /* Validate the data block and process it to store the information.*/
     if( eIngestResult == IngestResultUninitialized )
@@ -2733,7 +2733,8 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     }
 
     /* Free the payload if it's dynamically allocated by us. */
-    if( ( otaAgent.fileContext.decodeMemMaxSize == 0u ) &&
+    if( ( eIngestResult != IngestResultNullInput ) &&
+        ( otaAgent.fileContext.decodeMemMaxSize == 0u ) &&
         ( pPayload != NULL ) )
     {
         otaAgent.pOtaInterface->os.mem.free( pPayload );
