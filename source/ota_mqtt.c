@@ -628,7 +628,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
     /* Output a status update once in a while. */
-    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U )
+    if( ( received == 1 ) || ( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
     {
         payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
         payloadStringParts[ 3 ] = receivedString;
