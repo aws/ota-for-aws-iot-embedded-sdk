@@ -62,7 +62,7 @@ void handleJobParsingError_harness()
     __CPROVER_assume( err != OtaJobParseErrNone );
 
     /* Preconditions. */
-    otaAgent.OtaAppCallback = otaAppCallback;
+    otaAgent.OtaAppCallback = otaAppCallbackStub;
     otaControlInterface.updateJobStatus = updateJobStatusStub;
 
     handleJobParsingError( &fileContext, err );
