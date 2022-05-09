@@ -63,5 +63,8 @@ void handleJobParsingError_harness()
 
     otaControlInterface.updateJobStatus = updateJobStatusStub;
 
+    /* Preconditions. */
+    otaAgent.OtaAppCallback = otaAppCallbackStub;
+
     handleJobParsingError( &fileContext, err );
 }
