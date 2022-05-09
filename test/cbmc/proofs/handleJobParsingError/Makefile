@@ -22,7 +22,7 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 REMOVE_FUNCTION_BODY += otaClose
 
 RESTRICT_FUNCTION_POINTER = handleJobParsingError.function_pointer_call.1/updateJobStatusStub
-RESTRICT_FUNCTION_POINTER += handleJobParsingError.function_pointer_call.1/otaAppCallbackStub
+RESTRICT_FUNCTION_POINTER += handleJobParsingError.function_pointer_call.2/otaAppCallbackStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
