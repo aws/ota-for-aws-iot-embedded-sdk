@@ -2238,6 +2238,10 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
             LogInfo( ( "No active job available in received job document: "
                        "OtaJobParseErr_t=%s",
                        OTA_JobParse_strerror( err ) ) );
+
+            /* Callback when no active job is available to be processed. */
+            otaAgent.OtaAppCallback( OtaJobEventNoActiveJob, NULL );
+
             break;
 
         default:
