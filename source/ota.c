@@ -1237,21 +1237,20 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         /* Clear any remaining string memory holding the job name since this job is done. */
         ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
     }
-    else
+    else if( result == IngestResultAccepted_Continue )
     {
-        if( result == IngestResultAccepted_Continue )
-        {
-            if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
-            {
-                /* Last file block processed, increment the statistics. */
-                otaAgent.statistics.otaPacketsProcessed++;
-            }
+        /* Ignore duplicate packets and only count valid packets. */
 
-            /* Reset the momentum counter since we received a good block. */
-            otaAgent.requestMomentum = 0;
-            /* We're actively receiving a file so update the job status as needed. */
-            err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
+        if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
+        {
+            /* Last file block processed, increment the statistics. */
+            otaAgent.statistics.otaPacketsProcessed++;
         }
+
+        /* Reset the momentum counter since we received a good block. */
+        otaAgent.requestMomentum = 0;
+        /* We're actively receiving a file so update the job status as needed. */
+        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusInProgress, JobReasonReceiving, 0 );
 
         if( otaAgent.numOfBlocksToReceive > 1U )
         {
