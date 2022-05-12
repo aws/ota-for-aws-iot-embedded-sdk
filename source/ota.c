@@ -1239,8 +1239,6 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
     else if( result == IngestResultAccepted_Continue )
     {
-        /* Ignore duplicate packets and only count valid packets. */
-
         if( otaAgent.statistics.otaPacketsProcessed < UINT32_MAX )
         {
             /* Last file block processed, increment the statistics. */
@@ -1268,6 +1266,10 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
                 LogWarn( ( "Failed to trigger requesting the next block: Unable to signal event=%d", eventMsg.eventId ) );
             }
         }
+    }
+    else
+    {
+        /* Ignore duplicate packets. */
     }
 
     /* Application callback for event processed. */
