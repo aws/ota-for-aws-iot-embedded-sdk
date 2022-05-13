@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.1.0
+ * AWS IoT Over-the-air Update v3.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -47,6 +47,10 @@ void selfTestTimerCallback_harness()
     uint32_t timeout;
 
     pTimerName = ( const char * ) malloc( thingNameSize * sizeof( char ) );
+
+    /* OtaStartTimer functions requires the pTimerName and otaCallback not
+     * to be NULL. */
+    __CPROVER_assume( pTimerName != NULL );
 
     /* otaTimerId can only have values of OtaTimerId_t enumeration. */
     __CPROVER_assume( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer );

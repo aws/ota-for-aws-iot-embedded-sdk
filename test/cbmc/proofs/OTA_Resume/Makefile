@@ -8,13 +8,19 @@ PROOF_UID = OTA_Resume_harness
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/source/
+INCLUDES += -I$(SRCDIR)/test/cbmc/include/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
+DEFINES += -Dstatic=""
+
 NONDET_STATIC += "--nondet-static"
 
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
+
+RESTRICT_FUNCTION_POINTER += OTA_Resume.function_pointer_call.1/startTimerStub
+RESTRICT_FUNCTION_POINTER += OTA_Resume.function_pointer_call.2/startTimerStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

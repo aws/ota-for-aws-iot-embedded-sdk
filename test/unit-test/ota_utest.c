@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.1.0
+ * AWS IoT Over-the-air Update v3.3.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -47,6 +47,7 @@
 #include "utest_helpers.h"
 
 /* Job document for testing. */
+#define OTA_FILE_SIZE_OVERFLOW            "4294963220"
 #define OTA_TEST_FILE_SIZE                10240
 #define OTA_TEST_FILE_NUM_BLOCKS          ( OTA_TEST_FILE_SIZE / OTA_FILE_BLOCK_SIZE + 1 )
 #define OTA_TEST_DUPLICATE_NUM_BLOCKS     3
@@ -70,6 +71,7 @@
 #define JOB_DOC_MISSING_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_INVALID_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLength\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_DIFFERENT_FILE_TYPE       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"fileType\":2,\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_FILESIZE_OVERFLOW         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_FILE_SIZE_OVERFLOW ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE         100
@@ -3202,4 +3204,91 @@ void test_verifyActiveJobStatus_NullCleanupInterface()
     /* The verifyActiveJobStatus function is expected to safely avoid calling
      * the cleanup function if it is not defined. */
     TEST_ASSERT_EQUAL( OtaJobParseErrNone, verifyActiveJobStatus( &fileContext, &pFinalFile, &shouldUpdate ) );
+}
+
+/* This test is to check if the library handles the situation where the size of the
+ * file downloaded using OTA is greater than the maximum size supported by the library. */
+void test_OTA_overflowFileSize()
+{
+    pOtaJobDoc = JOB_DOC_FILESIZE_OVERFLOW;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/* This test is to check if the number of ota packets received by the device does not
+ * exceed the maximum limit of its datatype. */
+void test_OTA_packetsProcessedOverflow()
+{
+    OtaEventMsg_t otaEvent;
+    OtaEventData_t eventBuffers[ OTA_TEST_FILE_NUM_BLOCKS * OTA_TEST_DUPLICATE_NUM_BLOCKS ];
+    uint8_t pFileBlock[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t pStreamingMessage[ OTA_FILE_BLOCK_SIZE * 2 ] = { 0 };
+    size_t streamingMessageSize = 0;
+    int remainingBytes = OTA_TEST_FILE_SIZE;
+    int idx = 0;
+    int dupIdx = 0;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    /* Set the event send interface to a mock function that allows events to be sent continuously
+     * because we're receiving multiple blocks in this test. */
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Fill the file block. */
+    for( idx = 0; idx < ( int ) sizeof( pFileBlock ); idx++ )
+    {
+        pFileBlock[ idx ] = idx % UINT8_MAX;
+    }
+
+    /* Send blocks. */
+    idx = 0;
+
+    while( remainingBytes >= 0 )
+    {
+        /* Intentionally send duplicate blocks to test if we are handling it correctly. */
+        for( dupIdx = 0; dupIdx < OTA_TEST_DUPLICATE_NUM_BLOCKS; dupIdx++ )
+        {
+            /* Construct a AWS IoT streaming message. */
+            createOtaStreamingMessage(
+                pStreamingMessage,
+                sizeof( pStreamingMessage ),
+                idx,
+                pFileBlock,
+                min( ( uint32_t ) remainingBytes, OTA_FILE_BLOCK_SIZE ),
+                &streamingMessageSize,
+                true );
+
+            otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+            otaEvent.pEventData = &eventBuffers[ idx * OTA_TEST_DUPLICATE_NUM_BLOCKS + dupIdx ];
+            memcpy( otaEvent.pEventData->data, pStreamingMessage, streamingMessageSize );
+            otaEvent.pEventData->dataLength = streamingMessageSize;
+            OTA_SignalEvent( &otaEvent );
+        }
+
+        idx++;
+        remainingBytes -= OTA_FILE_BLOCK_SIZE;
+    }
+
+    /* Process all of the events for receiving an MQTT message. */
+    TEST_ASSERT_EQUAL( 0, otaAgent.statistics.otaPacketsProcessed );
+
+    otaAgent.statistics.otaPacketsProcessed = UINT32_MAX;
+
+    processEntireQueue();
+
+    /* OTA agent should complete the update and go back to waiting for job state. */
+    receiveAndProcessOtaEvent();
+
+    /* Check if received complete file. */
+    for( idx = 0; idx < OTA_TEST_FILE_SIZE; ++idx )
+    {
+        TEST_ASSERT_EQUAL( pFileBlock[ idx % sizeof( pFileBlock ) ], pOtaFileBuffer[ idx ] );
+    }
 }

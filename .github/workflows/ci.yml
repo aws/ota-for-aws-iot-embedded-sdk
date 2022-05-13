@@ -16,10 +16,9 @@ jobs:
     steps:
       - name: Clone This Repo
         uses: actions/checkout@v2
-        with:
-          submodules: true
       - name: Check warnings
         run: |
+          git submodule update --init --recursive --checkout --depth 1
           cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_C_FLAGS='-Wall -Wextra -Werror -DLOG_LEVEL=LOG_LEVEL_DEBUG'
           cmake --build build
@@ -40,10 +39,9 @@ jobs:
     steps:
       - name: Clone This Repo
         uses: actions/checkout@v2
-        with:
-          submodules: true
       - name: Build
         run: |
+          git submodule update --init --recursive --checkout --depth 1
           cmake -S test -B build -DCMAKE_BUILD_TYPE=Debug
           cmake --build build
       - name: Test
@@ -57,10 +55,9 @@ jobs:
     steps:
       - name: Clone This Repo
         uses: actions/checkout@v2
-        with:
-          submodules: true
       - name: Generate Build Files
         run: |
+          git submodule update --init --recursive --checkout --depth 1
           sudo apt-get install -y lcov
           cmake -S test -B build \
           -DCMAKE_BUILD_TYPE=Debug \
@@ -143,8 +140,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-            submodules: 'recursive'
+      - name: Clone submodules
+        run: git submodule update --init --recursive --checkout --depth 1
       - name: Install Python3
         uses: actions/setup-python@v2
         with:

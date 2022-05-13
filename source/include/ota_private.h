@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.1.0
+ * AWS IoT Over-the-air Update v3.3.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -65,7 +65,7 @@
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
 #define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
-
+#define OTA_MAX_FILE_SIZE            UINT32_MAX - OTA_FILE_BLOCK_SIZE + 1                 /*!< @brief The maximum file size supported by the library. */
 /** @} */
 
 /**
@@ -380,37 +380,33 @@ typedef struct
  */
 typedef struct OtaFileContext
 {
-    uint8_t * pFilePath;          /*!< @brief Update file pathname. */
-    uint16_t filePathMaxSize;     /*!< @brief Maximum size of the update file path */
-    #if defined( WIN32 ) || defined( __linux__ )
-        FILE * pFile;             /*!< @brief File type is stdio FILE structure after file is open for write. */
-    #else
-        uint8_t * pFile;          /*!< @brief File type is RAM/Flash image pointer after file is open for write. */
-    #endif
-    uint32_t fileSize;            /*!< @brief The size of the file in bytes. */
-    uint32_t blocksRemaining;     /*!< @brief How many blocks remain to be received (a code optimization). */
-    uint32_t fileAttributes;      /*!< @brief Flags specific to the file being received (e.g. secure, bundle, archive). */
-    uint32_t serverFileID;        /*!< @brief The file is referenced by this numeric ID in the OTA job. */
-    uint8_t * pJobName;           /*!< @brief The job name associated with this file from the job service. */
-    uint16_t jobNameMaxSize;      /*!< @brief Maximum size of the job name. */
-    uint8_t * pStreamName;        /*!< @brief The stream associated with this file from the OTA service. */
-    uint16_t streamNameMaxSize;   /*!< @brief Maximum size of the stream name. */
-    uint8_t * pRxBlockBitmap;     /*!< @brief Bitmap of blocks received (for deduplicating and missing block request). */
-    uint16_t blockBitmapMaxSize;  /*!< @brief Maximum size of the block bitmap. */
-    uint8_t * pCertFilepath;      /*!< @brief Pathname of the certificate file used to validate the receive file. */
-    uint16_t certFilePathMaxSize; /*!< @brief Maximum certificate path size. */
-    uint8_t * pUpdateUrlPath;     /*!< @brief Url for the file. */
-    uint16_t updateUrlMaxSize;    /*!< @brief Maximum size of the url. */
-    uint8_t * pAuthScheme;        /*!< @brief Authorization scheme. */
-    uint16_t authSchemeMaxSize;   /*!< @brief Maximum size of the auth scheme. */
-    uint32_t updaterVersion;      /*!< @brief Used by OTA self-test detection, the version of Firmware that did the update. */
-    bool isInSelfTest;            /*!< @brief True if the job is in self test mode. */
-    uint8_t * pProtocols;         /*!< @brief Authorization scheme. */
-    uint16_t protocolMaxSize;     /*!< @brief Maximum size of the  supported protocols string. */
-    uint8_t * pDecodeMem;         /*!< @brief Decode memory. */
-    uint32_t decodeMemMaxSize;    /*!< @brief Maximum size of the decode memory. */
-    uint32_t fileType;            /*!< @brief The file type id set when creating the OTA job. */
-    Sig256_t * pSignature;        /*!< @brief Pointer to the file's signature structure. */
+    uint8_t * pFilePath;            /*!< @brief Update file pathname. */
+    uint16_t filePathMaxSize;       /*!< @brief Maximum size of the update file path */
+    otaconfigOTA_FILE_TYPE * pFile; /*!< @brief File type after file is open for write. */
+    uint32_t fileSize;              /*!< @brief The size of the file in bytes. */
+    uint32_t blocksRemaining;       /*!< @brief How many blocks remain to be received (a code optimization). */
+    uint32_t fileAttributes;        /*!< @brief Flags specific to the file being received (e.g. secure, bundle, archive). */
+    uint32_t serverFileID;          /*!< @brief The file is referenced by this numeric ID in the OTA job. */
+    uint8_t * pJobName;             /*!< @brief The job name associated with this file from the job service. */
+    uint16_t jobNameMaxSize;        /*!< @brief Maximum size of the job name. */
+    uint8_t * pStreamName;          /*!< @brief The stream associated with this file from the OTA service. */
+    uint16_t streamNameMaxSize;     /*!< @brief Maximum size of the stream name. */
+    uint8_t * pRxBlockBitmap;       /*!< @brief Bitmap of blocks received (for deduplicating and missing block request). */
+    uint16_t blockBitmapMaxSize;    /*!< @brief Maximum size of the block bitmap. */
+    uint8_t * pCertFilepath;        /*!< @brief Pathname of the certificate file used to validate the receive file. */
+    uint16_t certFilePathMaxSize;   /*!< @brief Maximum certificate path size. */
+    uint8_t * pUpdateUrlPath;       /*!< @brief Url for the file. */
+    uint16_t updateUrlMaxSize;      /*!< @brief Maximum size of the url. */
+    uint8_t * pAuthScheme;          /*!< @brief Authorization scheme. */
+    uint16_t authSchemeMaxSize;     /*!< @brief Maximum size of the auth scheme. */
+    uint32_t updaterVersion;        /*!< @brief Used by OTA self-test detection, the version of Firmware that did the update. */
+    bool isInSelfTest;              /*!< @brief True if the job is in self test mode. */
+    uint8_t * pProtocols;           /*!< @brief Authorization scheme. */
+    uint16_t protocolMaxSize;       /*!< @brief Maximum size of the  supported protocols string. */
+    uint8_t * pDecodeMem;           /*!< @brief Decode memory. */
+    uint32_t decodeMemMaxSize;      /*!< @brief Maximum size of the decode memory. */
+    uint32_t fileType;              /*!< @brief The file type id set when creating the OTA job. */
+    Sig256_t * pSignature;          /*!< @brief Pointer to the file's signature structure. */
 } OtaFileContext_t;
 
 /**
