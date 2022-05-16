@@ -119,7 +119,7 @@
  * @brief A composite cryptographic signature structure able to hold our largest supported signature.
  */
 
-#define kOTA_MaxSignatureSize           256 /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
+#define kOTA_MaxSignatureSize           384 /* Max bytes supported for a file signature (3072 bit RSA is 384 bytes). */
 
 /**
  *
