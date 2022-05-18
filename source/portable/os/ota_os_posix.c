@@ -53,7 +53,7 @@
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
-/* Time convertion */
+/* Time conversion */
 #define OTA_TIME_MS_TO_S( ms )           ( ms / 1000 )
 #define OTA_TIME_MS_TO_NS( ms )          ( ms * 1000000 )
 #define OTA_TIME_MS_LESS_THAN_S( ms )    ( ms % 1000 )
