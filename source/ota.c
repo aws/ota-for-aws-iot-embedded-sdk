@@ -2154,9 +2154,18 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              bool * pUpdateJob )
 {
     OtaJobParseErr_t err = OtaJobParseErrNone;
+    char * pNullPos = NULL;
+
+    pNullPos = memchr( pFileContext->pJobName, '\0', sizeof( otaAgent.pActiveJobName ) );
 
     /* Validate the job document parameters. */
-    if( pFileContext->fileSize == 0U )
+    if( pNullPos == NULL )
+    {
+        LogError( ( "Parameter check failed: pFileContext->pJobName is NOT a NULL terminated string, \
+                    or it's too long to store." ) );
+        err = OtaJobParseErrNullJob;
+    }
+    else if( pFileContext->fileSize == 0U )
     {
         LogError( ( "Parameter check failed: pFileContext->fileSize is 0: File size should be > 0." ) );
         err = OtaJobParseErrZeroFileSize;
@@ -2251,7 +2260,7 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
             if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
             {
                 /* Assume control of the job name from the context. */
-                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE );
+                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE - 1 );
 
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                               JobStatusFailedWithVal,

@@ -140,6 +140,9 @@ static const int otaDefaultWait = 0;
 /* Flag to unsubscribe to topics after ota shutdown. */
 static const uint8_t unsubscribeFlag = 1;
 
+/* Larger job name buffer to simulate if local buffer is larger than buffer in agent context. */
+static uint8_t pLargerJobNameBuffer[ OTA_JOB_ID_MAX_SIZE * 2 ];
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -3302,6 +3305,25 @@ void test_OTA_jobIdMaxLength()
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/* Enlarge job name and size in doc param to simulate if the size of pJobNameBuffer in ota.c
+ * and pActiveJobName in OtaAgentContext_t is different. */
+void test_OTA_jobBufferLargerThanpActiveJobName()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_JOB_ID_LEN_MAX;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Initialize JOB Id buffer .*/
+    otaAgent.fileContext.pJobName = pLargerJobNameBuffer;
+    otaAgent.fileContext.jobNameMaxSize = ( uint16_t ) sizeof( pLargerJobNameBuffer );
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
