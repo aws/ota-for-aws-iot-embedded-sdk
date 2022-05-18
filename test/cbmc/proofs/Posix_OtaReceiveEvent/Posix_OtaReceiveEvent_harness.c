@@ -44,6 +44,9 @@ void Posix_OtaReceiveEvent_harness()
      * Posix_OtaReceiveEvent. */
     __CPROVER_assume( pEventMsg != NULL );
 
+    /* Set timeout less than UINT16_MAX (18 years). */
+    __CPROVER_assume( timeout <= UINT16_MAX );
+
     Posix_OtaReceiveEvent( pEventCtx, pEventMsg, timeout );
 
     free( pEventMsg );
