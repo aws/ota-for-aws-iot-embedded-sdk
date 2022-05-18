@@ -53,6 +53,11 @@
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
+/* Time convertion */
+#define OTA_TIME_MS_TO_S( ms )           ( ms / 1000 )
+#define OTA_TIME_MS_TO_NS( ms )          ( ms * 1000000 )
+#define OTA_TIME_MS_LESS_THAN_S( ms )    ( ms % 1000 )
+
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
 
@@ -117,6 +122,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                                   unsigned int timeout )
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
+    struct timespec ts = { 0 };
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -124,7 +130,11 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     /* Send the event to OTA event queue.*/
     errno = 0;
 
-    if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
+    /* Set send timeout. */
+    ts.tv_sec = time( NULL ) + OTA_TIME_MS_TO_S( timeout );
+    ts.tv_nsec = 0 + OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
+
+    if( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 )
     {
         otaOsStatus = OtaOsEventQueueSendFailed;
 
@@ -150,6 +160,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
+    struct timespec ts = { 0 };
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -157,16 +168,27 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     /* Receive the next event from OTA event queue.*/
     errno = 0;
 
-    if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
+    /* Set receive timeout. */
+    ts.tv_sec = time( NULL ) + OTA_TIME_MS_TO_S( timeout );
+    ts.tv_nsec = 0 + OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
+
+    if( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 )
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        LogError( ( "Failed to receive OTA Event: "
-                    "mq_reqeive returned error: "
-                    "OtaOsStatus_t=%i "
-                    ",errno=%s",
-                    otaOsStatus,
-                    strerror( errno ) ) );
+        if( errno == ETIMEDOUT )
+        {
+            LogDebug( ( "Failed to receive OTA Event before timeout" ) );
+        }
+        else
+        {
+            LogError( ( "Failed to receive OTA Event: "
+                        "mq_timedreceive returned error: "
+                        "OtaOsStatus_t=%i "
+                        ",errno=%s, errno=%d",
+                        otaOsStatus,
+                        strerror( errno ), errno ) );
+        }
     }
     else
     {
