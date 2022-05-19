@@ -123,6 +123,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     struct timespec ts = { 0 };
+    time_t currentTime = time( NULL );
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -134,9 +135,10 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) time( NULL ) )
+    /* Detect overflow. */
+    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) currentTime )
     {
-        ts.tv_sec += time( NULL );
+        ts.tv_sec += currentTime;
     }
 
     if( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 )
@@ -166,6 +168,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
     struct timespec ts = { 0 };
+    time_t currentTime = time( NULL );
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -177,9 +180,10 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) time( NULL ) )
+    /* Detect overflow. */
+    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) currentTime )
     {
-        ts.tv_sec += time( NULL );
+        ts.tv_sec += currentTime;
     }
 
     if( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 )
