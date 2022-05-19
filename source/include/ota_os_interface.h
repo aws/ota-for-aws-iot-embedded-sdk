@@ -148,7 +148,7 @@ typedef OtaOsStatus_t ( * OtaSendEvent_t )( OtaEventContext_t * pEventCtx,
  *
  * @param[pEventMsg]     Pointer to store message.
  *
- * @param[timeout]       The maximum amount of time the task should block.
+ * @param[timeout]       The maximum amount of time (msec) the task should block.
  *
  * @return               OtaOsStatus_t, OtaOsSuccess if success , other error code on failure.
  */

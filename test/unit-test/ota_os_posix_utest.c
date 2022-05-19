@@ -194,3 +194,29 @@ void test_OTA_posix_MemoryAllocAndFree( void )
 
     STDC_Free( buffer );
 }
+
+/**
+ * @brief Test that the event queue receive timeout.
+ */
+void test_OTA_posix_RecvEventTimeout( void )
+{
+    OtaEventMsg_t otaEventToRecv = { 0 };
+    OtaErr_t result = OtaErrUninitialized;
+    time_t recvTimeoutMs = 3000;
+    time_t timeBeforeTestSec = 0;
+    time_t timeAfterTestSec = 0;
+
+    result = event.init( event.pEventContext );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
+
+    timeBeforeTestSec = time( NULL );
+    result = event.recv( event.pEventContext, &otaEventToRecv, recvTimeoutMs );
+    TEST_ASSERT_EQUAL( OtaOsEventQueueReceiveFailed, result );
+    timeAfterTestSec = time( NULL );
+
+    /* The time may not accurate enough, so - 1 as buffer. */
+    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeAfterTestSec - timeBeforeTestSec );
+
+    result = event.deinit( event.pEventContext );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
+}
