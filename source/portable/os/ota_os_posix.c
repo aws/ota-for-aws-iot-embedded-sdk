@@ -132,11 +132,11 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 
     /* Set send timeout. */
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = time( NULL );
+    ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( ( INT32_MAX - ts.tv_sec ) >= OTA_TIME_MS_TO_S( timeout ) )
+    if( (uint64_t)( INT32_MAX - ts.tv_sec ) >= (uint64_t)time( NULL ) )
     {
-        ts.tv_sec += OTA_TIME_MS_TO_S( timeout );
+        ts.tv_sec += time( NULL );
     }
 
     if( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 )
@@ -175,11 +175,11 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
 
     /* Set receive timeout. */
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = time( NULL );
+    ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( ( INT32_MAX - ts.tv_sec ) >= OTA_TIME_MS_TO_S( timeout ) )
+    if( (uint64_t)( INT32_MAX - ts.tv_sec ) >= (uint64_t)time( NULL ) )
     {
-        ts.tv_sec += OTA_TIME_MS_TO_S( timeout );
+        ts.tv_sec += time( NULL );
     }
 
     if( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 )
