@@ -136,7 +136,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
     /* Detect overflow. */
-    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) currentTime )
+    if( ( currentTime > 0 ) && ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime )
     {
         ts.tv_sec += currentTime;
     }
@@ -181,7 +181,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
     /* Detect overflow. */
-    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) currentTime )
+    if( ( currentTime > 0 ) && ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime )
     {
         ts.tv_sec += currentTime;
     }
