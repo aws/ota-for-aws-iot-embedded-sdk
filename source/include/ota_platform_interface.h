@@ -192,7 +192,7 @@ typedef OtaPalStatus_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileCo
 /**
  * @brief Write a block of data to the specified file at the given offset.
  *
- * Note: This function is supposed to write a complete file block before returning. So the number of
+ * Note: This function must always write a complete file block before returning. So the number of
  * bytes written will be equal to the size of the file block. Exception only in case of last block
  * where the number of bytes written will be equal or less than the size of the file block.
  *
