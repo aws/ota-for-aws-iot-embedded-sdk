@@ -134,7 +134,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( (uint64_t)( INT32_MAX - ts.tv_sec ) >= (uint64_t)time( NULL ) )
+    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) time( NULL ) )
     {
         ts.tv_sec += time( NULL );
     }
@@ -177,7 +177,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
     ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
 
-    if( (uint64_t)( INT32_MAX - ts.tv_sec ) >= (uint64_t)time( NULL ) )
+    if( ( uint64_t ) ( INT32_MAX - ts.tv_sec ) >= ( uint64_t ) time( NULL ) )
     {
         ts.tv_sec += time( NULL );
     }
