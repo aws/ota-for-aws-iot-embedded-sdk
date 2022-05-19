@@ -33,8 +33,5 @@ void Posix_OtaSendEvent_harness()
     void * pEventMsg;
     unsigned int timeout;
 
-    /* Set timeout less than INT16_MAX (9 hrs). */
-    __CPROVER_assume( timeout <= INT16_MAX );
-
     Posix_OtaSendEvent( pEventCtx, pEventMsg, timeout );
 }
