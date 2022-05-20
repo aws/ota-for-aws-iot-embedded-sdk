@@ -24,7 +24,7 @@
     </tr>
     <tr>
         <td>ota_mqtt.c</td>
-        <td><center>2.3K</center></td>
+        <td><center>2.4K</center></td>
         <td><center>2.2K</center></td>
     </tr>
     <tr>
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td><b>Total estimates</b></td>
-        <td><b><center>12.2K</center></b></td>
+        <td><b><center>12.3K</center></b></td>
         <td><b><center>11.1K</center></b></td>
     </tr>
 </table>
