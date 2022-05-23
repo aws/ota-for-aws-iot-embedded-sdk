@@ -72,6 +72,7 @@
 #define JOB_DOC_INVALID_JOB_ID            "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdLength\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_DIFFERENT_FILE_TYPE       "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"fileType\":2,\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_FILESIZE_OVERFLOW         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_FILE_SIZE_OVERFLOW ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
+#define JOB_DOC_INVALID_JOB_ID_LEN_MAX    "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"InvalidJobIdExceedingAllowedJobIdLengthInvalidJobIdExceedingAllowedJobIdL\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 
 /* OTA application buffer size. */
 #define OTA_UPDATE_FILE_PATH_SIZE         100
@@ -138,6 +139,12 @@ static const int otaDefaultWait = 0;
 
 /* Flag to unsubscribe to topics after ota shutdown. */
 static const uint8_t unsubscribeFlag = 1;
+
+/* Larger job name buffer to simulate if local buffer is larger than buffer in agent context. */
+static uint8_t pLargerJobNameBuffer[ OTA_JOB_ID_MAX_SIZE * 2 ];
+
+/* A counter to record how many file blocks are received. */
+static int otaReceivedFileBlockNumber = 0;
 
 /* ========================================================================== */
 
@@ -429,6 +436,23 @@ OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
     ( void ) unused4;
 
     return OtaErrUpdateJobStatusFailed;
+}
+
+OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
+                                             OtaJobStatus_t status,
+                                             int32_t unused3,
+                                             int32_t unused4 )
+{
+    ( void ) unused1;
+    ( void ) unused3;
+    ( void ) unused4;
+
+    if( ( status == JobStatusInProgress ) || ( status == JobStatusSucceeded ) )
+    {
+        otaReceivedFileBlockNumber++;
+    }
+
+    return OtaErrNone;
 }
 
 OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
@@ -894,6 +918,8 @@ void setUp()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
     otaInterfaceDefault();
     otaAppBufferDefault();
+
+    otaReceivedFileBlockNumber = 0;
 }
 
 void tearDown()
@@ -2414,6 +2440,16 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
     test_OTA_ReceiveFileBlockCompleteMqtt();
 }
 
+void test_OTA_ReceiveFileBlockCompleteMqttCountUpdateJobCalledTime()
+{
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    otaControlInterface.updateJobStatus = mockControlInterfaceUpdateJobCount;
+    test_OTA_ReceiveFileBlockCompleteMqtt();
+
+    TEST_ASSERT_EQUAL( OTA_TEST_FILE_NUM_BLOCKS, otaReceivedFileBlockNumber );
+}
+
 void test_OTA_EventProcessingTask_ExitOnAbort()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -3301,4 +3337,38 @@ void test_OTA_packetsProcessedOverflow()
     {
         TEST_ASSERT_EQUAL( pFileBlock[ idx % sizeof( pFileBlock ) ], pOtaFileBuffer[ idx ] );
     }
+}
+
+/* This test is to check if the library handles the situation where the length of the
+ * job name downloaded using OTA is greater than the maximum size supported by the library. */
+void test_OTA_jobIdMaxLength()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_JOB_ID_LEN_MAX;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+/* Enlarge job name and size in doc param to simulate if the size of pJobNameBuffer in ota.c
+ * and pActiveJobName in OtaAgentContext_t is different. */
+void test_OTA_jobBufferLargerThanpActiveJobName()
+{
+    pOtaJobDoc = JOB_DOC_INVALID_JOB_ID_LEN_MAX;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    /* Initialize JOB Id buffer .*/
+    otaAgent.fileContext.pJobName = pLargerJobNameBuffer;
+    otaAgent.fileContext.jobNameMaxSize = ( uint16_t ) sizeof( pLargerJobNameBuffer );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
