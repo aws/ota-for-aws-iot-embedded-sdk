@@ -2581,7 +2581,7 @@ static IngestResult_t writeDataBlockToFile( OtaFileContext_t * pFileContext,
     else
     {
         /* Partially write is not an expected behavior. */
-        assert( (uint32_t)iBytesWritten == uBlockSize );
+        assert( ( uint32_t ) iBytesWritten == uBlockSize );
 
         /* Mark this block as received in our bitmap. */
         pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
