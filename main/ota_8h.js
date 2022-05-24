@@ -65,6 +65,7 @@ var ota_8h =
       [ "OtaJobEventParseCustomJob", "group__ota__enum__types.html#gga96a2e1f5cfad783897e805196eee39a7a8e314e0d83b5dcd572b08d9f205ab658", null ],
       [ "OtaJobEventReceivedJob", "group__ota__enum__types.html#gga96a2e1f5cfad783897e805196eee39a7a5cf84ad545b4e47c7bc2fe36b4b83fdd", null ],
       [ "OtaJobEventUpdateComplete", "group__ota__enum__types.html#gga96a2e1f5cfad783897e805196eee39a7a2ea5dedb25b574c14f379ae6b530dfff", null ],
+      [ "OtaJobEventNoActiveJob", "group__ota__enum__types.html#gga96a2e1f5cfad783897e805196eee39a7a2545ed736348e8d3f14746792ed40744", null ],
       [ "OtaLastJobEvent", "group__ota__enum__types.html#gga96a2e1f5cfad783897e805196eee39a7afd4ce3f42084241df27353d4f0e4c614", null ]
     ] ],
     [ "OtaJobStatus_t", "group__ota__enum__types.html#gabf6d6b1d2bca4c54f58bd622ca6242d0", [

@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91daaf2b849dfea35e098aa297d1049bee43":[12,12,55,8],
+"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91dab25b021cbb3b2c1187f08863e1783313":[12,12,55,7],
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91dadf717aab5a220c795405558a53dc6a96":[12,12,55,10],
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91dae9e3e3c82c09a3aea117b897f91f40b4":[12,12,55,3],
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91dafbb2d9ebcabfdb39b1dbe1d2976d82f6":[12,12,55,6],
