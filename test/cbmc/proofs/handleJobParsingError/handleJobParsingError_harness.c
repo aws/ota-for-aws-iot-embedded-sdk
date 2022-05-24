@@ -61,6 +61,8 @@ void handleJobParsingError_harness()
     /* handleJobParsingError can never be called if the parsing err is OtaJobParseErrNone. */
     __CPROVER_assume( err != OtaJobParseErrNone );
 
+    /* Preconditions. */
+    otaAgent.OtaAppCallback = otaAppCallbackStub;
     otaControlInterface.updateJobStatus = updateJobStatusStub;
 
     handleJobParsingError( &fileContext, err );

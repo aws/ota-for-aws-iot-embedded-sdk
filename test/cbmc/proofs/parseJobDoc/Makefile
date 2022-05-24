@@ -20,7 +20,7 @@ UNWINDSET += strlen.0:74
 
 REMOVE_FUNCTION_BODY += handleCustomJob
 
-RESTRICT_FUNCTION_POINTER += parseJobDoc.function_pointer_call.1/otaAppCallbackStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

@@ -19,8 +19,8 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 UNWINDSET += strlen.0:100
 UNWINDSET += strlen.1:100
 
-RESTRICT_FUNCTION_POINTER += handleCustomJob.function_pointer_call.1/otaAppCallbackStub
-RESTRICT_FUNCTION_POINTER += handleCustomJob.function_pointer_call.2/updateJobStatusStub
+RESTRICT_FUNCTION_POINTER += handleCustomJob.function_pointer_call.1/updateJobStatusStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
 REMOVE_FUNCTION_BODY += JSON_SearchConst
 

@@ -21,13 +21,11 @@ REMOVE_FUNCTION_BODY += dataHandlerCleanup
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
 
 RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.1/updateStatus 
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.2/otaAppCallback
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.3/setImageState
+RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.2/setImageState
+RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.3/updateStatus 
 RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.4/updateStatus 
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.5/otaAppCallback 
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.6/updateStatus 
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.7/start 
-RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.8/otaAppCallback 
+RESTRICT_FUNCTION_POINTER += processDataHandler.function_pointer_call.5/start 
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallback
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
