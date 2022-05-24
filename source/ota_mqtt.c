@@ -627,8 +627,9 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
-    /* Output a status update once in a while. */
-    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U )
+    /* Output a status update when receiving first file block to let user know the OTA job status
+     * more clearly. Then output a status update once in a while. */
+    if( ( received == 1 ) || ( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
     {
         payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
         payloadStringParts[ 3 ] = receivedString;

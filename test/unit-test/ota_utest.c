@@ -143,6 +143,9 @@ static const uint8_t unsubscribeFlag = 1;
 /* Larger job name buffer to simulate if local buffer is larger than buffer in agent context. */
 static uint8_t pLargerJobNameBuffer[ OTA_JOB_ID_MAX_SIZE * 2 ];
 
+/* A counter to record how many file blocks are received. */
+static int otaReceivedFileBlockNumber = 0;
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -433,6 +436,23 @@ OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
     ( void ) unused4;
 
     return OtaErrUpdateJobStatusFailed;
+}
+
+OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
+                                             OtaJobStatus_t status,
+                                             int32_t unused3,
+                                             int32_t unused4 )
+{
+    ( void ) unused1;
+    ( void ) unused3;
+    ( void ) unused4;
+
+    if( ( status == JobStatusInProgress ) || ( status == JobStatusSucceeded ) )
+    {
+        otaReceivedFileBlockNumber++;
+    }
+
+    return OtaErrNone;
 }
 
 OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
@@ -898,6 +918,8 @@ void setUp()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
     otaInterfaceDefault();
     otaAppBufferDefault();
+
+    otaReceivedFileBlockNumber = 0;
 }
 
 void tearDown()
@@ -1312,6 +1334,16 @@ void test_OTA_ImageStateRjectWithNoJob()
 
 void test_OTA_ImageStateAcceptWithActiveJob()
 {
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAccepted ) );
+    TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
+}
+
+void test_OTA_ImageStateAcceptWithActiveJobNullAppCallback()
+{
+    otaInit( pOtaDefaultClientId, NULL );
+
     otaGoToState( OtaAgentStateWaitingForFileBlock );
 
     TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAccepted ) );
@@ -2406,6 +2438,16 @@ void test_OTA_ReceiveFileBlockCompleteMqttFailtoClose()
 {
     otaInterfaces.pal.closeFile = mockPalCloseFileAlwaysFail;
     test_OTA_ReceiveFileBlockCompleteMqtt();
+}
+
+void test_OTA_ReceiveFileBlockCompleteMqttCountUpdateJobCalledTime()
+{
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    otaControlInterface.updateJobStatus = mockControlInterfaceUpdateJobCount;
+    test_OTA_ReceiveFileBlockCompleteMqtt();
+
+    TEST_ASSERT_EQUAL( OTA_TEST_FILE_NUM_BLOCKS, otaReceivedFileBlockNumber );
 }
 
 void test_OTA_EventProcessingTask_ExitOnAbort()

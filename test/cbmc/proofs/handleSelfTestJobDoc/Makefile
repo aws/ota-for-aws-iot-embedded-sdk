@@ -19,8 +19,8 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 REMOVE_FUNCTION_BODY += validateUpdateVersion
 REMVOE_FUNCTION_BODY += setImageStateWithReason
 
-RESTRICT_FUNCTION_POINTER += handleSelfTestJobDoc.function_pointer_call.1/otaAppCallbackStub
-RESTRICT_FUNCTION_POINTER += handleSelfTestJobDoc.function_pointer_call.2/resetPalStub
+RESTRICT_FUNCTION_POINTER += handleSelfTestJobDoc.function_pointer_call.1/resetPalStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
