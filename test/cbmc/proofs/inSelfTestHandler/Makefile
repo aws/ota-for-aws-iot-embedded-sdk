@@ -22,9 +22,9 @@ NONDET_STATIC += "--nondet-static"
 REMOVE_FUNCTION_BODY += setImageStateWithReason
 
 RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
-RESTRICT_FUNCTION_POINTER += inSelfTestHandler.function_pointer_call.1/otaAppCallbackStub
-RESTRICT_FUNCTION_POINTER += inSelfTestHandler.function_pointer_call.2/stopTimerStub
-RESTRICT_FUNCTION_POINTER += inSelfTestHandler.function_pointer_call.3/resetPalStub
+RESTRICT_FUNCTION_POINTER += inSelfTestHandler.function_pointer_call.1/stopTimerStub
+RESTRICT_FUNCTION_POINTER += inSelfTestHandler.function_pointer_call.2/resetPalStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
 
 
