@@ -468,6 +468,12 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
  */
 static void receiveAndProcessOtaEvent( void );
 
+/**
+ * @brief Call OTA callback function if it's registered.
+ */
+static void callOtaCallback( OtaJobEvent_t eEvent,
+                             const void * pData );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -795,7 +801,7 @@ static OtaErr_t inSelfTestHandler( const OtaEventData_t * pEventData )
     if( platformInSelftest() == true )
     {
         /* Callback for application specific self-test. */
-        otaAgent.OtaAppCallback( OtaJobEventStartTest, NULL );
+        callOtaCallback( OtaJobEventStartTest, NULL );
 
         /* Clear self-test flag. */
         otaAgent.fileContext.isInSelfTest = false;
@@ -1002,7 +1008,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventData );
 
     return retVal;
 }
@@ -1210,7 +1216,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         }
 
         /* Let main application know that update is complete */
-        otaAgent.OtaAppCallback( otaJobEvent, &jobDoc );
+        callOtaCallback( otaJobEvent, &jobDoc );
 
         /* Clear any remaining string memory holding the job name since this job is done. */
         ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
@@ -1232,7 +1238,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         dataHandlerCleanup();
 
         /* Let main application know activate event. */
-        otaAgent.OtaAppCallback( OtaJobEventFail, &jobDoc );
+        callOtaCallback( OtaJobEventFail, &jobDoc );
 
         /* Clear any remaining string memory holding the job name since this job is done. */
         ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
@@ -1272,7 +1278,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventData );
 
     if( err != OtaErrNone )
     {
@@ -1978,7 +1984,7 @@ static OtaJobParseErr_t handleCustomJob( const char * pJson,
 
             /* We have an unknown job parser error. Check to see if we can pass control
              * to a callback for parsing */
-            otaAgent.OtaAppCallback( OtaJobEventParseCustomJob, &jobDoc );
+            callOtaCallback( OtaJobEventParseCustomJob, &jobDoc );
         }
         else
         {
@@ -2139,7 +2145,7 @@ static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
         }
 
         /* Application callback for self-test failure.*/
-        otaAgent.OtaAppCallback( OtaJobEventSelfTestFailed, NULL );
+        callOtaCallback( OtaJobEventSelfTestFailed, NULL );
 
         /* Handle self-test failure in the platform specific implementation,
          * example, reset the device in case of firmware upgrade. */
@@ -2247,6 +2253,10 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
             LogInfo( ( "No active job available in received job document: "
                        "OtaJobParseErr_t=%s",
                        OTA_JobParse_strerror( err ) ) );
+
+            /* Callback when no active job is available to be processed. */
+            callOtaCallback( OtaJobEventNoActiveJob, NULL );
+
             break;
 
         default:
@@ -2339,7 +2349,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
         /* Let the application know to release buffer.*/
-        otaAgent.OtaAppCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );
+        callOtaCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );
     }
     else
     {
@@ -2807,14 +2817,14 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
         case OtaAgentEventReceivedJobDocument:
 
             /* Let the application know to release buffer.*/
-            otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
 
             break;
 
         case OtaAgentEventReceivedFileBlock:
 
             /* Let the application know to release buffer.*/
-            otaAgent.OtaAppCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
 
             /* File block was not processed, increment the statistics. */
             otaAgent.statistics.otaPacketsDropped++;
@@ -2926,6 +2936,19 @@ static void receiveAndProcessOtaEvent( void )
                 handleUnexpectedEvents( &eventMsg );
             }
         }
+    }
+}
+
+static void callOtaCallback( OtaJobEvent_t eEvent,
+                             const void * pData )
+{
+    if( otaAgent.OtaAppCallback )
+    {
+        otaAgent.OtaAppCallback( eEvent, pData );
+    }
+    else
+    {
+        LogWarn( ( "OtaAppCallback is not registered, event=%d", eEvent ) );
     }
 }
 

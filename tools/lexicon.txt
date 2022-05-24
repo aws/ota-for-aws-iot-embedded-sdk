@@ -453,6 +453,7 @@ otainterfaces
 otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
+otajobeventnoactivejob
 otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventreceivedjob

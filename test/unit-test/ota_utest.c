@@ -1340,6 +1340,16 @@ void test_OTA_ImageStateAcceptWithActiveJob()
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
 }
 
+void test_OTA_ImageStateAcceptWithActiveJobNullAppCallback()
+{
+    otaInit( pOtaDefaultClientId, NULL );
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_SetImageState( OtaImageStateAccepted ) );
+    TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
+}
+
 void test_OTA_ImageStateAcceptWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );

@@ -21,7 +21,7 @@ REMOVE_FUNCTION_BODY += setDataInterface
 REMOVE_FUNCTION_BODY += setImageStateWithReason
 REMOVE_FUNCTION_BODY += getFileContextFromJob
 
-RESTRICT_FUNCTION_POINTER += processJobHandler.function_pointer_call.1/otaAppCallbackStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 RESTRICT_FUNCTION_POINTER += OTA_SignalEvent.function_pointer_call.1/sendEventStub
 RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
 RESTRICT_FUNCTION_POINTER += processValidFileContext.function_pointer_call.1/resetPalStub
