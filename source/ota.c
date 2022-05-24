@@ -2541,6 +2541,9 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                                                             pPayload,
                                                                             uBlockSize );
 
+            /* Partially write is not an expected behavior. */
+            assert( iBytesWritten < 0 || ( uint32_t ) iBytesWritten == uBlockSize );
+
             if( iBytesWritten < 0 )
             {
                 eIngestResult = IngestResultWriteBlockFailed;
@@ -2549,9 +2552,6 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             }
             else
             {
-                /* Partially write is not an expected behavior. */
-                assert( iBytesWritten == uBlockSize );
-
                 /* Mark this block as received in our bitmap. */
                 pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
                 pFileContext->blocksRemaining--;
