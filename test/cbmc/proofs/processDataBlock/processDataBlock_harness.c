@@ -57,6 +57,7 @@ IngestResult_t writeDataBlockToFile( OtaFileContext_t * pFileContext,
     IngestResult_t result;
 
     __CPROVER_assert( pFileContext != NULL, "Error: pFileContext cannot be NULL" );
+    __CPROVER_assume( ( result >= IngestResultUninitialized ) && ( result <= IngestResultDuplicate_Continue ) );
 
     return result;
 }
