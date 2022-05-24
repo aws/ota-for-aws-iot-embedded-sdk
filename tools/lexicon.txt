@@ -48,6 +48,7 @@ bytesreceived
 bytessent
 bytestorecv
 bytestosend
+byteswritten
 c89
 c90
 ca
