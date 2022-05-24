@@ -899,6 +899,7 @@ vportfree
 vtasklist
 wifi
 writeblock
+writedatablocktofile
 www
 xaa
 xyz
