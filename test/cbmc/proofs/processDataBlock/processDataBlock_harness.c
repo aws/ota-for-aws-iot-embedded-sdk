@@ -48,19 +48,6 @@ bool validateDataBlock( const OtaFileContext_t * pFileContext,
     return status;
 }
 
-/* Stub for writeDataBlockToFile. */
-IngestResult_t writeDataBlockToFile( OtaFileContext_t * pFileContext,
-                                     uint32_t uBlockIndex,
-                                     uint32_t uBlockSize,
-                                     uint8_t * pPayload )
-{
-    IngestResult_t result;
-
-    __CPROVER_assert( pFileContext != NULL, "Error: pFileContext cannot be NULL" );
-
-    return result;
-}
-
 void processDataBlock_harness()
 {
     /* fileContext, closeResult can never be NULL as they are statically declared in ingestDataBlock
@@ -92,6 +79,7 @@ void processDataBlock_harness()
     __CPROVER_assume( pPayload != NULL );
 
     /* CBMC preconditions. */
+    otaInterface.pal.writeBlock = writeBlockPalStub;
     otaAgent.pOtaInterface = &otaInterface;
 
     result = processDataBlock( &fileContext, uBlockIndex, uBlockSize, &closeResult, pPayload );

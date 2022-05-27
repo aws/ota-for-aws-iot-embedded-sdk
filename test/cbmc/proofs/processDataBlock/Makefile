@@ -16,6 +16,8 @@ PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
+RESTRICT_FUNCTION_POINTER += processDataBlock.function_pointer_call.1/writeBlockPalStub
+
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
 # restrict the number of EXPENSIVE CBMC jobs running at once. See the
