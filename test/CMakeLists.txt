@@ -37,13 +37,16 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
 # Include filepaths for source and include.
 include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/otaDependenyFilePaths.cmake )
 
 # Target for Coverity analysis that builds the library.
 add_library( coverity_analysis
     ${OTA_SOURCES}
     ${OTA_OS_POSIX_SOURCES}
     ${OTA_MQTT_SOURCES}
-    ${OTA_HTTP_SOURCES} )
+    ${OTA_HTTP_SOURCES}
+    ${TINYCBOR_SOURCES}
+    ${JSON_SOURCES} )
 
 # Build OTA library target without custom config dependency
 target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )
@@ -55,7 +58,9 @@ target_include_directories( coverity_analysis PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/unit-test
     ${CMAKE_CURRENT_LIST_DIR}/unit-test-http )
 target_include_directories( coverity_analysis PRIVATE
-    ${OTA_INCLUDE_PRIVATE_DIRS} )
+    ${OTA_INCLUDE_PRIVATE_DIRS}
+    ${JSON_INCLUDE_PUBLIC_DIRS}
+    ${TINYCBOR_INCLUDE_DIRS} )
 
 # ============================ Test configuration ==============================
 
