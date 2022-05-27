@@ -2556,7 +2556,8 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                                                         uBlockSize );
         assert( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1 ) );
 
-        if( ( uint32_t ) iBytesWritten == uBlockSize )
+        if( ( iBytesWritten > 0 ) &&
+            ( ( uint32_t ) iBytesWritten == uBlockSize ) )
         {
             eIngestResult = IngestResultAccepted_Continue;
         }
