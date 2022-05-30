@@ -2501,8 +2501,8 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                         uint8_t * pPayload )
 {
     IngestResult_t eIngestResult = IngestResultUninitialized;
-    uint32_t byte;
-    uint8_t bitMask;
+    uint32_t byte = 0;
+    uint8_t bitMask = 0;
 
     assert( pFileContext != NULL );
 
