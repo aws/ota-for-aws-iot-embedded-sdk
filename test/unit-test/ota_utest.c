@@ -621,6 +621,19 @@ int16_t mockPalWriteBlockAlwaysFail( OtaFileContext_t * const unused1,
     return -1;
 }
 
+int16_t mockPalWriteBlockPartialWrite( OtaFileContext_t * const unused1,
+                                       uint32_t unused2,
+                                       uint8_t * const unused3,
+                                       uint32_t unused4 )
+{
+    ( void ) unused1;
+    ( void ) unused2;
+    ( void ) unused3;
+    ( void ) unused4;
+
+    return 1;
+}
+
 OtaPalStatus_t mockPalActivate( OtaFileContext_t * const pFileContext )
 {
     ( void ) pFileContext;
@@ -1904,6 +1917,30 @@ void test_OTA_ReceiveWriteBlockFail()
 
     pOtaJobDoc = JOB_DOC_ONE_BLOCK;
     otaInterfaces.pal.writeBlock = mockPalWriteBlockAlwaysFail;
+
+    otaGoToState( OtaAgentStateWaitingForFileBlock );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
+
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    otaEvent.eventId = OtaAgentEventReceivedFileBlock;
+    otaEvent.pEventData = &eventBuffer;
+    otaEvent.pEventData->dataLength = dataSize;
+    OTA_SignalEvent( &otaEvent );
+    /* Process the event to receive the invalid block. */
+    receiveAndProcessOtaEvent();
+    /* Process the event generated after receiving an invalid block. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+}
+
+void test_OTA_ReceiveWritePartialBlockFail()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+    const uint32_t dataSize = 1024;
+
+    pOtaJobDoc = JOB_DOC_ONE_BLOCK;
+    otaInterfaces.pal.writeBlock = mockPalWriteBlockPartialWrite;
 
     otaGoToState( OtaAgentStateWaitingForFileBlock );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForFileBlock, OTA_GetState() );
