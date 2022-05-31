@@ -414,7 +414,9 @@ The input <a class="el" href="struct_ota_file_context__t.html" title="OTA File C
 </div><div class="memdoc">
 
 <p>Write a block of data to the specified file at the given offset. </p>
-<dl class="section note"><dt>Note</dt><dd>The input <a class="el" href="struct_ota_file_context__t.html" title="OTA File Context Information.">OtaFileContext_t</a> pFileContext is checked for NULL by the OTA agent before this function is called. The file pointer/handle pFileContext-&gt;pFile, is checked for NULL by the OTA agent before this function is called. pData is checked for NULL by the OTA agent before this function is called. blockSize is validated for range by the OTA agent before this function is called. offset is validated by the OTA agent before this function is called.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function must always write a complete file block before returning. So the number of bytes written will be equal to the size of the file block. Exception only in case of last block where the number of bytes written will be equal or less than the size of the file block.</dd>
+<dd>
+The input <a class="el" href="struct_ota_file_context__t.html" title="OTA File Context Information.">OtaFileContext_t</a> pFileContext is checked for NULL by the OTA agent before this function is called. The file pointer/handle pFileContext-&gt;pFile, is checked for NULL by the OTA agent before this function is called. pData is checked for NULL by the OTA agent before this function is called. blockSize is validated for range by the OTA agent before this function is called. offset is validated by the OTA agent before this function is called.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">pFileContext</td><td>OTA file context information. </td></tr>
