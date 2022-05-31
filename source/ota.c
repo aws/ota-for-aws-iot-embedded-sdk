@@ -2504,13 +2504,35 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     uint32_t byte = 0;
     uint8_t bitMask = 0;
 
-    if( validateDataBlock( pFileContext, uBlockIndex, uBlockSize ) == true )
+    assert( pFileContext != NULL );
+
+    if( pFileContext->pFile == NULL )
     {
+        LogError( ( "Parameter check failed: pFileContext->pFile is NULL." ) );
+        eIngestResult = IngestResultBadFileHandle;
+    }
+    else
+    {
+        eIngestResult = IngestResultUninitialized;
+    }
+
+    if( eIngestResult == IngestResultUninitialized )
+    {
+        if( validateDataBlock( pFileContext, uBlockIndex, uBlockSize ) != true )
+        {
+            LogError( ( "Block range check failed: Received a block outside of the expected range: "
+                        "Block index=%u, Block size=%u",
+                        uBlockIndex, uBlockSize ) );
+            eIngestResult = IngestResultBlockOutOfRange;
+        }
+    }
+
+    if( eIngestResult == IngestResultUninitialized )
+    {
+        byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
+
         /* Create bit mask for use in our bitmap. BITS_PER_BYTE is 8 so it will never overflow. */
         bitMask = ( uint8_t ) ( 1U << ( uBlockIndex % BITS_PER_BYTE ) );
-
-        /* Calculate byte offset into bitmap. */
-        byte = uBlockIndex >> LOG2_BITS_PER_BYTE;
 
         /* Check if we have already received this block. */
         if( ( ( pFileContext->pRxBlockBitmap[ byte ] ) & bitMask ) == 0U )
@@ -2524,44 +2546,36 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
             *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 ); /* This is a success path. */
         }
     }
-    else
-    {
-        LogError( ( "Block range check failed: Received a block outside of the expected range: "
-                    "Block index=%u, Block size=%u",
-                    uBlockIndex, uBlockSize ) );
-        eIngestResult = IngestResultBlockOutOfRange;
-    }
 
     /* Process the received data block. */
     if( eIngestResult == IngestResultUninitialized )
     {
-        if( pFileContext->pFile != NULL )
-        {
-            int32_t iBytesWritten = otaAgent.pOtaInterface->pal.writeBlock( pFileContext,
-                                                                            ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
-                                                                            pPayload,
-                                                                            uBlockSize );
+        int32_t iBytesWritten = otaAgent.pOtaInterface->pal.writeBlock( pFileContext,
+                                                                        ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
+                                                                        pPayload,
+                                                                        uBlockSize );
+        assert( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1 ) );
 
-            if( iBytesWritten < 0 )
-            {
-                eIngestResult = IngestResultWriteBlockFailed;
-                LogError( ( "Failed to ingest received block: IngestResult_t=%d",
-                            eIngestResult ) );
-            }
-            else
-            {
-                /* Mark this block as received in our bitmap. */
-                pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
-                pFileContext->blocksRemaining--;
-                eIngestResult = IngestResultAccepted_Continue;
-                *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
-            }
+        if( ( iBytesWritten > 0 ) &&
+            ( ( uint32_t ) iBytesWritten == uBlockSize ) )
+        {
+            eIngestResult = IngestResultAccepted_Continue;
         }
         else
         {
-            LogError( ( "Parameter check failed: pFileContext->pFile is NULL." ) );
-            eIngestResult = IngestResultBadFileHandle;
+            eIngestResult = IngestResultWriteBlockFailed;
+            LogError( ( "Failed to ingest received block: iBytesWritten: %d, IngestResult_t=%d",
+                        iBytesWritten, eIngestResult ) );
         }
+    }
+
+    if( eIngestResult == IngestResultAccepted_Continue )
+    {
+        /* Mark this block as received in our bitmap. */
+        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
+        pFileContext->blocksRemaining--;
+
+        *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
     }
 
     return eIngestResult;
