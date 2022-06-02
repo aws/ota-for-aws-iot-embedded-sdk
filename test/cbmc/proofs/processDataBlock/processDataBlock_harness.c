@@ -78,6 +78,9 @@ void processDataBlock_harness()
     __CPROVER_assume( fileContext.blocksRemaining > 0 );
     __CPROVER_assume( pPayload != NULL );
 
+    __CPROVER_assume( ( uBlockSize == OTA_FILE_BLOCK_SIZE ) ||
+                      ( ( fileContext.blocksRemaining == 1 ) && ( uBlockSize < OTA_FILE_BLOCK_SIZE ) ) );
+
     /* CBMC preconditions. */
     otaInterface.pal.writeBlock = writeBlockPalStub;
     otaAgent.pOtaInterface = &otaInterface;

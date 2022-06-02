@@ -1,5 +1,6 @@
 # Include filepaths for source and include.
 include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/otaDependenyFilePaths.cmake )
 
 # ====================  Define your project name (edit) ========================
 set(project_name "aws_ota")
@@ -35,6 +36,8 @@ list(APPEND real_include_directories
     ${OTA_INCLUDE_PUBLIC_DIRS}
     ${OTA_INCLUDE_PRIVATE_DIRS}
     ${OTA_INCLUDE_OS_POSIX_DIRS}
+    ${JSON_INCLUDE_PUBLIC_DIRS}
+    ${TINYCBOR_INCLUDE_DIRS}
 )
 
 # =====================  Create UnitTest Code here (edit)  =====================

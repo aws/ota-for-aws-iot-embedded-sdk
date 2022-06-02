@@ -269,6 +269,9 @@ int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
     __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
     __CPROVER_assert( pData != NULL, "Error: Expected a Non-Null value for pData" );
 
+    /* bytesWritten must be negative (fail) or equal to blockSize (pass). */
+    __CPROVER_assume( bytesWritten < 0 || ( uint32_t ) bytesWritten == blockSize );
+
     return bytesWritten;
 }
 
