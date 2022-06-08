@@ -83,9 +83,9 @@ void test_OTA_posix_SendAndRecvEvent( void )
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
 
-    result = event.send( event.pEventContext, &otaEventToSend, 0 );
+    result = event.send( event.pEventContext, &otaEventToSend, INT32_MAX );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
-    result = event.recv( event.pEventContext, &otaEventToRecv, 0 );
+    result = event.recv( event.pEventContext, &otaEventToRecv, INT32_MAX );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
     TEST_ASSERT_EQUAL( otaEventToSend.eventId, otaEventToRecv.eventId );
 

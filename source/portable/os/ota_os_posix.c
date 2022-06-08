@@ -140,6 +140,10 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     {
         ts.tv_sec += currentTime;
     }
+    else
+    {
+        ts.tv_sec = INT32_MAX;
+    }
 
     if( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 )
     {
@@ -184,6 +188,10 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     if( ( currentTime > 0 ) && ( ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime ) )
     {
         ts.tv_sec += currentTime;
+    }
+    else
+    {
+        ts.tv_sec = INT32_MAX;
     }
 
     if( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 )
