@@ -511,7 +511,8 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    1                     /* unsubscribe flag */
+    1,                    /* unsubscribe flag */
+    0                     /* isOtaInterfaceInited */
 };
 
 /**
@@ -1335,9 +1336,6 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
 
     /* If we're here, we're shutting down the OTA agent. Free up all resources and quit. */
     agentShutdownCleanup();
-
-    /* Clear the entire agent context. This includes the OTA agent state. */
-    ( void ) memset( &otaAgent, 0, sizeof( otaAgent ) );
 
     return OtaErrNone;
 }
@@ -2786,6 +2784,15 @@ static void agentShutdownCleanup( void )
 
     otaAgent.state = OtaAgentStateShuttingDown;
 
+    /* Stop the timer in the handler thread to make sure no start timer will be called in the handler. */
+    /* Stop and delete the request timer. */
+    ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
+    ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaRequestTimer );
+
+    /* Stop and delete the self-test timer. */
+    ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
+    ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaSelfTestTimer );
+
     /* Control plane cleanup related to selected protocol. */
     if( otaControlInterface.cleanup != NULL )
     {
@@ -2810,6 +2817,20 @@ static void agentShutdownCleanup( void )
      * Clear active job name.
      */
     ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
+
+    /* Clear the entire agent context except for pOtaInterface and OtaAppCallback
+     * to avoid accessing NULL function pointer if other task is running. Don't
+     * reset isOtaInterfaceInited to ensure os.event won't be created again in the
+     * next OTA_Init. */
+    ( void ) memset( &otaAgent.pThingName, 0, sizeof( otaAgent.pThingName ) );
+    ( void ) memset( &otaAgent.fileContext, 0, sizeof( otaAgent.fileContext ) );
+    otaAgent.fileIndex = 0;
+    otaAgent.serverFileID = 0;
+    otaAgent.imageState = OtaImageStateUnknown;
+    otaAgent.numOfBlocksToReceive = 0;
+    ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
+    otaAgent.requestMomentum = 0;
+    otaAgent.unsubscribeOnShutdown = 0;
 }
 
 /*
@@ -2981,38 +3002,47 @@ void OTA_EventProcessingTask( void * pUnused )
 
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 {
-    bool retVal = false;
+    bool retVal = true;
     OtaOsStatus_t err = OtaOsSuccess;
 
-    /* Check if file block received and update statistics.*/
-    if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
-    {
-        otaAgent.statistics.otaPacketsReceived++;
-    }
-
-    err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
-
-    if( err == OtaOsSuccess )
-    {
-        retVal = true;
-        LogDebug( ( "Added event message to OTA event queue." ) );
-
-        if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
-        {
-            otaAgent.statistics.otaPacketsQueued++;
-        }
-    }
-    else
+    /* Check if OTA library is ready.*/
+    if( otaAgent.state == OtaAgentStateStopped )
     {
         retVal = false;
-        LogError( ( "Failed to add even message to OTA event queue: "
-                    "send returned error: "
-                    "OtaOsStatus_t=%s",
-                    OTA_OsStatus_strerror( err ) ) );
+    }
 
+    if( retVal )
+    {
+        /* Check if file block received and update statistics.*/
         if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
         {
-            otaAgent.statistics.otaPacketsDropped++;
+            otaAgent.statistics.otaPacketsReceived++;
+        }
+
+        err = otaAgent.pOtaInterface->os.event.send( NULL, pEventMsg, 0 );
+
+        if( err == OtaOsSuccess )
+        {
+            retVal = true;
+            LogDebug( ( "Added event message to OTA event queue." ) );
+
+            if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+            {
+                otaAgent.statistics.otaPacketsQueued++;
+            }
+        }
+        else
+        {
+            retVal = false;
+            LogError( ( "Failed to add even message to OTA event queue: "
+                        "send returned error: "
+                        "OtaOsStatus_t=%s",
+                        OTA_OsStatus_strerror( err ) ) );
+
+            if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
+            {
+                otaAgent.statistics.otaPacketsDropped++;
+            }
         }
     }
 
@@ -3127,6 +3157,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
+    OtaEventMsg_t eventMsg = { 0 };
 
     ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
     ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
@@ -3170,7 +3201,19 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
         /*
          * Initialize OTA event interface.
          */
-        ( void ) otaAgent.pOtaInterface->os.event.init( NULL );
+        if( !otaAgent.isOtaInterfaceInited )
+        {
+            ( void ) otaAgent.pOtaInterface->os.event.init( NULL );
+            otaAgent.isOtaInterfaceInited = 1;
+        }
+        else
+        {
+            /* Drop all msgs that created after OTA_Shutdown. */
+            while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+            {
+                LogDebug( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
+            }
+        }
 
         if( pThingName == NULL )
         {
@@ -3233,14 +3276,6 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
     else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
-
-        /* Stop and delete the request timer. */
-        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaRequestTimer );
-        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaRequestTimer );
-
-        /* Stop and delete the self-test timer. */
-        ( void ) otaAgent.pOtaInterface->os.timer.stop( OtaSelfTestTimer );
-        ( void ) otaAgent.pOtaInterface->os.timer.delete( OtaSelfTestTimer );
 
         /*
          * Send shutdown signal to OTA Agent task.
@@ -3339,7 +3374,7 @@ OtaErr_t OTA_ActivateNewImage( void )
      * and not return unless there is a problem within the PAL layer. If it does return,
      * output an error message. The device may need to be reset manually.
      */
-    if( ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
+    if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
     {
         palStatus = otaAgent.pOtaInterface->pal.activate( &( otaAgent.fileContext ) );
     }
@@ -3347,8 +3382,9 @@ OtaErr_t OTA_ActivateNewImage( void )
     LogError( ( "Failed to activate new image: "
                 "activateNewImage returned error: "
                 "Manual reset required: "
-                "OtaPalStatus_t=%s",
-                OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ) ) );
+                "OtaPalStatus_t=%s, %d",
+                OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ),
+                OTA_PAL_MAIN_ERR( palStatus ) ) );
 
     return OTA_PAL_MAIN_ERR( palStatus ) == OtaPalSuccess ? OtaErrNone : OtaErrActivateFailed;
 }

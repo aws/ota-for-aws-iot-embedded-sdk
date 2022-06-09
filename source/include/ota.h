@@ -309,6 +309,7 @@ typedef struct OtaAgentContext
     const OtaInterfaces_t * pOtaInterface;                 /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
+    uint8_t isOtaInterfaceInited;                          /*!< Flag to indicate if pOtaInterface is initialized. */
 } OtaAgentContext_t;
 
 /*------------------------- OTA Public API --------------------------*/
