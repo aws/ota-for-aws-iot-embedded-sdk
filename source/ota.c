@@ -2987,16 +2987,27 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
 
 void OTA_EventProcessingTask( void * pUnused )
 {
+    bool retVal = true;
+
     ( void ) pUnused;
 
-    /*
-     * OTA Agent is ready to receive and process events so update the state to ready.
-     */
-    otaAgent.state = OtaAgentStateReady;
-
-    while( otaAgent.state != OtaAgentStateStopped )
+    if( otaAgent.state == OtaAgentStateStopped )
     {
-        receiveAndProcessOtaEvent();
+        retVal = false;
+        LogWarn( ( "Run OTA_EventProcessingTask but OTA is stopped." ) );
+    }
+
+    if( retVal )
+    {
+        /*
+         * OTA Agent is ready to receive and process events so update the state to ready.
+         */
+        otaAgent.state = OtaAgentStateReady;
+
+        while( otaAgent.state != OtaAgentStateStopped )
+        {
+            receiveAndProcessOtaEvent();
+        }
     }
 }
 

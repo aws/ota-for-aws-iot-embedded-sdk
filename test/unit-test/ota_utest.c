@@ -2513,6 +2513,11 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
     /* Test that the OTA_EventProcessingTask aborts correctly after receiving
      * and event to shutdown the OTA Agent. */
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Run OTA_EventProcessingTask again and OTA state should keep in OtaAgentStateStopped. */
+    OTA_EventProcessingTask( NULL );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 /* ========================================================================== */
