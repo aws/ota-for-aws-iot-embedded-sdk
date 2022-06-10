@@ -35,6 +35,15 @@ OtaOsStatus_t init( OtaEventContext_t * pEventCtx )
     return status;
 }
 
+OtaOsStatus_t recv( OtaEventContext_t * pEventCtx,
+                    void * pEventMsg,
+                    uint32_t timeout )
+{
+    OtaOsStatus_t status;
+
+    return status;
+}
+
 void OTA_Init_harness()
 {
     OtaErr_t err;
@@ -46,6 +55,9 @@ void OTA_Init_harness()
 
     /* Initialize the function pointer to a stub. */
     otaInterface.os.event.init = init;
+
+    /* Initialize the function pointer to a stub. */
+    otaInterface.os.event.recv = recv;
 
     /* The maximum size of a valid name of a thing is defined by otaconfigMAX_THINGNAME_LEN. The upper bound
      * of size is selected to consider the cases where size of the string is greater than maximum value. */

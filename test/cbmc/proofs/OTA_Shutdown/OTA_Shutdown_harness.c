@@ -39,10 +39,6 @@ void OTA_Shutdown_harness()
 
     otaAgent.state = state;
 
-    /* Initialize os timers functions. */
-    otaInterface.os.timer.stop = stopTimerStub;
-    otaInterface.os.timer.delete = deleteTimerStub;
-
     otaAgent.pOtaInterface = &otaInterface;
 
     /* This assumption is required to have an upper bound on the unwinding of while loop in

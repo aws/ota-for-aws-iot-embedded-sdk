@@ -40,6 +40,9 @@ void OtaReceiveEvent_FreeRTOS_harness()
     /* pEventMsg is statically declared before it is used in this function. */
     __CPROVER_assume( pEventMsg != NULL );
 
+    /* To avoid pdMS_TO_TICKS from integer overflow. */
+    __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
+
     osStatus = OtaReceiveEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
 
     __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsEventQueueReceiveFailed,

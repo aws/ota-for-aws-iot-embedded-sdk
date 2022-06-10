@@ -38,6 +38,10 @@ void agentShutdownCleanup_harness()
 {
     OtaInterfaces_t otaInterface;
 
+    /* Initialize os timers functions. */
+    otaInterface.os.timer.stop = stopTimerStub;
+    otaInterface.os.timer.delete = deleteTimerStub;
+
     /* Initialize the function pointers to stubs. */
     otaControlInterface.cleanup = cleanupStub;
     otaDataInterface.cleanup = cleanupStub;
