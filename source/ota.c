@@ -3229,7 +3229,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
         }
         else
         {
-            /* Drop all msgs that created after OTA_Shutdown. */
+            /* Drop all events that created after OTA_Shutdown. */
             while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
             {
                 LogDebug( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
