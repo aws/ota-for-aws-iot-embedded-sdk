@@ -14,7 +14,7 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 NONDET_STATIC += "--nondet-static"
 
 UNWINDSET += strlen.0:66
-UNWINDSET += recv.0:10
+UNWINDSET += OTA_Init.0:10
 
 REMOVE_FUNCTION_BODY += setControlInterface
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeAppBuffers
