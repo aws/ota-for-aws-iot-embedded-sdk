@@ -511,7 +511,8 @@ static OtaAgentContext_t otaAgent =
     0,                    /* requestMomentum */
     NULL,                 /* pOtaInterface */
     NULL,                 /* OtaAppCallback */
-    1                     /* unsubscribe flag */
+    1,                    /* unsubscribe flag */
+    false                 /* agentStarted flag */
 };
 
 /**
@@ -2972,11 +2973,32 @@ void OTA_EventProcessingTask( void * pUnused )
      * OTA Agent is ready to receive and process events so update the state to ready.
      */
     otaAgent.state = OtaAgentStateReady;
+    otaAgent.agentStarted = true;
 
     while( otaAgent.state != OtaAgentStateStopped )
     {
         receiveAndProcessOtaEvent();
     }
+}
+
+OtaState_t OTA_EventProcess( void * pUnused )
+{
+    ( void ) pUnused;
+
+     /* Since user can single cycle the agent, we cannot repeatedly change state back to OtaAgentStateReady
+     * as it may interfere with an ongoing OTA. However, OtaAgentStateReady must still indicate agent readiness.*/
+    if( !otaAgent.agentStarted )
+    {
+        otaAgent.state = OtaAgentStateReady;
+        otaAgent.agentStarted = true;
+    }
+
+    if( otaAgent.state != OtaAgentStateStopped )
+    {
+        receiveAndProcessOtaEvent();
+    }
+
+    return otaAgent.state;
 }
 
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )

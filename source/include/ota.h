@@ -309,6 +309,7 @@ typedef struct OtaAgentContext
     const OtaInterfaces_t * pOtaInterface;                 /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
+    bool agentStarted;                                     /*!< Flag indicating whether OTA agent has begun processing. */
 } OtaAgentContext_t;
 
 /*------------------------- OTA Public API --------------------------*/
@@ -670,6 +671,24 @@ OtaErr_t OTA_Resume( void );
 void OTA_EventProcessingTask( void * pUnused );
 /* @[declare_ota_eventprocessingtask] */
 
+
+/**
+ * @brief OTA agent event process cycler.
+ *
+ * This is the main agent event handler for OTA update and needs to be called repeatedly
+ * by an application task. This is functionally equivalent to @ref OTA_EventProcessingTask, except
+ * instead of forever looping internally, the user is responsible for periodically calling this function.
+ *
+ * @note This is NOT thread safe with @ref OTA_EventProcessingTask and the two should never be used in conjuction.
+ *
+ * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
+ *
+ * @return The state of the ota agent after this single event process cycle
+ *
+ */
+/* @[declare_ota_eventprocess] */
+OtaState_t OTA_EventProcess( void * pUnused );
+/* @[declare_ota_eventprocess] */
 
 /**
  * @brief Signal event to the OTA Agent task.
