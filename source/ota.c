@@ -1337,6 +1337,20 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
     /* If we're here, we're shutting down the OTA agent. Free up all resources and quit. */
     agentShutdownCleanup();
 
+    /* Clear the entire agent context except for pOtaInterface and OtaAppCallback
+     * to avoid accessing NULL function pointer if other task is running. Don't
+     * reset isOtaInterfaceInited to ensure os.event won't be created again in the
+     * next OTA_Init. */
+    ( void ) memset( &otaAgent.pThingName, 0, sizeof( otaAgent.pThingName ) );
+    ( void ) memset( &otaAgent.fileContext, 0, sizeof( otaAgent.fileContext ) );
+    ( void ) memset( &otaAgent.fileIndex, 0, sizeof( otaAgent.fileIndex ) );
+    ( void ) memset( &otaAgent.serverFileID, 0, sizeof( otaAgent.serverFileID ) );
+    ( void ) memset( &otaAgent.numOfBlocksToReceive, 0, sizeof( otaAgent.numOfBlocksToReceive ) );
+    ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
+    ( void ) memset( &otaAgent.requestMomentum, 0, sizeof( otaAgent.requestMomentum ) );
+    ( void ) memset( &otaAgent.unsubscribeOnShutdown, 0, sizeof( otaAgent.unsubscribeOnShutdown ) );
+    otaAgent.imageState = OtaImageStateUnknown;
+
     return OtaErrNone;
 }
 
@@ -3393,9 +3407,8 @@ OtaErr_t OTA_ActivateNewImage( void )
     LogError( ( "Failed to activate new image: "
                 "activateNewImage returned error: "
                 "Manual reset required: "
-                "OtaPalStatus_t=%s, %d",
-                OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ),
-                OTA_PAL_MAIN_ERR( palStatus ) ) );
+                "OtaPalStatus_t=%s",
+                OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ) ) );
 
     return OTA_PAL_MAIN_ERR( palStatus ) == OtaPalSuccess ? OtaErrNone : OtaErrActivateFailed;
 }
