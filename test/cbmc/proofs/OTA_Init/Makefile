@@ -5,8 +5,6 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = OTA_Init
 
-DEFINES += -D UNWINDING_UPPERBOUND=10
-
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/source/
 
@@ -16,6 +14,7 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 NONDET_STATIC += "--nondet-static"
 
 UNWINDSET += strlen.0:66
+UNWINDSET += recv.0:10
 
 REMOVE_FUNCTION_BODY += setControlInterface
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeAppBuffers
