@@ -1277,7 +1277,7 @@ void test_OTA_ActivateNewImageNullOtaInterface()
     otaInitDefault();
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
 
-    /* Set OTA interface to NULL.*/
+    /* Set OTA interface to NULL. */
     otaAgent.pOtaInterface = NULL;
 
     TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
@@ -3086,7 +3086,7 @@ void test_OTA_nullOtaInterfaceWhenProcessEvent()
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 
-    /* Set OTA interface to NULL.*/
+    /* Set OTA interface to NULL. */
     otaAgent.pOtaInterface = NULL;
 
     receiveAndProcessOtaEvent();
@@ -3113,7 +3113,7 @@ void test_OTA_sendEventWhenStopped()
 /* Re-start OTA library after shutdown. */
 void test_OTA_restartOtaAfterShutdown()
 {
-    /* First initialize OTA library */
+    /* First initialize OTA library. */
     otaInitDefault();
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
@@ -3122,7 +3122,7 @@ void test_OTA_restartOtaAfterShutdown()
     tearDown();
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 
-    /* Second initialize OTA library */
+    /* Second initialize OTA library. */
     setUp();
     otaInitDefault();
     otaGoToState( OtaAgentStateReady );

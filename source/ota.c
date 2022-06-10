@@ -3001,17 +3001,13 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
 
 void OTA_EventProcessingTask( void * pUnused )
 {
-    bool retVal = true;
-
     ( void ) pUnused;
 
     if( otaAgent.state == OtaAgentStateStopped )
     {
-        retVal = false;
         LogWarn( ( "Run OTA_EventProcessingTask but OTA is stopped." ) );
     }
-
-    if( retVal )
+    else
     {
         /*
          * OTA Agent is ready to receive and process events so update the state to ready.
@@ -3027,18 +3023,18 @@ void OTA_EventProcessingTask( void * pUnused )
 
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 {
-    bool retVal = true;
+    bool retVal = false;
     OtaOsStatus_t err = OtaOsSuccess;
 
-    /* Check if OTA library is ready.*/
+    /* Check if OTA library is initialized. */
     if( otaAgent.state == OtaAgentStateStopped )
     {
         retVal = false;
+        LogDebug( ( "Send event failed, OTA is stopped." ) );
     }
-
-    if( retVal )
+    else
     {
-        /* Check if file block received and update statistics.*/
+        /* Check if file block received and update statistics. */
         if( pEventMsg->eventId == OtaAgentEventReceivedFileBlock )
         {
             otaAgent.statistics.otaPacketsReceived++;
