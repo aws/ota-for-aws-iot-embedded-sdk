@@ -131,9 +131,8 @@ OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     uint8_t buff[ sizeof( OtaEventMsg_t ) ];
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
-    retVal = xQueueReceive( otaEventQueue, &buff, portMAX_DELAY );
+    retVal = xQueueReceive( otaEventQueue, &buff, pdMS_TO_TICKS( timeout ) );
 
     if( retVal == pdTRUE )
     {
