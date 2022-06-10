@@ -27,6 +27,7 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 #include "ota_private.h"
+#include "FreeRTOSConfig.h"
 
 void OtaReceiveEvent_FreeRTOS_harness()
 {

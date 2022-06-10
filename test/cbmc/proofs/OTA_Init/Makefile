@@ -5,6 +5,8 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
 PROOF_UID = OTA_Init
 
+DEFINES += -D UNWINDING_UPPERBOUND=10
+
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
 INCLUDES += -I$(SRCDIR)/source/
 
