@@ -2985,7 +2985,7 @@ OtaState_t OTA_EventProcess( void * pUnused )
 {
     ( void ) pUnused;
 
-     /* Since user can single cycle the agent, we cannot repeatedly change state back to OtaAgentStateReady
+    /* Since user can single cycle the agent, we cannot repeatedly change state back to OtaAgentStateReady
      * as it may interfere with an ongoing OTA. However, OtaAgentStateReady must still indicate agent readiness.*/
     if( !otaAgent.agentStarted )
     {
