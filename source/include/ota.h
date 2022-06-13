@@ -258,6 +258,15 @@ typedef struct OtaJobDocument
  * User can parse the job by casting pData to OtaJobDocument_t, then check the pJobDocJson and
  * pJobId in the document. User should set the result to parseErr if it's a custom job.
  *
+ * When OtaJobEventReceivedJob is received, that means OTA has addressed the json file provided by
+ * user successfully. Let user know to handler the buffer.
+ *
+ * When OtaJobEventUpdateComplete is received, that means OTA has downloaded a full image for the
+ * file type which is differnt from configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID.
+ *
+ * When OtaJobEventNoActiveJob is received, that means OTA has received a job document without valid
+ * job ID and job document key.
+ *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
  *
  * @param[in] pData Optional data related to the event.
