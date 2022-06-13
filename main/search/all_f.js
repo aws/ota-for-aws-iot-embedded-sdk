@@ -54,7 +54,7 @@ var searchData=
   ['prvbuildstatusmessagefinish_51',['prvBuildStatusMessageFinish',['../ota__mqtt_8c.html#aaa2eaddd7807ec765cb49056f0c88ad8',1,'ota_mqtt.c']]],
   ['prvbuildstatusmessageselftest_52',['prvBuildStatusMessageSelfTest',['../ota__mqtt_8c.html#a15053eb434a9a80cfe501ff2332a3811',1,'ota_mqtt.c']]],
   ['prxblockbitmap_53',['pRxBlockBitmap',['../struct_ota_file_context__t.html#a1876125c2893ff2639fdcebfe47aa073',1,'OtaFileContext_t']]],
-  ['psignature_54',['pSignature',['../struct_ota_file_context__t.html#a7b19507fb15f4924d985ad0a48c671f0',1,'OtaFileContext_t']]],
+  ['psignature_54',['pSignature',['../struct_ota_file_context__t.html#a9b19a39f2ad185b21231cf91cef47ace',1,'OtaFileContext_t']]],
   ['psrckey_55',['pSrcKey',['../struct_json_doc_param__t.html#adf590486686c77a328e34ed2d6cd0e24',1,'JsonDocParam_t']]],
   ['pstreamname_56',['pStreamName',['../struct_ota_file_context__t.html#a5bfc26add016d1883c2373a63c2bf5b0',1,'OtaFileContext_t::pStreamName()'],['../struct_ota_app_buffer__t.html#a7bc6e9af2e5935ddf7168173bba51805',1,'OtaAppBuffer_t::pStreamName()']]],
   ['pthingname_57',['pThingName',['../struct_ota_agent_context__t.html#ab65c1d54c43a832265e1c106e091f384',1,'OtaAgentContext_t']]],

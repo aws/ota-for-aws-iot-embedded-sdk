@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['data_0',['data',['../struct_ota_event_data__t.html#a2d6745b10e3e5ad0dac2ebb89a56f252',1,'OtaEventData_t::data()'],['../struct_sig256__t.html#aae366e61733f67f99979cdd998fc8e01',1,'Sig256_t::data()']]],
+  ['data_0',['data',['../struct_ota_event_data__t.html#a2d6745b10e3e5ad0dac2ebb89a56f252',1,'OtaEventData_t::data()'],['../struct_sig__t.html#a50ba06ed445cc74de1aa388fdd096890',1,'Sig_t::data()']]],
   ['datahandlercleanup_1',['dataHandlerCleanup',['../ota_8c.html#a1b5fcf884b2857014de968008924beb2',1,'ota.c']]],
   ['datalength_2',['dataLength',['../struct_ota_event_data__t.html#a4f1b1b9d316c41d97fd9169dc6ff076d',1,'OtaEventData_t']]],
   ['decodeandstoredatablock_3',['decodeAndStoreDataBlock',['../ota_8c.html#a38c37b062ef279c31dba69c7ad8340ce',1,'ota.c']]],

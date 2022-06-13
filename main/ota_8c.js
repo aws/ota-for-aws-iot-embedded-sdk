@@ -78,5 +78,5 @@ var ota_8c =
     [ "otaJobDocModelParamStructure", "ota_8c.html#ad483f03f8d49725d5d5cfe9133e86854", null ],
     [ "pJobNameBuffer", "ota_8c.html#aaf6b80a942717438ad5ee23466e62d01", null ],
     [ "pProtocolBuffer", "ota_8c.html#a17a536dc3f752d78111477613ab0dca9", null ],
-    [ "sig256Buffer", "ota_8c.html#a6ae882f31f2728422eb3d256fbecd384", null ]
+    [ "sigBuffer", "ota_8c.html#aebfcd3030a3c9d082a768b15d6bd05e6", null ]
 ];
