@@ -28,6 +28,10 @@
 /* Standard Includes.*/
 #include <stdlib.h>
 #include <string.h>
+
+/* MISRA rule 21.10 prohibits the use of time.h because it is implementation dependent or unspecified.
+ * However, this implementation is on POSIX, which has well defined behavior. */
+/* coverity[misra_c_2012_rule_21_10_violation] */
 #include <time.h>
 
 /* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
@@ -54,9 +58,9 @@
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
 
 /* Time conversion */
-#define OTA_TIME_MS_TO_S( ms )           ( ms / 1000 )
-#define OTA_TIME_MS_TO_NS( ms )          ( ms * 1000000 )
-#define OTA_TIME_MS_LESS_THAN_S( ms )    ( ms % 1000 )
+#define MS_TO_S( ms )           ( ms / 1000 )
+#define MS_TO_NS( ms )          ( ms * 1000000 )
+#define MS_LESS_THAN_S( ms )    ( ms % 1000 )
 
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
@@ -132,8 +136,8 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     errno = 0;
 
     /* Set send timeout. */
-    ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
+    ts.tv_nsec = MS_TO_NS( MS_LESS_THAN_S( timeout ) );
+    ts.tv_sec = MS_TO_S( timeout );
 
     /* Detect overflow. */
     if( ( currentTime > 0 ) && ( ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime ) )
@@ -181,8 +185,8 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     errno = 0;
 
     /* Set receive timeout. */
-    ts.tv_nsec = OTA_TIME_MS_TO_NS( OTA_TIME_MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = OTA_TIME_MS_TO_S( timeout );
+    ts.tv_nsec = MS_TO_NS( MS_LESS_THAN_S( timeout ) );
+    ts.tv_sec = MS_TO_S( timeout );
 
     /* Detect overflow. */
     if( ( currentTime > 0 ) && ( ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime ) )
