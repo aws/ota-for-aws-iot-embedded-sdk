@@ -2952,7 +2952,7 @@ static void receiveAndProcessOtaEvent( void )
 }
 
 static void callOtaCallback( OtaJobEvent_t eEvent,
-                             const void * pData )
+                             void * pData )
 {
     if( otaAgent.OtaAppCallback )
     {
