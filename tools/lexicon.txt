@@ -699,6 +699,7 @@ prvpal
 prxblockbitmap
 prxstreamtopic
 pserverinfo
+psig
 psignature
 psrckey
 pssl
@@ -777,6 +778,7 @@ setplatformimagestate
 shutdownhandler
 sig
 sigalrm
+sigbuffer
 sizeof
 sleeptimems
 sni

@@ -119,7 +119,7 @@
  * @brief A composite cryptographic signature structure able to hold our largest supported signature.
  */
 
-#define kOTA_MaxSignatureSize           256 /* Max bytes supported for a file signature (2048 bit RSA is 256 bytes). */
+#define kOTA_MaxSignatureSize           384 /* Max bytes supported for a file signature (3072 bit RSA is 384 bytes). */
 
 /**
  *
@@ -369,7 +369,7 @@ typedef struct
 {
     uint16_t size;                         /*!< @brief Size, in bytes, of the signature. */
     uint8_t data[ kOTA_MaxSignatureSize ]; /*!< @brief The binary signature data. */
-} Sig256_t;
+} Sig_t;
 
 /**
  * @ingroup ota_struct_types
@@ -406,7 +406,7 @@ typedef struct OtaFileContext
     uint8_t * pDecodeMem;           /*!< @brief Decode memory. */
     uint32_t decodeMemMaxSize;      /*!< @brief Maximum size of the decode memory. */
     uint32_t fileType;              /*!< @brief The file type id set when creating the OTA job. */
-    Sig256_t * pSignature;          /*!< @brief Pointer to the file's signature structure. */
+    Sig_t * pSignature;             /*!< @brief Pointer to the file's signature structure. */
 } OtaFileContext_t;
 
 /**
