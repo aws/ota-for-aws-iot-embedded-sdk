@@ -679,7 +679,7 @@ void OTA_EventProcessingTask( void * pUnused );
  * by an application task. This is functionally equivalent to @ref OTA_EventProcessingTask, except
  * instead of forever looping internally, the user is responsible for periodically calling this function.
  *
- * @note This is NOT thread safe with @ref OTA_EventProcessingTask and the two should never be used in conjuction.
+ * @note This is NOT thread safe with @ref OTA_EventProcessingTask and the two should never be used in conjunction.
  *
  * @param[in] pUnused Can be used to pass down functionality to the agent task, Unused for now.
  *
