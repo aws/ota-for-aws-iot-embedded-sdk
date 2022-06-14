@@ -703,7 +703,7 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysPendingCommit( OtaFileConte
 }
 
 static void mockAppCallback( OtaJobEvent_t event,
-                             const void * pData )
+                             void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
@@ -722,7 +722,7 @@ static void mockAppCallback( OtaJobEvent_t event,
 }
 
 static void mockAppCallbackCustomParsingFails( OtaJobEvent_t event,
-                                               const void * pData )
+                                               void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
