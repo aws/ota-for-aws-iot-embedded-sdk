@@ -472,7 +472,7 @@ static void receiveAndProcessOtaEvent( void );
  * @brief Call OTA callback function if it's registered.
  */
 static void callOtaCallback( OtaJobEvent_t eEvent,
-                             const void * pData );
+                             void * pData );
 
 /* OTA state event handler functions. */
 

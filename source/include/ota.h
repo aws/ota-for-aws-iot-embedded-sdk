@@ -262,7 +262,7 @@ typedef struct OtaJobDocument
  * user successfully. Let user know to handler the buffer.
  *
  * When OtaJobEventUpdateComplete is received, that means OTA has downloaded a full image for the
- * file type which is differnt from configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID.
+ * file type which is different from configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID.
  *
  * When OtaJobEventNoActiveJob is received, that means OTA has received a job document without valid
  * job ID and job document key.
