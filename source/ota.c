@@ -611,7 +611,7 @@ static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];       /*!< Buffer to store job name. */
 static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ]; /*!< Buffer to store data protocol. */
-static Sig256_t sig256Buffer;                               /*!< Buffer to store key file signature. */
+static Sig_t sigBuffer;                                     /*!< Buffer to store key file signature. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
@@ -1563,13 +1563,13 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     DocParseErr_t err = DocParseErrNone;
     size_t actualLen = 0;
     Base64Status_t base64Status = Base64Success;
-    Sig256_t ** pSig256 = pParamAdd;
+    Sig_t ** pSig = pParamAdd;
 
-    /* pSig256 should point to pSignature in OtaFileContext_t, which is statically allocated. */
-    assert( *pSig256 != NULL );
+    /* pSig should point to pSignature in OtaFileContext_t, which is statically allocated. */
+    assert( *pSig != NULL );
 
-    base64Status = base64Decode( ( *pSig256 )->data,
-                                 sizeof( ( *pSig256 )->data ),
+    base64Status = base64Decode( ( *pSig )->data,
+                                 sizeof( ( *pSig )->data ),
                                  &actualLen,
                                  ( const uint8_t * ) pValueInJson,
                                  valueLength );
@@ -1593,7 +1593,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
                    pLogBuffer ) );
 
 
-        ( *pSig256 )->size = ( uint16_t ) actualLen;
+        ( *pSig )->size = ( uint16_t ) actualLen;
     }
 
     return err;
@@ -3160,7 +3160,7 @@ static void initializeLocalBuffers( void )
     otaAgent.fileContext.pProtocols = pProtocolBuffer;
     otaAgent.fileContext.protocolMaxSize = ( uint16_t ) sizeof( pProtocolBuffer );
 
-    otaAgent.fileContext.pSignature = &sig256Buffer;
+    otaAgent.fileContext.pSignature = &sigBuffer;
 }
 
 /*
