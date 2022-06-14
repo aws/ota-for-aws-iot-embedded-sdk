@@ -2831,20 +2831,6 @@ static void agentShutdownCleanup( void )
      * Clear active job name.
      */
     ( void ) memset( otaAgent.pActiveJobName, 0, OTA_JOB_ID_MAX_SIZE );
-
-    /* Clear the entire agent context except for pOtaInterface and OtaAppCallback
-     * to avoid accessing NULL function pointer if other task is running. Don't
-     * reset isOtaInterfaceInited to ensure os.event won't be created again in the
-     * next OTA_Init. */
-    ( void ) memset( &otaAgent.pThingName, 0, sizeof( otaAgent.pThingName ) );
-    ( void ) memset( &otaAgent.fileContext, 0, sizeof( otaAgent.fileContext ) );
-    otaAgent.fileIndex = 0;
-    otaAgent.serverFileID = 0;
-    otaAgent.imageState = OtaImageStateUnknown;
-    otaAgent.numOfBlocksToReceive = 0;
-    ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
-    otaAgent.requestMomentum = 0;
-    otaAgent.unsubscribeOnShutdown = 0;
 }
 
 /*
