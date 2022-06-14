@@ -96,6 +96,11 @@
 
 #define OTA_NUM_MSG_Q_ENTRIES    20
 
+/**
+ * @brief Offset helper.
+ */
+#define U16_OFFSET( type, member )    ( ( uint16_t ) offsetof( type, member ) )
+
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
@@ -3282,7 +3287,7 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     bool updateJob = false;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
-        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, *otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
     };
 
     /* The document structure has an invalid value for ModelParamType_t. */

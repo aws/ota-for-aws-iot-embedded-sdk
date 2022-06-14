@@ -3080,6 +3080,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pFilePath = NULL;
         otaAgent.fileContext.filePathMaxSize = 0;
     }
 
@@ -3091,6 +3092,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pCertFilepath = NULL;
         otaAgent.fileContext.certFilePathMaxSize = 0;
     }
 
@@ -3102,6 +3104,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pStreamName = NULL;
         otaAgent.fileContext.streamNameMaxSize = 0;
     }
 
@@ -3113,6 +3116,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pDecodeMem = NULL;
         otaAgent.fileContext.decodeMemMaxSize = 0;
     }
 
@@ -3124,6 +3128,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pRxBlockBitmap = NULL;
         otaAgent.fileContext.blockBitmapMaxSize = 0;
     }
 
@@ -3135,6 +3140,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pUpdateUrlPath = NULL;
         otaAgent.fileContext.updateUrlMaxSize = 0;
     }
 
@@ -3146,6 +3152,7 @@ static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
     }
     else
     {
+        otaAgent.fileContext.pAuthScheme = NULL;
         otaAgent.fileContext.authSchemeMaxSize = 0;
     }
 }
@@ -3288,13 +3295,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
                 "ticks=%u",
                 ticks ) );
 
-    if( otaAgent.state == OtaAgentStateInit )
-    {
-        /* When in init state, the OTA state machine is not running yet. So directly set state to
-         * stopped. */
-        otaAgent.state = OtaAgentStateStopped;
-    }
-    else if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
+    if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
         otaAgent.unsubscribeOnShutdown = unsubscribeFlag;
 

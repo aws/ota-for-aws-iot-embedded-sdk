@@ -407,6 +407,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  * Signals the OTA agent task to shut down. The OTA agent will unsubscribe from all MQTT job
  * notification topics, stop in progress OTA jobs, if any, and clear all resources.
  *
+ * OTA needs a processing task running OTA_EventProcessingTask to handle shutdown event, or
+ * OTA will shutdown after the processing task is created and scheduled.
+ *
  * @param[in] ticksToWait The number of ticks to wait for the OTA Agent to complete the shutdown process.
  * If this is set to zero, the function will return immediately without waiting. The actual state is
  * returned to the caller. The agent does not sleep for this while but used for busy looping.
