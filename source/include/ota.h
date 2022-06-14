@@ -173,6 +173,7 @@ typedef enum OtaJobEvent
     OtaJobEventReceivedJob = 6,    /*!< @brief OTA event when a new valid AFT-OTA job is received. */
     OtaJobEventUpdateComplete = 7, /*!< @brief OTA event when the update is completed. */
     OtaJobEventNoActiveJob = 8,    /*!< @brief OTA event when no active job is pending. */
+    OtaJobEventStartOtaJob = 9,    /*!< @brief OTA event when a new OTA job is going to start. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 

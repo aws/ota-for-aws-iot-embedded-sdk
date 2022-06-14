@@ -941,6 +941,9 @@ static OtaErr_t processValidFileContext( void )
         {
             LogInfo( ( "Setting OTA data interface." ) );
 
+            /* Notify user that a self-test is started. */
+            callOtaCallback( OtaJobEventStartOtaJob, NULL );
+
             /* Received a valid context so send event to request file blocks. */
             eventMsg.eventId = OtaAgentEventCreateFile;
 
