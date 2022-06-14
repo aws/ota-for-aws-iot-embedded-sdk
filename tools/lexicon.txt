@@ -459,6 +459,7 @@ otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventreceivedjob
 otajobeventselftestfailed
+otajobeventstartotajob
 otajobeventstarttest
 otajobeventupdatecomplete
 otajobparseerrbadmodelinitparams
