@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve AWS IoT Over-the-air Update. Please
+about: Create a report to help us improve AWS IoT Over-the-air Update library. Please
        use this for confirmed bugs. If you suspect something it is best to first
        discuss it on the FreeRTOS forums linked below.
 title: "[BUG]"
