@@ -127,7 +127,6 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
     int pollResult = 0;
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
     if( timeout > INT32_MAX )
     {
@@ -183,52 +182,62 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     int pollResult = 0;
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
-    /* Receive the next event from OTA event queue.*/
-    errno = 0;
-
-    fds.fd = otaEventQueue;
-    fds.events = POLLIN;
-
-    pollResult = poll( &fds, 1, ( int ) timeout );
-
-    if( pollResult < 0 )
+    if( timeout > INT32_MAX )
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        LogError( ( "Failed to receive OTA Event: "
-                    "poll returned error: "
-                    "OtaOsStatus_t=%i "
-                    ",errno=%s",
-                    otaOsStatus,
-                    strerror( errno ) ) );
-    }
-    else if( pollResult == 0 )
-    {
-        otaOsStatus = OtaOsEventQueueReceiveFailed;
-
-        LogDebug( ( "Failed to receive OTA Event before timeout" ) );
+        LogError( ( "Invalid input, Posix_OtaReceiveEvent supports timeout < INT32_MAX, "
+                    "timeout = %u",
+                    timeout ) );
     }
     else
     {
-        if( !( fds.revents & POLLIN ) || ( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 ) )
+        /* Receive the next event from OTA event queue.*/
+        errno = 0;
+
+        fds.fd = otaEventQueue;
+        fds.events = POLLIN;
+
+        pollResult = poll( &fds, 1, ( int ) timeout );
+
+        if( pollResult < 0 )
         {
             otaOsStatus = OtaOsEventQueueReceiveFailed;
 
             LogError( ( "Failed to receive OTA Event: "
-                        "mq_timedreceive returned error or receive events is not POLLIN: "
+                        "poll returned error: "
                         "OtaOsStatus_t=%i "
-                        ",errno=%s, revents=%x",
+                        ",errno=%s",
                         otaOsStatus,
-                        strerror( errno ), fds.revents ) );
+                        strerror( errno ) ) );
+        }
+        else if( pollResult == 0 )
+        {
+            otaOsStatus = OtaOsEventQueueReceiveFailed;
+
+            LogDebug( ( "Failed to receive OTA Event before timeout" ) );
         }
         else
         {
-            LogDebug( ( "OTA Event received." ) );
+            if( !( fds.revents & POLLIN ) || ( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 ) )
+            {
+                otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-            /* copy the data from local buffer.*/
-            ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+                LogError( ( "Failed to receive OTA Event: "
+                            "mq_timedreceive returned error or receive events is not POLLIN: "
+                            "OtaOsStatus_t=%i "
+                            ",errno=%s, revents=%x",
+                            otaOsStatus,
+                            strerror( errno ), fds.revents ) );
+            }
+            else
+            {
+                LogDebug( ( "OTA Event received." ) );
+
+                /* copy the data from local buffer.*/
+                ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+            }
         }
     }
 

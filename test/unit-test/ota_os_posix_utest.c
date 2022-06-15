@@ -204,8 +204,9 @@ void test_OTA_posix_RecvEventTimeout( void )
     OtaEventMsg_t otaEventToRecv = { 0 };
     OtaErr_t result = OtaErrUninitialized;
     time_t recvTimeoutMs = 3000;
-    time_t timeBeforeTestSec = 0;
-    time_t timeAfterTestSec = 0;
+    struct timespec tsStartTime = { 0 };
+    struct timespec tsEndTime = { 0 };
+    double timeDiff = 0;
 
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
@@ -228,7 +229,7 @@ void test_OTA_posix_RecvEventTimeout( void )
     }
 
     /* The time may not accurate enough, so - 1 as buffer. */
-    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeAfterTestSec - timeBeforeTestSec );
+    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeDiff );
 
     result = event.deinit( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
