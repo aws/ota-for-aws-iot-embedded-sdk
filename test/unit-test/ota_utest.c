@@ -2609,7 +2609,7 @@ void test_OTA_EventProcess_WhileStopped()
 {
     /* Reset to known state */
     OtaEventMsg_t otaEvent = { 0 };
-    OtaEventMsg_t * ulQueueEndBefore = NULL; //otaEventQueueEnd;
+    OtaEventMsg_t * ulQueueEndBefore = NULL; /*otaEventQueueEnd; */
 
     otaGoToState( OtaAgentStateReady );
     otaEvent.eventId = OtaAgentEventShutdown;
@@ -2633,8 +2633,6 @@ void test_OTA_EventProcess_WhileStopped()
 void test_OTA_EventProcess_AgentUpdatesReadiness()
 {
     /* Reset to known state */
-    OtaEventMsg_t otaEvent = { 0 };
-
     otaAgent.agentStarted = false;
     otaInterfaces.os.event.send = mockOSEventSend;
     otaInitDefault();
