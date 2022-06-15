@@ -22,6 +22,7 @@ REMOVE_FUNCTION_BODY += setImageStateWithReason
 RESTRICT_FUNCTION_POINTER += processValidFileContext.function_pointer_call.1/resetPalStub
 RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
 RESTRICT_FUNCTION_POINTER += OTA_SignalEvent.function_pointer_call.1/sendEventStub
+RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
