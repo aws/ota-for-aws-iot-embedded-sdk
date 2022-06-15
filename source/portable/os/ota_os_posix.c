@@ -45,6 +45,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <mqueue.h>
+#include <poll.h>
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
@@ -56,11 +57,6 @@
 #define OTA_QUEUE_NAME    "/otaqueue"
 #define MAX_MESSAGES      10
 #define MAX_MSG_SIZE      sizeof( OtaEventMsg_t )
-
-/* Time conversion */
-#define MS_TO_S( ms )           ( ms / 1000 )
-#define MS_TO_NS( ms )          ( ms * 1000000 )
-#define MS_LESS_THAN_S( ms )    ( ms % 1000 )
 
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
@@ -127,42 +123,49 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     struct timespec ts = { 0 };
-    time_t currentTime = time( NULL );
+    struct pollfd fds = { 0 };
+    int pollResult = 0;
 
     ( void ) pEventCtx;
     ( void ) timeout;
 
-    /* Send the event to OTA event queue.*/
-    errno = 0;
-
-    /* Set send timeout. */
-    ts.tv_nsec = MS_TO_NS( MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = MS_TO_S( timeout );
-
-    /* Detect overflow. */
-    if( ( currentTime > 0 ) && ( ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime ) )
-    {
-        ts.tv_sec += currentTime;
-    }
-    else
-    {
-        ts.tv_sec = INT32_MAX;
-    }
-
-    if( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 )
+    if( timeout > INT32_MAX )
     {
         otaOsStatus = OtaOsEventQueueSendFailed;
 
-        LogError( ( "Failed to send event to OTA Event Queue: "
-                    "mq_send returned error: "
-                    "OtaOsStatus_t=%i "
-                    ",errno=%s",
-                    otaOsStatus,
-                    strerror( errno ) ) );
+        LogError( ( "Invalid input, Posix_OtaSendEvent supports timeout < INT32_MAX, "
+                    "timeout = %u",
+                    timeout ) );
     }
     else
     {
-        LogDebug( ( "OTA Event Sent." ) );
+        /* Send the event to OTA event queue.*/
+        errno = 0;
+
+        fds.fd = otaEventQueue;
+        fds.events = POLLOUT;
+
+        pollResult = poll( &fds, 1, ( int ) timeout );
+
+        if( ( pollResult <= 0 ) || !( fds.revents & POLLOUT ) || ( mq_timedsend( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0, &ts ) == -1 ) )
+        {
+            otaOsStatus = OtaOsEventQueueSendFailed;
+
+            LogError( ( "Failed to send event to OTA Event Queue: "
+                        "mq_send returned error: "
+                        "OtaOsStatus_t=%i "
+                        ",errno=%s "
+                        ",revents=%x "
+                        ",pollResult=%d",
+                        otaOsStatus,
+                        strerror( errno ),
+                        fds.revents,
+                        pollResult ) );
+        }
+        else
+        {
+            LogDebug( ( "OTA Event Sent." ) );
+        }
     }
 
     return otaOsStatus;
@@ -176,7 +179,8 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
     struct timespec ts = { 0 };
-    time_t currentTime = time( NULL );
+    struct pollfd fds = { 0 };
+    int pollResult = 0;
 
     ( void ) pEventCtx;
     ( void ) timeout;
@@ -184,44 +188,48 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     /* Receive the next event from OTA event queue.*/
     errno = 0;
 
-    /* Set receive timeout. */
-    ts.tv_nsec = MS_TO_NS( MS_LESS_THAN_S( timeout ) );
-    ts.tv_sec = MS_TO_S( timeout );
+    fds.fd = otaEventQueue;
+    fds.events = POLLIN;
 
-    /* Detect overflow. */
-    if( ( currentTime > 0 ) && ( ( int64_t ) ( INT32_MAX - ts.tv_sec ) >= ( int64_t ) currentTime ) )
-    {
-        ts.tv_sec += currentTime;
-    }
-    else
-    {
-        ts.tv_sec = INT32_MAX;
-    }
+    pollResult = poll( &fds, 1, ( int ) timeout );
 
-    if( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 )
+    if( pollResult < 0 )
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        if( errno == ETIMEDOUT )
-        {
-            LogDebug( ( "Failed to receive OTA Event before timeout" ) );
-        }
-        else
-        {
-            LogError( ( "Failed to receive OTA Event: "
-                        "mq_timedreceive returned error: "
-                        "OtaOsStatus_t=%i "
-                        ",errno=%s, errno=%d",
-                        otaOsStatus,
-                        strerror( errno ), errno ) );
-        }
+        LogError( ( "Failed to receive OTA Event: "
+                    "poll returned error: "
+                    "OtaOsStatus_t=%i "
+                    ",errno=%s",
+                    otaOsStatus,
+                    strerror( errno ) ) );
+    }
+    else if( pollResult == 0 )
+    {
+        otaOsStatus = OtaOsEventQueueReceiveFailed;
+
+        LogDebug( ( "Failed to receive OTA Event before timeout" ) );
     }
     else
     {
-        LogDebug( ( "OTA Event received." ) );
+        if( !( fds.revents & POLLIN ) || ( mq_timedreceive( otaEventQueue, buff, sizeof( buff ), NULL, &ts ) == -1 ) )
+        {
+            otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        /* copy the data from local buffer.*/
-        ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+            LogError( ( "Failed to receive OTA Event: "
+                        "mq_timedreceive returned error or receive events is not POLLIN: "
+                        "OtaOsStatus_t=%i "
+                        ",errno=%s, revents=%x",
+                        otaOsStatus,
+                        strerror( errno ), fds.revents ) );
+        }
+        else
+        {
+            LogDebug( ( "OTA Event received." ) );
+
+            /* copy the data from local buffer.*/
+            ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+        }
     }
 
     return otaOsStatus;
