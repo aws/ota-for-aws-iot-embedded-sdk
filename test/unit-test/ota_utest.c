@@ -2609,7 +2609,7 @@ void test_OTA_EventProcess_WhileStopped()
 {
     /* Reset to known state */
     OtaEventMsg_t otaEvent = { 0 };
-    OtaEventMsg_t * ulQueueEndBefore = NULL; /*otaEventQueueEnd; */
+    OtaEventMsg_t * ulQueueEndBefore = NULL;
 
     otaGoToState( OtaAgentStateReady );
     otaEvent.eventId = OtaAgentEventShutdown;
@@ -2621,7 +2621,7 @@ void test_OTA_EventProcess_WhileStopped()
     otaAgent.pOtaInterface = &otaInterfaces;
     otaInterfaces.os.event.send = mockOSEventSend;
 
-    /* Agent is stopped so event shouldn't be processed and user callbacks/functions shouldn't be excercised. */
+    /* Agent is stopped so event should not be processed and user callbacks/functions should not be exercised. */
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     OTA_SignalEvent( &otaEvent );
     ulQueueEndBefore = otaEventQueueEnd;
@@ -2643,8 +2643,8 @@ void test_OTA_EventProcess_AgentUpdatesReadiness()
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_EventProcess( NULL ) );
     TEST_ASSERT_TRUE( otaAgent.agentStarted );
 
-    /* Readiness only indicates when agent daemon has begun. Since EventProcess was called once,
-     * agent state shouldn't be updated to ready again. Only existing events can update state hereafter. */
+    /* Readiness only indicates when agent daemon has begun. Since agent was cycled once, agent state
+     * should not be updated to ready again. Only existing events can update state hereafter. */
     otaGoToState( OtaAgentStateRequestingFileBlock );
     TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_EventProcess( NULL ) );
 }
