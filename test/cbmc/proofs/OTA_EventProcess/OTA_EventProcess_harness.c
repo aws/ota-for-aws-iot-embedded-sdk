@@ -51,10 +51,9 @@ void receiveAndProcessOtaEvent( void )
 void OTA_EventProcess_harness()
 {
     OtaState_t state;
-    void * pUnused;
 
     do
     {
-        state = OTA_EventProcess( pUnused );
+        state = OTA_EventProcess();
     } while( state != OtaAgentStateStopped );
 }

@@ -7,7 +7,6 @@ addrinfo
 addtogroup
 afr
 agentshutdowncleanup
-agentstarted
 allocateaddrinfolinkedlist
 alpn
 alpnprotoslen

@@ -2602,7 +2602,7 @@ void test_OTA_EventProcess_WhileNotStopped()
     otaEvent.eventId = OtaAgentEventShutdown;
     OTA_SignalEvent( &otaEvent );
 
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess( NULL ) );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
 }
 
 void test_OTA_EventProcess_WhileStopped()
@@ -2611,42 +2611,34 @@ void test_OTA_EventProcess_WhileStopped()
     OtaEventMsg_t otaEvent = { 0 };
     OtaEventMsg_t * ulQueueEndBefore = NULL;
 
-    otaGoToState( OtaAgentStateReady );
-    otaEvent.eventId = OtaAgentEventShutdown;
-    OTA_SignalEvent( &otaEvent );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess( NULL ) );
+    otaGoToState( OtaAgentStateStopped );
 
     /*  Mimic the agent state as though it was shutdown after running */
-    otaAgent.agentStarted = true;
-    otaAgent.pOtaInterface = &otaInterfaces;
     otaInterfaces.os.event.send = mockOSEventSend;
+    otaAgent.pOtaInterface = &otaInterfaces;
 
     /* Agent is stopped so event should not be processed and user callbacks/functions should not be exercised. */
     otaEvent.eventId = OtaAgentEventReceivedJobDocument;
     OTA_SignalEvent( &otaEvent );
     ulQueueEndBefore = otaEventQueueEnd;
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess( NULL ) );
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
     TEST_ASSERT_EQUAL( otaEventQueueEnd, ulQueueEndBefore );
-    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_EventProcess_AgentUpdatesReadiness()
 {
     /* Reset to known state */
-    otaAgent.agentStarted = false;
     otaInterfaces.os.event.send = mockOSEventSend;
-    otaInitDefault();
     otaGoToState( OtaAgentStateStopped );
+
+    /* Internally calls OTA_Init which will set state to OtaAgentStateInit, which will allow 
+     * EventProcess to set state to OtaAgentStateReady */
+    otaInitDefault();
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
 
     /* Calling Event Process should once should put agent into ready state,
      * and update agent to indicate readiness */
-    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_EventProcess( NULL ) );
-    TEST_ASSERT_TRUE( otaAgent.agentStarted );
-
-    /* Readiness only indicates when agent daemon has begun. Since agent was cycled once, agent state
-     * should not be updated to ready again. Only existing events can update state hereafter. */
-    otaGoToState( OtaAgentStateRequestingFileBlock );
-    TEST_ASSERT_EQUAL( OtaAgentStateRequestingFileBlock, OTA_EventProcess( NULL ) );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_EventProcess() );
 }
 
 
