@@ -2631,8 +2631,8 @@ void test_OTA_EventProcess_AgentUpdatesReadiness()
     otaInterfaces.os.event.send = mockOSEventSend;
     otaGoToState( OtaAgentStateStopped );
 
-    /* Internally calls OTA_Init which will set state to OtaAgentStateInit, which will allow 
-     * EventProcess to set state to OtaAgentStateReady */
+    /* Internally calls OTA_Init which will set state to initialized state, which will allow
+     * OTA_EventProcess to set state to OtaAgentStateReady */
     otaInitDefault();
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
 

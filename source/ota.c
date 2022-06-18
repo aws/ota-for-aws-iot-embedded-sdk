@@ -2981,9 +2981,9 @@ void OTA_EventProcessingTask( void * pUnused )
 
 OtaState_t OTA_EventProcess( void )
 {
-    /* Technically, setting readiness on this condition does not match conditions which EventProcessingTask
+    /* Technically, setting readiness on this condition does not match conditions which OTA_EventProcessingTask
      * sets readiness, as this function only sets readiness with preceding call to OTA_Init, whereas
-     * EventProcessingTask does not, and sets readiness independent of OTA_Init.
+     * OTA_EventProcessingTask does not, and sets readiness independent of OTA_Init.
      */
     if( otaAgent.state == OtaAgentStateInit )
     {
