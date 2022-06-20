@@ -3478,10 +3478,13 @@ OtaErr_t OTA_Resume( void )
         /*
          * Resume timers.
          */
-        ( void ) otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
-                                                         "OtaSelfTestTimer",
-                                                         otaconfigSELF_TEST_RESPONSE_WAIT_MS,
-                                                         otaTimerCallback );
+        if( platformInSelftest() )
+        {
+            ( void ) otaAgent.pOtaInterface->os.timer.start( OtaSelfTestTimer,
+                                                             "OtaSelfTestTimer",
+                                                             otaconfigSELF_TEST_RESPONSE_WAIT_MS,
+                                                             otaTimerCallback );
+        }
 
         ( void ) otaAgent.pOtaInterface->os.timer.start( OtaRequestTimer,
                                                          "OtaRequestTimer",
