@@ -1347,7 +1347,7 @@ void test_OTA_ActivateNewImage()
  * should fail. */
 void test_OTA_ActivateNewImageWhenStopped()
 {
-    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ActivateNewImageNullPalActivate()

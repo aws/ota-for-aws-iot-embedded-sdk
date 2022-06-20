@@ -474,6 +474,11 @@ static void receiveAndProcessOtaEvent( void );
 static void callOtaCallback( OtaJobEvent_t eEvent,
                              const void * pData );
 
+/**
+ * @brief Clear all messages in the event queue.
+ */
+static void resetEventQueue( void );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -1343,12 +1348,12 @@ static OtaErr_t shutdownHandler( const OtaEventData_t * pEventData )
      * next OTA_Init. */
     ( void ) memset( &otaAgent.pThingName, 0, sizeof( otaAgent.pThingName ) );
     ( void ) memset( &otaAgent.fileContext, 0, sizeof( otaAgent.fileContext ) );
-    ( void ) memset( &otaAgent.fileIndex, 0, sizeof( otaAgent.fileIndex ) );
-    ( void ) memset( &otaAgent.serverFileID, 0, sizeof( otaAgent.serverFileID ) );
-    ( void ) memset( &otaAgent.numOfBlocksToReceive, 0, sizeof( otaAgent.numOfBlocksToReceive ) );
     ( void ) memset( &otaAgent.statistics, 0, sizeof( otaAgent.statistics ) );
-    ( void ) memset( &otaAgent.requestMomentum, 0, sizeof( otaAgent.requestMomentum ) );
-    ( void ) memset( &otaAgent.unsubscribeOnShutdown, 0, sizeof( otaAgent.unsubscribeOnShutdown ) );
+    otaAgent.fileIndex = 0;
+    otaAgent.serverFileID = 0;
+    otaAgent.numOfBlocksToReceive = 0;
+    otaAgent.requestMomentum = 0;
+    otaAgent.unsubscribeOnShutdown = 0;
     otaAgent.imageState = OtaImageStateUnknown;
 
     return OtaErrNone;
@@ -2940,7 +2945,7 @@ static void receiveAndProcessOtaEvent( void )
         /*
          * Receive the next event from the OTA event queue to process.
          */
-        if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+        if( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, configOTA_POLLING_EVENTS_TIMEOUT_MS ) == OtaOsSuccess )
         {
             /*
              * Search transition index if available in the table.
@@ -3016,7 +3021,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     if( otaAgent.state == OtaAgentStateStopped )
     {
         retVal = false;
-        LogDebug( ( "Send event failed, OTA is stopped." ) );
+        LogError( ( "Send event failed, OTA is stopped." ) );
     }
     else
     {
@@ -3156,6 +3161,16 @@ static void initializeLocalBuffers( void )
     otaAgent.fileContext.pSignature = &sigBuffer;
 }
 
+static void resetEventQueue( void )
+{
+    OtaEventMsg_t eventMsg = { 0 };
+
+    while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
+    {
+        LogWarn( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
+    }
+}
+
 /*
  * Public API to initialize the OTA Agent.
  *
@@ -3171,7 +3186,6 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
 {
     /* Return value from this function */
     OtaErr_t returnStatus = OtaErrUninitialized;
-    OtaEventMsg_t eventMsg = { 0 };
 
     ( void ) pOtaEventStrings;      /* For suppressing compiler-warning: unused variable. */
     ( void ) pOtaAgentStateStrings; /* For suppressing compiler-warning: unused variable. */
@@ -3223,10 +3237,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
         else
         {
             /* Drop all events that created after OTA_Shutdown. */
-            while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
-            {
-                LogDebug( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
-            }
+            resetEventQueue();
         }
 
         if( pThingName == NULL )
@@ -3382,7 +3393,7 @@ OtaErr_t OTA_ActivateNewImage( void )
      * and not return unless there is a problem within the PAL layer. If it does return,
      * output an error message. The device may need to be reset manually.
      */
-    if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
+    if( ( otaAgent.pOtaInterface != NULL ) && ( otaAgent.pOtaInterface->pal.activate != NULL ) )
     {
         palStatus = otaAgent.pOtaInterface->pal.activate( &( otaAgent.fileContext ) );
     }

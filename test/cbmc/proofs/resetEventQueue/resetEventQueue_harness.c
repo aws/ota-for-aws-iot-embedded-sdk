@@ -21,48 +21,28 @@
  */
 
 /**
- * @file OTA_Init_harness.c
- * @brief Implements the proof harness for OTA_Init function.
+ * @file resetEventQueue_harness.c
+ * @brief Implements the proof harness for resetEventQueue function.
  */
 /* Include headers for ota agent. */
 #include "ota.h"
 #include <stdlib.h>
 
-OtaOsStatus_t init( OtaEventContext_t * pEventCtx )
+OtaOsStatus_t recv( OtaEventContext_t * pEventCtx,
+                    void * pEventMsg,
+                    uint32_t timeout )
 {
     OtaOsStatus_t status;
 
     return status;
 }
 
-void OTA_Init_harness()
+void resetEventQueue_harness()
 {
-    OtaErr_t err;
-    OtaAppBuffer_t otaBuffer;
     OtaInterfaces_t otaInterface;
-    uint8_t * pThingName;
-    OtaAppCallback_t otaAppCallback;
-    size_t size;
 
     /* Initialize the function pointer to a stub. */
-    otaInterface.os.event.init = init;
+    otaInterface.os.event.recv = recv;
 
-    /* The maximum size of a valid name of a thing is defined by otaconfigMAX_THINGNAME_LEN. The upper bound
-     * of size is selected to consider the cases where size of the string is greater than maximum value. */
-    __CPROVER_assume( size > 0 && size <= otaconfigMAX_THINGNAME_LEN + 1 );
-
-    pThingName = ( uint8_t * ) malloc( sizeof( uint8_t ) * size );
-
-    /* pThingName is a string and should end with a NULL character. */
-    if( pThingName != NULL )
-    {
-        pThingName[ size - 1 ] = '\0';
-    }
-
-    err = OTA_Init( &otaBuffer, &otaInterface, pThingName, otaAppCallback );
-
-    /* OTA_Init must always return either OtaErrNone or OtaErrUninitialized. */
-    __CPROVER_assert( ( err == OtaErrNone ) || ( err == OtaErrUninitialized ), "Invalid Return value: Expected OtaErrNone" );
-
-    free( pThingName );
+    resetEventQueue();
 }
