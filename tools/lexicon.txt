@@ -750,7 +750,7 @@ requestjobhandler
 requestmomentum
 requesttimercallback
 resetdevice
-reseteventqueue 
+reseteventqueue
 resumehandler
 retryutilsretriesexhausted
 retryutilssuccess
