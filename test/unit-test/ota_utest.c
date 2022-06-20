@@ -151,6 +151,12 @@ static uint8_t pLargerJobNameBuffer[ OTA_JOB_ID_MAX_SIZE * 2 ];
 /* A counter to record how many file blocks are received. */
 static int otaReceivedFileBlockNumber = 0;
 
+/* A boolean reflecting the state of the self-test timer. */
+static bool bSelfTestTimerIsActive = false;
+
+/* A boolean reflecting the state of the data request timer. */
+static bool bRequestTimerIsActive = false;
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -351,6 +357,26 @@ static OtaOsStatus_t stubOSTimerStart( OtaTimerId_t timerId,
     return OtaOsSuccess;
 }
 
+static OtaOsStatus_t mockOSTimerStart( OtaTimerId_t timerId,
+                                       const char * const pTimerName,
+                                       const uint32_t timeout,
+                                       OtaTimerCallback_t callback )
+{
+    if( timerId == OtaRequestTimer )
+    {
+        bRequestTimerIsActive = true;
+    }
+    else if( timerId == OtaSelfTestTimer )
+    {
+        bSelfTestTimerIsActive = true;
+    }
+
+    ( void ) pTimerName;
+    ( void ) timeout;
+    ( void ) callback;
+    return OtaOsSuccess;
+}
+
 static OtaOsStatus_t mockOSTimerInvokeCallback( OtaTimerId_t timerId,
                                                 const char * const pTimerName,
                                                 const uint32_t timeout,
@@ -377,6 +403,20 @@ static OtaOsStatus_t mockOSTimerStartAlwaysFail( OtaTimerId_t unused_1,
 static OtaOsStatus_t stubOSTimerStop( OtaTimerId_t timerId )
 {
     ( void ) timerId;
+    return OtaOsSuccess;
+}
+
+static OtaOsStatus_t mockOSTimerStop( OtaTimerId_t timerId )
+{
+    if( timerId == OtaRequestTimer )
+    {
+        bRequestTimerIsActive = false;
+    }
+    else if( timerId == OtaSelfTestTimer )
+    {
+        bSelfTestTimerIsActive = false;
+    }
+
     return OtaOsSuccess;
 }
 
@@ -1200,6 +1240,56 @@ void test_OTA_ResumeFailedWhenSuspended()
     /* Resume should fail and OTA agent should remain in suspend state. */
     TEST_ASSERT_EQUAL( OtaErrSignalEventFailed, OTA_Resume() );
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
+}
+
+void test_OTA_ResumeSelfTestTimerRestart()
+{
+    otaGoToState( OtaAgentStateSuspended );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
+
+    /* Reset timer state and configure mocked timer function for tracking timer state */
+    bSelfTestTimerIsActive = false;
+    bRequestTimerIsActive = false;
+    otaInterfaces.os.timer.start = mockOSTimerStart;
+    otaInterfaces.os.timer.stop = mockOSTimerStop;
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Let the PAL always says it's in self test. */
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageStateAlwaysPendingCommit;
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
+
+    /* Self test timer should be restarted if the device is self testing. */
+    TEST_ASSERT_TRUE( bSelfTestTimerIsActive );
+    TEST_ASSERT_TRUE( bRequestTimerIsActive );
+
+    /* As this was a nominal flow, OTA should resume without issue. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+}
+
+void test_OTA_ResumeNoSelfTestTimerRestart()
+{
+    otaGoToState( OtaAgentStateSuspended );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
+
+    /* Reset timer state and configure mocked timer function for tracking timer state */
+    bSelfTestTimerIsActive = false;
+    bRequestTimerIsActive = false;
+    otaInterfaces.os.timer.start = mockOSTimerStart;
+    otaInterfaces.os.timer.stop = mockOSTimerStop;
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Let the PAL always says it's not in self test. */
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageStateAlwaysInvalid;
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
+
+    /* Self test timer should NOT be restarted if the device is not self testing. */
+    TEST_ASSERT_FALSE( bSelfTestTimerIsActive );
+    TEST_ASSERT_TRUE( bRequestTimerIsActive );
+
+    /* As this was a nominal flow, OTA should resume without issue. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
 }
 
 void test_OTA_Statistics()
