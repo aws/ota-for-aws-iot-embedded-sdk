@@ -41,7 +41,8 @@ void OTA_Resume_harness()
 {
     OtaInterfaces_t otaInterface;
 
-    /* Initialize os timers. */
+    /* Initialize os timers and self-test state fetcher */
+    otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
     otaInterface.os.timer.start = startTimerStub;
     otaAgent.pOtaInterface = &otaInterface;
 
