@@ -86,6 +86,7 @@ var ota_8h =
     [ "OTA_Suspend", "ota_8h.html#a65b61ae5dd477e8b2e6c88ea0473c62b", null ],
     [ "OTA_Resume", "ota_8h.html#ae9d40388ac87e4ac93288de37c98a138", null ],
     [ "OTA_EventProcessingTask", "ota_8h.html#ab3a0cfdc8694a606a1d736b2f54fb113", null ],
+    [ "OTA_EventProcess", "ota_8h.html#a733199fef860721888bbf9ee46bd4056", null ],
     [ "OTA_SignalEvent", "ota_8h.html#a2564144f284db077b8947ba58a6a72bb", null ],
     [ "OTA_GetStatistics", "ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22", null ],
     [ "OTA_Err_strerror", "ota_8h.html#a39a9b75e749cf89593c4cf411327ce47", null ],

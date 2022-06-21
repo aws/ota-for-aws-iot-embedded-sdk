@@ -54,6 +54,7 @@ var ota_8c =
     [ "jobNotificationHandler", "ota_8c.html#a59ee2cfa7669b761f5dfd4dbee7545f8", null ],
     [ "executeHandler", "ota_8c.html#a497bd4e67afe70d3aafb00abc55979ae", null ],
     [ "OTA_EventProcessingTask", "ota_8c.html#ab3a0cfdc8694a606a1d736b2f54fb113", null ],
+    [ "OTA_EventProcess", "ota_8c.html#a733199fef860721888bbf9ee46bd4056", null ],
     [ "OTA_SignalEvent", "ota_8c.html#a2564144f284db077b8947ba58a6a72bb", null ],
     [ "OTA_Init", "ota_8c.html#a9011a6007328dfb3bfde5fdb645fa52f", null ],
     [ "OTA_Shutdown", "ota_8c.html#ac779291eb93f4e0e6459816e60e13b09", null ],
