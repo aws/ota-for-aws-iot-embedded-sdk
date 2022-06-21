@@ -3169,7 +3169,7 @@ static void resetEventQueue( void )
     {
         LogWarn( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
 
-        /* Call handleUnexpectedEvents to notify user to release resources if neccessary. */
+        /* Call handleUnexpectedEvents to notify user to release resources if necessary. */
         handleUnexpectedEvents( &eventMsg );
     }
 }
