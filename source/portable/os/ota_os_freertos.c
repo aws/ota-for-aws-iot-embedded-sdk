@@ -144,7 +144,7 @@ OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        LogError( ( "Failed to receive event or timeout from OTA Event Queue: "
+        LogDebug( ( "Failed to receive event or timeout from OTA Event Queue: "
                     "xQueueReceive returned error: "
                     "OtaOsStatus_t=%i ",
                     otaOsStatus ) );

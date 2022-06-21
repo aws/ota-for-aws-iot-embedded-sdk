@@ -3168,6 +3168,9 @@ static void resetEventQueue( void )
     while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
     {
         LogWarn( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
+
+        /* Call handleUnexpectedEvents to notify user to release resources if neccessary. */
+        handleUnexpectedEvents( &eventMsg );
     }
 }
 
