@@ -2591,6 +2591,58 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_EventProcess_WhileNotStopped()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Shutting down agent should stop OTA agent */
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
+}
+
+void test_OTA_EventProcess_WhileStopped()
+{
+    /* Reset to known state */
+    OtaEventMsg_t otaEvent = { 0 };
+    OtaEventMsg_t * ulQueueEndBefore = NULL;
+
+    otaGoToState( OtaAgentStateStopped );
+
+    /*  Mimic the agent state as though it was shutdown after running */
+    otaInterfaces.os.event.send = mockOSEventSend;
+    otaAgent.pOtaInterface = &otaInterfaces;
+
+    /* Agent is stopped so event should not be processed and user callbacks/functions should not be exercised. */
+    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+    OTA_SignalEvent( &otaEvent );
+    ulQueueEndBefore = otaEventQueueEnd;
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
+    TEST_ASSERT_EQUAL( otaEventQueueEnd, ulQueueEndBefore );
+}
+
+void test_OTA_EventProcess_AgentUpdatesReadiness()
+{
+    /* Reset to known state */
+    otaInterfaces.os.event.send = mockOSEventSend;
+    otaGoToState( OtaAgentStateStopped );
+
+    /* Internally calls OTA_Init which will set state to initialized state, which will allow
+     * OTA_EventProcess to set state to OtaAgentStateReady */
+    otaInitDefault();
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+
+    /* Calling Event Process should once should put agent into ready state,
+     * and update agent to indicate readiness */
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_EventProcess() );
+}
+
+
+
 /* ========================================================================== */
 /* ====================== OTA MQTT and HTTP Unit Tests ====================== */
 /* ========================================================================== */
