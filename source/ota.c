@@ -1008,7 +1008,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, pEventData );
 
     return retVal;
 }
@@ -1279,7 +1279,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, pEventData );
 
     if( err != OtaErrNone )
     {
@@ -2350,7 +2350,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
         /* Let the application know to release buffer.*/
-        callOtaCallback( OtaJobEventReceivedJob, ( void * ) &jobDoc );
+        callOtaCallback( OtaJobEventReceivedJob, &jobDoc );
     }
     else
     {
@@ -2829,14 +2829,14 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
         case OtaAgentEventReceivedJobDocument:
 
             /* Let the application know to release buffer.*/
-            callOtaCallback( OtaJobEventProcessed, ( void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, pEventMsg->pEventData );
 
             break;
 
         case OtaAgentEventReceivedFileBlock:
 
             /* Let the application know to release buffer.*/
-            callOtaCallback( OtaJobEventProcessed, ( void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, pEventMsg->pEventData );
 
             /* File block was not processed, increment the statistics. */
             otaAgent.statistics.otaPacketsDropped++;
