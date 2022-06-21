@@ -1008,7 +1008,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     return retVal;
 }
@@ -1279,7 +1279,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     if( err != OtaErrNone )
     {
