@@ -24,6 +24,8 @@ RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatf
 RESTRICT_FUNCTION_POINTER += OTA_SignalEvent.function_pointer_call.1/sendEventStub
 RESTRICT_FUNCTION_POINTER += callOtaCallback.function_pointer_call.1/otaAppCallbackStub
 
+UNWINDSET += strlen.0:255
+
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
 # restrict the number of EXPENSIVE CBMC jobs running at once. See the
