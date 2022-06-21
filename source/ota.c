@@ -930,6 +930,7 @@ static OtaErr_t processValidFileContext( void )
 {
     OtaErr_t retVal = OtaErrNone;
     OtaEventMsg_t eventMsg = { 0 };
+    OtaJobDocument_t jobDoc = { 0 };
 
     /* If the platform is not in the self_test state, initiate file download. */
     if( platformInSelftest() == false )
@@ -941,8 +942,15 @@ static OtaErr_t processValidFileContext( void )
         {
             LogInfo( ( "Setting OTA data interface." ) );
 
-            /* Notify user that a self-test is started. */
-            callOtaCallback( OtaJobEventStartOtaJob, NULL );
+            /* Set the job info from OTA context. */
+            jobDoc.pJobId = otaAgent.pActiveJobName;
+            jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
+            jobDoc.fileTypeId = otaAgent.fileContext.fileType;
+            jobDoc.status = JobStatusInProgress;
+            jobDoc.reason = JobReasonReceiving;
+
+            /* Notify user that an OTA job is started. */
+            callOtaCallback( OtaJobEventStartOtaJob, ( const void * ) &jobDoc );
 
             /* Received a valid context so send event to request file blocks. */
             eventMsg.eventId = OtaAgentEventCreateFile;
