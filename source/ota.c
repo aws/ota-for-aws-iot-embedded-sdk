@@ -3012,6 +3012,25 @@ void OTA_EventProcessingTask( void * pUnused )
     }
 }
 
+OtaState_t OTA_EventProcess( void )
+{
+    /* Technically, setting readiness on this condition does not match conditions which OTA_EventProcessingTask
+     * sets readiness, as this function only sets readiness with preceding call to OTA_Init, whereas
+     * OTA_EventProcessingTask does not, and sets readiness independent of OTA_Init.
+     */
+    if( otaAgent.state == OtaAgentStateInit )
+    {
+        otaAgent.state = OtaAgentStateReady;
+    }
+
+    if( otaAgent.state != OtaAgentStateStopped )
+    {
+        receiveAndProcessOtaEvent();
+    }
+
+    return otaAgent.state;
+}
+
 bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
 {
     bool retVal = false;
