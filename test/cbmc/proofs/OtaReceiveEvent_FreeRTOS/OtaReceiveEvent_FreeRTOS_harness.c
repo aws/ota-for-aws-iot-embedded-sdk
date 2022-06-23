@@ -27,6 +27,7 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 #include "ota_private.h"
+#include "FreeRTOSConfig.h"
 
 void OtaReceiveEvent_FreeRTOS_harness()
 {
@@ -39,6 +40,9 @@ void OtaReceiveEvent_FreeRTOS_harness()
 
     /* pEventMsg is statically declared before it is used in this function. */
     __CPROVER_assume( pEventMsg != NULL );
+
+    /* To avoid pdMS_TO_TICKS from integer overflow. */
+    __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
 
     osStatus = OtaReceiveEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
 

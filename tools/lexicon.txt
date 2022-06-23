@@ -278,6 +278,7 @@ ip
 ip
 isinselftest
 iso
+isotainterfaceinited
 jobcallback
 jobdoc
 jobdoclength
@@ -749,6 +750,7 @@ requestjobhandler
 requestmomentum
 requesttimercallback
 resetdevice
+reseteventqueue
 resumehandler
 retryutilsretriesexhausted
 retryutilssuccess
