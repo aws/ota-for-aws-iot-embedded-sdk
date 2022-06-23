@@ -472,7 +472,7 @@ static void receiveAndProcessOtaEvent( void );
  * @brief Call OTA callback function if it's registered.
  */
 static void callOtaCallback( OtaJobEvent_t eEvent,
-                             const void * pData );
+                             void * pData );
 
 /**
  * @brief Clear all messages in the event queue.
@@ -1014,7 +1014,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     return retVal;
 }
@@ -1285,7 +1285,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventData );
+    callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     if( err != OtaErrNone )
     {
@@ -2367,7 +2367,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         jobDoc.fileTypeId = otaAgent.fileContext.fileType;
 
         /* Let the application know to release buffer.*/
-        callOtaCallback( OtaJobEventReceivedJob, ( const void * ) &jobDoc );
+        callOtaCallback( OtaJobEventReceivedJob, &jobDoc );
     }
     else
     {
@@ -2855,14 +2855,14 @@ static void handleUnexpectedEvents( const OtaEventMsg_t * pEventMsg )
         case OtaAgentEventReceivedJobDocument:
 
             /* Let the application know to release buffer.*/
-            callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, pEventMsg->pEventData );
 
             break;
 
         case OtaAgentEventReceivedFileBlock:
 
             /* Let the application know to release buffer.*/
-            callOtaCallback( OtaJobEventProcessed, ( const void * ) pEventMsg->pEventData );
+            callOtaCallback( OtaJobEventProcessed, pEventMsg->pEventData );
 
             /* File block was not processed, increment the statistics. */
             otaAgent.statistics.otaPacketsDropped++;
@@ -2978,7 +2978,7 @@ static void receiveAndProcessOtaEvent( void )
 }
 
 static void callOtaCallback( OtaJobEvent_t eEvent,
-                             const void * pData )
+                             void * pData )
 {
     if( otaAgent.OtaAppCallback )
     {
