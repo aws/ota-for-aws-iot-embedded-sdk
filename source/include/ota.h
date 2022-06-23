@@ -237,6 +237,7 @@ typedef struct OtaJobDocument
  *      OtaJobEventReceivedJob        OTA event when a new valid job is received.
  *      OtaJobEventUpdateComplete     OTA event when the update is completed.
  *      OtaJobEventNoActiveJob        OTA event when no active job is pending.
+ *      OtaJobEventStartOtaJob        OTA event when a new OTA job is going to start.
  *
  * When OtaJobEventActivate is received, the job status details have been updated with
  * the state as ready for Self Test. After reboot, the new firmware will (normally) be
@@ -268,6 +269,9 @@ typedef struct OtaJobDocument
  * When OtaJobEventNoActiveJob is received, that means OTA has received a job document without valid
  * job ID and job document key.
  *
+ * When OtaJobEventStartOtaJob is received, that means OTA has received a verified OTA job and OTA's
+ * going to handle it.
+ *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
  *
  * @param[in] pData Optional data related to the event.
@@ -283,6 +287,7 @@ typedef struct OtaJobDocument
  * OtaJobEventReceivedJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, jobDocLength, and fileTypeId
  * OtaJobEventUpdateComplete|OtaJobDocument_t|status, reason and subReason
  * OtaJobEventNoActiveJob|NULL|nothing
+ * OtaJobEventStartOtaJob|OtaJobDocument_t|pJobId, jobIdLength, fileTypeId, status, reason
  *
  */
 typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,

@@ -956,7 +956,7 @@ static OtaErr_t processValidFileContext( void )
             jobDoc.reason = JobReasonReceiving;
 
             /* Notify user that an OTA job is started. */
-            callOtaCallback( OtaJobEventStartOtaJob, ( const void * ) &jobDoc );
+            callOtaCallback( OtaJobEventStartOtaJob, &jobDoc );
 
             /* Received a valid context so send event to request file blocks. */
             eventMsg.eventId = OtaAgentEventCreateFile;
