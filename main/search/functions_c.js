@@ -6,5 +6,6 @@ var searchData=
   ['requestfileblock_5fmqtt_3',['requestFileBlock_Mqtt',['../ota__mqtt__private_8h.html#ad9130a843fa7901fc0d59bd630b678bb',1,'requestFileBlock_Mqtt(OtaAgentContext_t *pAgentCtx):&#160;ota_mqtt.c'],['../ota__mqtt_8c.html#ad9130a843fa7901fc0d59bd630b678bb',1,'requestFileBlock_Mqtt(OtaAgentContext_t *pAgentCtx):&#160;ota_mqtt.c']]],
   ['requestjob_5fmqtt_4',['requestJob_Mqtt',['../ota__mqtt__private_8h.html#ae5d088697ab942fa1d7a88d83959bb75',1,'requestJob_Mqtt(OtaAgentContext_t *pAgentCtx):&#160;ota_mqtt.c'],['../ota__mqtt_8c.html#ae5d088697ab942fa1d7a88d83959bb75',1,'requestJob_Mqtt(OtaAgentContext_t *pAgentCtx):&#160;ota_mqtt.c']]],
   ['requestjobhandler_5',['requestJobHandler',['../ota_8c.html#acfd737a3f8be41849474d97ddbe695a6',1,'ota.c']]],
-  ['resumehandler_6',['resumeHandler',['../ota_8c.html#af0188eca0c85dcac5fed956f21d9207c',1,'ota.c']]]
+  ['reseteventqueue_6',['resetEventQueue',['../ota_8c.html#aba376efc2aed2e83c858086f3e279fd5',1,'ota.c']]],
+  ['resumehandler_7',['resumeHandler',['../ota_8c.html#af0188eca0c85dcac5fed956f21d9207c',1,'ota.c']]]
 ];

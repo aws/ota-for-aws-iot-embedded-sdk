@@ -26,5 +26,6 @@ var searchData=
   ['initializeappbuffers_23',['initializeAppBuffers',['../ota_8c.html#a0bafd2f7eb047f40f4ea7ac0e77f8af1',1,'ota.c']]],
   ['initializelocalbuffers_24',['initializeLocalBuffers',['../ota_8c.html#a238a1d0b19c5ff32e5a9d1f4126dded5',1,'ota.c']]],
   ['inselftesthandler_25',['inSelfTestHandler',['../ota_8c.html#acad9250775186fe3986c5ccd72c8942d',1,'ota.c']]],
-  ['isinselftest_26',['isInSelfTest',['../struct_ota_file_context__t.html#a4bed61a2b0553f841bbaca9abd0a1560',1,'OtaFileContext_t']]]
+  ['isinselftest_26',['isInSelfTest',['../struct_ota_file_context__t.html#a4bed61a2b0553f841bbaca9abd0a1560',1,'OtaFileContext_t']]],
+  ['isotainterfaceinited_27',['isOtaInterfaceInited',['../struct_ota_agent_context__t.html#a23f187a6f425cf0e8991625eae3e90c4',1,'OtaAgentContext_t']]]
 ];

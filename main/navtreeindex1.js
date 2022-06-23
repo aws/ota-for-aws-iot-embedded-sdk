@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22":[12,0,21],
 "ota_8h.html#a65b61ae5dd477e8b2e6c88ea0473c62b":[12,0,16],
 "ota_8h.html#a6db3f9cb417cb135cb0e68f5b5f2b11f":[12,0,11],
 "ota_8h.html#a733199fef860721888bbf9ee46bd4056":[12,0,19],
@@ -69,7 +70,7 @@ var NAVTREEINDEX1 =
 "ota__cbor__private_8h.html#ae1a72f8890e00accb25abe1ab59f17a4":[12,3,6],
 "ota__cbor__private_8h_source.html":[12,3],
 "ota__config__defaults_8h.html":[12,4],
-"ota__config__defaults_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba":[12,4,19],
+"ota__config__defaults_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba":[12,4,20],
 "ota__config__defaults_8h.html#a169ad4ac7245555d858f10d4df42be25":[12,4,10],
 "ota__config__defaults_8h.html#a19a42bab9dafd45b4c85709e55137534":[12,4,5],
 "ota__config__defaults_8h.html#a1c40af496bc98a8dd73eac8366e13317":[12,4,1],
@@ -80,15 +81,16 @@ var NAVTREEINDEX1 =
 "ota__config__defaults_8h.html#a68e7932e806aed9025cb815b1cbf2104":[12,4,4],
 "ota__config__defaults_8h.html#a6bb41cb18b72bfc7ef2046c25af3ab0c":[12,4,13],
 "ota__config__defaults_8h.html#a766d34dee20cbc36e1b440838f3adecb":[12,4,2],
-"ota__config__defaults_8h.html#a7da92048aaf0cbfcacde9539c98a0e05":[12,4,18],
-"ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1":[12,4,17],
+"ota__config__defaults_8h.html#a7da92048aaf0cbfcacde9539c98a0e05":[12,4,19],
+"ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1":[12,4,18],
 "ota__config__defaults_8h.html#a946fe151bf744627fdafcff15b7bb318":[12,4,0],
 "ota__config__defaults_8h.html#a95dac9f2da0f3bd64c2183caa6292efe":[12,4,12],
 "ota__config__defaults_8h.html#a96092c27429db9fcabd02c0c6a15756a":[12,4,16],
 "ota__config__defaults_8h.html#aac052a7234601140e882f0075f196554":[12,4,7],
 "ota__config__defaults_8h.html#ac6198be4c4b8952d25662b260e9e8323":[12,4,11],
+"ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1":[12,4,17],
 "ota__config__defaults_8h.html#ae3ba450609211d1e00f1c540ca889fd8":[12,4,8],
-"ota__config__defaults_8h.html#af60e8ffc327d136e5d0d8441ed98c98d":[12,4,20],
+"ota__config__defaults_8h.html#af60e8ffc327d136e5d0d8441ed98c98d":[12,4,21],
 "ota__config__defaults_8h.html#afc4d1763ec6f9abaacdace650252e7cd":[12,4,15],
 "ota__config__defaults_8h_source.html":[12,4],
 "ota__http_8c.html":[12,16],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91d":[12,12,55],
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da0a3bc7065269e3b2e14c4e1977662883":[12,12,55,9],
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da149b4eb79d99914e4813ffeb6fd55d3b":[12,12,55,2],
-"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da2e87c516779990608259dbc5b9143512":[12,12,55,5],
-"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da44dc594af083c46a71cf769cce92d61e":[12,12,55,12],
-"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da6851ed011462089d1e34c1849362d16d":[12,12,55,1]
+"ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da2e87c516779990608259dbc5b9143512":[12,12,55,5]
 };

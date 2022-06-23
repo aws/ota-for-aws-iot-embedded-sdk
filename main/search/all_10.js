@@ -14,5 +14,6 @@ var searchData=
   ['requestmomentum_11',['requestMomentum',['../struct_ota_agent_context__t.html#abcb47ce949d9c9874ba53c08df390665',1,'OtaAgentContext_t']]],
   ['required_12',['required',['../struct_json_doc_param__t.html#a96709fba52845d5f5ad914c89db05989',1,'JsonDocParam_t']]],
   ['reset_13',['reset',['../struct_ota_pal_interface__t.html#a744b9602243baf92cbe2d1e8aef3b7ec',1,'OtaPalInterface_t']]],
-  ['resumehandler_14',['resumeHandler',['../ota_8c.html#af0188eca0c85dcac5fed956f21d9207c',1,'ota.c']]]
+  ['reseteventqueue_14',['resetEventQueue',['../ota_8c.html#aba376efc2aed2e83c858086f3e279fd5',1,'ota.c']]],
+  ['resumehandler_15',['resumeHandler',['../ota_8c.html#af0188eca0c85dcac5fed956f21d9207c',1,'ota.c']]]
 ];

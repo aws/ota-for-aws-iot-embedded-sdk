@@ -17,6 +17,7 @@ var ota__config__defaults_8h =
     [ "configENABLED_CONTROL_PROTOCOL", "ota__config__defaults_8h.html#a20fed391548ba26a1bfd7fbfd362e6f3", null ],
     [ "configENABLED_DATA_PROTOCOLS", "ota__config__defaults_8h.html#afc4d1763ec6f9abaacdace650252e7cd", null ],
     [ "configOTA_PRIMARY_DATA_PROTOCOL", "ota__config__defaults_8h.html#a96092c27429db9fcabd02c0c6a15756a", null ],
+    [ "configOTA_POLLING_EVENTS_TIMEOUT_MS", "ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1", null ],
     [ "LogError", "ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1", null ],
     [ "LogWarn", "ota__config__defaults_8h.html#a7da92048aaf0cbfcacde9539c98a0e05", null ],
     [ "LogInfo", "ota__config__defaults_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba", null ],

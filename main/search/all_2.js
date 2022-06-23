@@ -14,13 +14,14 @@ var searchData=
   ['configenabled_5fcontrol_5fprotocol_11',['configENABLED_CONTROL_PROTOCOL',['../ota__config__defaults_8h.html#a20fed391548ba26a1bfd7fbfd362e6f3',1,'ota_config_defaults.h']]],
   ['configenabled_5fdata_5fprotocols_12',['configENABLED_DATA_PROTOCOLS',['../ota__config__defaults_8h.html#afc4d1763ec6f9abaacdace650252e7cd',1,'ota_config_defaults.h']]],
   ['configota_5ffirmware_5fupdate_5ffile_5ftype_5fid_13',['configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID',['../ota__config__defaults_8h.html#a6bb41cb18b72bfc7ef2046c25af3ab0c',1,'ota_config_defaults.h']]],
-  ['configota_5fprimary_5fdata_5fprotocol_14',['configOTA_PRIMARY_DATA_PROTOCOL',['../ota__config__defaults_8h.html#a96092c27429db9fcabd02c0c6a15756a',1,'ota_config_defaults.h']]],
-  ['configurations_15',['Configurations',['../ota_config.html',1,'']]],
-  ['const_5fstrlen_16',['CONST_STRLEN',['../ota_8h.html#a2714f6afa56c8777b5e570a390a69a58',1,'ota.h']]],
-  ['constants_17',['Constants',['../ota_constants.html',1,'(Global Namespace)'],['../group__ota__constants.html',1,'(Global Namespace)']]],
-  ['contextbase_18',['contextBase',['../struct_json_doc_model__t.html#a4b0418206c1d1aef360e5808cef93238',1,'JsonDocModel_t']]],
-  ['contextsize_19',['contextSize',['../struct_json_doc_model__t.html#a7b8f3e89336902ebb234e0c65232001f',1,'JsonDocModel_t']]],
-  ['createfile_20',['createFile',['../struct_ota_pal_interface__t.html#ad46b44c6ea0e60206d7d2766bf340f91',1,'OtaPalInterface_t']]],
-  ['currblock_21',['currBlock',['../ota__http_8c.html#a8c8624373c6a37dddbdd1ccf473084fb',1,'ota_http.c']]],
-  ['currentstate_22',['currentState',['../struct_ota_state_table_entry__t.html#a91baf25b705476a91a9d664b6d94465a',1,'OtaStateTableEntry_t']]]
+  ['configota_5fpolling_5fevents_5ftimeout_5fms_14',['configOTA_POLLING_EVENTS_TIMEOUT_MS',['../ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1',1,'ota_config_defaults.h']]],
+  ['configota_5fprimary_5fdata_5fprotocol_15',['configOTA_PRIMARY_DATA_PROTOCOL',['../ota__config__defaults_8h.html#a96092c27429db9fcabd02c0c6a15756a',1,'ota_config_defaults.h']]],
+  ['configurations_16',['Configurations',['../ota_config.html',1,'']]],
+  ['const_5fstrlen_17',['CONST_STRLEN',['../ota_8h.html#a2714f6afa56c8777b5e570a390a69a58',1,'ota.h']]],
+  ['constants_18',['Constants',['../ota_constants.html',1,'(Global Namespace)'],['../group__ota__constants.html',1,'(Global Namespace)']]],
+  ['contextbase_19',['contextBase',['../struct_json_doc_model__t.html#a4b0418206c1d1aef360e5808cef93238',1,'JsonDocModel_t']]],
+  ['contextsize_20',['contextSize',['../struct_json_doc_model__t.html#a7b8f3e89336902ebb234e0c65232001f',1,'JsonDocModel_t']]],
+  ['createfile_21',['createFile',['../struct_ota_pal_interface__t.html#ad46b44c6ea0e60206d7d2766bf340f91',1,'OtaPalInterface_t']]],
+  ['currblock_22',['currBlock',['../ota__http_8c.html#a8c8624373c6a37dddbdd1ccf473084fb',1,'ota_http.c']]],
+  ['currentstate_23',['currentState',['../struct_ota_state_table_entry__t.html#a91baf25b705476a91a9d664b6d94465a',1,'OtaStateTableEntry_t']]]
 ];
