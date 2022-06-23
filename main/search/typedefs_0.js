@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['otaappcallback_5ft_0',['OtaAppCallback_t',['../group__ota__callback__types.html#ga3bedd7e278f89d555a32a7efa8023a28',1,'ota.h']]],
+  ['otaappcallback_5ft_0',['OtaAppCallback_t',['../group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec',1,'ota.h']]],
   ['otadeinitevent_5ft_1',['OtaDeinitEvent_t',['../ota__os__interface_8h.html#a9a80321bec887f641b6d966cff460f4a',1,'ota_os_interface.h']]],
   ['otadeletetimer_5ft_2',['OtaDeleteTimer_t',['../ota__os__interface_8h.html#a3b21d6af9d1137a70bc07d249111ba30',1,'ota_os_interface.h']]],
   ['otaeventcontext_5ft_3',['OtaEventContext_t',['../ota__os__interface_8h.html#a6821b4bd16ffc4216eca86683292ced0',1,'ota_os_interface.h']]],

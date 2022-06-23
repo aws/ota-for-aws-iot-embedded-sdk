@@ -38,7 +38,7 @@ var ota_8c =
     [ "freeFileContextMem", "ota_8c.html#ae466af59782893adbc54667423fe266f", null ],
     [ "handleJobParsingError", "ota_8c.html#a9d27d20bbbd359e673cff72b0565b8b0", null ],
     [ "receiveAndProcessOtaEvent", "ota_8c.html#ae751fbf1175cc0532e2c3c968854bfd2", null ],
-    [ "callOtaCallback", "ota_8c.html#a85018124923b7f4d3ae3a3ad66467062", null ],
+    [ "callOtaCallback", "ota_8c.html#ae813b179a518c7abff14fd0a79a30672", null ],
     [ "resetEventQueue", "ota_8c.html#aba376efc2aed2e83c858086f3e279fd5", null ],
     [ "startHandler", "ota_8c.html#adc05572b247887937398695a7ae22428", null ],
     [ "requestJobHandler", "ota_8c.html#acfd737a3f8be41849474d97ddbe695a6", null ],

@@ -137,7 +137,7 @@ var searchData=
   ['otaagentstatistics_5ft_134',['OtaAgentStatistics_t',['../struct_ota_agent_statistics__t.html',1,'']]],
   ['otaappbuffer_5ft_135',['OtaAppBuffer_t',['../struct_ota_app_buffer__t.html',1,'']]],
   ['otaappcallback_136',['OtaAppCallback',['../struct_ota_agent_context__t.html#ac8aad7846a2fc1a15fa35e8f9a2053ea',1,'OtaAgentContext_t']]],
-  ['otaappcallback_5ft_137',['OtaAppCallback_t',['../group__ota__callback__types.html#ga3bedd7e278f89d555a32a7efa8023a28',1,'ota.h']]],
+  ['otaappcallback_5ft_137',['OtaAppCallback_t',['../group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec',1,'ota.h']]],
   ['otaclose_138',['otaClose',['../ota_8c.html#a87d0a2e81013e841561399a06c913eba',1,'ota.c']]],
   ['otaconfigagent_5fpriority_139',['otaconfigAGENT_PRIORITY',['../ota__config__defaults_8h.html#a766d34dee20cbc36e1b440838f3adecb',1,'ota_config_defaults.h']]],
   ['otaconfigallowdowngrade_140',['otaconfigAllowDowngrade',['../ota__config__defaults_8h.html#a95dac9f2da0f3bd64c2183caa6292efe',1,'ota_config_defaults.h']]],

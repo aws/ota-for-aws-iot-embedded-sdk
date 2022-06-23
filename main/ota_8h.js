@@ -3,7 +3,7 @@ var ota_8h =
     [ "OtaAgentContext_t", "struct_ota_agent_context__t.html", "struct_ota_agent_context__t" ],
     [ "CONST_STRLEN", "ota_8h.html#a2714f6afa56c8777b5e570a390a69a58", null ],
     [ "OTA_FILE_SIG_KEY_STR_MAX_LENGTH", "ota_8h.html#a8baee291088322fecd736ff0b03fb730", null ],
-    [ "OtaAppCallback_t", "group__ota__callback__types.html#ga3bedd7e278f89d555a32a7efa8023a28", null ],
+    [ "OtaAppCallback_t", "group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec", null ],
     [ "OtaErr_t", "group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d", [
       [ "OtaErrNone", "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2da0c644255eee375cb8e6bd9def0772e02", null ],
       [ "OtaErrUninitialized", "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2da0c1dd94b8875896b0a9dd383ba239774", null ],
