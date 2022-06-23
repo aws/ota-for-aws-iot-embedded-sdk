@@ -351,6 +351,7 @@ typedef struct OtaAgentContext
     const OtaInterfaces_t * pOtaInterface;                 /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
+    uint8_t isOtaInterfaceInited;                          /*!< Flag to indicate if pOtaInterface is initialized. */
 } OtaAgentContext_t;
 
 /*------------------------- OTA Public API --------------------------*/
@@ -447,6 +448,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  *
  * Signals the OTA agent task to shut down. The OTA agent will unsubscribe from all MQTT job
  * notification topics, stop in progress OTA jobs, if any, and clear all resources.
+ *
+ * OTA needs a processing task running OTA_EventProcessingTask to handle shutdown event, or
+ * OTA will shutdown after the processing task is created and scheduled.
  *
  * @param[in] ticksToWait The number of ticks to wait for the OTA Agent to complete the shutdown process.
  * If this is set to zero, the function will return immediately without waiting. The actual state is
