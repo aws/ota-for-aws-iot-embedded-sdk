@@ -96,6 +96,11 @@
 
 #define OTA_NUM_MSG_Q_ENTRIES    20
 
+/**
+ * @brief Offset helper.
+ */
+#define U16_OFFSET( type, member )    ( ( uint16_t ) offsetof( type, member ) )
+
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
@@ -746,7 +751,7 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysPendingCommit( OtaFileConte
 }
 
 static void mockAppCallback( OtaJobEvent_t event,
-                             const void * pData )
+                             void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
@@ -772,7 +777,7 @@ static void mockAppCallback( OtaJobEvent_t event,
 }
 
 static void mockAppCallbackCustomParsingFails( OtaJobEvent_t event,
-                                               const void * pData )
+                                               void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
@@ -1352,7 +1357,7 @@ void test_OTA_ActivateNewImage()
  * should fail. */
 void test_OTA_ActivateNewImageWhenStopped()
 {
-    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ActivateNewImageNullPalActivate()
@@ -1370,6 +1375,20 @@ void test_OTA_ActivateNewImageNullPalActivate()
 
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+}
+
+void test_OTA_ActivateNewImageNullOtaInterface()
+{
+    otaInitDefault();
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+
+    /* Set OTA interface to NULL. */
+    otaAgent.pOtaInterface = NULL;
+
+    TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+
+    /* Reset OTA interface. */
+    otaAgent.pOtaInterface = &otaInterfaces;
 }
 
 void test_OTA_ImageStateAbortWithActiveJob()
@@ -2607,6 +2626,11 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
     /* Test that the OTA_EventProcessingTask aborts correctly after receiving
      * and event to shutdown the OTA Agent. */
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Run OTA_EventProcessingTask again and OTA state should keep in OtaAgentStateStopped. */
+    OTA_EventProcessingTask( NULL );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
 void test_OTA_EventProcess_WhileNotStopped()
@@ -3215,6 +3239,86 @@ void test_OTA_shutdownHandler_NullInterface()
     otaControlInterface.updateJobStatus = NULL;
 
     TEST_ASSERT_EQUAL( OtaErrNone, shutdownHandler( NULL ) );
+
+    /* Set state to stopped manually. */
+    otaAgent.state = OtaAgentStateStopped;
+}
+
+/* No OTA interface available when processing events. */
+void test_OTA_nullOtaInterfaceWhenProcessEvent()
+{
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Set OTA interface to NULL. */
+    otaAgent.pOtaInterface = NULL;
+
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Reset OTA interface. */
+    otaAgent.pOtaInterface = &otaInterfaces;
+}
+
+/* Send event to OTA library when it's stopped. */
+void test_OTA_sendEventWhenStopped()
+{
+    OtaEventMsg_t eventMsg = { 0 };
+
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    eventMsg.eventId = OtaAgentEventStart;
+
+    TEST_ASSERT_EQUAL( false, OTA_SignalEvent( &eventMsg ) );
+}
+
+/* Re-start OTA library after shutdown. */
+void test_OTA_restartOtaAfterShutdown()
+{
+    /* First initialize OTA library. */
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Shut down OTA. */
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Second initialize OTA library. */
+    setUp();
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+/* Re-start OTA library and then drop events after shutdown. */
+void test_OTA_restartOtaAfterShutdownAndDropEvents()
+{
+    /* First initialize OTA library */
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Shut down OTA. */
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Put some fake events to test if OTA drops them correctly. */
+    otaEventQueueEnd->eventId = OtaAgentEventSuspend;
+    otaEventQueueEnd->pEventData = NULL;
+    otaEventQueueEnd++;
+    otaEventQueueEnd->eventId = OtaAgentEventUserAbort;
+    otaEventQueueEnd->pEventData = NULL;
+    otaEventQueueEnd++;
+
+    /* Second initialize OTA library */
+    setUp();
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 /* ========================================================================== */
@@ -3343,7 +3447,7 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     bool updateJob = false;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
-        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, *otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
     };
 
     /* The document structure has an invalid value for ModelParamType_t. */

@@ -18,6 +18,7 @@ UNWINDSET += strlen.0:66
 REMOVE_FUNCTION_BODY += setControlInterface
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeAppBuffers
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeLocalBuffers
+REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_resetEventQueue
 
 RESTRICT_FUNCTION_POINTER += OTA_Init.function_pointer_call.1/init 
 
