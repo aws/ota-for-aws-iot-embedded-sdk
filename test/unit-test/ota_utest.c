@@ -157,8 +157,10 @@ static bool bSelfTestTimerIsActive = false;
 /* A boolean reflecting the state of the data request timer. */
 static bool bRequestTimerIsActive = false;
 
-/* A boolean reflecting if the user callback "OtaJobEventStartOtaJob" is called. */
-static uint8_t bIsOtaJobStartCallbackSetting = 0; /*0: callback with pass, 1: callback with failed, 0xFF: is callbacked. */
+/* A setting to configure user callback behavior for "OtaJobEventStartOtaJob" and
+ * set to 0xFF when "OtaJobEventStartOtaJob" is called. */
+static uint8_t bIsOtaJobStartCallbackSetting = 0; /* 0: callback with pass, 1: callback with failed,
+                                                   * 0xFF: callback function is called. */
 
 /* ========================================================================== */
 

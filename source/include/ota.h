@@ -270,7 +270,7 @@ typedef struct OtaJobDocument
  * job ID and job document key.
  *
  * When OtaJobEventStartOtaJob is received, that means OTA has received a verified OTA job and OTA's
- * going to handle it.
+ * going to handle it. Users can set OtaJobDocument_t->status to "JobStatusRejected" to force OTA job stopped.
  *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
  *

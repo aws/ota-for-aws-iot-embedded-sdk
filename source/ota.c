@@ -992,7 +992,7 @@ static OtaErr_t processValidFileContext( void )
 
         if( retVal != OtaErrNone )
         {
-            /* Keep the retVal for state machine to handle it as processing incorrectly. */
+            /* Keep the return value for state machine to handle it as processing incorrectly. */
             retSetImageState = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) retVal );
 
             if( retSetImageState != OtaErrNone )

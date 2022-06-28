@@ -73,10 +73,13 @@ void otaAppCallbackStub( OtaJobEvent_t eEvent,
 {
     OtaJobDocument_t * jobDoc = ( OtaJobDocument_t * ) pData;
     OtaJobParseErr_t parseErr;
+    OtaJobStatus_t jobStatus;
 
     __CPROVER_assume( ( parseErr <= OtaJobParseErrNoActiveJobs ) && ( parseErr >= OtaJobParseErrUnknown ) );
+    __CPROVER_assume( ( jobStatus < NumJobStatusMappings ) && ( jobStatus >= JobStatusInProgress ) );
 
     jobDoc->parseErr = parseErr;
+    jobDoc->status = jobStatus;
 }
 
 void handleCustomJob_harness()

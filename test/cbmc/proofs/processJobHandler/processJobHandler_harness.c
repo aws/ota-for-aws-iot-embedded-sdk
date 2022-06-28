@@ -26,10 +26,21 @@
  */
 /*  Ota Agent includes. */
 #include "ota.h"
+#include "ota_interface_private.h"
 #include "stubs.h"
 
 extern OtaAgentContext_t otaAgent;
 extern OtaErr_t processJobHandler( const OtaEventData_t * pEventData );
+
+OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
+                           const uint8_t * pProtocol )
+{
+    OtaErr_t err;
+
+    __CPROVER_assume( ( err <= OtaErrFileSizeOverflow ) && ( err >= OtaErrNone ) );
+
+    return err;
+}
 
 void processJobHandler_harness()
 {
@@ -57,6 +68,6 @@ void processJobHandler_harness()
 
     /* processJobHandler returns the values which follow OtaErr_t enum. If it does not, then
      * there is a problem. */
-    __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
+    __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrFileSizeOverflow ),
                       "Invalid return value from processJobHandler: Expected a value from OtaErr_t enum." );
 }

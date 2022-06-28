@@ -17,7 +17,6 @@ PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
-REMOVE_FUNCTION_BODY += setDataInterface
 REMOVE_FUNCTION_BODY += setImageStateWithReason
 REMOVE_FUNCTION_BODY += getFileContextFromJob
 
