@@ -935,6 +935,7 @@ static OtaErr_t processNullFileContext( void )
 static OtaErr_t processValidFileContext( void )
 {
     OtaErr_t retVal = OtaErrNone;
+    OtaErr_t retSetImageState = OtaErrNone;
     OtaEventMsg_t eventMsg = { 0 };
     OtaJobDocument_t jobDoc = { 0 };
 
@@ -947,16 +948,6 @@ static OtaErr_t processValidFileContext( void )
         if( retVal == OtaErrNone )
         {
             LogInfo( ( "Setting OTA data interface." ) );
-
-            /* Set the job info from OTA context. */
-            jobDoc.pJobId = otaAgent.pActiveJobName;
-            jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
-            jobDoc.fileTypeId = otaAgent.fileContext.fileType;
-            jobDoc.status = JobStatusInProgress;
-            jobDoc.reason = JobReasonReceiving;
-
-            /* Notify user that an OTA job is started. */
-            callOtaCallback( OtaJobEventStartOtaJob, &jobDoc );
 
             /* Received a valid context so send event to request file blocks. */
             eventMsg.eventId = OtaAgentEventCreateFile;
@@ -973,13 +964,40 @@ static OtaErr_t processValidFileContext( void )
              * Failed to set the data interface so abort the OTA.If there is a valid job id,
              * then a job status update will be sent.
              */
-            LogError( ( "Failed to set OTA data interface: OtaErr_t=%s, aborting current update.", OTA_Err_strerror( retVal ) ) );
+            LogError( ( "Failed to set OTA data interface: OtaErr_t=%s.", OTA_Err_strerror( retVal ) ) );
+        }
 
-            retVal = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) retVal );
+        if( retVal == OtaErrNone )
+        {
+            /* Notify user that OTA job is going to start. */
+            /* Set the job info from OTA context. */
+            jobDoc.pJobId = otaAgent.pActiveJobName;
+            jobDoc.jobIdLength = strlen( ( const char * ) otaAgent.pActiveJobName ) + 1U;
+            jobDoc.fileTypeId = otaAgent.fileContext.fileType;
+            jobDoc.status = JobStatusInProgress;
+            jobDoc.reason = JobReasonReceiving;
 
-            if( retVal != OtaErrNone )
+            /* Notify user that an OTA job is started. */
+            callOtaCallback( OtaJobEventStartOtaJob, &jobDoc );
+
+            if( jobDoc.status == JobStatusRejected )
             {
-                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( retVal ) ) );
+                /* Job is rejected by user. */
+                LogWarn( ( "Job %s is rejected by user at callback event OtaJobEventStartOtaJob.",
+                           jobDoc.pJobId ) );
+
+                retVal = OtaErrUserAbort;
+            }
+        }
+
+        if( retVal != OtaErrNone )
+        {
+            /* Keep the retVal for state machine to handle it as processing incorrectly. */
+            retSetImageState = setImageStateWithReason( OtaImageStateAborted, ( uint32_t ) retVal );
+
+            if( retSetImageState != OtaErrNone )
+            {
+                LogError( ( "Failed to abort OTA update: OtaErr_t=%s", OTA_Err_strerror( retSetImageState ) ) );
             }
         }
     }
