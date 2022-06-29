@@ -327,12 +327,6 @@ static inline int lMsSinceTs( struct timespec * pxEntryTime )
             diffNsToMs = ( double ) ( xNow.tv_nsec - pxEntryTime->tv_nsec ) / 1000000;
             diffSecToMs = ( double ) ( xNow.tv_sec - pxEntryTime->tv_sec ) * 1000;
 
-            if( diffNsToMs / 1000 != 0 )
-            {
-                diffSecToMs = diffSecToMs + ( diffNsToMs / 1000 * 1000 );
-                diffNsToMs %= 1000;
-            }
-
             if( diffSecToMs + diffNsToMs > INT_MAX )
             {
                 retMs = INT_MAX;
