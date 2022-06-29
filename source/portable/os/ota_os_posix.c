@@ -387,8 +387,6 @@ static OtaOsStatus_t pollAndReceive( char * buff,
     struct pollfd fds = { 0 };
     int pollResult = 0;
 
-    /* Reset fds. */
-    memset( &fds, 0, sizeof( fds ) );
     fds.fd = otaEventQueue;
     fds.events = POLLIN;
 
