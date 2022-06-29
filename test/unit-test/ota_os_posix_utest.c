@@ -206,7 +206,7 @@ void test_OTA_posix_RecvEventTimeout( void )
     time_t recvTimeoutMs = 3000;
     struct timespec tsStartTime = { 0 };
     struct timespec tsEndTime = { 0 };
-    double timeDiff = 0;
+    double timeDiffSec = 0;
 
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
@@ -219,17 +219,17 @@ void test_OTA_posix_RecvEventTimeout( void )
     /* Get time duration. */
     if( tsEndTime.tv_nsec - tsStartTime.tv_nsec < 0 )
     {
-        timeDiff = tsEndTime.tv_sec - tsStartTime.tv_sec - 1;
-        timeDiff += NS_TO_S( ( double ) ( 1000000000 + tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
+        timeDiffSec = tsEndTime.tv_sec - tsStartTime.tv_sec - 1;
+        timeDiffSec += NS_TO_S( ( double ) ( 1000000000 + tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
     }
     else
     {
-        timeDiff = tsEndTime.tv_sec - tsStartTime.tv_sec;
-        timeDiff += NS_TO_S( ( double ) ( tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
+        timeDiffSec = tsEndTime.tv_sec - tsStartTime.tv_sec;
+        timeDiffSec += NS_TO_S( ( double ) ( tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
     }
 
     /* The time may not accurate enough, so - 1 as buffer. */
-    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeDiff );
+    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeDiffSec );
 
     result = event.deinit( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaErrNone, result );
