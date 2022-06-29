@@ -312,9 +312,9 @@ static void requestTimerCallback( union sigval arg )
 static inline int lMsSinceTs( struct timespec * pxEntryTime )
 {
     struct timespec xNow;
-    int diffSec = 0;
-    int diffMs = 0;
-    int retMs = 0;
+    double diffNsToMs = 0;
+    double diffSecToMs = 0;
+    double retMs = INT_MAX;
 
     if( pxEntryTime == NULL )
     {
@@ -324,21 +324,31 @@ static inline int lMsSinceTs( struct timespec * pxEntryTime )
     {
         if( clock_gettime( CLOCK_MONOTONIC, &xNow ) == 0 )
         {
-            diffSec = ( int ) xNow.tv_sec - ( int ) pxEntryTime->tv_sec;
-            diffMs = ( int ) ( xNow.tv_nsec / 1000000 ) - ( int ) ( pxEntryTime->tv_nsec / 1000000 );
+            diffNsToMs = ( double ) ( xNow.tv_nsec - pxEntryTime->tv_nsec ) / 1000000;
+            diffSecToMs = ( double ) ( xNow.tv_sec - pxEntryTime->tv_sec ) * 1000;
 
-            if( diffSec < 0 )
+            if( diffNsToMs / 1000 != 0 )
+            {
+                diffSecToMs = diffSecToMs + ( diffNsToMs / 1000 * 1000 );
+                diffNsToMs %= 1000;
+            }
+
+            if( diffSecToMs + diffNsToMs > INT_MAX )
             {
                 retMs = INT_MAX;
             }
+            else if( diffNsToMs + diffSecToMs < 0 )
+            {
+                retMs = 0;
+            }
             else
             {
-                retMs = ( diffSec * 1000 ) + diffMs;
+                retMs = diffSecToMs + diffNsToMs;
             }
         }
     }
 
-    return retMs;
+    return retMs > 0 ? ( int ) retMs : 0;
 }
 
 static OtaOsStatus_t pollAndSend( const void * buff,
