@@ -170,6 +170,8 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 
     if( otaOsStatus == OtaOsSuccess )
     {
+        remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+
         do
         {
             otaOsStatus = pollAndSend( pEventMsg, MAX_MSG_SIZE, remainingTimeMs );
@@ -228,6 +230,8 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
 
     if( otaOsStatus == OtaOsSuccess )
     {
+        remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+
         do
         {
             otaOsStatus = pollAndReceive( buff, sizeof( buff ), remainingTimeMs );
