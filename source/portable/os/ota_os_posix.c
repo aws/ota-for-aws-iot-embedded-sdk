@@ -28,6 +28,10 @@
 /* Standard Includes.*/
 #include <stdlib.h>
 #include <string.h>
+
+/* MISRA rule 21.10 prohibits the use of time.h because it is implementation dependent or unspecified.
+ * However, this implementation is on POSIX, which has well defined behavior. */
+/* coverity[misra_c_2012_rule_21_10_violation] */
 #include <time.h>
 
 /* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
@@ -41,6 +45,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <mqueue.h>
+#include <poll.h>
+#include <limits.h> /* For INT_MAX. */
 
 /* OTA OS POSIX Interface Includes.*/
 #include "ota_os_posix.h"
@@ -68,6 +74,19 @@ static timer_t * pOtaTimers[ OtaNumOfTimers ] = { 0 };
 /* OTA Timer callbacks.*/
 static void ( * timerCallback[ OtaNumOfTimers ] )( union sigval arg ) = { requestTimerCallback, selfTestTimerCallback };
 
+/* Time difference calculation with timespec structure. */
+static inline int lMsSinceTs( struct timespec * pxEntryTime );
+
+/* Internal function to poll and send event message. */
+static OtaOsStatus_t pollAndSend( const void * buff,
+                                  int len,
+                                  int timeout );
+
+/* Internal function to poll and receive event message. */
+static OtaOsStatus_t pollAndReceive( char * buff,
+                                     int size,
+                                     int timeout );
+
 OtaOsStatus_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
@@ -91,7 +110,7 @@ OtaOsStatus_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
      * flags are from standard linux header, and this is the normal way of using them. Hence we
      * silence the warning here. */
     /* coverity[misra_c_2012_rule_10_1_violation] */
-    otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR, S_IRWXU, &attr );
+    otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR | O_NONBLOCK, S_IRWXU, &attr );
 
     if( otaEventQueue == -1 )
     {
@@ -117,27 +136,53 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                                   unsigned int timeout )
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
+    struct timespec xEntryTime = { 0 };
+    int remainingTimeMs = 0;
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
-    /* Send the event to OTA event queue.*/
-    errno = 0;
-
-    if( mq_send( otaEventQueue, pEventMsg, MAX_MSG_SIZE, 0 ) == -1 )
+    if( timeout > INT_MAX )
     {
         otaOsStatus = OtaOsEventQueueSendFailed;
 
-        LogError( ( "Failed to send event to OTA Event Queue: "
-                    "mq_send returned error: "
-                    "OtaOsStatus_t=%i "
-                    ",errno=%s",
-                    otaOsStatus,
-                    strerror( errno ) ) );
+        LogError( ( "Invalid input, Posix_OtaSendEvent supports timeout < INT_MAX, "
+                    "timeout = %u",
+                    timeout ) );
     }
-    else
+
+    if( otaOsStatus == OtaOsSuccess )
     {
-        LogDebug( ( "OTA Event Sent." ) );
+        errno = 0;
+
+        if( clock_gettime( CLOCK_MONOTONIC, &xEntryTime ) != 0 )
+        {
+            /* Handle clock_gettime error */
+            otaOsStatus = OtaOsEventQueueSendFailed;
+
+            LogError( ( "Failed to get entry time: "
+                        "Posix_OtaSendEvent returned error: "
+                        "OtaOsStatus_t=%i "
+                        ",errno=%s ",
+                        otaOsStatus,
+                        strerror( errno ) ) );
+        }
+    }
+
+    if( otaOsStatus == OtaOsSuccess )
+    {
+        remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+
+        do
+        {
+            otaOsStatus = pollAndSend( pEventMsg, MAX_MSG_SIZE, remainingTimeMs );
+
+            if( otaOsStatus == OtaOsSuccess )
+            {
+                break;
+            }
+
+            remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+        } while( remainingTimeMs > 0 );
     }
 
     return otaOsStatus;
@@ -150,30 +195,57 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
     char * pDst = pEventMsg;
     char buff[ MAX_MSG_SIZE ];
+    struct timespec xEntryTime = { 0 };
+    int remainingTimeMs = 0;
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
-    /* Receive the next event from OTA event queue.*/
-    errno = 0;
-
-    if( mq_receive( otaEventQueue, buff, sizeof( buff ), NULL ) == -1 )
+    /* Check timeout. */
+    if( timeout > INT_MAX )
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        LogError( ( "Failed to receive OTA Event: "
-                    "mq_reqeive returned error: "
-                    "OtaOsStatus_t=%i "
-                    ",errno=%s",
-                    otaOsStatus,
-                    strerror( errno ) ) );
+        LogError( ( "Invalid input, Posix_OtaReceiveEvent supports timeout < INT_MAX, "
+                    "timeout = %u",
+                    timeout ) );
     }
-    else
-    {
-        LogDebug( ( "OTA Event received." ) );
 
-        /* copy the data from local buffer.*/
-        ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+    if( otaOsStatus == OtaOsSuccess )
+    {
+        errno = 0;
+
+        if( clock_gettime( CLOCK_MONOTONIC, &xEntryTime ) != 0 )
+        {
+            /* Handle clock_gettime error */
+            otaOsStatus = OtaOsEventQueueReceiveFailed;
+
+            LogError( ( "Failed to get entry time: "
+                        "Posix_OtaReceiveEvent returned error: "
+                        "OtaOsStatus_t=%i "
+                        ",errno=%s ",
+                        otaOsStatus,
+                        strerror( errno ) ) );
+        }
+    }
+
+    if( otaOsStatus == OtaOsSuccess )
+    {
+        remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+
+        do
+        {
+            otaOsStatus = pollAndReceive( buff, sizeof( buff ), remainingTimeMs );
+
+            if( otaOsStatus == OtaOsSuccess )
+            {
+                /* copy the data from local buffer.*/
+                ( void ) memcpy( pDst, buff, MAX_MSG_SIZE );
+
+                break;
+            }
+
+            remainingTimeMs = ( int ) timeout - lMsSinceTs( &xEntryTime );
+        } while( remainingTimeMs > 0 );
     }
 
     return otaOsStatus;
@@ -239,6 +311,126 @@ static void requestTimerCallback( union sigval arg )
     {
         LogWarn( ( "Request timer event unhandled.\r\n" ) );
     }
+}
+
+static inline int lMsSinceTs( struct timespec * pxEntryTime )
+{
+    struct timespec xNow;
+    double diffNsToMs = 0;
+    double diffSecToMs = 0;
+    double retMs = INT_MAX;
+
+    if( pxEntryTime == NULL )
+    {
+        LogError( ( "lMsSinceTs: Invalid input - NULL pointer." ) );
+    }
+    else
+    {
+        if( clock_gettime( CLOCK_MONOTONIC, &xNow ) == 0 )
+        {
+            diffNsToMs = ( double ) ( xNow.tv_nsec - pxEntryTime->tv_nsec ) / 1000000;
+            diffSecToMs = ( double ) ( xNow.tv_sec - pxEntryTime->tv_sec ) * 1000;
+
+            if( diffSecToMs + diffNsToMs > INT_MAX )
+            {
+                retMs = INT_MAX;
+            }
+            else if( diffNsToMs + diffSecToMs < 0 )
+            {
+                retMs = 0;
+            }
+            else
+            {
+                retMs = diffSecToMs + diffNsToMs;
+            }
+        }
+    }
+
+    return retMs > 0 ? ( int ) retMs : 0;
+}
+
+static OtaOsStatus_t pollAndSend( const void * buff,
+                                  int len,
+                                  int timeout )
+{
+    OtaOsStatus_t otaOsStatus = OtaOsEventQueueSendFailed;
+    struct pollfd fds = { 0 };
+    int pollResult = 0;
+
+    fds.fd = otaEventQueue;
+    fds.events = POLLOUT;
+
+    pollResult = poll( &fds, 1, timeout );
+
+    if( ( pollResult != 0 ) && ( fds.revents & POLLOUT ) )
+    {
+        if( mq_send( otaEventQueue, buff, ( size_t ) len, 0 ) == 0 )
+        {
+            otaOsStatus = OtaOsSuccess;
+
+            LogDebug( ( "OTA Event Sent." ) );
+        }
+    }
+
+    if( otaOsStatus != OtaOsSuccess )
+    {
+        LogError( ( "Failed to send event to OTA Event Queue: "
+                    "mq_send timeout: "
+                    "OtaOsStatus_t=%i"
+                    ", errno=%s"
+                    ", revents=%x",
+                    otaOsStatus,
+                    strerror( errno ),
+                    fds.revents ) );
+    }
+
+    return otaOsStatus;
+}
+
+static OtaOsStatus_t pollAndReceive( char * buff,
+                                     int size,
+                                     int timeout )
+{
+    OtaOsStatus_t otaOsStatus = OtaOsEventQueueReceiveFailed;
+    struct pollfd fds = { 0 };
+    int pollResult = 0;
+
+    fds.fd = otaEventQueue;
+    fds.events = POLLIN;
+
+    pollResult = poll( &fds, 1, timeout );
+
+    if( ( pollResult != 0 ) && ( fds.revents & POLLIN ) )
+    {
+        if( mq_receive( otaEventQueue, buff, ( size_t ) size, NULL ) != -1 )
+        {
+            otaOsStatus = OtaOsSuccess;
+
+            LogDebug( ( "OTA Event received." ) );
+        }
+    }
+
+    if( ( otaOsStatus != OtaOsSuccess ) && ( pollResult == 0 ) )
+    {
+        LogDebug( ( "Failed to receive OTA Event before timeout" ) );
+    }
+    else if( otaOsStatus != OtaOsSuccess )
+    {
+        LogError( ( "Failed to receive event to OTA Event Queue: "
+                    "mq_receive timeout: "
+                    "OtaOsStatus_t=%i"
+                    ", errno=%s"
+                    ", revents=%x",
+                    otaOsStatus,
+                    strerror( errno ),
+                    fds.revents ) );
+    }
+    else
+    {
+        /* Do nothing in success case. */
+    }
+
+    return otaOsStatus;
 }
 
 OtaOsStatus_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,

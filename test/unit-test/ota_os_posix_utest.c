@@ -37,6 +37,7 @@
 /* Testing constants. */
 #define TIMER_NAME             "dummy_name"
 #define OTA_DEFAULT_TIMEOUT    1000 /*!< Timeout in milliseconds. */
+#define NS_TO_S( ns )    ( ns / 1000000000.0 )
 
 /* Interfaces for Timer and Event. */
 static OtaTimerInterface_t timer;
@@ -193,4 +194,43 @@ void test_OTA_posix_MemoryAllocAndFree( void )
     TEST_ASSERT_EQUAL( 1, *buffer );
 
     STDC_Free( buffer );
+}
+
+/**
+ * @brief Test that the event queue receive timeout.
+ */
+void test_OTA_posix_RecvEventTimeout( void )
+{
+    OtaEventMsg_t otaEventToRecv = { 0 };
+    OtaErr_t result = OtaErrUninitialized;
+    time_t recvTimeoutMs = 3000;
+    struct timespec tsStartTime = { 0 };
+    struct timespec tsEndTime = { 0 };
+    double timeDiffSec = 0;
+
+    result = event.init( event.pEventContext );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
+
+    ( void ) clock_gettime( CLOCK_MONOTONIC, &tsStartTime );
+    result = event.recv( event.pEventContext, &otaEventToRecv, recvTimeoutMs );
+    TEST_ASSERT_EQUAL( OtaOsEventQueueReceiveFailed, result );
+    ( void ) clock_gettime( CLOCK_MONOTONIC, &tsEndTime );
+
+    /* Get time duration. */
+    if( tsEndTime.tv_nsec - tsStartTime.tv_nsec < 0 )
+    {
+        timeDiffSec = tsEndTime.tv_sec - tsStartTime.tv_sec - 1;
+        timeDiffSec += NS_TO_S( ( double ) ( 1000000000 + tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
+    }
+    else
+    {
+        timeDiffSec = tsEndTime.tv_sec - tsStartTime.tv_sec;
+        timeDiffSec += NS_TO_S( ( double ) ( tsEndTime.tv_nsec - tsStartTime.tv_nsec ) );
+    }
+
+    /* The time may not accurate enough, so - 1 as buffer. */
+    TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeDiffSec );
+
+    result = event.deinit( event.pEventContext );
+    TEST_ASSERT_EQUAL( OtaErrNone, result );
 }
