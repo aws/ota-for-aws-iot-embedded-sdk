@@ -34,6 +34,9 @@ int poll( struct pollfd * fds,
 {
     int returnVal;
 
+    __CPROVER_assert( nfds > 0 );
+    __CPROVER_assert( fds != NULL );
+
     if( nondet_bool() )
     {
         /* Case when timeout does not happen and data is present to be read. */
