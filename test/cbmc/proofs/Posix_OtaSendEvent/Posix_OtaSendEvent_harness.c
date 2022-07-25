@@ -34,8 +34,7 @@ int poll( struct pollfd * fds,
 {
     int returnVal;
 
-    __CPROVER_assert( nfds > 0 );
-    __CPROVER_assert( fds != NULL );
+    __CPROVER_assert( fds != NULL, "fds pointer cannot be NULL" );
 
     if( nondet_bool() )
     {
