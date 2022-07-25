@@ -21,30 +21,28 @@
  */
 
 /**
- * @file OTA_Resume_harness.c
- * @brief Implements the proof harness for OTA_Resume function.
+ * @file resetEventQueue_harness.c
+ * @brief Implements the proof harness for resetEventQueue function.
  */
-/*  Ota Agent includes. */
+/* Include headers for ota agent. */
 #include "ota.h"
-#include "stubs.h"
+#include <stdlib.h>
 
-extern OtaAgentContext_t otaAgent;
-
-bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
+OtaOsStatus_t recv( OtaEventContext_t * pEventCtx,
+                    void * pEventMsg,
+                    uint32_t timeout )
 {
-    bool status;
+    OtaOsStatus_t status;
 
     return status;
 }
 
-void OTA_Resume_harness()
+void resetEventQueue_harness()
 {
     OtaInterfaces_t otaInterface;
 
-    /* Initialize os timers and self-test state fetcher */
-    otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
-    otaInterface.os.timer.start = startTimerStub;
-    otaAgent.pOtaInterface = &otaInterface;
+    /* Initialize the function pointer to a stub. */
+    otaInterface.os.event.recv = recv;
 
-    OTA_Resume();
+    resetEventQueue();
 }

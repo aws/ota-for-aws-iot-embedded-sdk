@@ -21,30 +21,39 @@
  */
 
 /**
- * @file OTA_Resume_harness.c
- * @brief Implements the proof harness for OTA_Resume function.
+ * @file OTA_EventProcess_harness.c
+ * @brief Implements the proof harness for OTA_EventProcess function.
  */
-/*  Ota Agent includes. */
+/* Include headers for ota agent. */
 #include "ota.h"
-#include "stubs.h"
 
 extern OtaAgentContext_t otaAgent;
 
-bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
-{
-    bool status;
+int counter = 0;
 
-    return status;
+void receiveAndProcessOtaEvent( void )
+{
+    OtaState_t state;
+
+    /* state must only have values of OtaState_t enum type. */
+    __CPROVER_assume( state <= OtaAgentStateNoTransition && state >= OtaAgentStateAll );
+
+    if( counter++ == UNWINDING_UPPERBOUND )
+    {
+        otaAgent.state = OtaAgentStateStopped;
+    }
+    else
+    {
+        otaAgent.state = state;
+    }
 }
 
-void OTA_Resume_harness()
+void OTA_EventProcess_harness()
 {
-    OtaInterfaces_t otaInterface;
+    OtaState_t state;
 
-    /* Initialize os timers and self-test state fetcher */
-    otaInterface.pal.getPlatformImageState = getPlatformImageStateStub;
-    otaInterface.os.timer.start = startTimerStub;
-    otaAgent.pOtaInterface = &otaInterface;
-
-    OTA_Resume();
+    do
+    {
+        state = OTA_EventProcess();
+    } while( state != OtaAgentStateStopped );
 }

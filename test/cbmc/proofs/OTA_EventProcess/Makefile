@@ -1,18 +1,21 @@
 
-HARNESS_ENTRY = Posix_OtaSendEvent_harness
+HARNESS_ENTRY = OTA_EventProcess_harness
 HARNESS_FILE = $(HARNESS_ENTRY)
 
 # This should be a unique identifier for this proof, and will appear on the
 # Litani dashboard. It can be human-readable and contain spaces if you wish.
-PROOF_UID = Posix_OtaSendEvent_harness
+PROOF_UID = OTA_EventProcess
 
-INCLUDES += -I$(SRCDIR)/source/portable/os/
+DEFINES += -Dstatic=""
+DEFINES += -D UNWINDING_UPPERBOUND=4
 
-UNWINDSET += Posix_OtaSendEvent.0:10
+INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
+INCLUDES += -I$(SRCDIR)/source/
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
+PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
-PROJECT_SOURCES += $(SRCDIR)/source/portable/os/ota_os_posix.c
+UNWINDSET += OTA_EventProcessTask.0:26
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

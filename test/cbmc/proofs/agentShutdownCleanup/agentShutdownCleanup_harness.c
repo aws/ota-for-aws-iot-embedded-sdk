@@ -32,11 +32,18 @@
 /* Global static variable defined in ota.c for managing the state machine. */
 extern OtaControlInterface_t otaControlInterface;
 extern OtaDataInterface_t otaDataInterface;
+extern OtaAgentContext_t otaAgent;
 extern void agentShutdownCleanup( void );
 
 void agentShutdownCleanup_harness()
 {
     OtaInterfaces_t otaInterface;
+
+    /* Initialize os timers functions. */
+    otaInterface.os.timer.stop = stopTimerStub;
+    otaInterface.os.timer.delete = deleteTimerStub;
+
+    otaAgent.pOtaInterface = &otaInterface;
 
     /* Initialize the function pointers to stubs. */
     otaControlInterface.cleanup = cleanupStub;

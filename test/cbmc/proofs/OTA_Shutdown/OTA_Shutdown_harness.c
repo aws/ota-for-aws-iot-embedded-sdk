@@ -39,12 +39,6 @@ void OTA_Shutdown_harness()
 
     otaAgent.state = state;
 
-    /* Initialize os timers functions. */
-    otaInterface.os.timer.stop = stopTimerStub;
-    otaInterface.os.timer.delete = deleteTimerStub;
-
-    otaAgent.pOtaInterface = &otaInterface;
-
     /* This assumption is required to have an upper bound on the unwinding of while loop in
      * OTA_Shutdown. This does not model the exact behavior of the code since the limitation of CBMC
      * is that it checks concurrent code in sequential manner.*/

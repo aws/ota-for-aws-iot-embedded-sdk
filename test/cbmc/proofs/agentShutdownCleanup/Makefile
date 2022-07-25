@@ -21,8 +21,12 @@ REMOVE_FUNCTION_BODY += otaClose
 # The upper bound on the for loop in agentShutdownCLeanup is set by OTA_MAX_FILES.
 UNWINDSET += agentShutdownCleanup.0:2
 
-RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.1/cleanupStub
-RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.2/cleanupStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.1/stopTimerStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.2/deleteTimerStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.3/stopTimerStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.4/deleteTimerStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.5/cleanupStub
+RESTRICT_FUNCTION_POINTER += agentShutdownCleanup.function_pointer_call.6/cleanupStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

@@ -96,6 +96,11 @@
 
 #define OTA_NUM_MSG_Q_ENTRIES    20
 
+/**
+ * @brief Offset helper.
+ */
+#define U16_OFFSET( type, member )    ( ( uint16_t ) offsetof( type, member ) )
+
 /* Firmware version. */
 const AppVersion32_t appFirmwareVersion =
 {
@@ -145,6 +150,12 @@ static uint8_t pLargerJobNameBuffer[ OTA_JOB_ID_MAX_SIZE * 2 ];
 
 /* A counter to record how many file blocks are received. */
 static int otaReceivedFileBlockNumber = 0;
+
+/* A boolean reflecting the state of the self-test timer. */
+static bool bSelfTestTimerIsActive = false;
+
+/* A boolean reflecting the state of the data request timer. */
+static bool bRequestTimerIsActive = false;
 
 /* ========================================================================== */
 
@@ -346,6 +357,26 @@ static OtaOsStatus_t stubOSTimerStart( OtaTimerId_t timerId,
     return OtaOsSuccess;
 }
 
+static OtaOsStatus_t mockOSTimerStart( OtaTimerId_t timerId,
+                                       const char * const pTimerName,
+                                       const uint32_t timeout,
+                                       OtaTimerCallback_t callback )
+{
+    if( timerId == OtaRequestTimer )
+    {
+        bRequestTimerIsActive = true;
+    }
+    else if( timerId == OtaSelfTestTimer )
+    {
+        bSelfTestTimerIsActive = true;
+    }
+
+    ( void ) pTimerName;
+    ( void ) timeout;
+    ( void ) callback;
+    return OtaOsSuccess;
+}
+
 static OtaOsStatus_t mockOSTimerInvokeCallback( OtaTimerId_t timerId,
                                                 const char * const pTimerName,
                                                 const uint32_t timeout,
@@ -372,6 +403,20 @@ static OtaOsStatus_t mockOSTimerStartAlwaysFail( OtaTimerId_t unused_1,
 static OtaOsStatus_t stubOSTimerStop( OtaTimerId_t timerId )
 {
     ( void ) timerId;
+    return OtaOsSuccess;
+}
+
+static OtaOsStatus_t mockOSTimerStop( OtaTimerId_t timerId )
+{
+    if( timerId == OtaRequestTimer )
+    {
+        bRequestTimerIsActive = false;
+    }
+    else if( timerId == OtaSelfTestTimer )
+    {
+        bSelfTestTimerIsActive = false;
+    }
+
     return OtaOsSuccess;
 }
 
@@ -703,7 +748,7 @@ OtaPalImageState_t mockPalGetPlatformImageStateAlwaysPendingCommit( OtaFileConte
 }
 
 static void mockAppCallback( OtaJobEvent_t event,
-                             const void * pData )
+                             void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
@@ -722,7 +767,7 @@ static void mockAppCallback( OtaJobEvent_t event,
 }
 
 static void mockAppCallbackCustomParsingFails( OtaJobEvent_t event,
-                                               const void * pData )
+                                               void * pData )
 {
     OtaJobDocument_t * jobDoc = NULL;
 
@@ -1197,6 +1242,56 @@ void test_OTA_ResumeFailedWhenSuspended()
     TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
 }
 
+void test_OTA_ResumeSelfTestTimerRestart()
+{
+    otaGoToState( OtaAgentStateSuspended );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
+
+    /* Reset timer state and configure mocked timer function for tracking timer state */
+    bSelfTestTimerIsActive = false;
+    bRequestTimerIsActive = false;
+    otaInterfaces.os.timer.start = mockOSTimerStart;
+    otaInterfaces.os.timer.stop = mockOSTimerStop;
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Let the PAL always says it's in self test. */
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageStateAlwaysPendingCommit;
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
+
+    /* Self test timer should be restarted if the device is self testing. */
+    TEST_ASSERT_TRUE( bSelfTestTimerIsActive );
+    TEST_ASSERT_TRUE( bRequestTimerIsActive );
+
+    /* As this was a nominal flow, OTA should resume without issue. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+}
+
+void test_OTA_ResumeNoSelfTestTimerRestart()
+{
+    otaGoToState( OtaAgentStateSuspended );
+    TEST_ASSERT_EQUAL( OtaAgentStateSuspended, OTA_GetState() );
+
+    /* Reset timer state and configure mocked timer function for tracking timer state */
+    bSelfTestTimerIsActive = false;
+    bRequestTimerIsActive = false;
+    otaInterfaces.os.timer.start = mockOSTimerStart;
+    otaInterfaces.os.timer.stop = mockOSTimerStop;
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Let the PAL always says it's not in self test. */
+    otaInterfaces.pal.getPlatformImageState = mockPalGetPlatformImageStateAlwaysInvalid;
+    TEST_ASSERT_EQUAL( OtaErrNone, OTA_Resume() );
+
+    /* Self test timer should NOT be restarted if the device is not self testing. */
+    TEST_ASSERT_FALSE( bSelfTestTimerIsActive );
+    TEST_ASSERT_TRUE( bRequestTimerIsActive );
+
+    /* As this was a nominal flow, OTA should resume without issue. */
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateRequestingJob, OTA_GetState() );
+}
+
 void test_OTA_Statistics()
 {
     otaGoToState( OtaAgentStateReady );
@@ -1252,7 +1347,7 @@ void test_OTA_ActivateNewImage()
  * should fail. */
 void test_OTA_ActivateNewImageWhenStopped()
 {
-    TEST_ASSERT_NOT_EQUAL( OtaErrNone, OTA_ActivateNewImage() );
+    TEST_ASSERT_NOT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
 }
 
 void test_OTA_ActivateNewImageNullPalActivate()
@@ -1270,6 +1365,20 @@ void test_OTA_ActivateNewImageNullPalActivate()
 
     TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+}
+
+void test_OTA_ActivateNewImageNullOtaInterface()
+{
+    otaInitDefault();
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+
+    /* Set OTA interface to NULL. */
+    otaAgent.pOtaInterface = NULL;
+
+    TEST_ASSERT_EQUAL( OtaErrActivateFailed, OTA_ActivateNewImage() );
+
+    /* Reset OTA interface. */
+    otaAgent.pOtaInterface = &otaInterfaces;
 }
 
 void test_OTA_ImageStateAbortWithActiveJob()
@@ -2499,7 +2608,64 @@ void test_OTA_EventProcessingTask_ExitOnAbort()
     /* Test that the OTA_EventProcessingTask aborts correctly after receiving
      * and event to shutdown the OTA Agent. */
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Run OTA_EventProcessingTask again and OTA state should keep in OtaAgentStateStopped. */
+    OTA_EventProcessingTask( NULL );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
+
+void test_OTA_EventProcess_WhileNotStopped()
+{
+    OtaEventMsg_t otaEvent = { 0 };
+
+    otaGoToState( OtaAgentStateReady );
+    otaInterfaces.os.event.send = mockOSEventSend;
+
+    /* Shutting down agent should stop OTA agent */
+    otaEvent.eventId = OtaAgentEventShutdown;
+    OTA_SignalEvent( &otaEvent );
+
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
+}
+
+void test_OTA_EventProcess_WhileStopped()
+{
+    /* Reset to known state */
+    OtaEventMsg_t otaEvent = { 0 };
+    OtaEventMsg_t * ulQueueEndBefore = NULL;
+
+    otaGoToState( OtaAgentStateStopped );
+
+    /*  Mimic the agent state as though it was shutdown after running */
+    otaInterfaces.os.event.send = mockOSEventSend;
+    otaAgent.pOtaInterface = &otaInterfaces;
+
+    /* Agent is stopped so event should not be processed and user callbacks/functions should not be exercised. */
+    otaEvent.eventId = OtaAgentEventReceivedJobDocument;
+    OTA_SignalEvent( &otaEvent );
+    ulQueueEndBefore = otaEventQueueEnd;
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_EventProcess() );
+    TEST_ASSERT_EQUAL( otaEventQueueEnd, ulQueueEndBefore );
+}
+
+void test_OTA_EventProcess_AgentUpdatesReadiness()
+{
+    /* Reset to known state */
+    otaInterfaces.os.event.send = mockOSEventSend;
+    otaGoToState( OtaAgentStateStopped );
+
+    /* Internally calls OTA_Init which will set state to initialized state, which will allow
+     * OTA_EventProcess to set state to OtaAgentStateReady */
+    otaInitDefault();
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+
+    /* Calling Event Process should once should put agent into ready state,
+     * and update agent to indicate readiness */
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_EventProcess() );
+}
+
+
 
 /* ========================================================================== */
 /* ====================== OTA MQTT and HTTP Unit Tests ====================== */
@@ -3055,6 +3221,86 @@ void test_OTA_shutdownHandler_NullInterface()
     otaControlInterface.updateJobStatus = NULL;
 
     TEST_ASSERT_EQUAL( OtaErrNone, shutdownHandler( NULL ) );
+
+    /* Set state to stopped manually. */
+    otaAgent.state = OtaAgentStateStopped;
+}
+
+/* No OTA interface available when processing events. */
+void test_OTA_nullOtaInterfaceWhenProcessEvent()
+{
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Set OTA interface to NULL. */
+    otaAgent.pOtaInterface = NULL;
+
+    receiveAndProcessOtaEvent();
+
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Reset OTA interface. */
+    otaAgent.pOtaInterface = &otaInterfaces;
+}
+
+/* Send event to OTA library when it's stopped. */
+void test_OTA_sendEventWhenStopped()
+{
+    OtaEventMsg_t eventMsg = { 0 };
+
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    eventMsg.eventId = OtaAgentEventStart;
+
+    TEST_ASSERT_EQUAL( false, OTA_SignalEvent( &eventMsg ) );
+}
+
+/* Re-start OTA library after shutdown. */
+void test_OTA_restartOtaAfterShutdown()
+{
+    /* First initialize OTA library. */
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Shut down OTA. */
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Second initialize OTA library. */
+    setUp();
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+}
+
+/* Re-start OTA library and then drop events after shutdown. */
+void test_OTA_restartOtaAfterShutdownAndDropEvents()
+{
+    /* First initialize OTA library */
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
+
+    /* Shut down OTA. */
+    tearDown();
+    TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
+
+    /* Put some fake events to test if OTA drops them correctly. */
+    otaEventQueueEnd->eventId = OtaAgentEventSuspend;
+    otaEventQueueEnd->pEventData = NULL;
+    otaEventQueueEnd++;
+    otaEventQueueEnd->eventId = OtaAgentEventUserAbort;
+    otaEventQueueEnd->pEventData = NULL;
+    otaEventQueueEnd++;
+
+    /* Second initialize OTA library */
+    setUp();
+    otaInitDefault();
+    otaGoToState( OtaAgentStateReady );
+    TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
 }
 
 /* ========================================================================== */
@@ -3183,7 +3429,7 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     bool updateJob = false;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
-        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, *otaAgent.fileContext.pJobName, otaAgent.fileContext.jobNameMaxSize, UINT16_MAX },
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
     };
 
     /* The document structure has an invalid value for ModelParamType_t. */

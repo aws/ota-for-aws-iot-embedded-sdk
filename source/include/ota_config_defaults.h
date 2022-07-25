@@ -293,6 +293,16 @@
 #endif
 
 /**
+ * @brief The polling timeout (milliseconds) to receive messages from event queue.
+ *
+ * <b>Possible values:</b> Any unsigned 32 integer. <br>
+ * <b>Default value:</b> '1000'
+ */
+#ifndef configOTA_POLLING_EVENTS_TIMEOUT_MS
+    #define configOTA_POLLING_EVENTS_TIMEOUT_MS    ( 1000U )
+#endif
+
+/**
  * @brief Macro that is called in the OTA library for logging "Error" level
  * messages.
  *
