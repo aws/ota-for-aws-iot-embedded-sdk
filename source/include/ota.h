@@ -437,7 +437,7 @@ typedef struct OtaAgentContext
  * @endcode
  */
 /* @[declare_ota_init] */
-OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
                    const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
@@ -713,7 +713,7 @@ OtaErr_t OTA_Resume( void );
  * please see the [demos in AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota).
  */
 /* @[declare_ota_eventprocessingtask] */
-void OTA_EventProcessingTask( void * pUnused );
+void OTA_EventProcessingTask( const void * pUnused );
 /* @[declare_ota_eventprocessingtask] */
 
 

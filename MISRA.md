@@ -13,22 +13,31 @@ Deviations from the MISRA standard are listed below:
 | Rule 2.4 | Advisory | Allow unused tags. Some compilers warn if types are not tagged. |
 | Rule 2.5 | Advisory | Allow unused macros. Library headers may define macros intended for the application's use, but are not used by a specific file. |
 | Rule 3.1 | Required | Allow nested comments. C++ style `//` comments are used in example code within Doxygen documentation blocks. |
+| Rule 5.8 | Required | As part of building the coverity_analysis target a copy of the files is made with some of the static keywords removed, coverity will then incorrectly flag doubles of function declerations because of this.
+| Rule 8.6  | Required | `OTA_JsonFileSignatureKey` is an extern variable declared but not defined in OTA library. This variable shall be defined in OTA platform abstraction layer implementation, which is found in other repositories. |
+| Rule 8.7 | Advisory | API functions are not used by the library; however, they must be externally visible in order to be used by an application. |
+| Rule 8.9 | Advisory | For ease, configuration parameters are defined at a global scope even when used only once. |
 | Rule 11.5 | Advisory | Allow casts from `void *`. Fields may be passed as `void *`, requiring a cast to the correct data type before use. |
+| Rule 12.3 | Advisory | Allow use of `assert()` macro, expansion of which uses comma operator. |
+| Rule 15.6 | Required | Allow use of `assert()` macro, expansion of which contains non-compound if statements. |
+| Rule 20.12 | Required | Allow use of `assert()`, which uses a parameter in both expanded and raw forms. |
 | Rule 21.1 | Required | Allow use of all macro names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
 | Rule 21.2 | Required | Allow use of all macro and identifier names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
+| Rule 21.5 | Required | This rule prohibits the use of signal.h because of undefined behavior. However, the warning is in OS porting implementation on POSIX, which has well defined behavior. We're using the timer functionality from POSIX so we deviate from this rule. |
 
 ### Flagged by Coverity
 | Deviation | Category | Justification |
 | :-: | :-: | :-: |
-| Rule 4.12 | Required | This rule prohibits the use of malloc and free from stdlib.h because of undefined behavior. We define a malloc interface in OTA and on POSIX it is implemented with malloc/free. The design for our OTA library is to let user choose whether they want to pass buffers to us or not. Dynamic allocation is used only when they do not provide these buffers. Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not leaking or free memory that's not dynamically allocated. |
-| Rule 14.3 | Required | This is a warning on `otaconfigAllowDowngrade` being a constant and used in controlling expression. This macro is one of the OTA library configuration and it's set to 0 when running the static analysis. But users can change it when they build their application. So this is a false positive. |
-| Rule 21.5 | Required | This rule prohibits the use of signal.h because of undefined behavior. However, the warning is in OS porting implementation on POSIX, which has well defined behavior. We're using the timer functionality from POSIX so we deviate from this rule. |
-| Rule 8.6  | Required | `OTA_JsonFileSignatureKey` is an extern variable declared but not defined in OTA library. This variable shall be defined in OTA platform abstraction layer implementation, which is found in other repositories. |
 
 ### Suppressed with Coverity Comments
 | Deviation | Category | Justification |
 | :-: | :-: | :-: |
+| Directive 4.6 | Advisory | The uses of a 3rd party macro cbor_value_get_int requires the use of ints |
+| Rule 2.2 | Required | This rule prohibits dead code for the string arrays `pOtaAgentStateStrings` and `pOtaEventStrings`. These are used only for logging which is disabled during static analysis. |
+| Rule 8.13 | Required | Coverity falsely believes that there are variables in some of the functions that can be made const. |
+| Rule 10.1 | Required | Use of POSIX specific macro `O_CREAT` and `O_RDWR` is flagged for this violation. We use these 2 macros with one POSIX API `mq_open` in the POSIX OS implementation. |
+| Rule 11.8 | Required | Coverity scans will raise an error if certain variables are not marked as const, even if the variables do get modified in that function. As such there are two occurences where to get around that error, we supress this one. |
+| Rule 14.3 | Required | This is a warning on `otaconfigAllowDowngrade` being a constant and used in controlling expression. This macro is one of the OTA library configuration and it's set to 0 when running the static analysis. But users can change it when they build their application. So this is a false positive. |
+| Rule 19.2 | Advisory | Unions are used to reduce the memory footprint and to represent packet formats in the FreeRTOS network stack. |
 | Rule 21.3 | Required | This is explained in rule 4.12 from section above. We define a malloc and free interface so that our OTA library can be ported to any OS. |
 | Rule 21.8 | Required | One of the OTA platform abstraction layer interfaces `abort` is flagged for this violation. This is implemented by a platform abstraction layer and always called through the OTA PAL interface. |
-| Rule 10.1 | Required | Use of POSIX specific macro `O_CREAT` and `O_RDWR` is flagged for this violation. We use these 2 macros with one POSIX API `mq_open` in the POSIX OS implementation. |
-| Rule 2.2 | Required | This rule prohibits dead code for the string arrays `pOtaAgentStateStrings` and `pOtaEventStrings`. These are used only for logging which is disabled during static analysis. |

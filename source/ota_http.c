@@ -28,7 +28,11 @@
 /* Standard library include. */
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
+#ifdef DISABLE_LOGGING
+    #define assert( x )
+#else
+    #include "assert.h"
+#endif
 
 /* OTA includes. */
 #include "ota.h"
@@ -44,11 +48,11 @@ static uint32_t currBlock;
 /*
  * Init file transfer by initializing the http module with the pre-signed url.
  */
-OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
+OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
     char * pURL = NULL;
-    OtaFileContext_t * fileContext = NULL;
+    const OtaFileContext_t * fileContext = NULL;
 
     LogDebug( ( "Invoking initFileTransfer_Http" ) );
     assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
@@ -75,6 +79,7 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 /*
  * Check for next available OTA job from the job service.
  */
+/* coverity[misra_c_2012_rule_8_13_violation] */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
@@ -83,12 +88,12 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     uint32_t rangeStart = 0;
     uint32_t rangeEnd = 0;
 
-    OtaFileContext_t * fileContext = NULL;
+    const OtaFileContext_t * fileContext;
 
     assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
-    LogDebug( ( "Invoking requestDataBlock_Http" ) );
-
     fileContext = &( pAgentCtx->fileContext );
+    LogDebug( ( "Invoking requestDataBlock_Http" ) );
+    /* fileContext   */
 
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
@@ -119,6 +124,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
  * HTTP file block does not need to decode the block, only increment
  * number of blocks received.
  */
+/* coverity[misra_c_2012_rule_8_13_violation] */
 OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
@@ -129,8 +135,8 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
 {
     OtaErr_t err = OtaErrNone;
 
-    assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
-            pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
+    assert( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
+            ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
     if( messageSize > OTA_FILE_BLOCK_SIZE )
     {

@@ -463,14 +463,14 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
-OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
+OtaErr_t mockControlInterfaceRequestJobAlwaysFail( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
     return OtaErrRequestJobFailed;
 }
 
-OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
+OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( const OtaAgentContext_t * unused1,
                                                   OtaJobStatus_t unused2,
                                                   int32_t unused3,
                                                   int32_t unused4 )
@@ -483,7 +483,7 @@ OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
     return OtaErrUpdateJobStatusFailed;
 }
 
-OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
+OtaErr_t mockControlInterfaceUpdateJobCount( const OtaAgentContext_t * unused1,
                                              OtaJobStatus_t status,
                                              int32_t unused3,
                                              int32_t unused4 )
@@ -500,7 +500,7 @@ OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
     return OtaErrNone;
 }
 
-OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
+OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail(const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
@@ -508,7 +508,7 @@ OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused
 }
 
 
-OtaErr_t mockDataInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
+OtaErr_t mockDataInitFileTransferAlwaysSucceed( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 

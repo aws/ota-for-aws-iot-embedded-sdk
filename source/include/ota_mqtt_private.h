@@ -49,7 +49,7 @@
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx );
+OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Initialize file transfer over MQTT.
@@ -62,7 +62,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx );
+OtaErr_t initFileTransfer_Mqtt( const OtaAgentContext_t * pAgentCtx );
 
 /**
  * @brief Request File block over MQTT.
@@ -146,7 +146,7 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx );
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
 
-OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
+OtaErr_t updateJobStatus_Mqtt( const OtaAgentContext_t * pAgentCtx,
                                OtaJobStatus_t status,
                                int32_t reason,
                                int32_t subReason );

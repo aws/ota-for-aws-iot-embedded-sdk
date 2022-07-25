@@ -49,7 +49,7 @@
  *
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
-OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx );
+OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx );
 
 
 /**

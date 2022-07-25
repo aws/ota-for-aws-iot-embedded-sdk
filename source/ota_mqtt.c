@@ -29,7 +29,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+#ifdef DISABLE_LOGGING
+    #define assert( x )
+#else
+    #include "assert.h"
+#endif
 
 /* OTA includes. */
 #include "ota.h"
@@ -168,7 +172,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
  * @param[in] qos Quality of service level for mqtt.
  * @return OtaMqttStatus_t OtaMqttSuccess if the message is publish is successful.
  */
-static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
+static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx,
                                              const char * pMsg,
                                              uint32_t msgSize,
                                              uint8_t qos );
@@ -229,7 +233,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
  */
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
-                             const char * strings[] );
+                             const char * const strings[] );
 
 /**
  * @brief Build a string with the decimal representation of a uint32_t value.
@@ -241,7 +245,7 @@ static size_t stringBuilder( char * pBuffer,
  */
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
                                           size_t bufferSizeBytes,
-                                          uint32_t value );
+                                          uint32_t origValue );
 
 /**
  * @brief Build a string with the hex representation of a uint32_t value.
@@ -253,14 +257,14 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
  */
 static size_t stringBuilderUInt32Hex( char * pBuffer,
                                       size_t bufferSizeBytes,
-                                      uint32_t value );
+                                      uint32_t origValue );
 
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
-                             const char * strings[] )
+                             const char * const strings[] )
 {
     size_t curLen = 0;
-    int i;
+    size_t i;
     size_t thisLength = 0;
 
     pBuffer[ 0 ] = '\0';
@@ -271,7 +275,7 @@ static size_t stringBuilder( char * pBuffer,
 
         /* Assert if there is not enough buffer space. */
 
-        assert( thisLength + curLen + 1 <= bufferSizeBytes );
+        assert( ( thisLength + curLen + 1U ) <= bufferSizeBytes );
 
         ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         curLen += thisLength;
@@ -282,11 +286,12 @@ static size_t stringBuilder( char * pBuffer,
 
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
                                           size_t bufferSizeBytes,
-                                          uint32_t value )
+                                          uint32_t origValue )
 {
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
+    uint32_t value = origValue;
     size_t size = 0;
 
     /* Assert if there is not enough buffer space. */
@@ -296,28 +301,33 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
     while( value > 0U )
     {
-        *pCur++ = asciiDigits[ ( value % 10U ) ];
+        *pCur = asciiDigits[ ( value % 10U ) ];
+        pCur++;
         value /= 10U;
     }
 
     while( pCur > workBuf )
     {
-        pDest[ size++ ] = *--pCur;
+        --pCur;
+        pDest[ size ] = *pCur;
+        size++;
     }
 
-    pDest[ size++ ] = '\0';
+    pDest[ size ] = '\0';
+    size++;
     return size;
 }
 
 static size_t stringBuilderUInt32Hex( char * pBuffer,
                                       size_t bufferSizeBytes,
-                                      uint32_t value )
+                                      uint32_t origValue )
 {
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
     size_t size = 0;
-    int i;
+    uint32_t value = origValue;
+    size_t i;
 
     /* Assert if there is not enough buffer space. */
 
@@ -325,18 +335,22 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
-    for( i = 0; i < 8; i++ )
+    for( i = 0U; i < 8U ; i++ )
     {
-        *pCur++ = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
+        *pCur = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
+        pCur++;
         value >>= 4;
     }
 
     while( pCur > workBuf )
     {
-        pDest[ size++ ] = *--pCur;
+        --pCur;
+        pDest[ size ] = *pCur;
+        size++;
     }
 
-    pDest[ size++ ] = '\0';
+    pDest[ size ] = '\0';
+    size++;
     return size;
 }
 
@@ -521,7 +535,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
 /*
  * Publish a message to the job status topic.
  */
-static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
+static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx,
                                              const char * pMsg,
                                              uint32_t msgSize,
                                              uint8_t qos )
@@ -603,7 +617,6 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
-
     /* NULL-terminated list of JSON payload components */
     /* NOTE: this must conform to the following format, do not add spaces, etc. */
     /*       "\"%s\":\"%u/%u\"}}" */
@@ -629,7 +642,8 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
 
     /* Output a status update when receiving first file block to let user know the OTA job status
      * more clearly. Then output a status update once in a while. */
-    if( ( received == 1 ) || ( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
+
+    if( ( received == 1U ) || ( ( received % (uint32_t) otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
     {
         payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
         payloadStringParts[ 3 ] = receivedString;
@@ -838,7 +852,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
  * a "get next job" message to the job service.
  */
 
-OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
+OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
@@ -938,7 +952,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 /*
  * Update the job status on the service side with progress or completion info.
  */
-OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
+OtaErr_t updateJobStatus_Mqtt( const OtaAgentContext_t * pAgentCtx,
                                OtaJobStatus_t status,
                                int32_t reason,
                                int32_t subReason )
@@ -1006,7 +1020,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 /*
  * Init file transfer by subscribing to the OTA data stream topic.
  */
-OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
+OtaErr_t initFileTransfer_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrInitFileTransferFailed;
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;

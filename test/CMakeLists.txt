@@ -49,8 +49,9 @@ add_library( coverity_analysis
     ${JSON_SOURCES} )
 
 # Build OTA library target without custom config dependency
-target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 )
+target_compile_definitions( coverity_analysis PUBLIC OTA_DO_NOT_USE_CUSTOM_CONFIG=1 DISABLE_LOGGING=1 )
 
+# with '#' will be ignored, and an empty message aborts the commit.
 # OTA include path.
 target_include_directories( coverity_analysis PUBLIC
     ${OTA_INCLUDE_PUBLIC_DIRS}
@@ -62,6 +63,8 @@ target_include_directories( coverity_analysis PRIVATE
     ${JSON_INCLUDE_PUBLIC_DIRS}
     ${TINYCBOR_INCLUDE_DIRS} )
 
+# Build OTA Library target without the assert macro
+#target_compile_options(coverity_analysis PUBLIC -DDISABLE_LOGGING )
 # ============================ Test configuration ==============================
 
 # Define a CMock resource path.

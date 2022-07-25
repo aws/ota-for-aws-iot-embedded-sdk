@@ -26,8 +26,11 @@
  */
 
 #include "ota_base64_private.h"
-#include <assert.h>
-
+#ifdef DISABLE_LOGGING
+    #define assert( x )
+#else
+    #include "assert.h"
+#endif
 /**
  * @brief Number to represent both line feed and carriage return symbols in the
  *        pBase64SymbolToIndexMap table.
