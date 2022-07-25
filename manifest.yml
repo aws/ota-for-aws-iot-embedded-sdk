@@ -2,7 +2,6 @@ name : "ota-for-aws-iot-embedded-sdk"
 version: "v3.3.0"
 description: "Client library for using the AWS Over-the-air Update service on embedded devices."
 license: "MIT"
-
 dependencies:
   - name : "coreJSON"
     version: "v3.0.2"
