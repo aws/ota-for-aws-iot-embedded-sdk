@@ -2401,6 +2401,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     OtaErr_t err = OtaErrNone;
     OtaPalStatus_t palStatus;
 
+    uint8_t lastByte = 0xFFU;
     bool updateJob = false;
 
     /* Populate an OTA file context from the OTA job document. */
@@ -2464,7 +2465,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) (  ( ( uint8_t ) 0xFFU ) & ( ~bit ) );
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) (  lastByte & ( ~bit ) );
                 bit >>= 1U;
             }
 
@@ -2532,7 +2533,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     IngestResult_t eIngestResult = IngestResultUninitialized;
     uint32_t byte = 0;
     uint8_t bitMask = 0;
-
+    uint8_t lastByte = 0xFFU;
     assert( pFileContext != NULL );
 
     if( pFileContext->pFile == NULL )
@@ -2601,7 +2602,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         /* Mark this block as received in our bitmap. */
-        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bitMask ) );
+        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( lastByte & ( ~bitMask ) );
         pFileContext->blocksRemaining--;
 
         *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
