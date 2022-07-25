@@ -32,16 +32,17 @@
 #include "ota_private.h"
 #include <poll.h>
 
-int poll( struct pollfd *fds, nfds_t nfds, int timeout )
+int poll( struct pollfd * fds,
+          nfds_t nfds,
+          int timeout )
 {
     int returnVal;
 
     if( nondet_bool() )
     {
-        /* Case when timeout doesn't happen and data is present to be read. */
+        /* Case when timeout does not happen and data is present to be read. */
         __CPROVER_assume( returnVal > 0 );
         fds->revents = POLLIN;
-
     }
     else
     {
@@ -49,7 +50,6 @@ int poll( struct pollfd *fds, nfds_t nfds, int timeout )
         returnVal = 0;
         fds->revents = 0;
     }
-
 }
 
 void Posix_OtaReceiveEvent_harness()
