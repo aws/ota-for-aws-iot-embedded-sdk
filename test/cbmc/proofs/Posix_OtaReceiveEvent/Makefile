@@ -8,7 +8,7 @@ PROOF_UID = Posix_OtaReceiveEvent_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
 
-DEFINES += -DBOUND=2
+DEFINES += -DBOUND=10
 
 UNWINDSET += Posix_OtaReceiveEvent.0:10
 

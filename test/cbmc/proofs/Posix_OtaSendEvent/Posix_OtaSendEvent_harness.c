@@ -43,7 +43,7 @@ int poll( struct pollfd * fds,
 
     if( count >= BOUND )
     {
-        /* Return value greater than 0 with event set to POLLIN. */
+        /* Return value greater than 0 with event set to POLLOUT. */
         fds->revents = POLLOUT;
         return 1;
     }
