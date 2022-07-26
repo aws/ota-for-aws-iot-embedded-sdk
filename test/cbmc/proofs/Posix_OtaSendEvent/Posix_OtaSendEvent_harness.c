@@ -27,27 +27,47 @@
 /*  POSIX includes for OTA library. */
 #include "ota_os_posix.h"
 #include <poll.h>
+#include <mqueue.h>
+
+/* Counter for the number of iterations. */
+static int count = 0;
 
 int poll( struct pollfd * fds,
           nfds_t nfds,
           int timeout )
 {
-    int returnVal;
-
     __CPROVER_assert( fds != NULL, "fds pointer cannot be NULL" );
+    __CPROVER_havoc_object( fds );
 
-    if( nondet_bool() )
+    count++;
+
+    if( count >= BOUND )
     {
-        /* Case when timeout does not happen and data is present to be read. */
-        __CPROVER_assume( returnVal > 0 );
-        fds->revents = POLLIN;
+        /* Return value greater than 0 with event set to POLLIN. */
+        fds->revents = POLLOUT;
+        return 1;
     }
-    else
+
+    return nondet_int();
+}
+
+int mq_send( mqd_t mqdes,
+             const char * msg_ptr,
+             size_t msg_len,
+             unsigned int msg_prio )
+{
+    /* No assertion on msg_ptr as NULL values are allowed. */
+
+    if( count >= BOUND )
     {
-        /* Case when timeout happens. */
-        returnVal = 0;
-        fds->revents = 0;
+        /* Reset the counter to 0. */
+        count = 0;
+
+        /* Return success. */
+        return 0;
     }
+
+    return nondet_int();
 }
 
 void Posix_OtaSendEvent_harness()

@@ -31,27 +31,48 @@
 /* Includes for ota private struct types. */
 #include "ota_private.h"
 #include <poll.h>
+#include <mqueue.h>
+
+/* Counter for the number of iterations. */
+static int count = 0;
 
 int poll( struct pollfd * fds,
           nfds_t nfds,
           int timeout )
 {
-    int returnVal;
-
     __CPROVER_assert( fds != NULL, "fds pointer cannot be NULL" );
+    __CPROVER_havoc_object( fds );
 
-    if( nondet_bool() )
+    count++;
+
+    if( count >= BOUND )
     {
-        /* Case when timeout does not happen and data is present to be read. */
-        __CPROVER_assume( returnVal > 0 );
+        /* Return value greater than 0 with event set to POLLIN. */
         fds->revents = POLLIN;
+        return 1;
     }
-    else
+
+    return nondet_int();
+}
+
+ssize_t mq_receive( mqd_t mqdes,
+                    char * msg_ptr,
+                    size_t msg_len,
+                    unsigned int * msg_prio )
+{
+    __CPROVER_assert( msg_ptr != NULL, "msg_ptr cannot be NULL" );
+    __CPROVER_havoc_object( msg_ptr );
+
+    if( count >= BOUND )
     {
-        /* Case when timeout happens. */
-        returnVal = 0;
-        fds->revents = 0;
+        /* Reset the counter to 0. */
+        count = 0;
+
+        /* Return success. */
+        return 0;
     }
+
+    return nondet_int();
 }
 
 void Posix_OtaReceiveEvent_harness()
