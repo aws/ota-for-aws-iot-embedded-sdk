@@ -2399,7 +2399,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     OtaFileContext_t * pUpdateFile; /* Pointer to an OTA update context. */
     OtaErr_t err = OtaErrNone;
     OtaPalStatus_t palStatus;
-
+    uint8_t lastByte = 0xFFU;
     bool updateJob = false;
 
     /* Populate an OTA file context from the OTA job document. */
@@ -2411,7 +2411,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
     /* coverity[misra_c_2012_rule_10_4_violation] */
-    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( uint32_t ) OTA_MAX_FILE_SIZE ) )
+    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( (uint32_t) OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
@@ -2462,7 +2462,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( 0xFF & ( ~bit ) );
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( lastByte & ( ~bit ) );
                 bit >>= 1U;
             }
 

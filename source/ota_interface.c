@@ -110,10 +110,6 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
             pDataInterface->cleanup = cleanupData_Http;
             err = OtaErrNone;
         }
-        else
-        {
-            return err;
-        }
     #else /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
         #if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT )
             if( mqttInJobDoc == true )
@@ -130,10 +126,6 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->requestFileBlock = requestDataBlock_Http;
                 pDataInterface->decodeFileBlock = decodeFileBlock_Http;
                 pDataInterface->cleanup = cleanupData_Http;
-                err = OtaErrNone;
-            }
-            else
-            {
                 err = OtaErrNone;
             }
         #elif ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_HTTP )
@@ -153,12 +145,8 @@ OtaErr_t setDataInterface( OtaDataInterface_t * pDataInterface,
                 pDataInterface->cleanup = cleanupData_Mqtt;
                 err = OtaErrNone;
             }
-            else{
-                err = OtaErrNone;
-            }
-        #else
-            err = OtaErrNone;
         #endif /* if ( configOTA_PRIMARY_DATA_PROTOCOL == OTA_DATA_OVER_MQTT ) */
     #endif /* if ( ( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_MQTT ) && !( configENABLED_DATA_PROTOCOLS & OTA_DATA_OVER_HTTP ) ) */
+
     return err;
 }
