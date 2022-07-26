@@ -375,7 +375,6 @@ opengroup
 openssl
 openssl_invalid_parameter
 org
-origvalue
 os
 ota
 ota_mqtt_component
@@ -897,6 +896,7 @@ validateandstartjob
 validatedatablock
 validatejson
 validateupdateversion
+valuecopy
 valuelength
 verifyactivejobstatus
 verifyrequiredparamsextracted

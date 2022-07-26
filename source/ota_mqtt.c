@@ -240,24 +240,24 @@ static size_t stringBuilder( char * pBuffer,
  *
  * @param[in] pBuffer Buffer to place the output string in.
  * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
- * @param[in] origValue The uint32_t value to convert.
+ * @param[in] value The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
                                           size_t bufferSizeBytes,
-                                          uint32_t origValue );
+                                          uint32_t value );
 
 /**
  * @brief Build a string with the hex representation of a uint32_t value.
  *
  * @param[in] pBuffer Buffer to place the output string in.
  * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
- * @param[in] origValue The uint32_t value to convert.
+ * @param[in] value The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Hex( char * pBuffer,
                                       size_t bufferSizeBytes,
-                                      uint32_t origValue );
+                                      uint32_t value );
 
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
@@ -286,12 +286,12 @@ static size_t stringBuilder( char * pBuffer,
 
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
                                           size_t bufferSizeBytes,
-                                          uint32_t origValue )
+                                          uint32_t value )
 {
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
-    uint32_t value = origValue;
+    uint32_t valueCopy = value;
     size_t size = 0;
 
     /* Assert if there is not enough buffer space. */
@@ -299,11 +299,11 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( value > 0U )
+    while( valueCopy > 0U )
     {
-        *pCur = asciiDigits[ ( value % 10U ) ];
+        *pCur = asciiDigits[ ( valueCopy % 10U ) ];
         pCur++;
-        value /= 10U;
+        valueCopy /= 10U;
     }
 
     while( pCur > workBuf )
@@ -320,13 +320,13 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
 static size_t stringBuilderUInt32Hex( char * pBuffer,
                                       size_t bufferSizeBytes,
-                                      uint32_t origValue )
+                                      uint32_t value )
 {
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
     size_t size = 0;
-    uint32_t value = origValue;
+    uint32_t valueCopy = value;
     size_t i;
 
     /* Assert if there is not enough buffer space. */
@@ -337,9 +337,9 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     /* Render all 8 digits, including leading zeros. */
     for( i = 0U; i < 8U; i++ )
     {
-        *pCur = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
+        *pCur = asciiDigits[ valueCopy & 15U ]; /* 15U = 0xF*/
         pCur++;
-        value >>= 4;
+        valueCopy >>= 4;
     }
 
     while( pCur > workBuf )
