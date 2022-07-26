@@ -240,7 +240,7 @@ static size_t stringBuilder( char * pBuffer,
  *
  * @param[in] pBuffer Buffer to place the output string in.
  * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
- * @param[in] value The uint32_t value to convert.
+ * @param[in] origValue The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Decimal( char * pBuffer,
@@ -252,7 +252,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
  *
  * @param[in] pBuffer Buffer to place the output string in.
  * @param[in] bufferSizeBytes Size of the buffer pointed to by pBuffer.
- * @param[in] value The uint32_t value to convert.
+ * @param[in] origValue The uint32_t value to convert.
  * @return size_t Length of the output string, not including the terminator.
  */
 static size_t stringBuilderUInt32Hex( char * pBuffer,

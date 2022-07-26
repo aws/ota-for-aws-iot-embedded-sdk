@@ -1579,7 +1579,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     DocParseErr_t err = DocParseErrNone;
     size_t actualLen = 0;
     Base64Status_t base64Status = Base64Success;
-    /* Coverity is falsely saying that this parameter doesn't get modified and as such it should be a const */
+    /* Coverity is falsely saying that this parameter does not get modified and as such it should be a const */
     /* coverity[misra_c_2012_rule_8_13_violation] */
     Sig_t ** pSig = pParamAdd;
 
