@@ -621,7 +621,7 @@ static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];       /*!< Buffer to store job name. */
 static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ]; /*!< Buffer to store data protocol. */
 static Sig_t sigBuffer;                                     /*!< Buffer to store key file signature. */
-const static uint8_t lastByte = 0xFFU;                      /*!< Mask used to get last 8 bits in MISRA compliant method. */
+static const uint8_t lastByte = 0xFFU;                      /*!< Mask used to get last 8 bits in MISRA compliant method. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
