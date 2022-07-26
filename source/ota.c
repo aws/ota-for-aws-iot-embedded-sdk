@@ -621,6 +621,7 @@ static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];       /*!< Buffer to store job name. */
 static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ]; /*!< Buffer to store data protocol. */
 static Sig_t sigBuffer;                                     /*!< Buffer to store key file signature. */
+const static uint8_t lastByte = 0xFFU;                      /*!< Mask used to get last 8 bits in MISRA compliant method. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
@@ -2389,6 +2390,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
     /* Return pointer to populated file context or NULL if it failed. */
     return pFinalFile;
 }
+
 /* Called to update the filecontext structure from the job. */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
                                                  uint32_t messageLength )
@@ -2399,7 +2401,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     OtaFileContext_t * pUpdateFile; /* Pointer to an OTA update context. */
     OtaErr_t err = OtaErrNone;
     OtaPalStatus_t palStatus;
-    uint8_t lastByte = 0xFFU;
+
     bool updateJob = false;
 
     /* Populate an OTA file context from the OTA job document. */
@@ -2412,7 +2414,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     }
 
     /* coverity[misra_c_2012_rule_10_4_violation] */
-    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( ( uint32_t ) OTA_MAX_FILE_SIZE ) ) )
+    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
@@ -2531,7 +2533,6 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     IngestResult_t eIngestResult = IngestResultUninitialized;
     uint32_t byte = 0;
     uint8_t bitMask = 0;
-    uint8_t lastByte = 0xFFU;
 
     assert( pFileContext != NULL );
 
