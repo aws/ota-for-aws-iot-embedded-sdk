@@ -375,7 +375,7 @@ opengroup
 openssl
 openssl_invalid_parameter
 org
-origValue
+origvalue
 os
 ota
 ota_mqtt_component
