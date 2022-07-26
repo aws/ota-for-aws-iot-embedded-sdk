@@ -77,6 +77,15 @@ For enabling data transfer over HTTP dataplane the following component should al
 1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
 
 **NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be provided.
+
+## CBMC
+
+To learn more about CBMC and proofs specifically, review the training material [here](https://model-checking.github.io/cbmc-training).
+
+The `test/cbmc/proofs` directory contains CBMC proofs.
+
+In order to run these proofs you will need to install CBMC and other tools by following the instructions [here](https://model-checking.github.io/cbmc-training/installation.html).
+
 ## Reference examples
 
 Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for reference examples on POSIX and FreeRTOS:
