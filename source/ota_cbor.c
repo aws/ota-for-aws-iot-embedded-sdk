@@ -149,7 +149,6 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        
         cborResult = cbor_value_get_int( &cborValue,
                                          ( int32_t * ) pBlockId );
     }

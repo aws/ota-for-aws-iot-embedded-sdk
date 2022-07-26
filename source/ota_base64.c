@@ -31,6 +31,7 @@
 #else
     #include "assert.h"
 #endif
+
 /**
  * @brief Number to represent both line feed and carriage return symbols in the
  *        pBase64SymbolToIndexMap table.

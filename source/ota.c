@@ -1248,7 +1248,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         jobDoc.subReason = ( int32_t ) OTA_PAL_SUB_ERR( closeResult );
 
         /* Update the job status with the with failure code. */
-        err = otaControlInterface.updateJobStatus(  &otaAgent, JobStatusFailedWithVal, jobDoc.reason, jobDoc.subReason);
+        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, jobDoc.reason, jobDoc.subReason );
 
         dataHandlerCleanup();
 
@@ -2191,7 +2191,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 {
     OtaJobParseErr_t err = OtaJobParseErrNone;
 
-    const char * pNullPos = memchr( pFileContext->pJobName, (int32_t) '\0', sizeof( otaAgent.pActiveJobName ) );
+    const char * pNullPos = memchr( pFileContext->pJobName, ( int32_t ) '\0', sizeof( otaAgent.pActiveJobName ) );
 
     /* Validate the job document parameters. */
     if( pNullPos == NULL )
@@ -2410,8 +2410,9 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
+
     /* coverity[misra_c_2012_rule_10_4_violation] */
-    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( (uint32_t) OTA_MAX_FILE_SIZE ) ) )
+    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( ( uint32_t ) OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
@@ -2471,7 +2472,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             /* Create/Open the OTA file on the file system. */
             palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
 
-             if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
+            if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
             {
                 err = setImageStateWithReason( OtaImageStateAborted, palStatus );
                 ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
@@ -2531,6 +2532,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     uint32_t byte = 0;
     uint8_t bitMask = 0;
     uint8_t lastByte = 0xFFU;
+
     assert( pFileContext != NULL );
 
     if( pFileContext->pFile == NULL )
@@ -2691,6 +2693,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
     uint32_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr = 0;
+
     ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */
 
     if( pFileContext->blocksRemaining == 0U )
@@ -2714,7 +2717,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             otaPalMainErr = ( ( *pCloseResult ) >> ( OTA_PAL_SUB_BITS ) );
             /* When building the coverity target logging is disabled, which causes this variable to be unused */
             /* coverity[misra_c_2012_rule_2_2_violation] */
-            otaPalSubErr =  *pCloseResult ;
+            otaPalSubErr = *pCloseResult;
 
             if( otaPalMainErr == ( uint32_t ) OtaPalSuccess )
             {

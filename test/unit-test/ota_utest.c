@@ -500,7 +500,7 @@ OtaErr_t mockControlInterfaceUpdateJobCount( const OtaAgentContext_t * unused1,
     return OtaErrNone;
 }
 
-OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail(const OtaAgentContext_t * unused )
+OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
@@ -2698,6 +2698,7 @@ void test_OTA_MQTT_EncodingFailed()
 
     /* Explicitly set BitMap to NULL for the encoding to fail. */
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
+
     pFileContext->pRxBlockBitmap = NULL;
 
     err = requestFileBlock_Mqtt( &otaAgent );

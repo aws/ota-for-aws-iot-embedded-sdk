@@ -335,7 +335,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
-    for( i = 0U; i < 8U ; i++ )
+    for( i = 0U; i < 8U; i++ )
     {
         *pCur = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
         pCur++;
@@ -643,7 +643,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     /* Output a status update when receiving first file block to let user know the OTA job status
      * more clearly. Then output a status update once in a while. */
 
-    if( ( received == 1U ) || ( ( received % (uint32_t) otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
+    if( ( received == 1U ) || ( ( received % ( uint32_t ) otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
     {
         payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
         payloadStringParts[ 3 ] = receivedString;
