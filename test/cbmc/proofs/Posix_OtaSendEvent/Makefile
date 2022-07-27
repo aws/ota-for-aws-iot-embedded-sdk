@@ -8,6 +8,8 @@ PROOF_UID = Posix_OtaSendEvent_harness
 
 INCLUDES += -I$(SRCDIR)/source/portable/os/
 
+DEFINES += -DBOUND=10
+
 UNWINDSET += Posix_OtaSendEvent.0:10
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
