@@ -33,7 +33,7 @@
     #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
-    #define configOTA_ASSERT assert
+    #define configOTA_ASSERT    assert
 #endif
 /* OTA includes. */
 #include "ota.h"

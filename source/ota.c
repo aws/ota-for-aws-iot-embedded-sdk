@@ -1585,7 +1585,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     size_t actualLen = 0;
     Base64Status_t base64Status = Base64Success;
 
-    Sig_t * const *  pSig = pParamAdd;
+    Sig_t * const * pSig = pParamAdd;
 
     /* pSig should point to pSignature in OtaFileContext_t, which is statically allocated. */
     configOTA_ASSERT( *pSig != NULL );
@@ -2415,6 +2415,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
+
     /* MISRA Ref 10.4.1 [Same essential type] */
     /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-104 */
     /* coverity[misra_c_2012_rule_10_4_violation] */
@@ -2724,6 +2725,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             otaPalSubErr = *pCloseResult;
             /* Using the variable to remove a MISRA 2.2 Dead Code violation */
             ( void ) otaPalSubErr;
+
             if( otaPalMainErr == ( uint32_t ) OtaPalSuccess )
             {
                 LogInfo( ( "Received entire update and validated the signature." ) );

@@ -30,8 +30,9 @@
     #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
-    #define configOTA_ASSERT assert
+    #define configOTA_ASSERT    assert
 #endif
+
 /**
  * @brief Number to represent both line feed and carriage return symbols in the
  *        pBase64SymbolToIndexMap table.
@@ -332,8 +333,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     configOTA_ASSERT( pBase64IndexBuffer != NULL );
     configOTA_ASSERT( pNumDataInBuffer != NULL );
     configOTA_ASSERT( ( *pNumDataInBuffer == 2U ) ||
-            ( *pNumDataInBuffer == 3U ) ||
-            ( *pNumDataInBuffer == 4U ) );
+                      ( *pNumDataInBuffer == 3U ) ||
+                      ( *pNumDataInBuffer == 4U ) );
     configOTA_ASSERT( pDest != NULL );
     configOTA_ASSERT( pOutputLen != NULL );
 
