@@ -27,6 +27,7 @@
 
 #include "ota_base64_private.h"
 #ifdef DISABLE_LOGGING
+
 /**
  * @brief Macro to use for assert() checks in the OTA library
  */

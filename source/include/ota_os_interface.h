@@ -295,7 +295,7 @@ typedef struct OtaMallocInterface
     /* MISRA Ref 21.3.2 [Essential operand type] */
     /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-213 */
     /* coverity[misra_c_2012_rule_21_3_violation] */
-    OtaFree_t free;     /*!< @brief OTA memory deallocate interface. */
+    OtaFree_t free; /*!< @brief OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 
 /**
