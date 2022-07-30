@@ -27,11 +27,11 @@
 
 #include "ota_base64_private.h"
 #ifdef DISABLE_LOGGING
-    #define assert( x )
+    #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
+    #define configOTA_ASSERT assert
 #endif
-
 /**
  * @brief Number to represent both line feed and carriage return symbols in the
  *        pBase64SymbolToIndexMap table.
@@ -201,8 +201,8 @@ static Base64Status_t preprocessBase64Index( uint8_t base64Index,
     int64_t numPadding;
     int64_t numWhitespace;
 
-    assert( pNumPadding != NULL );
-    assert( pNumWhitespace != NULL );
+    configOTA_ASSERT( pNumPadding != NULL );
+    configOTA_ASSERT( pNumWhitespace != NULL );
 
     numPadding = *pNumPadding;
     numWhitespace = *pNumWhitespace;
@@ -240,7 +240,7 @@ static Base64Status_t preprocessBase64Index( uint8_t base64Index,
      * and 63. Check that there was not a whitespace or padding symbol before this valid index. */
     else
     {
-        assert( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND );
+        configOTA_ASSERT( base64Index <= BASE64_INDEX_VALUE_UPPER_BOUND );
 
         if( ( numWhitespace != 0 ) || ( numPadding != 0 ) )
         {
@@ -272,9 +272,9 @@ static void updateBase64DecodingBuffer( const uint8_t base64Index,
     uint32_t base64IndexBuffer;
     uint32_t numDataInBuffer;
 
-    assert( pBase64IndexBuffer != NULL );
-    assert( pNumDataInBuffer != NULL );
-    assert( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND );
+    configOTA_ASSERT( pBase64IndexBuffer != NULL );
+    configOTA_ASSERT( pNumDataInBuffer != NULL );
+    configOTA_ASSERT( base64Index <= SYMBOL_TO_INDEX_MAP_VALUE_UPPER_BOUND );
 
     base64IndexBuffer = *pBase64IndexBuffer;
     numDataInBuffer = *pNumDataInBuffer;
@@ -329,13 +329,13 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     uint32_t numDataInBuffer;
     uint32_t numDataToWrite;
 
-    assert( pBase64IndexBuffer != NULL );
-    assert( pNumDataInBuffer != NULL );
-    assert( ( *pNumDataInBuffer == 2U ) ||
+    configOTA_ASSERT( pBase64IndexBuffer != NULL );
+    configOTA_ASSERT( pNumDataInBuffer != NULL );
+    configOTA_ASSERT( ( *pNumDataInBuffer == 2U ) ||
             ( *pNumDataInBuffer == 3U ) ||
             ( *pNumDataInBuffer == 4U ) );
-    assert( pDest != NULL );
-    assert( pOutputLen != NULL );
+    configOTA_ASSERT( pDest != NULL );
+    configOTA_ASSERT( pOutputLen != NULL );
 
     outputLen = *pOutputLen;
     base64IndexBuffer = *pBase64IndexBuffer;

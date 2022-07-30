@@ -59,7 +59,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
                                                int32_t * pFileId,
                                                int32_t * pBlockId,
                                                int32_t * pBlockSize,
-                                               uint8_t ** pPayload,
+                                               uint8_t * const * pPayload,
                                                size_t * pPayloadSize );
 
 /**

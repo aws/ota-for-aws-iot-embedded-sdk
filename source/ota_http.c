@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdio.h>
 #ifdef DISABLE_LOGGING
-    #define assert( x )
+    #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
 #endif
@@ -55,7 +55,7 @@ OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
     const OtaFileContext_t * fileContext = NULL;
 
     LogDebug( ( "Invoking initFileTransfer_Http" ) );
-    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
+    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
 
     /* File context from OTA agent. */
     fileContext = &( pAgentCtx->fileContext );
@@ -79,8 +79,7 @@ OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
 /*
  * Check for next available OTA job from the job service.
  */
-/* coverity[misra_c_2012_rule_8_13_violation] */
-OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
+OtaErr_t requestDataBlock_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
@@ -90,7 +89,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 
     const OtaFileContext_t * fileContext;
 
-    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
+    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
     fileContext = &( pAgentCtx->fileContext );
     LogDebug( ( "Invoking requestDataBlock_Http" ) );
     /* fileContext   */
@@ -124,18 +123,17 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
  * HTTP file block does not need to decode the block, only increment
  * number of blocks received.
  */
-/* coverity[misra_c_2012_rule_8_13_violation] */
 OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                size_t messageSize,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize )
 {
     OtaErr_t err = OtaErrNone;
 
-    assert( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
+    configOTA_ASSERT( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
             ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
     if( messageSize > OTA_FILE_BLOCK_SIZE )
@@ -169,7 +167,7 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
-    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.deinit != NULL ) );
+    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.deinit != NULL ) );
 
     httpStatus = pAgentCtx->pOtaInterface->http.deinit();
 

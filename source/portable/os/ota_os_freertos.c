@@ -52,7 +52,7 @@ static StaticQueue_t staticQueue;
 static QueueHandle_t otaEventQueue;
 
 /* OTA App Timer callback.*/
-static OtaTimerCallback_t otaTimerCallback;
+static OtaTimerCallback_t otaTimerCallbackPtr;
 
 /* OTA Timer handles.*/
 static TimerHandle_t otaTimer[ OtaNumOfTimers ];
@@ -177,9 +177,9 @@ static void selfTestTimerCallback( TimerHandle_t T )
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaSelfTestTimer );
+        otaTimerCallbackPtr( OtaSelfTestTimer );
     }
     else
     {
@@ -194,9 +194,9 @@ static void requestTimerCallback( TimerHandle_t T )
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaRequestTimer );
+        otaTimerCallbackPtr( OtaRequestTimer );
     }
     else
     {
@@ -216,7 +216,7 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
     configASSERT( pTimerName != NULL );
 
     /* Set OTA lib callback. */
-    otaTimerCallback = callback;
+    otaTimerCallbackPtr = callback;
 
     /* If timer is not created.*/
     if( otaTimer[ otaTimerId ] == NULL )

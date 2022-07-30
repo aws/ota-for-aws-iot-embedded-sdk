@@ -386,6 +386,15 @@
     #define LogDebug( message )
 #endif
 
+#ifndef configOTAAssert
+    #ifdef DISABLE_LOGGING
+        #define configOTA_ASSERT( x )
+    #else
+        #include "assert.h"
+        #define configOTA_ASSERT assert
+    #endif
+#endif
+
 /* *INDENT-OFF* */
 #ifdef __cplusplus
     }

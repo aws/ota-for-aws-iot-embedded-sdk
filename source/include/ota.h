@@ -62,9 +62,8 @@
  *
  */
 
-/* MISRA rule 8.6 requires identifier with external linkage to have exact one external definition.
- * However, this variable is defined in OTA platform abstraction layer implementation, which is
- * not in this repository but in C-SDK and amazon-freertos repo, so it's a false positive. */
+/* MISRA Ref 8.6.1 [External linkage] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-86 */
 /* coverity[misra_c_2012_rule_8_6_violation] */
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 

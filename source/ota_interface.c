@@ -29,7 +29,7 @@
 #include <string.h>
 
 #ifdef DISABLE_LOGGING
-    #define assert( x )
+    #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
 #endif
@@ -67,7 +67,7 @@
 
 void setControlInterface( OtaControlInterface_t * pControlInterface )
 {
-    assert( pControlInterface != NULL );
+    configOTA_ASSERT( pControlInterface != NULL );
 
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
         pControlInterface->requestJob = requestJob_Mqtt;

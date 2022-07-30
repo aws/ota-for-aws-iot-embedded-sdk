@@ -30,11 +30,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef DISABLE_LOGGING
-    #define assert( x )
+    #define configOTA_ASSERT( x )
 #else
     #include "assert.h"
+    #define configOTA_ASSERT assert
 #endif
-
 /* OTA includes. */
 #include "ota.h"
 #include "ota_private.h"
@@ -275,7 +275,7 @@ static size_t stringBuilder( char * pBuffer,
 
         /* Assert if there is not enough buffer space. */
 
-        assert( ( thisLength + curLen + 1U ) <= bufferSizeBytes );
+        configOTA_ASSERT( ( thisLength + curLen + 1U ) <= bufferSizeBytes );
 
         ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         curLen += thisLength;
@@ -296,7 +296,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
     /* Assert if there is not enough buffer space. */
 
-    assert( bufferSizeBytes >= U32_MAX_LEN );
+    configOTA_ASSERT( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
     while( valueCopy > 0U )
@@ -331,7 +331,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
 
     /* Assert if there is not enough buffer space. */
 
-    assert( bufferSizeBytes >= U32_MAX_LEN );
+    configOTA_ASSERT( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
@@ -376,7 +376,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaJobsNotifyNextTopicTemplate;
@@ -389,7 +389,7 @@ static OtaMqttStatus_t subscribeToJobNotificationTopics( const OtaAgentContext_t
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
+    configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopicNotifyNext ) ) );
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pJobTopicNotifyNext,
                                                            topicLen,
@@ -436,7 +436,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     pFileContext = &( pAgentCtx->fileContext );
 
@@ -450,7 +450,7 @@ static OtaMqttStatus_t unsubscribeFromDataStream( const OtaAgentContext_t * pAge
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
+    configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pOtaRxStreamTopic ) ) );
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pOtaRxStreamTopic,
                                                              topicLen,
@@ -496,9 +496,9 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
         NULL
     };
 
-    assert( pAgentCtx != NULL );
-    assert( pAgentCtx->pOtaInterface != NULL );
-    assert( pAgentCtx->pOtaInterface->mqtt.unsubscribe != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx->pOtaInterface != NULL );
+    configOTA_ASSERT( pAgentCtx->pOtaInterface->mqtt.unsubscribe != NULL );
 
     /* Try to unsubscribe from the first of two job topics. */
 
@@ -509,7 +509,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
+    configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.unsubscribe( pJobTopic,
                                                              topicLen,
@@ -557,9 +557,9 @@ static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
     /* pMsg is a static buffer of size "OTA_STATUS_MSG_MAX_SIZE". */
-    assert( pMsg != NULL );
+    configOTA_ASSERT( pMsg != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaJobStatusTopicTemplate;
@@ -575,7 +575,7 @@ static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx
         topicStringParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
+    configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
     /* Publish the status message. */
     LogDebug( ( "Attempting to publish MQTT status message: "
@@ -633,9 +633,9 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
         NULL
     };
 
-    assert( pMsgBuffer != NULL );
+    configOTA_ASSERT( pMsgBuffer != NULL );
     /* This function is only called when a file is received, so it can't be NULL. */
-    assert( pOTAFileCtx != NULL );
+    configOTA_ASSERT( pOTAFileCtx != NULL );
 
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
@@ -659,7 +659,7 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
             payloadStringParts );
 
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
+        configOTA_ASSERT( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
     }
 
     return msgSize;
@@ -689,7 +689,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
         NULL
     };
 
-    assert( pMsgBuffer != NULL );
+    configOTA_ASSERT( pMsgBuffer != NULL );
 
     ( void ) stringBuilderUInt32Hex( versionString, sizeof( versionString ), appFirmwareVersion.u.unsignedVersion32 );
     pPayloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
@@ -701,7 +701,7 @@ static uint32_t prvBuildStatusMessageSelfTest( char * pMsgBuffer,
         msgBufferSize,
         pPayloadStringParts );
 
-    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
+    configOTA_ASSERT( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     LogDebug( ( "Created self test update: %s", pMsgBuffer ) );
 
@@ -781,7 +781,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
     };
     const char ** pPayloadParts;
 
-    assert( pMsgBuffer != NULL );
+    configOTA_ASSERT( pMsgBuffer != NULL );
 
     newVersion.u.signedVersion32 = subReason;
     prevVersion.u.signedVersion32 = ( int32_t ) previousVersion;
@@ -842,7 +842,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
         pPayloadParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
+    configOTA_ASSERT( ( msgSize > 0U ) && ( msgSize < msgBufferSize ) );
 
     return msgSize;
 }
@@ -890,7 +890,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaJobsGetNextTopicTemplate;
@@ -915,7 +915,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
             pPayloadParts );
 
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
+        configOTA_ASSERT( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
 
         reqCounter++;
 
@@ -925,7 +925,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
             pTopicParts );
 
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
+        configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pJobTopic ) ) );
 
         mqttStatus = pAgentCtx->pOtaInterface->mqtt.publish( pJobTopic, topicLen, pMsg, msgSize, 1 );
 
@@ -966,7 +966,7 @@ OtaErr_t updateJobStatus_Mqtt( const OtaAgentContext_t * pAgentCtx,
     uint8_t qos = 1;
     const OtaFileContext_t * pFileContext = NULL;
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     /* Get the current file context. */
     pFileContext = &( pAgentCtx->fileContext );
@@ -990,7 +990,7 @@ OtaErr_t updateJobStatus_Mqtt( const OtaAgentContext_t * pAgentCtx,
     else
     {
         /* The potential values for status are constant at compile time. */
-        assert( status < NumJobStatusMappings );
+        configOTA_ASSERT( status < NumJobStatusMappings );
         msgSize = prvBuildStatusMessageFinish( pMsg, sizeof( pMsg ), status, reason, subReason, pAgentCtx->fileContext.updaterVersion );
     }
 
@@ -1042,7 +1042,7 @@ OtaErr_t initFileTransfer_Mqtt( const OtaAgentContext_t * pAgentCtx )
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaStreamDataTopicTemplate;
@@ -1057,7 +1057,7 @@ OtaErr_t initFileTransfer_Mqtt( const OtaAgentContext_t * pAgentCtx )
         pTopicParts );
 
     /* The buffer is static and the size is calculated to fit. */
-    assert( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
+    configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pRxStreamTopic ) ) );
 
     mqttStatus = pAgentCtx->pOtaInterface->mqtt.subscribe( pRxStreamTopic,
                                                            topicLen,
@@ -1115,7 +1115,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
         NULL
     };
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaGetStreamTopicTemplate;
@@ -1155,7 +1155,7 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
             pTopicParts );
 
         /* The buffer is static and the size is calculated to fit. */
-        assert( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
+        configOTA_ASSERT( ( topicLen > 0U ) && ( topicLen < sizeof( pTopicBuffer ) ) );
 
         mqttStatus = pAgentCtx->pOtaInterface->mqtt.publish( pTopicBuffer,
                                                              ( uint16_t ) topicLen,
@@ -1196,7 +1196,7 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize )
 {
     OtaErr_t result = OtaErrFailedToDecodeCbor;
@@ -1214,7 +1214,7 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
     if( cborDecodeRet == true )
     {
         /* pPayload and pPayloadSize is allocated by the caller. */
-        assert( ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
+        configOTA_ASSERT( ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
         result = OtaErrNone;
     }
@@ -1235,7 +1235,7 @@ OtaErr_t cleanupControl_Mqtt( const OtaAgentContext_t * pAgentCtx )
     OtaErr_t result = OtaErrNone;
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     if( pAgentCtx->unsubscribeOnShutdown != 0U )
     {
@@ -1263,7 +1263,7 @@ OtaErr_t cleanupData_Mqtt( const OtaAgentContext_t * pAgentCtx )
     OtaErr_t result = OtaErrNone;
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
 
-    assert( pAgentCtx != NULL );
+    configOTA_ASSERT( pAgentCtx != NULL );
 
     if( pAgentCtx->unsubscribeOnShutdown != 0U )
     {

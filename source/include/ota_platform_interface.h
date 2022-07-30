@@ -75,25 +75,23 @@ typedef uint32_t   OtaPalSubStatus_t;
  * @ingroup ota_enum_types
  * @brief The OTA platform interface main status.
  */
-typedef enum OtaPalMainStatus
-{
-    OtaPalSuccess = 0,          /*!< @brief OTA platform interface success. */
-    OtaPalUninitialized = 0xe0, /*!< @brief Result is not yet initialized from PAL. */
-    OtaPalOutOfMemory,          /*!< @brief Out of memory. */
-    OtaPalNullFileContext,      /*!< @brief The PAL is called with a NULL file context. */
-    OtaPalSignatureCheckFailed, /*!< @brief The signature check failed for the specified file. */
-    OtaPalRxFileCreateFailed,   /*!< @brief The PAL failed to create the OTA receive file. */
-    OtaPalRxFileTooLarge,       /*!< @brief The OTA receive file is too big for the platform to support. */
-    OtaPalBootInfoCreateFailed, /*!< @brief The PAL failed to create the OTA boot info file. */
-    OtaPalBadSignerCert,        /*!< @brief The signer certificate was not readable or zero length. */
-    OtaPalBadImageState,        /*!< @brief The specified OTA image state was out of range. */
-    OtaPalAbortFailed,          /*!< @brief Error trying to abort the OTA. */
-    OtaPalRejectFailed,         /*!< @brief Error trying to reject the OTA image. */
-    OtaPalCommitFailed,         /*!< @brief The acceptance commit of the new OTA image failed. */
-    OtaPalActivateFailed,       /*!< @brief The activation of the new OTA image failed. */
-    OtaPalFileAbort,            /*!< @brief Error in low level file abort. */
-    OtaPalFileClose             /*!< @brief Error in low level file close. */
-} OtaPalMainStatus_t;
+typedef uint32_t    OtaPalMainStatus_t;
+#define    OtaPalSuccess                0x0U    /*!< @brief OTA platform interface success. */
+#define    OtaPalUninitialized          0xe0U   /*!< @brief Result is not yet initialized from PAL. */
+#define    OtaPalOutOfMemory            0xe1U   /*!< @brief Out of memory. */
+#define    OtaPalNullFileContext        0xe2U   /*!< @brief The PAL is called with a NULL file context. */
+#define    OtaPalSignatureCheckFailed   0xe3U   /*!< @brief The signature check failed for the specified file. */
+#define    OtaPalRxFileCreateFailed     0xe4U   /*!< @brief The PAL failed to create the OTA receive file. */
+#define    OtaPalRxFileTooLarge         0xe5U   /*!< @brief The OTA receive file is too big for the platform to support. */
+#define    OtaPalBootInfoCreateFailed   0xe6U   /*!< @brief The PAL failed to create the OTA boot info file. */
+#define    OtaPalBadSignerCert          0xe7U   /*!< @brief The signer certificate was not readable or zero length. */
+#define    OtaPalBadImageState          0xe8U   /*!< @brief The specified OTA image state was out of range. */
+#define    OtaPalAbortFailed            0xe9U   /*!< @brief Error trying to abort the OTA. */
+#define    OtaPalRejectFailed           0xeaU   /*!< @brief Error trying to reject the OTA image. */
+#define    OtaPalCommitFailed           0xebU   /*!< @brief The acceptance commit of the new OTA image failed. */
+#define    OtaPalActivateFailed         0xecU   /*!< @brief The activation of the new OTA image failed. */
+#define    OtaPalFileAbort              0xedU   /*!< @brief Error in low level file abort. */
+#define    OtaPalFileClose              0xeeU   /*!< @brief Error in low level file close. */
 
 /**
  * @constantspage{ota,OTA library}
@@ -303,6 +301,8 @@ typedef struct OtaPalInterface
     /* MISRA rule 21.8 prohibits the use of abort from stdlib.h. However, this is merely one of the
      * OTA platform abstraction layer interfaces, which is used to abort an OTA update. So it's a
      * false positive. */
+    /* MISRA Ref 21.8.1 [Standard library includes] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-101 */
     /* coverity[misra_c_2012_rule_21_8_violation] */
     OtaPalAbort_t abort;                                 /*!< @brief Abort an OTA transfer. */
     OtaPalCreateFileForRx_t createFile;                  /*!< @brief Create a new receive file. */

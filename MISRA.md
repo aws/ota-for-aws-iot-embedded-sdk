@@ -4,40 +4,104 @@ The AWS IoT Over-the-air Update library files conform to the [MISRA C:2012](http
 guidelines, with some noted exceptions. Compliance is checked with Coverity static analysis.
 Deviations from the MISRA standard are listed below:
 
-### Ignored by [Coverity Configuration](tools/coverity/misra.config)
-| Deviation | Category | Justification |
-| :-: | :-: | :-: |
-| Directive 4.5 | Advisory | Allow names that MISRA considers ambiguous (such as LogInfo and LogError). |
-| Directive 4.8 | Advisory | Allow inclusion of unused types. Header files for a specific port, which are needed by all files, may define types that are not used by a specific file. |
-| Directive 4.9 | Advisory | Allow inclusion of function like macros. The `assert` macro is used throughout the library for parameter validation, and logging is done using function like macros. |
-| Rule 2.4 | Advisory | Allow unused tags. Some compilers warn if types are not tagged. |
-| Rule 2.5 | Advisory | Allow unused macros. Library headers may define macros intended for the application's use, but are not used by a specific file. |
-| Rule 3.1 | Required | Allow nested comments. C++ style `//` comments are used in example code within Doxygen documentation blocks. |
-| Rule 5.8 | Required | As part of building the coverity_analysis target a copy of the files is made with some of the static keywords removed, coverity will then incorrectly flag doubles of function declerations because of this.
-| Rule 8.6  | Required | `OTA_JsonFileSignatureKey` is an extern variable declared but not defined in OTA library. This variable shall be defined in OTA platform abstraction layer implementation, which is found in other repositories. |
-| Rule 8.7 | Advisory | API functions are not used by the library; however, they must be externally visible in order to be used by an application. |
-| Rule 8.9 | Advisory | For ease, configuration parameters are defined at a global scope even when used only once. |
-| Rule 11.5 | Advisory | Allow casts from `void *`. Fields may be passed as `void *`, requiring a cast to the correct data type before use. |
-| Rule 12.3 | Advisory | Allow use of `assert()` macro, expansion of which uses comma operator. |
-| Rule 15.6 | Required | Allow use of `assert()` macro, expansion of which contains non-compound if statements. |
-| Rule 20.12 | Required | Allow use of `assert()`, which uses a parameter in both expanded and raw forms. |
-| Rule 21.1 | Required | Allow use of all macro names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
-| Rule 21.2 | Required | Allow use of all macro and identifier names. For compatibility, libraries may define macros introduced in C99 for use with C90 compilers. |
-| Rule 21.5 | Required | This rule prohibits the use of signal.h because of undefined behavior. However, the warning is in OS porting implementation on POSIX, which has well defined behavior. We're using the timer functionality from POSIX so we deviate from this rule. |
-
-### Flagged by Coverity
-| Deviation | Category | Justification |
-| :-: | :-: | :-: |
-
 ### Suppressed with Coverity Comments
-| Deviation | Category | Justification |
-| :-: | :-: | :-: |
-| Directive 4.6 | Advisory | The uses of a 3rd party macro cbor_value_get_int requires the use of ints |
-| Rule 2.2 | Required | This rule prohibits dead code for the string arrays `pOtaAgentStateStrings` and `pOtaEventStrings`. These are used only for logging which is disabled during static analysis. |
-| Rule 8.13 | Required | Coverity falsely believes that there are variables in some of the functions that can be made const. |
-| Rule 10.1 | Required | Use of POSIX specific macro `O_CREAT` and `O_RDWR` is flagged for this violation. We use these 2 macros with one POSIX API `mq_open` in the POSIX OS implementation. |
-| Rule 11.8 | Required | Coverity scans will raise an error if certain variables are not marked as const, even if the variables do get modified in that function. As such there are two occurences where to get around that error, we supress this one. |
-| Rule 14.3 | Required | This is a warning on `otaconfigAllowDowngrade` being a constant and used in controlling expression. This macro is one of the OTA library configuration and it's set to 0 when running the static analysis. But users can change it when they build their application. So this is a false positive. |
-| Rule 19.2 | Advisory | Unions are used to reduce the memory footprint and to represent packet formats in the FreeRTOS network stack. |
-| Rule 21.3 | Required | This is explained in rule 4.12 from section above. We define a malloc and free interface so that our OTA library can be ported to any OS. |
-| Rule 21.8 | Required | One of the OTA platform abstraction layer interfaces `abort` is flagged for this violation. This is implemented by a platform abstraction layer and always called through the OTA PAL interface. |
+To find the violation references in the source files run grep on the source code
+with ( Assuming rule 21.3 violation; with justification in point 2 ):
+```
+grep 'MISRA Ref 21.3.2' . -rI
+```
+
+#### Rule 2.2
+_Ref 2.2.1_
+
+- MISRA C-2012 Rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
+    disabled when running static analysis. So it's a false positive.
+
+#### Rule 8.6
+_Ref 8.6.1_
+
+- MISRA C-2012 Rule 8.6 requires identifier with external linkage to have exact one external definition.
+    However, this variable is defined in OTA platform abstraction layer implementation, which is
+    not in this repository but in C-SDK and amazon-freertos repo, so it's a false positive.
+
+#### Rule 8.13
+_Ref 8.13.1_
+
+- MISRA C-2012 Rule 8.13 There are multiple functions that all use the same function header so that
+    they can be assigned to function pointers in a seamless manner. There are a few that modify the
+    OtaAgentContext_t that gets passed in. In order to allow convienent assignment of these function pointers
+    we supress this rule on the functions that can't have const added.
+
+#### Rule 10.1
+_Ref 10.1.1_
+
+- MISRA C-2012 Rule 10.1 requires bitwise operand to be unsigned type. However, O_CREAT and O_RDWR
+    flags are from standard linux header, and this is the normal way of using them. Hence we
+    silence the warning here.
+
+#### Rule 10.4
+_Ref 10.4.1_
+
+- MISRA C-2012 Rule 10.4 requires using the same type for comparisons. OTA_MAX_FILE_SIZE is a macro defined at compile
+    time which will then be compared against the fileSize. In our static analysis target it believes these to be different
+    types, and casting to different types doesn't remove the warning, due to this we supress the warning.
+
+#### Rule 10.8
+_Ref 10.8.1_
+
+- MISRA C-2012 Rule 10.8 requires not casting a value from an unsigned to signed type. Since OTA_PAL_SUB_ERR()
+    ands the input with 0xffffffuL, it removes the possibility of there being any bits in the first byte of the
+    variable, removing the ability for the cast to lead to integer overflow.
+
+#### Rule 11.8
+_Ref 11.8.1_
+
+- Misra C-2012 Rule 11.8  will raise an error if certain variables are not marked as const, even if the variables do get
+    modified in that function. As such there are two occurences where to get around that error, we supress these.
+
+#### Rule 14.3
+_Ref 14.3.1_
+
+- MISRA C-2012 Rule 14.3 requires controlling expressions to be not invariant. otaconfigAllowDowngrade is
+    one of the OTA library configuration and it's set to 0 when running the static analysis. But
+    users can change it when they build their application. So this is a false positive.
+
+#### Rule 19.2
+_Ref 19.2.1_
+
+- MISRA C-2012 Rule 19.2 Unions are used to reduce the memory footprint and to represent packet formats in the FreeRTOS network stack.
+
+#### Rule 21.5
+_Ref 21.5.1_
+
+- MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
+    implementation is on POSIX, which has well defined behavior. We're using the timer functionality
+    from POSIX so we deviate from this rule.
+
+#### Rule 21.10
+_Ref 21.10.1_
+
+- MISRA rule 21.10 prohibits the use of time.h because it is implementation dependent or unspecified.
+    However, this implementation is on POSIX, which has well defined behavior.
+
+#### Rule 21.3
+_Ref 21.3.1_
+
+- MISRA C-2012 Rule 21.3 prohibits the use of malloc and free from stdlib.h because of undefined
+    behavior. The design for our OTA library is to let user choose whether they want to pass
+    buffers to us or not. Dynamic allocation is used only when they do not provide these buffers.
+    Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not
+    leaking or free memory that's not dynamically allocated.
+
+_Ref 21.3.2_
+
+- MISRA C-2012 Rule 21.3 prohibits the use of malloc and free from stdlib.h, however, we're only
+    defining the interface here. On FreeRTOS this is implemented with pvPortMalloc and vPortFree,
+    and on Linux it's implemented with standard C malloc and free. This is a false positive.
+
+#### Rule 21.8
+_Ref 21.8.1_
+
+- MISRA C-2012 Rule 21.8 Does not allow the use of some of the functions in stdlib.h. One of the OTA platform 
+    abstraction layer interfaces `abort` is flagged for this violation. This is implemented by a platform
+    abstraction layer and always called through the OTA PAL interface.

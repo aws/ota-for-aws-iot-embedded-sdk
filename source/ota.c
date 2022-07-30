@@ -551,8 +551,8 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-/* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
- * disabled when running static analysis. So it's a false positive. */
+/* MISRA Ref 2.2.1 [Unions and dead code] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-22 */
 /* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the States of the OTA agent. */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
@@ -571,6 +571,8 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
+/* MISRA Ref 2.2.1 [Unions and dead code] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-22 */
 /* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the Events for the OTA agent. */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
@@ -625,7 +627,7 @@ static const uint8_t lastByte = 0xFFU;                      /*!< Mask used to ge
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
-    assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
+    configOTA_ASSERT( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
 
     if( otaTimerId == OtaRequestTimer )
     {
@@ -1019,6 +1021,8 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
+    /* MISRA Ref 11.8.1 [Function pointer and use of const pointer] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
     /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
@@ -1241,10 +1245,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateRejected );
 
         jobDoc.status = JobStatusFailedWithVal;
-        /* Since we're shifting right 24 bits, no possible way to have an issue changing from uint32_t to int32_t */
-        /* coverity[misra_c_2012_rule_10_5_violation] */
         jobDoc.reason = ( int32_t ) OTA_PAL_MAIN_ERR( closeResult );
-        /* Since we drop the first 8 bits, no possible way to have an issue changing from uint32_t to int32_t */
+        /* MISRA Ref 10.8.1 [Essential type casting] */
+        /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-108 */
         /* coverity[misra_c_2012_rule_10_8_violation] */
         jobDoc.subReason = ( int32_t ) OTA_PAL_SUB_ERR( closeResult );
 
@@ -1295,6 +1298,8 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
+    /* MISRA Ref 11.8.1 [Function pointer and use of const pointer] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
     /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
@@ -1420,7 +1425,7 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
 
 static void freeFileContextMem( OtaFileContext_t * const pFileContext )
 {
-    assert( pFileContext != NULL );
+    configOTA_ASSERT( pFileContext != NULL );
 
     /* Free or clear the filepath buffer.*/
     if( pFileContext->pFilePath != NULL )
@@ -1579,12 +1584,11 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     DocParseErr_t err = DocParseErrNone;
     size_t actualLen = 0;
     Base64Status_t base64Status = Base64Success;
-    /* Coverity is falsely saying that this parameter does not get modified and as such it should be a const */
-    /* coverity[misra_c_2012_rule_8_13_violation] */
-    Sig_t ** pSig = pParamAdd;
+
+    Sig_t * const *  pSig = pParamAdd;
 
     /* pSig should point to pSignature in OtaFileContext_t, which is statically allocated. */
-    assert( *pSig != NULL );
+    configOTA_ASSERT( *pSig != NULL );
 
     base64Status = base64Decode( ( *pSig )->data,
                                  sizeof( ( *pSig )->data ),
@@ -2141,9 +2145,8 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
     /* Validate version of the update received.*/
     errVersionCheck = validateUpdateVersion( pFileContext );
 
-    /* MISRA rule 14.3 requires controlling expressions to be not invariant. otaconfigAllowDowngrade is
-     * one of the OTA library configuration and it's set to 0 when running the static analysis. But
-     * users can change it when they build their application. So this is a false positive. */
+    /* MISRA Ref 14.3.1 [Configuration dependent invariant] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-143 */
     /* coverity[misra_c_2012_rule_14_3_violation] */
     if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OtaErrNone ) )
     {
@@ -2258,8 +2261,8 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 {
     OtaErr_t otaErr = OtaErrNone;
 
-    assert( pFileContext != NULL );
-    assert( err != OtaJobParseErrNone );
+    configOTA_ASSERT( pFileContext != NULL );
+    configOTA_ASSERT( err != OtaJobParseErrNone );
 
     switch( err )
     {
@@ -2412,7 +2415,8 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
-
+    /* MISRA Ref 10.4.1 [Same essential type] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-104 */
     /* coverity[misra_c_2012_rule_10_4_violation] */
     if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
@@ -2444,7 +2448,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         }
         else
         {
-            assert( pUpdateFile->pRxBlockBitmap != NULL );
+            configOTA_ASSERT( pUpdateFile->pRxBlockBitmap != NULL );
             ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
         }
 
@@ -2534,7 +2538,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     uint32_t byte = 0;
     uint8_t bitMask = 0;
 
-    assert( pFileContext != NULL );
+    configOTA_ASSERT( pFileContext != NULL );
 
     if( pFileContext->pFile == NULL )
     {
@@ -2584,7 +2588,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                                                         ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
                                                                         pPayload,
                                                                         uBlockSize );
-        assert( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1U ) );
+        configOTA_ASSERT( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1U ) );
 
         if( ( iBytesWritten > 0 ) &&
             ( ( uint32_t ) iBytesWritten == uBlockSize ) )
@@ -2716,10 +2720,10 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
         {
             *pCloseResult = otaAgent.pOtaInterface->pal.closeFile( pFileContext );
             otaPalMainErr = ( ( *pCloseResult ) >> ( OTA_PAL_SUB_BITS ) );
-            /* When building the coverity target logging is disabled, which causes this variable to be unused */
-            /* coverity[misra_c_2012_rule_2_2_violation] */
-            otaPalSubErr = *pCloseResult;
 
+            otaPalSubErr = *pCloseResult;
+            /* Using the variable to remove a MISRA 2.2 Dead Code violation */
+            ( void ) otaPalSubErr;
             if( otaPalMainErr == ( uint32_t ) OtaPalSuccess )
             {
                 LogInfo( ( "Received entire update and validated the signature." ) );
@@ -2771,8 +2775,8 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     /* Assume the file context and result pointers are not NULL. This function
      * is only intended to be called by processDataHandler, which always passes
      * them in as pointers to static variables. */
-    assert( pFileContext != NULL );
-    assert( pCloseResult != NULL );
+    configOTA_ASSERT( pFileContext != NULL );
+    configOTA_ASSERT( pCloseResult != NULL );
 
     if( pEventData == NULL )
     {
@@ -2899,7 +2903,7 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    assert( otaTransitionTable[ index ].handler != NULL );
+    configOTA_ASSERT( otaTransitionTable[ index ].handler != NULL );
 
     err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
 

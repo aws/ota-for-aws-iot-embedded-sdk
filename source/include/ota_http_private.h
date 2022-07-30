@@ -63,7 +63,7 @@ OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx );
  * @return The OTA PAL layer error code combined with the MCU specific error code. See OTA Agent
  * error codes information in ota.h.
  */
-OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx );
+OtaErr_t requestDataBlock_Http( const OtaAgentContext_t * pAgentCtx );
 
 
 /**
@@ -88,7 +88,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize );
 
 /**
