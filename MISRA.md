@@ -30,7 +30,7 @@ _Ref 8.13.1_
 - MISRA C-2012 Rule 8.13 There are multiple functions that all use the same function header so that
     they can be assigned to function pointers in a seamless manner. There are a few that modify the
     OtaAgentContext_t that gets passed in. In order to allow convienent assignment of these function pointers
-    we supress this rule on the functions that can't have const added.
+    we supress this rule on this function that can't have const added.
 
 #### Rule 10.1
 _Ref 10.1.1_

@@ -79,7 +79,10 @@ OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
 /*
  * Check for next available OTA job from the job service.
  */
-OtaErr_t requestDataBlock_Http( const OtaAgentContext_t * pAgentCtx )
+/* MISRA Ref 8.13.1 [Const qualified types] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-813 */
+/* coverity[misra_c_2012_rule_8_13_violation] */
+OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
