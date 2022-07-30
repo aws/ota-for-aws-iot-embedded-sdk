@@ -29,6 +29,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+/**
+ * @brief Macro to use for assert() checks in the OTA library
+ */
 #ifdef DISABLE_LOGGING
     #define configOTA_ASSERT( x )
 #else
