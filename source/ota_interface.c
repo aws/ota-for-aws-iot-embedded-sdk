@@ -28,7 +28,7 @@
 /* Standard library includes. */
 #include <string.h>
 
-#ifdef DISABLE_LOGGING
+#ifdef DISABLE_ASSERT
     #define configOTA_ASSERT( x )
 #else
     #include "assert.h"

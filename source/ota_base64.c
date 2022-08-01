@@ -30,7 +30,7 @@
 /**
  * @brief Macro to use for assert() checks in the OTA library
  */
-#ifdef DISABLE_LOGGING
+#ifdef DISABLE_ASSERT
     #define configOTA_ASSERT( x )
 #else
     #include "assert.h"

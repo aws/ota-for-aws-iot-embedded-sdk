@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#ifdef DISABLE_LOGGING
+#ifdef DISABLE_ASSERT
     #define assert( x )
 #else
     #include "assert.h"
