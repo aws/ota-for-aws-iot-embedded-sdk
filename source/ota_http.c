@@ -28,11 +28,7 @@
 /* Standard library include. */
 #include <string.h>
 #include <stdio.h>
-#ifdef DISABLE_ASSERT
-    #define configOTA_ASSERT( x )
-#else
-    #include "assert.h"
-#endif
+#include <assert.h>
 
 /* OTA includes. */
 #include "ota.h"
@@ -55,7 +51,7 @@ OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
     const OtaFileContext_t * fileContext = NULL;
 
     LogDebug( ( "Invoking initFileTransfer_Http" ) );
-    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
+    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
 
     /* File context from OTA agent. */
     fileContext = &( pAgentCtx->fileContext );
@@ -92,7 +88,7 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 
     const OtaFileContext_t * fileContext;
 
-    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
+    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
     fileContext = &( pAgentCtx->fileContext );
     LogDebug( ( "Invoking requestDataBlock_Http" ) );
     /* fileContext   */
@@ -136,7 +132,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
 {
     OtaErr_t err = OtaErrNone;
 
-    configOTA_ASSERT( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
+    assert( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
                       ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
     if( messageSize > OTA_FILE_BLOCK_SIZE )
@@ -170,7 +166,7 @@ OtaErr_t cleanupData_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
 
-    configOTA_ASSERT( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.deinit != NULL ) );
+    assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.deinit != NULL ) );
 
     httpStatus = pAgentCtx->pOtaInterface->http.deinit();
 

@@ -27,12 +27,7 @@
 
 /* Standard library includes. */
 #include <string.h>
-
-#ifdef DISABLE_ASSERT
-    #define configOTA_ASSERT( x )
-#else
-    #include "assert.h"
-#endif
+#include <assert.h>
 
 /* OTA interface includes. */
 #include "ota_interface_private.h"
@@ -67,7 +62,7 @@
 
 void setControlInterface( OtaControlInterface_t * pControlInterface )
 {
-    configOTA_ASSERT( pControlInterface != NULL );
+    assert( pControlInterface != NULL );
 
     #if ( configENABLED_CONTROL_PROTOCOL == OTA_CONTROL_OVER_MQTT )
         pControlInterface->requestJob = requestJob_Mqtt;

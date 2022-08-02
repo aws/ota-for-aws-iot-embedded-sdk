@@ -31,11 +31,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#ifdef DISABLE_ASSERT
-    #define assert( x )
-#else
-    #include "assert.h"
-#endif
+#include <assert.h>
+
 
 /* OTA agent includes. */
 #include "ota.h"
@@ -627,7 +624,7 @@ static const uint8_t lastByte = 0xFFU;                      /*!< Mask used to ge
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
-    configOTA_ASSERT( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
+    assert( ( otaTimerId == OtaRequestTimer ) || ( otaTimerId == OtaSelfTestTimer ) );
 
     if( otaTimerId == OtaRequestTimer )
     {
@@ -1425,7 +1422,7 @@ static OtaErr_t jobNotificationHandler( const OtaEventData_t * pEventData )
 
 static void freeFileContextMem( OtaFileContext_t * const pFileContext )
 {
-    configOTA_ASSERT( pFileContext != NULL );
+    assert( pFileContext != NULL );
 
     /* Free or clear the filepath buffer.*/
     if( pFileContext->pFilePath != NULL )
@@ -1588,7 +1585,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     Sig_t * const * pSig = pParamAdd;
 
     /* pSig should point to pSignature in OtaFileContext_t, which is statically allocated. */
-    configOTA_ASSERT( *pSig != NULL );
+    assert( *pSig != NULL );
 
     base64Status = base64Decode( ( *pSig )->data,
                                  sizeof( ( *pSig )->data ),
@@ -2261,8 +2258,8 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 {
     OtaErr_t otaErr = OtaErrNone;
 
-    configOTA_ASSERT( pFileContext != NULL );
-    configOTA_ASSERT( err != OtaJobParseErrNone );
+    assert( pFileContext != NULL );
+    assert( err != OtaJobParseErrNone );
 
     switch( err )
     {
@@ -2449,7 +2446,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         }
         else
         {
-            configOTA_ASSERT( pUpdateFile->pRxBlockBitmap != NULL );
+            assert( pUpdateFile->pRxBlockBitmap != NULL );
             ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
         }
 
@@ -2539,7 +2536,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     uint32_t byte = 0;
     uint8_t bitMask = 0;
 
-    configOTA_ASSERT( pFileContext != NULL );
+    assert( pFileContext != NULL );
 
     if( pFileContext->pFile == NULL )
     {
@@ -2589,7 +2586,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
                                                                         ( uBlockIndex * OTA_FILE_BLOCK_SIZE ),
                                                                         pPayload,
                                                                         uBlockSize );
-        configOTA_ASSERT( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1U ) );
+        assert( ( OTA_FILE_BLOCK_SIZE == uBlockSize ) || ( pFileContext->blocksRemaining == 1U ) );
 
         if( ( iBytesWritten > 0 ) &&
             ( ( uint32_t ) iBytesWritten == uBlockSize ) )
@@ -2777,8 +2774,8 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     /* Assume the file context and result pointers are not NULL. This function
      * is only intended to be called by processDataHandler, which always passes
      * them in as pointers to static variables. */
-    configOTA_ASSERT( pFileContext != NULL );
-    configOTA_ASSERT( pCloseResult != NULL );
+    assert( pFileContext != NULL );
+    assert( pCloseResult != NULL );
 
     if( pEventData == NULL )
     {
@@ -2905,7 +2902,7 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    configOTA_ASSERT( otaTransitionTable[ index ].handler != NULL );
+    assert( otaTransitionTable[ index ].handler != NULL );
 
     err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
 

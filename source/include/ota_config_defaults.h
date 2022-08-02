@@ -386,24 +386,6 @@
     #define LogDebug( message )
 #endif
 
-/**
- * @brief Macro that is called in the OTA library for assertions
- *
- * To enable actual assert messages all you need to do is NOT define DISABLE_ASSERT
- * This will cause the assert.h file to be included, and lead to normal behavior
- *
- * <b>Default value</b>: When building the coverity_analysis target assert() is turned off,
- *  and no code is generated for calls to the macro in the OTA library on compilation.
- */
-#ifndef configOTAAssert
-    #ifdef DISABLE_ASSERT
-        #define configOTA_ASSERT( x )
-    #else
-        #include "assert.h"
-        #define configOTA_ASSERT    assert
-    #endif
-#endif
-
 /* *INDENT-OFF* */
 #ifdef __cplusplus
     }
