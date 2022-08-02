@@ -328,8 +328,8 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     assert( pBase64IndexBuffer != NULL );
     assert( pNumDataInBuffer != NULL );
     assert( ( *pNumDataInBuffer == 2U ) ||
-                      ( *pNumDataInBuffer == 3U ) ||
-                      ( *pNumDataInBuffer == 4U ) );
+            ( *pNumDataInBuffer == 3U ) ||
+            ( *pNumDataInBuffer == 4U ) );
     assert( pDest != NULL );
     assert( pOutputLen != NULL );
 

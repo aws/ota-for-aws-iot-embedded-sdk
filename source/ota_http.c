@@ -133,7 +133,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
     OtaErr_t err = OtaErrNone;
 
     assert( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
-                      ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
+            ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
     if( messageSize > OTA_FILE_BLOCK_SIZE )
     {
