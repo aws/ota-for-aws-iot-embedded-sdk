@@ -726,7 +726,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
      * If the platform image state couldn't be set correctly, force fail the update by setting the
      * image state to "Rejected" unless it's already in "Aborted".
      */
-    if( ( ( OTA_PAL_MAIN_ERR(palStatus) ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
+    if( ( ( OTA_PAL_MAIN_ERR( palStatus ) ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
     {
         /* Intentionally override state since we failed within this function. */
         state = OtaImageStateRejected;
@@ -2141,10 +2141,10 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
     /* Validate version of the update received.*/
     errVersionCheck = validateUpdateVersion( pFileContext );
 
-#if( otaconfigAllowDowngrade == 1U )
-#else
-    if( errVersionCheck == OtaErrNone )
-#endif
+    #if ( otaconfigAllowDowngrade == 1U )
+    #else
+        if( errVersionCheck == OtaErrNone )
+    #endif
     {
         /* The running firmware version is newer than the firmware that performed
          * the update or downgrade is allowed so this means we're ready to start
