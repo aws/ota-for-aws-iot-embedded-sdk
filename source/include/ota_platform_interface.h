@@ -72,7 +72,7 @@ typedef uint32_t   OtaPalStatus_t;
 typedef uint32_t   OtaPalSubStatus_t;
 
 /**
- * @ingroup ota_enum_types
+ * @ingroup ota_constants
  * @brief The OTA platform interface main status.
  */
 typedef uint32_t   OtaPalMainStatus_t;

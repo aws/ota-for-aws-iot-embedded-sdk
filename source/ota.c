@@ -620,7 +620,6 @@ static const JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ] =
 static uint8_t pJobNameBuffer[ OTA_JOB_ID_MAX_SIZE ];       /*!< Buffer to store job name. */
 static uint8_t pProtocolBuffer[ OTA_PROTOCOL_BUFFER_SIZE ]; /*!< Buffer to store data protocol. */
 static Sig_t sigBuffer;                                     /*!< Buffer to store key file signature. */
-static const uint8_t lastByte = 0xFFU;                      /*!< Mask used to get last 8 bits in MISRA compliant method. */
 
 static void otaTimerCallback( OtaTimerId_t otaTimerId )
 {
@@ -727,7 +726,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
      * If the platform image state couldn't be set correctly, force fail the update by setting the
      * image state to "Rejected" unless it's already in "Aborted".
      */
-    if( ( ( ( palStatus >> OTA_PAL_SUB_BITS ) ) != ( uint32_t ) OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
+    if( ( ( OTA_PAL_MAIN_ERR(palStatus) ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
     {
         /* Intentionally override state since we failed within this function. */
         state = OtaImageStateRejected;
@@ -2142,10 +2141,10 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
     /* Validate version of the update received.*/
     errVersionCheck = validateUpdateVersion( pFileContext );
 
-    /* MISRA Ref 14.3.1 [Configuration dependent invariant] */
-    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-143 */
-    /* coverity[misra_c_2012_rule_14_3_violation] */
-    if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OtaErrNone ) )
+#if( otaconfigAllowDowngrade == 1U )
+#else
+    if( errVersionCheck == OtaErrNone )
+#endif
     {
         /* The running firmware version is newer than the firmware that performed
          * the update or downgrade is allowed so this means we're ready to start
@@ -2467,7 +2466,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( lastByte & ( ~bit ) );
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
                 bit >>= 1U;
             }
 
@@ -2604,7 +2603,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         /* Mark this block as received in our bitmap. */
-        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( lastByte & ( ~bitMask ) );
+        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bitMask ) );
         pFileContext->blocksRemaining--;
 
         *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
@@ -2694,7 +2693,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                                               OtaPalStatus_t * pCloseResult )
 {
     IngestResult_t eIngestResult = IngestResultAccepted_Continue;
-    uint32_t otaPalMainErr;
+    OtaPalMainStatus_t otaPalMainErr;
     OtaPalSubStatus_t otaPalSubErr = 0;
 
     ( void ) otaPalSubErr; /* For suppressing compiler-warning: unused variable. */

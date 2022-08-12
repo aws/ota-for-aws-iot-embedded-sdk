@@ -304,7 +304,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
     while( pCur > workBuf )
     {
-        --pCur;
+        pCur--;
         pDest[ size ] = *pCur;
         size++;
     }
@@ -340,7 +340,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
 
     while( pCur > workBuf )
     {
-        --pCur;
+        pCur--;
         pDest[ size ] = *pCur;
         size++;
     }

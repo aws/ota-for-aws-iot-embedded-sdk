@@ -59,13 +59,6 @@ _Ref 11.8.1_
 - Misra C-2012 Rule 11.8  will raise an error if certain variables are not marked as const, even if the variables do get
     modified in that function. As such there are two occurences where to get around that error, we supress these.
 
-#### Rule 14.3
-_Ref 14.3.1_
-
-- MISRA C-2012 Rule 14.3 requires controlling expressions to be not invariant. otaconfigAllowDowngrade is
-    one of the OTA library configuration and it's set to 0 when running the static analysis. But
-    users can change it when they build their application. So this is a false positive.
-
 #### Rule 19.2
 _Ref 19.2.1_
 
