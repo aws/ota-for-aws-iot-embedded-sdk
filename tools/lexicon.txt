@@ -633,6 +633,8 @@ png
 pnumdatainbuffer
 pnumpadding
 pnumwhitespace
+pollin
+pollout
 popensslcredentials
 portsleep
 posix
