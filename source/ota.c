@@ -2153,7 +2153,7 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
                 LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
             }
         }
-    #else  /* if ( otaconfigAllowDowngrade == 1U ) */
+    #else /* if ( otaconfigAllowDowngrade == 1U ) */
         {
             /* Validate version of the update received.*/
             errVersionCheck = validateUpdateVersion( pFileContext );
