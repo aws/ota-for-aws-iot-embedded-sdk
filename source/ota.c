@@ -2138,51 +2138,64 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
 
     LogInfo( ( "In self test mode." ) );
 
-    /* Validate version of the update received.*/
-    errVersionCheck = validateUpdateVersion( pFileContext );
-
     #if ( otaconfigAllowDowngrade == 1U )
-    {
-        LogInfo( ( "OTA Config Allow Downgrade has been set, bypassing version check: Begin testing file: File ID=%d",
-                otaAgent.serverFileID ) );
-    #else
-        if( errVersionCheck == OtaErrNone )
         {
-            LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
+            LogWarn( ( "OTA Config Allow Downgrade has been set to 1, bypassing version check: Begin testing file: File ID=%d",
                        otaAgent.serverFileID ) );
-    #endif
-        /* The running firmware version is newer than the firmware that performed
-         * the update or downgrade is allowed so this means we're ready to start
-         * the self test phase.
-         *
-         * Set image state accordingly and update job status with self test identifier.
-         */
-        otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
 
-        if( otaErr != OtaErrNone )
-        {
-            LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            /* Downgrade is allowed so this means we're ready to start self test phase.
+             * Set image state accordingly and update job status with self test identifier.
+             */
+            otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
+
+            if( otaErr != OtaErrNone )
+            {
+                LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            }
         }
-    }
-    else
-    {
-        LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
-                   "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
-
-        otaErr = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) errVersionCheck );
-
-        if( otaErr != OtaErrNone )
+    #else  /* if ( otaconfigAllowDowngrade == 1U ) */
         {
-            LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            /* Validate version of the update received.*/
+            errVersionCheck = validateUpdateVersion( pFileContext );
+
+            if( errVersionCheck == OtaErrNone )
+            {
+                LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
+                           otaAgent.serverFileID ) );
+
+                /* The running firmware version is newer than the firmware that performed
+                 * the update so this means we're ready to start the self test phase.
+                 * Set image state accordingly and update job status with self test identifier.
+                 */
+
+                otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+                }
+            }
+            else
+            {
+                LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
+                           "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
+
+                otaErr = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) errVersionCheck );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+                }
+
+                /* Application callback for self-test failure.*/
+                callOtaCallback( OtaJobEventSelfTestFailed, NULL );
+
+                /* Handle self-test failure in the platform specific implementation,
+                 * example, reset the device in case of firmware upgrade. */
+                ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+            }
         }
-
-        /* Application callback for self-test failure.*/
-        callOtaCallback( OtaJobEventSelfTestFailed, NULL );
-
-        /* Handle self-test failure in the platform specific implementation,
-         * example, reset the device in case of firmware upgrade. */
-        ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
-    }
+    #endif /* if ( otaconfigAllowDowngrade == 1U ) */
 }
 
 /* Check if all the file context params are valid and initialize resources for the job transfer */
