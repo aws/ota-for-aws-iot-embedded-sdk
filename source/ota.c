@@ -2142,8 +2142,14 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
     errVersionCheck = validateUpdateVersion( pFileContext );
 
     #if ( otaconfigAllowDowngrade == 1U )
+        LogInfo( ( "OTA Config Allow Downgrade has been set, bypassing version check: Begin testing file: File ID=%d",
+                   otaAgent.serverFileID ) );
     #else
         if( errVersionCheck == OtaErrNone )
+        {
+            LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
+                       otaAgent.serverFileID ) );
+        }
     #endif
     {
         /* The running firmware version is newer than the firmware that performed
@@ -2152,9 +2158,6 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
          *
          * Set image state accordingly and update job status with self test identifier.
          */
-        LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
-                   otaAgent.serverFileID ) );
-
         otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
 
         if( otaErr != OtaErrNone )
