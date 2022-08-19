@@ -1015,7 +1015,7 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    /* MISRA Ref 11.8.1 [Function pointer and use of const pointer] */
+    /* MISRA Ref 11.8.1 [Function parameters and const removal] */
     /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
     /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
@@ -1292,7 +1292,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
-    /* MISRA Ref 11.8.1 [Function pointer and use of const pointer] */
+    /* MISRA Ref 11.8.1 [Function parameters and const removal] */
     /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
     /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
@@ -2425,7 +2425,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    /* MISRA Ref 10.4.1 [Same essential type] */
+    /* MISRA Ref 10.4.1 [Same essential type for comparisons] */
     /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-104 */
     /* coverity[misra_c_2012_rule_10_4_violation] */
     if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
