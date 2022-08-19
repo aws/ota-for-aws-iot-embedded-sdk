@@ -11,12 +11,6 @@ with ( Assuming rule 21.3 violation; with justification in point 2 ):
 grep 'MISRA Ref 21.3.2' . -rI
 ```
 
-#### Rule 2.2
-_Ref 2.2.1_
-
-- MISRA C-2012 Rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
-    disabled when running static analysis. So it's a false positive.
-
 #### Rule 8.6
 _Ref 8.6.1_
 

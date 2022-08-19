@@ -548,9 +548,6 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-/* MISRA Ref 2.2.1 [Unions and dead code] */
-/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-22 */
-/* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the States of the OTA agent. */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
@@ -568,9 +565,6 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-/* MISRA Ref 2.2.1 [Unions and dead code] */
-/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-22 */
-/* coverity[misra_c_2012_rule_2_2_violation] */
 /*!< String set to represent the Events for the OTA agent. */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
