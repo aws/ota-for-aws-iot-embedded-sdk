@@ -548,7 +548,9 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-/*!< String set to represent the States of the OTA agent. */
+/**
+ * @brief String set to represent the States of the OTA agent.
+ */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
     "Init",
@@ -565,7 +567,9 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-/*!< String set to represent the Events for the OTA agent. */
+/**
+ * @brief String set to represent the Events for the OTA agent.
+ */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
     "Start",
