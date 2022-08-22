@@ -33,13 +33,6 @@ _Ref 10.1.1_
     flags are from standard linux header, and this is the normal way of using them. Hence we
     silence the warning here.
 
-#### Rule 10.4
-_Ref 10.4.1_
-
-- MISRA C-2012 Rule 10.4 requires using the same type for comparisons. OTA_MAX_FILE_SIZE is a macro defined at compile
-    time which will then be compared against the fileSize. In our static analysis target it believes these to be different
-    types, and casting to different types doesn't remove the warning, due to this we supress the warning.
-
 #### Rule 10.8
 _Ref 10.8.1_
 
