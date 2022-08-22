@@ -2425,9 +2425,6 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    /* MISRA Ref 10.4.1 [Same essential type for comparisons] */
-    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-104 */
-    /* coverity[misra_c_2012_rule_10_4_violation] */
     if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
