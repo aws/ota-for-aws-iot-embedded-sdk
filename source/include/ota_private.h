@@ -65,7 +65,7 @@
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
 #define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
-#define OTA_MAX_FILE_SIZE            UINT32_MAX - OTA_FILE_BLOCK_SIZE + 1U                 /*!< @brief The maximum file size supported by the library. */
+#define OTA_MAX_FILE_SIZE            UINT32_MAX - OTA_FILE_BLOCK_SIZE + 1U                /*!< @brief The maximum file size supported by the library. */
 /** @} */
 
 /**
