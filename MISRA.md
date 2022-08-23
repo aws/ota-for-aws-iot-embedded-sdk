@@ -67,11 +67,13 @@ _Ref 21.10.1_
 #### Rule 21.3
 _Ref 21.3.1_
 
-- MISRA C-2012 Rule 21.3 prohibits the use of malloc and free from stdlib.h because of undefined
-    behavior. The design for our OTA library is to let user choose whether they want to pass
-    buffers to us or not. Dynamic allocation is used only when they do not provide these buffers.
-    Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not
-    leaking or free memory that's not dynamically allocated.
+- MISRA C-2012 Rule 21.3 prohibits the use of malloc and free from stdlib.h because of
+    undefined behavior. The library has checks in place to make sure that the memory is
+    allocated before accessing it. Additionally, the library makes sure that the memory is
+    written to before it is read from thereby not returning garbage data. Furthermore, the
+    library is tested with address sanitizer to verify that memory being freed has been
+    dynamically allocated and that there is no memory leak. After free-ing the memory pointed
+    to by a pointer, the pointer is changed to NULL to prevent use-after-free bugs.
 
 _Ref 21.3.2_
 
