@@ -44,9 +44,12 @@
  */
 typedef struct
 {
+    /* MISRA Ref 19.2.1 [Unions] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-192 */
+    /* coverity[misra_c_2012_rule_19_2_violation] */
     union
     {
-        #if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN )
+        #if ( defined( __BYTE_ORDER__ ) && defined( __ORDER_LITTLE_ENDIAN__ ) && ( __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ) ) || ( __little_endian__ == 1 ) || WIN32 || ( __BYTE_ORDER == __LITTLE_ENDIAN )
             struct version
             {
                 uint16_t build; /*!< @brief Build of the firmware (Z in firmware version Z.Y.X). */

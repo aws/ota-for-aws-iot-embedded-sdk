@@ -62,9 +62,8 @@
  *
  */
 
-/* MISRA rule 8.6 requires identifier with external linkage to have exact one external definition.
- * However, this variable is defined in OTA platform abstraction layer implementation, which is
- * not in this repository but in C-SDK and amazon-freertos repo, so it's a false positive. */
+/* MISRA Ref 8.6.1 [External linkage] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-86 */
 /* coverity[misra_c_2012_rule_8_6_violation] */
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
@@ -437,7 +436,7 @@ typedef struct OtaAgentContext
  * @endcode
  */
 /* @[declare_ota_init] */
-OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
                    const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
@@ -713,7 +712,7 @@ OtaErr_t OTA_Resume( void );
  * please see the [demos in AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota).
  */
 /* @[declare_ota_eventprocessingtask] */
-void OTA_EventProcessingTask( void * pUnused );
+void OTA_EventProcessingTask( const void * pUnused );
 /* @[declare_ota_eventprocessingtask] */
 
 

@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <assert.h>
 
+
 /* OTA agent includes. */
 #include "ota.h"
 
@@ -226,7 +227,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            const char * pValueInJson,
                                            size_t valueLength,
                                            void * pParamAdd,
-                                           uint32_t * pParamSizeAdd );
+                                           const uint32_t * pParamSizeAdd );
 
 /**
  * @brief Check if all the required parameters for job document are extracted from the JSON.
@@ -319,7 +320,7 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
  * @param[out] pBlockIndex Block index of incoming data block.
  * @return IngestResult_t IngestResultAccepted_Continue if successful, other error for failure.
  */
-static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
+static IngestResult_t decodeAndStoreDataBlock( const OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
@@ -392,7 +393,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
  *
  * @param[out] pOtaBuffer OTA Application buffers.
  */
-static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer );
+static void initializeAppBuffers( const OtaAppBuffer_t * pOtaBuffer );
 
 /**
  * @brief Initialize jobId and protocol buffers.
@@ -419,7 +420,7 @@ static OtaErr_t processValidFileContext( void );
  *
  * @param[in] pFileContext Stores file information.
  */
-static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext );
+static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext );
 
 /**
  * @brief Handle invalid file context.
@@ -547,10 +548,9 @@ static OtaStateTableEntry_t otaTransitionTable[] =
     { OtaAgentStateAll,                 OtaAgentEventShutdown,            shutdownHandler,        OtaAgentStateStopped             },
 };
 
-/* MISRA rule 2.2 warns about unused variables. These 2 variables are used in log messages, which is
- * disabled when running static analysis. So it's a false positive. */
-/* coverity[misra_c_2012_rule_2_2_violation] */
-/*!< String set to represent the States of the OTA agent. */
+/**
+ * @brief String set to represent the States of the OTA agent.
+ */
 static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
 {
     "Init",
@@ -567,8 +567,9 @@ static const char * pOtaAgentStateStrings[ OtaAgentStateAll + 1 ] =
     "All"
 };
 
-/* coverity[misra_c_2012_rule_2_2_violation] */
-/*!< String set to represent the Events for the OTA agent. */
+/**
+ * @brief String set to represent the Events for the OTA agent.
+ */
 static const char * pOtaEventStrings[ OtaAgentEventMax ] =
 {
     "Start",
@@ -637,7 +638,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
             LogError( ( "Failed to signal the OTA Agent to start request timer" ) );
         }
     }
-    else /* ( otaTimerId == OtaSelfTestTimer ) */
+    else /*  otaTimerId == OtaSelfTestTimer  */
     {
         LogError( ( "Self test failed to complete within %ums",
                     otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
@@ -723,7 +724,7 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
      * If the platform image state couldn't be set correctly, force fail the update by setting the
      * image state to "Rejected" unless it's already in "Aborted".
      */
-    if( ( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
+    if( ( ( OTA_PAL_MAIN_ERR( palStatus ) ) != OtaPalSuccess ) && ( state != OtaImageStateAborted ) )
     {
         /* Intentionally override state since we failed within this function. */
         state = OtaImageStateRejected;
@@ -990,7 +991,7 @@ static OtaErr_t processValidFileContext( void )
 static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t retVal = OtaErrNone;
-    OtaFileContext_t * pOtaFileContext = NULL;
+    const OtaFileContext_t * pOtaFileContext = NULL;
 
     /*
      * Parse the job document and update file information in the file context.
@@ -1014,6 +1015,9 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
+    /* MISRA Ref 11.8.1 [Function parameters and const removal] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
+    /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     return retVal;
@@ -1197,14 +1201,14 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
         if( otaAgent.fileContext.fileType == configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID )
         {
             jobDoc.status = JobStatusInProgress;
-            jobDoc.reason = JobReasonSigCheckPassed;
+            jobDoc.reason = ( int32_t ) JobReasonSigCheckPassed;
 
             otaJobEvent = OtaJobEventActivate;
         }
         else
         {
             jobDoc.status = JobStatusSucceeded;
-            jobDoc.reason = JobReasonAccepted;
+            jobDoc.reason = ( int32_t ) JobReasonAccepted;
             jobDoc.subReason = ( int32_t ) otaAgent.fileContext.fileType;
 
             otaJobEvent = OtaJobEventUpdateComplete;
@@ -1236,10 +1240,13 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
         jobDoc.status = JobStatusFailedWithVal;
         jobDoc.reason = ( int32_t ) OTA_PAL_MAIN_ERR( closeResult );
+        /* MISRA Ref 10.8.1 [Essential type casting] */
+        /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-108 */
+        /* coverity[misra_c_2012_rule_10_8_violation] */
         jobDoc.subReason = ( int32_t ) OTA_PAL_SUB_ERR( closeResult );
 
         /* Update the job status with the with failure code. */
-        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, ( int32_t ) OTA_PAL_MAIN_ERR( closeResult ), ( int32_t ) OTA_PAL_SUB_ERR( closeResult ) );
+        err = otaControlInterface.updateJobStatus( &otaAgent, JobStatusFailedWithVal, jobDoc.reason, jobDoc.subReason );
 
         dataHandlerCleanup();
 
@@ -1285,6 +1292,9 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
 
     /* Application callback for event processed. */
+    /* MISRA Ref 11.8.1 [Function parameters and const removal] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-118 */
+    /* coverity[misra_c_2012_rule_11_8_violation] */
     callOtaCallback( OtaJobEventProcessed, ( void * ) pEventData );
 
     if( err != OtaErrNone )
@@ -1568,7 +1578,8 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
     DocParseErr_t err = DocParseErrNone;
     size_t actualLen = 0;
     Base64Status_t base64Status = Base64Success;
-    Sig_t ** pSig = pParamAdd;
+
+    Sig_t * const * pSig = pParamAdd;
 
     /* pSig should point to pSignature in OtaFileContext_t, which is statically allocated. */
     assert( *pSig != NULL );
@@ -1610,7 +1621,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
                                            const char * pValueInJson,
                                            size_t valueLength,
                                            void * pParamAdd,
-                                           uint32_t * pParamSizeAdd )
+                                           const uint32_t * pParamSizeAdd )
 {
     DocParseErr_t err = DocParseErrNone;
 
@@ -1680,7 +1691,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
 {
     DocParseErr_t err = DocParseErrNone;
     void * pParamAdd;
-    uint32_t * pParamSizeAdd;
+    const uint32_t * pParamSizeAdd;
 
     /* Get destination offset to parameter storage location.*/
     pParamAdd = ( uint8_t * ) pContextBase + docParam.pDestOffset;
@@ -2118,57 +2129,71 @@ static OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
 }
 
 /* Validate update version when receiving job doc in self test state. */
-static void handleSelfTestJobDoc( OtaFileContext_t * pFileContext )
+static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
 {
     OtaErr_t otaErr = OtaErrNone;
     OtaErr_t errVersionCheck = OtaErrUninitialized;
 
     LogInfo( ( "In self test mode." ) );
 
-    /* Validate version of the update received.*/
-    errVersionCheck = validateUpdateVersion( pFileContext );
-
-    /* MISRA rule 14.3 requires controlling expressions to be not invariant. otaconfigAllowDowngrade is
-     * one of the OTA library configuration and it's set to 0 when running the static analysis. But
-     * users can change it when they build their application. So this is a false positive. */
-    /* coverity[misra_c_2012_rule_14_3_violation] */
-    if( ( otaconfigAllowDowngrade == 1U ) || ( errVersionCheck == OtaErrNone ) )
-    {
-        /* The running firmware version is newer than the firmware that performed
-         * the update or downgrade is allowed so this means we're ready to start
-         * the self test phase.
-         *
-         * Set image state accordingly and update job status with self test identifier.
-         */
-        LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
-                   otaAgent.serverFileID ) );
-
-        otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
-
-        if( otaErr != OtaErrNone )
+    #if ( otaconfigAllowDowngrade == 1U )
         {
-            LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            LogWarn( ( "OTA Config Allow Downgrade has been set to 1, bypassing version check: Begin testing file: File ID=%d",
+                       otaAgent.serverFileID ) );
+
+            /* Downgrade is allowed so this means we're ready to start self test phase.
+             * Set image state accordingly and update job status with self test identifier.
+             */
+            otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
+
+            if( otaErr != OtaErrNone )
+            {
+                LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            }
         }
-    }
-    else
-    {
-        LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
-                   "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
-
-        otaErr = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) errVersionCheck );
-
-        if( otaErr != OtaErrNone )
+    #else /* if ( otaconfigAllowDowngrade == 1U ) */
         {
-            LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+            /* Validate version of the update received.*/
+            errVersionCheck = validateUpdateVersion( pFileContext );
+
+            if( errVersionCheck == OtaErrNone )
+            {
+                LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
+                           otaAgent.serverFileID ) );
+
+                /* The running firmware version is newer than the firmware that performed
+                 * the update so this means we're ready to start the self test phase.
+                 * Set image state accordingly and update job status with self test identifier.
+                 */
+
+                otaErr = setImageStateWithReason( OtaImageStateTesting, ( uint32_t ) errVersionCheck );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to set image state to testing: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+                }
+            }
+            else
+            {
+                LogWarn( ( "New image is being rejected: Application version of the new image is invalid: "
+                           "OtaErr_t=%s", OTA_Err_strerror( errVersionCheck ) ) );
+
+                otaErr = setImageStateWithReason( OtaImageStateRejected, ( uint32_t ) errVersionCheck );
+
+                if( otaErr != OtaErrNone )
+                {
+                    LogError( ( "Failed to set image state to rejected: OtaErr_t=%s", OTA_Err_strerror( otaErr ) ) );
+                }
+
+                /* Application callback for self-test failure.*/
+                callOtaCallback( OtaJobEventSelfTestFailed, NULL );
+
+                /* Handle self-test failure in the platform specific implementation,
+                 * example, reset the device in case of firmware upgrade. */
+                ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
+            }
         }
-
-        /* Application callback for self-test failure.*/
-        callOtaCallback( OtaJobEventSelfTestFailed, NULL );
-
-        /* Handle self-test failure in the platform specific implementation,
-         * example, reset the device in case of firmware upgrade. */
-        ( void ) otaAgent.pOtaInterface->pal.reset( &( otaAgent.fileContext ) );
-    }
+    #endif /* if ( otaconfigAllowDowngrade == 1U ) */
 }
 
 /* Check if all the file context params are valid and initialize resources for the job transfer */
@@ -2178,9 +2203,8 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
                                              bool * pUpdateJob )
 {
     OtaJobParseErr_t err = OtaJobParseErrNone;
-    char * pNullPos = NULL;
 
-    pNullPos = memchr( pFileContext->pJobName, '\0', sizeof( otaAgent.pActiveJobName ) );
+    const char * pNullPos = memchr( pFileContext->pJobName, ( int32_t ) '\0', sizeof( otaAgent.pActiveJobName ) );
 
     /* Validate the job document parameters. */
     if( pNullPos == NULL )
@@ -2288,7 +2312,7 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
             if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
             {
                 /* Assume control of the job name from the context. */
-                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE - 1 );
+                ( void ) memcpy( otaAgent.pActiveJobName, pFileContext->pJobName, OTA_JOB_ID_MAX_SIZE - 1U );
 
                 otaErr = otaControlInterface.updateJobStatus( &otaAgent,
                                                               JobStatusFailedWithVal,
@@ -2401,7 +2425,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    if( ( pUpdateFile != NULL ) && ( pUpdateFile->fileSize > OTA_MAX_FILE_SIZE ) )
+    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
@@ -2452,7 +2476,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( 0xFF & ( ~bit ) );
+                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
                 bit >>= 1U;
             }
 
@@ -2472,7 +2496,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     if( ( err != OtaErrNone ) || ( ( pUpdateFile != NULL ) && ( pUpdateFile->pRxBlockBitmap == NULL ) ) )
     {
-        otaClose( pUpdateFile );
+        ( void ) otaClose( pUpdateFile );
         pUpdateFile = NULL;
 
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
@@ -2588,7 +2612,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         /* Mark this block as received in our bitmap. */
-        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( 0xFF & ( ~bitMask ) );
+        pFileContext->pRxBlockBitmap[ byte ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bitMask ) );
         pFileContext->blocksRemaining--;
 
         *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 );
@@ -2598,7 +2622,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
 }
 
 /* Decode and store the incoming data block. */
-static IngestResult_t decodeAndStoreDataBlock( OtaFileContext_t * pFileContext,
+static IngestResult_t decodeAndStoreDataBlock( const OtaFileContext_t * pFileContext,
                                                const uint8_t * pRawMsg,
                                                uint32_t messageSize,
                                                uint8_t ** pPayload,
@@ -2701,10 +2725,13 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
         if( pFileContext->pFile != NULL )
         {
             *pCloseResult = otaAgent.pOtaInterface->pal.closeFile( pFileContext );
-            otaPalMainErr = OTA_PAL_MAIN_ERR( *pCloseResult );
-            otaPalSubErr = OTA_PAL_SUB_ERR( *pCloseResult );
+            otaPalMainErr = ( ( *pCloseResult ) >> ( OTA_PAL_SUB_BITS ) );
 
-            if( otaPalMainErr == OtaPalSuccess )
+            otaPalSubErr = *pCloseResult;
+            /* Using the variable to remove a MISRA 2.2 Dead Code violation */
+            ( void ) otaPalSubErr;
+
+            if( otaPalMainErr == ( uint32_t ) OtaPalSuccess )
             {
                 LogInfo( ( "Received entire update and validated the signature." ) );
                 eIngestResult = IngestResultFileComplete;
@@ -2714,7 +2741,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
                 LogError( ( "Failed to close the OTA file: Error=(%s:0x%06x)",
                             OTA_PalStatus_strerror( otaPalMainErr ), otaPalSubErr ) );
 
-                if( otaPalMainErr == OtaPalSignatureCheckFailed )
+                if( otaPalMainErr == ( uint32_t ) OtaPalSignatureCheckFailed )
                 {
                     eIngestResult = IngestResultSigCheckFail;
                 }
@@ -2979,7 +3006,7 @@ static void receiveAndProcessOtaEvent( void )
 static void callOtaCallback( OtaJobEvent_t eEvent,
                              void * pData )
 {
-    if( otaAgent.OtaAppCallback )
+    if( otaAgent.OtaAppCallback != NULL )
     {
         otaAgent.OtaAppCallback( eEvent, pData );
     }
@@ -2989,7 +3016,7 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
     }
 }
 
-void OTA_EventProcessingTask( void * pUnused )
+void OTA_EventProcessingTask( const void * pUnused )
 {
     ( void ) pUnused;
 
@@ -3079,7 +3106,7 @@ bool OTA_SignalEvent( const OtaEventMsg_t * const pEventMsg )
     return retVal;
 }
 
-static void initializeAppBuffers( OtaAppBuffer_t * pOtaBuffer )
+static void initializeAppBuffers( const OtaAppBuffer_t * pOtaBuffer )
 {
     /* Initialize update file path buffer from application buffer.*/
     if( ( pOtaBuffer->pUpdateFilePath != NULL ) && ( pOtaBuffer->updateFilePathsize > 0u ) )
@@ -3200,7 +3227,7 @@ static void resetEventQueue( void )
  * modify the existing OTA agent context. You must first call OTA_Shutdown()
  * successfully.
  */
-OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
                    const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback )
@@ -3250,7 +3277,7 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
         /*
          * Initialize OTA event interface.
          */
-        if( !otaAgent.isOtaInterfaceInited )
+        if( otaAgent.isOtaInterfaceInited != 1U )
         {
             ( void ) otaAgent.pOtaInterface->os.event.init( NULL );
             otaAgent.isOtaInterfaceInited = 1;
@@ -3425,7 +3452,7 @@ OtaErr_t OTA_ActivateNewImage( void )
                 "OtaPalStatus_t=%s",
                 OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ) ) );
 
-    return OTA_PAL_MAIN_ERR( palStatus ) == OtaPalSuccess ? OtaErrNone : OtaErrActivateFailed;
+    return ( ( palStatus >> OTA_PAL_SUB_BITS ) == ( uint32_t ) OtaPalSuccess ) ? OtaErrNone : OtaErrActivateFailed;
 }
 
 /*

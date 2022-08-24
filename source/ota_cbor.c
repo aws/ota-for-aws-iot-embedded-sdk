@@ -44,7 +44,7 @@
  * @return CborError
  */
 static CborError checkDataType( CborType expectedType,
-                                CborValue * cborValue )
+                                const CborValue * cborValue )
 {
     CborError cborResult = CborNoError;
     CborType actualType = cbor_value_get_type( cborValue );
@@ -76,7 +76,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
                                                int32_t * pFileId,
                                                int32_t * pBlockId,
                                                int32_t * pBlockSize,
-                                               uint8_t ** pPayload,
+                                               uint8_t * const * pPayload,
                                                size_t * pPayloadSize )
 {
     CborError cborResult = CborNoError;
@@ -130,7 +130,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pFileId );
+                                         ( int32_t * ) pFileId );
     }
 
     /* Find the block ID. */
@@ -149,7 +149,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pBlockId );
+                                         ( int32_t * ) pBlockId );
     }
 
     /* Find the block size. */
@@ -168,7 +168,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int * ) pBlockSize );
+                                         ( int32_t * ) pBlockSize );
     }
 
     /* Find the payload bytes. */
@@ -240,7 +240,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              uint8_t * pBlockBitmap,
+                                              const uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested )
 {

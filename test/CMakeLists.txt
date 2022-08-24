@@ -62,6 +62,8 @@ target_include_directories( coverity_analysis PRIVATE
     ${JSON_INCLUDE_PUBLIC_DIRS}
     ${TINYCBOR_INCLUDE_DIRS} )
 
+# Build OTA Library target without the assert macro
+target_compile_options(coverity_analysis PUBLIC -DNDEBUG )
 # ============================ Test configuration ==============================
 
 # Define a CMock resource path.

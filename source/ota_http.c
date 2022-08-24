@@ -44,11 +44,11 @@ static uint32_t currBlock;
 /*
  * Init file transfer by initializing the http module with the pre-signed url.
  */
-OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
+OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
     char * pURL = NULL;
-    OtaFileContext_t * fileContext = NULL;
+    const OtaFileContext_t * fileContext = NULL;
 
     LogDebug( ( "Invoking initFileTransfer_Http" ) );
     assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.init != NULL ) );
@@ -75,6 +75,9 @@ OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx )
 /*
  * Check for next available OTA job from the job service.
  */
+/* MISRA Ref 8.13.1 [Const qualified types] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-813 */
+/* coverity[misra_c_2012_rule_8_13_violation] */
 OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
 {
     OtaHttpStatus_t httpStatus = OtaHttpSuccess;
@@ -83,12 +86,12 @@ OtaErr_t requestDataBlock_Http( OtaAgentContext_t * pAgentCtx )
     uint32_t rangeStart = 0;
     uint32_t rangeEnd = 0;
 
-    OtaFileContext_t * fileContext = NULL;
+    const OtaFileContext_t * fileContext;
 
     assert( ( pAgentCtx != NULL ) && ( pAgentCtx->pOtaInterface != NULL ) && ( pAgentCtx->pOtaInterface->http.request != NULL ) );
-    LogDebug( ( "Invoking requestDataBlock_Http" ) );
-
     fileContext = &( pAgentCtx->fileContext );
+    LogDebug( ( "Invoking requestDataBlock_Http" ) );
+    /* fileContext   */
 
     /* Calculate ranges. */
     rangeStart = currBlock * OTA_FILE_BLOCK_SIZE;
@@ -124,13 +127,13 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize )
 {
     OtaErr_t err = OtaErrNone;
 
-    assert( pMessageBuffer != NULL && pFileId != NULL && pBlockId != NULL &&
-            pBlockSize != NULL && pPayload != NULL && pPayloadSize != NULL );
+    assert( ( pMessageBuffer != NULL ) && ( pFileId != NULL ) && ( pBlockId != NULL ) &&
+            ( pBlockSize != NULL ) && ( pPayload != NULL ) && ( pPayloadSize != NULL ) );
 
     if( messageSize > OTA_FILE_BLOCK_SIZE )
     {

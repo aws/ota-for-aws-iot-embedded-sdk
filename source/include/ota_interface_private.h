@@ -57,8 +57,8 @@
  */
 typedef struct
 {
-    OtaErr_t ( * requestJob )( OtaAgentContext_t * pAgentCtx ); /*!< Request for the next available OTA job from the job service. */
-    OtaErr_t ( * updateJobStatus )( OtaAgentContext_t * pAgentCtx,
+    OtaErr_t ( * requestJob )( const OtaAgentContext_t * pAgentCtx ); /*!< Request for the next available OTA job from the job service. */
+    OtaErr_t ( * updateJobStatus )( const OtaAgentContext_t * pAgentCtx,
                                     OtaJobStatus_t status,
                                     int32_t reason,
                                     int32_t subReason );           /*!< Updates the OTA job status with information like in progress, completion, or failure. */
@@ -73,14 +73,14 @@ typedef struct
  */
 typedef struct
 {
-    OtaErr_t ( * initFileTransfer )( OtaAgentContext_t * pAgentCtx ); /*!< Initialize file transfer. */
-    OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx ); /*!< Request File block. */
+    OtaErr_t ( * initFileTransfer )( const OtaAgentContext_t * pAgentCtx ); /*!< Initialize file transfer. */
+    OtaErr_t ( * requestFileBlock )( OtaAgentContext_t * pAgentCtx );       /*!< Request File block. */
     OtaErr_t ( * decodeFileBlock )( const uint8_t * pMessageBuffer,
                                     size_t messageSize,
                                     int32_t * pFileId,
                                     int32_t * pBlockId,
                                     int32_t * pBlockSize,
-                                    uint8_t ** pPayload,
+                                    uint8_t * const * pPayload,
                                     size_t * pPayloadSize );       /*!< Decode a cbor encoded fileblock. */
     OtaErr_t ( * cleanup )( const OtaAgentContext_t * pAgentCtx ); /*!< Cleanup related to OTA data plane. */
 } OtaDataInterface_t;
