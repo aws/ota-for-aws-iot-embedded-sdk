@@ -46,5 +46,6 @@ var group__ota__constants =
     [ "OTA_JSON_FILE_CERT_NAME_KEY", "group__ota__constants.html#ga6e5f882dc07e8a5a8b2f079cc4444a50", null ],
     [ "OTA_JSON_UPDATE_DATA_URL_KEY", "group__ota__constants.html#gad3c584828dcc7d99d65931d0c1ded6b7", null ],
     [ "OTA_JSON_AUTH_SCHEME_KEY", "group__ota__constants.html#gaafc3e865308a16ec82181d6aea75d6bb", null ],
-    [ "OTA_JSON_FILETYPE_KEY", "group__ota__constants.html#gaab7b7332590b19bcc767a290953c58a8", null ]
+    [ "OTA_JSON_FILETYPE_KEY", "group__ota__constants.html#gaab7b7332590b19bcc767a290953c58a8", null ],
+    [ "OtaPalMainStatus_t", "group__ota__constants.html#gac5c3148205ee4a0cac4246b2c7797765", null ]
 ];

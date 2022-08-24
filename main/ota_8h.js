@@ -76,7 +76,7 @@ var ota_8h =
       [ "JobStatusFailedWithVal", "group__ota__enum__types.html#ggabf6d6b1d2bca4c54f58bd622ca6242d0a4965780a768288c0f1cb758206e10186", null ],
       [ "NumJobStatusMappings", "group__ota__enum__types.html#ggabf6d6b1d2bca4c54f58bd622ca6242d0a9bedf4d3fc48cf5d504864b3c3505362", null ]
     ] ],
-    [ "OTA_Init", "ota_8h.html#a9011a6007328dfb3bfde5fdb645fa52f", null ],
+    [ "OTA_Init", "ota_8h.html#a1764ba9b821dcdb693ec549e8349cc2e", null ],
     [ "OTA_Shutdown", "ota_8h.html#ac779291eb93f4e0e6459816e60e13b09", null ],
     [ "OTA_GetState", "ota_8h.html#a6db3f9cb417cb135cb0e68f5b5f2b11f", null ],
     [ "OTA_ActivateNewImage", "ota_8h.html#a5169ba09148e7f5668a90e776e712f8b", null ],
@@ -85,7 +85,7 @@ var ota_8h =
     [ "OTA_CheckForUpdate", "ota_8h.html#a1178e8009eb05e6f55f6506b625c9fc2", null ],
     [ "OTA_Suspend", "ota_8h.html#a65b61ae5dd477e8b2e6c88ea0473c62b", null ],
     [ "OTA_Resume", "ota_8h.html#ae9d40388ac87e4ac93288de37c98a138", null ],
-    [ "OTA_EventProcessingTask", "ota_8h.html#ab3a0cfdc8694a606a1d736b2f54fb113", null ],
+    [ "OTA_EventProcessingTask", "ota_8h.html#a40ff1cf197537e4cac4e8e049c42a1e2", null ],
     [ "OTA_EventProcess", "ota_8h.html#a733199fef860721888bbf9ee46bd4056", null ],
     [ "OTA_SignalEvent", "ota_8h.html#a2564144f284db077b8947ba58a6a72bb", null ],
     [ "OTA_GetStatistics", "ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22", null ],

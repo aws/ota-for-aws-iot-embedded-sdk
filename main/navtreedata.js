@@ -93,7 +93,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "files.html",
-"ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22",
+"ota__base64_8c.html",
 "ota__private_8h.html#a9d3eb1ee8e8a129c990fe9effd93f91da44dc594af083c46a71cf769cce92d61e"
 ];
 

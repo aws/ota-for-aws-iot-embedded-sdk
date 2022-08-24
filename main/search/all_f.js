@@ -59,7 +59,7 @@ var searchData=
   ['pstreamname_56',['pStreamName',['../struct_ota_file_context__t.html#a5bfc26add016d1883c2373a63c2bf5b0',1,'OtaFileContext_t::pStreamName()'],['../struct_ota_app_buffer__t.html#a7bc6e9af2e5935ddf7168173bba51805',1,'OtaAppBuffer_t::pStreamName()']]],
   ['pthingname_57',['pThingName',['../struct_ota_agent_context__t.html#ab65c1d54c43a832265e1c106e091f384',1,'OtaAgentContext_t']]],
   ['publish_58',['publish',['../struct_ota_mqtt_interface__t.html#aab31f752ef9b005cb5f06226fdce7540',1,'OtaMqttInterface_t']]],
-  ['publishstatusmessage_59',['publishStatusMessage',['../ota__mqtt_8c.html#aa4f7d02282e60e0700df63cc4028ccab',1,'ota_mqtt.c']]],
+  ['publishstatusmessage_59',['publishStatusMessage',['../ota__mqtt_8c.html#ac02a840211a67a57f271f5dfa729c2a9',1,'ota_mqtt.c']]],
   ['pupdatefilepath_60',['pUpdateFilePath',['../struct_ota_app_buffer__t.html#a1e8e0cf1e6b1f699409f22a4c03cefd7',1,'OtaAppBuffer_t']]],
   ['pupdateurlpath_61',['pUpdateUrlPath',['../struct_ota_file_context__t.html#a66b88f4b4d9ce8f7d40c5d306bc588c8',1,'OtaFileContext_t']]],
   ['purl_62',['pUrl',['../struct_ota_app_buffer__t.html#a493c9ece89e377df53c2a7e2089704ec',1,'OtaAppBuffer_t']]]
