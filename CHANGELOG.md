@@ -17,7 +17,6 @@
  - [#419](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/419) Move cleanup of job id to after OtaAppCallback
  - [#413](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/413) Clear timers in shutdown and suspend
 
-
 ### v3.3.0 (December 2021)
  - Added CBMC proofs of all public and private functions in the OTA library. 
  - [#373](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/373) Updated compiler flag for tinycbor source files
