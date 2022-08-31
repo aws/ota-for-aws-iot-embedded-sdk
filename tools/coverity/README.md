@@ -8,7 +8,7 @@ building a binary for the tool to analyze.
 For generating the report as outlined below, we have used Coverity version 2018.09.
 
 For details regarding the suppressed violations in the report (which can be generated using the instructions described below), please
-see the [MISRA.md](https://github.com/FreeRTOS/FreeRTOS-Cellular-Interface/blob/main/MISRA.md) file.
+see the [MISRA.md](https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md) file.
 
 ## Getting Started
 ### Prerequisites
@@ -66,7 +66,7 @@ For your convenience the commands above are below to be copy/pasted into a UNIX 
  cd build/;
  cov-build --emit-complementary-info --dir cov-out make coverity_analysis;
  cd cov-out/
- cov-analyze --dir . --coding-standard-config ../../tools/coverity/misra.config;
+ cov-analyze --dir . --coding-standard-config ../../tools/coverity/misra.config --tu-pattern "file('.*/source/.*')";
  cov-format-errors --dir . --file "*/source" --exclude-files '(/build/|/test/)' --html-output html-out;
  cov-format-errors --dir . --file "*/source" --exclude-files '(/build/|/test/)' --json-output-v2 defects.json;
  echo -e "\n-------------------------Non-Suppresed Deviations, if any, Listed Below-------------------------\n";
