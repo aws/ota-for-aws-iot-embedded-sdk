@@ -188,7 +188,10 @@ typedef OtaPalStatus_t (* OtaPalCreateFileForRx_t)( OtaFileContext_t * const pFi
 typedef OtaPalStatus_t ( * OtaPalCloseFile_t )( OtaFileContext_t * const pFileContext );
 
 /**
- * @brief Write a block of data to the specified file at the given offset.
+ * @brief Write a block of data to the specified file at the given offset. 
+ 
+ * All data blocks passed from OTA agent have the same size which must be configured in the parameter otaconfigLOG2_FILE_BLOCK_SIZE in ota_config.h. Except the last block which may be less than this configured block size.
+ * The parameter must be configured in such a way that the block size is multiples of page size to ensure proper page alignment, and the OtaPalWriteBlock_t does not need to handle page alignment explicitly.
  *
  * @note This function must always write a complete file block before returning. So the number of
  * bytes written will be equal to the size of the file block. Exception only in case of last block
