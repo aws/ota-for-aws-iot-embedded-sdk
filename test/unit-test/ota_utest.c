@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -463,14 +463,14 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
-OtaErr_t mockControlInterfaceRequestJobAlwaysFail( OtaAgentContext_t * unused )
+OtaErr_t mockControlInterfaceRequestJobAlwaysFail( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
     return OtaErrRequestJobFailed;
 }
 
-OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
+OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( const OtaAgentContext_t * unused1,
                                                   OtaJobStatus_t unused2,
                                                   int32_t unused3,
                                                   int32_t unused4 )
@@ -483,7 +483,7 @@ OtaErr_t mockControlInterfaceUpdateJobAlwaysFail( OtaAgentContext_t * unused1,
     return OtaErrUpdateJobStatusFailed;
 }
 
-OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
+OtaErr_t mockControlInterfaceUpdateJobCount( const OtaAgentContext_t * unused1,
                                              OtaJobStatus_t status,
                                              int32_t unused3,
                                              int32_t unused4 )
@@ -500,7 +500,7 @@ OtaErr_t mockControlInterfaceUpdateJobCount( OtaAgentContext_t * unused1,
     return OtaErrNone;
 }
 
-OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused )
+OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
@@ -508,7 +508,7 @@ OtaErr_t mockDataInterfaceInitFileTransferAlwaysFail( OtaAgentContext_t * unused
 }
 
 
-OtaErr_t mockDataInitFileTransferAlwaysSucceed( OtaAgentContext_t * unused )
+OtaErr_t mockDataInitFileTransferAlwaysSucceed( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
 
@@ -2698,6 +2698,7 @@ void test_OTA_MQTT_EncodingFailed()
 
     /* Explicitly set BitMap to NULL for the encoding to fail. */
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
+
     pFileContext->pRxBlockBitmap = NULL;
 
     err = requestFileBlock_Mqtt( &otaAgent );

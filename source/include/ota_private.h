@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -65,7 +65,7 @@
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
 #define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
-#define OTA_MAX_FILE_SIZE            UINT32_MAX - OTA_FILE_BLOCK_SIZE + 1                 /*!< @brief The maximum file size supported by the library. */
+#define OTA_MAX_FILE_SIZE            UINT32_MAX - OTA_FILE_BLOCK_SIZE + 1U                /*!< @brief The maximum file size supported by the library. */
 /** @} */
 
 /**

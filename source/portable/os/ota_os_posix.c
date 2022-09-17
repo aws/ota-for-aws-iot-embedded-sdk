@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -29,14 +29,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* MISRA rule 21.10 prohibits the use of time.h because it is implementation dependent or unspecified.
- * However, this implementation is on POSIX, which has well defined behavior. */
+
+/* MISRA Ref 21.10.1 [Date and Time] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-2110 */
 /* coverity[misra_c_2012_rule_21_10_violation] */
 #include <time.h>
 
-/* MISRA rule 21.5 prohibits the use of signal.h because of undefined behavior. However, this
- * implementation is on POSIX, which has well defined behavior. We're using the timer functionality
- * from POSIX so we deviate from this rule. */
+
+/* MISRA Ref 21.5.1 [Signal] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-215 */
 /* coverity[misra_c_2012_rule_21_5_violation] */
 #include <signal.h>
 #include <errno.h>
@@ -62,7 +63,7 @@
 static void requestTimerCallback( union sigval arg );
 static void selfTestTimerCallback( union sigval arg );
 
-static OtaTimerCallback_t otaTimerCallback;
+static OtaTimerCallback_t otaTimerCallbackPtr;
 
 /* OTA Event queue attributes.*/
 static mqd_t otaEventQueue;
@@ -106,9 +107,8 @@ OtaOsStatus_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
     /* Open the event queue.*/
     errno = 0;
 
-    /* MISRA rule 10.1 requires bitwise operand to be unsigned type. However, O_CREAT and O_RDWR
-     * flags are from standard linux header, and this is the normal way of using them. Hence we
-     * silence the warning here. */
+    /* MISRA Ref 10.1.1 [Essential operand type] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-101 */
     /* coverity[misra_c_2012_rule_10_1_violation] */
     otaEventQueue = mq_open( OTA_QUEUE_NAME, O_CREAT | O_RDWR | O_NONBLOCK, S_IRWXU, &attr );
 
@@ -286,9 +286,9 @@ static void selfTestTimerCallback( union sigval arg )
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaSelfTestTimer );
+        otaTimerCallbackPtr( OtaSelfTestTimer );
     }
     else
     {
@@ -303,9 +303,9 @@ static void requestTimerCallback( union sigval arg )
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaRequestTimer );
+        otaTimerCallbackPtr( OtaRequestTimer );
     }
     else
     {
@@ -456,7 +456,7 @@ OtaOsStatus_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
     sgEvent.sigev_notify_function = timerCallback[ otaTimerId ];
 
     /* Set OTA lib callback. */
-    otaTimerCallback = callback;
+    otaTimerCallbackPtr = callback;
 
     /* Set timeout attributes.*/
     timerAttr.it_value.tv_sec = ( time_t ) timeout / 1000;
@@ -593,11 +593,8 @@ void * STDC_Malloc( size_t size )
 {
     /* Use standard C malloc.*/
 
-    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h because of undefined
-     * behavior. The design for our OTA library is to let user choose whether they want to pass
-     * buffers to us or not. Dynamic allocation is used only when they do not provide these buffers.
-     * Further, we have unit tests with memory, and address sanitizer enabled to ensure we're not
-     * leaking or free memory that's not dynamically allocated.  */
+    /* MISRA Ref 21.3.1 [Memory Allocation] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-213 */
     /* coverity[misra_c_2012_rule_21_3_violation]. */
     return malloc( size );
 }
@@ -606,7 +603,8 @@ void STDC_Free( void * ptr )
 {
     /* Use standard C free.*/
 
-    /* See explanation in STDC_Malloc. */
+    /* MISRA Ref 21.3.1 [Memory Allocation] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-213 */
     /* coverity[misra_c_2012_rule_21_3_violation]. */
     free( ptr );
 }

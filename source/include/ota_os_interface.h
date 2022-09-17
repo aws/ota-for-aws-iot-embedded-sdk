@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -288,13 +288,14 @@ typedef struct OtaTimerInterface
  */
 typedef struct OtaMallocInterface
 {
-    /* MISRA rule 21.3 prohibits the use of malloc and free from stdlib.h, however, we're only
-     * defining the interface here. On FreeRTOS this is implemented with pvPortMalloc and vPortFree,
-     * and on Linux it's implemented with standard C malloc and free. This is a false positive. */
+    /* MISRA Ref 21.3.2 [Use of free or malloc] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-213 */
     /* coverity[misra_c_2012_rule_21_3_violation] */
     OtaMalloc_t malloc; /*!< @brief OTA memory allocate interface. */
+    /* MISRA Ref 21.3.2 [Use of free or malloc] */
+    /* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-213 */
     /* coverity[misra_c_2012_rule_21_3_violation] */
-    OtaFree_t free;     /*!< @brief OTA memory deallocate interface. */
+    OtaFree_t free; /*!< @brief OTA memory deallocate interface. */
 } OtaMallocInterface_t;
 
 /**

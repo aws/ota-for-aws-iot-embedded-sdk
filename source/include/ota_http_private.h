@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -49,7 +49,7 @@
  *
  * @return The OTA error code. See OTA Agent error codes information in ota.h.
  */
-OtaErr_t initFileTransfer_Http( OtaAgentContext_t * pAgentCtx );
+OtaErr_t initFileTransfer_Http( const OtaAgentContext_t * pAgentCtx );
 
 
 /**
@@ -88,7 +88,7 @@ OtaErr_t decodeFileBlock_Http( const uint8_t * pMessageBuffer,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize );
 
 /**
