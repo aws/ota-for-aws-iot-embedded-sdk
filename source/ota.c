@@ -2456,6 +2456,9 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         else
         {
             assert( pUpdateFile->pRxBlockBitmap != NULL );
+            /* This value is checked for NULL using an assert. When building coverity_analysis
+             * asserts are disabled, leading to a violation. */
+            /* coverity[var_deref_model] */
             ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
         }
 

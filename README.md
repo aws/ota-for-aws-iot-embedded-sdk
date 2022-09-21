@@ -6,6 +6,8 @@ This library has gone through code quality checks including verification that no
 
 See memory requirements for this library [here](./docs/doxygen/include/size_table.md).
 
+**AWS IoT Over-the-air Update Library v3.4.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.4.0/source) is part of the [FreeRTOS 202209.00 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202200.00-LTS) release.**
+
 **AWS IoT Over-the-air Update Library v3.3.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.3.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
 
 ## AWS IoT Over-the-air Updates Config File
