@@ -4,7 +4,7 @@ description: "Client library for using the AWS Over-the-air Update service on em
 license: "MIT"
 dependencies:
   - name : "coreJSON"
-    version: "v3.0.2"
+    version: "v3.2.0"
     license: "MIT"
     repository:
       type: "git"
