@@ -6,6 +6,8 @@ This library has gone through code quality checks including verification that no
 
 See memory requirements for this library [here](./docs/doxygen/include/size_table.md).
 
+**AWS IoT Over-the-air Update Library v3.4.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.4.0/source) is part of the [FreeRTOS 202210.00 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202210.00-LTS) release.**
+
 **AWS IoT Over-the-air Update Library v3.3.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.3.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
 
 ## AWS IoT Over-the-air Updates Config File
@@ -50,18 +52,18 @@ git submodule update --checkout --init --recursive test/unit-test/CMock
 
 ## Migration Guide
 
-### How to migrate from v2.0.0 (Release Candidate) to v3.3.0
+### How to migrate from v2.0.0 (Release Candidate) to v3.4.0
 
-The following table lists equivalent API function signatures in v2.0.0 (Release Candidate) and v3.3.0 declared in [ota.h](source/include/ota.h)
+The following table lists equivalent API function signatures in v2.0.0 (Release Candidate) and v3.4.0 declared in [ota.h](source/include/ota.h)
 
-| v2.0.0 (Release Candidate) | v3.3.0 | Notes |
+| v2.0.0 (Release Candidate) | v3.4.0 | Notes |
 | :-: | :-: | :-: |
 | `OtaState_t OTA_Shutdown( uint32_t ticksToWait );` | `OtaState_t OTA_Shutdown( uint32_t ticksToWait, uint8_t unsubscribeFlag );` | `unsubscribeFlag` indicates if unsubscribe operations should be performed from the job topics when shutdown is called. Set this as 1 to unsubscribe, 0 otherwise. |
 
-### How to migrate from version 1.0.0 to version 3.3.0 for OTA applications
+### How to migrate from version 1.0.0 to version 3.4.0 for OTA applications
 
 Refer to [OTA Migration document](https://docs.aws.amazon.com/freertos/latest/portingguide/porting-migration-ota.html) for the summary of updates to the API.
-[Migration document for OTA PAL](https://docs.aws.amazon.com/freertos/latest/portingguide/porting-migration-ota-pal.html) also provides a summary of updates required for upgrading the OTA-PAL to work with v3.3.0 of the library.
+[Migration document for OTA PAL](https://docs.aws.amazon.com/freertos/latest/portingguide/porting-migration-ota-pal.html) also provides a summary of updates required for upgrading the OTA-PAL to work with v3.4.0 of the library.
 
 ## Porting
 
@@ -77,6 +79,15 @@ For enabling data transfer over HTTP dataplane the following component should al
 1. [HTTP Interface](https://docs.aws.amazon.com/embedded-csdk/202103.00/lib-ref/libraries/aws/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/ota_porting.html#ota_porting_http)
 
 **NOTE** When using OTA over HTTP dataplane, MQTT is required for control plane operations and should also be provided.
+
+## CBMC
+
+To learn more about CBMC and proofs specifically, review the training material [here](https://model-checking.github.io/cbmc-training).
+
+The `test/cbmc/proofs` directory contains CBMC proofs.
+
+In order to run these proofs you will need to install CBMC and other tools by following the instructions [here](https://model-checking.github.io/cbmc-training/installation.html).
+
 ## Reference examples
 
 Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for reference examples on POSIX and FreeRTOS:

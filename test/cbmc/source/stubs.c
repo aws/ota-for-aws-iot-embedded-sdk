@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -268,6 +270,9 @@ int16_t writeBlockPalStub( OtaFileContext_t * const pFileContext,
 
     __CPROVER_assert( pFileContext != NULL, "Error: Expected a Non-Null value for pFileContext" );
     __CPROVER_assert( pData != NULL, "Error: Expected a Non-Null value for pData" );
+
+    /* bytesWritten must be negative (fail) or equal to blockSize (pass). */
+    __CPROVER_assume( bytesWritten < 0 || ( uint32_t ) bytesWritten == blockSize );
 
     return bytesWritten;
 }

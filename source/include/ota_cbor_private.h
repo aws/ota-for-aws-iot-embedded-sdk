@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -59,7 +61,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
                                                int32_t * pFileId,
                                                int32_t * pBlockId,
                                                int32_t * pBlockSize,
-                                               uint8_t ** pPayload,
+                                               uint8_t * const * pPayload,
                                                size_t * pPayloadSize );
 
 /**
@@ -74,7 +76,7 @@ bool OTA_CBOR_Encode_GetStreamRequestMessage( uint8_t * pMessageBuffer,
                                               int32_t fileId,
                                               int32_t blockSize,
                                               int32_t blockOffset,
-                                              uint8_t * pBlockBitmap,
+                                              const uint8_t * pBlockBitmap,
                                               size_t blockBitmapSize,
                                               int32_t numOfBlocksRequested );
 

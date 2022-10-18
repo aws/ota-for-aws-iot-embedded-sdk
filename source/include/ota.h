@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -62,9 +64,8 @@
  *
  */
 
-/* MISRA rule 8.6 requires identifier with external linkage to have exact one external definition.
- * However, this variable is defined in OTA platform abstraction layer implementation, which is
- * not in this repository but in C-SDK and amazon-freertos repo, so it's a false positive. */
+/* MISRA Ref 8.6.1 [External linkage] */
+/* More details at: https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/MISRA.md#rule-86 */
 /* coverity[misra_c_2012_rule_8_6_violation] */
 extern const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ];
 
@@ -172,6 +173,7 @@ typedef enum OtaJobEvent
     OtaJobEventParseCustomJob = 5, /*!< @brief OTA event for parsing custom job document. */
     OtaJobEventReceivedJob = 6,    /*!< @brief OTA event when a new valid AFT-OTA job is received. */
     OtaJobEventUpdateComplete = 7, /*!< @brief OTA event when the update is completed. */
+    OtaJobEventNoActiveJob = 8,    /*!< @brief OTA event when no active job is pending. */
     OtaLastJobEvent = OtaJobEventStartTest
 } OtaJobEvent_t;
 
@@ -225,9 +227,16 @@ typedef struct OtaJobDocument
  *
  * The callback function is called with one of the following arguments:
  *
- *      OtaJobEventActivate      OTA update is authenticated and ready to activate.
- *      OtaJobEventFail          OTA update failed. Unable to use this update.
- *      OtaJobEventStartTest     OTA job is now ready for optional user self tests.
+ *      OtaJobEventActivate           OTA update is authenticated and ready to activate.
+ *      OtaJobEventFail               OTA update failed. Unable to use this update.
+ *      OtaJobEventStartTest          OTA job is now ready for optional user self tests.
+ *      OtaJobEventProcessed          Event OTA got from user has been handled.
+ *      OtaJobEventSelfTestFailed     OTA update failed in self-test.
+ *      OtaJobEventParseCustomJob     OTA got an unknown job from cloud, need user to check
+ *                                    if it's a custom job.
+ *      OtaJobEventReceivedJob        OTA event when a new valid job is received.
+ *      OtaJobEventUpdateComplete     OTA event when the update is completed.
+ *      OtaJobEventNoActiveJob        OTA event when no active job is pending.
  *
  * When OtaJobEventActivate is received, the job status details have been updated with
  * the state as ready for Self Test. After reboot, the new firmware will (normally) be
@@ -237,12 +246,47 @@ typedef struct OtaJobDocument
  * If the callback function is called with a result of OtaJobEventFail, the OTA update
  * job has failed in some way and should be rejected.
  *
+ * When OtaJobEventStartTest is received, the load is first boot after OTA.
+ * Users can set the image state to OtaImageStateAccepted if the load is verified.
+ *
+ * When OtaJobEventProcessed is received, the event (OtaAgentEventReceivedJobDocument) sent
+ * from user has been handled. User can free the buffer when receiving this callback.
+ *
+ * When OtaJobEventSelfTestFailed is received, that means the load is failed on verification.
+ * And the device is going to reboot after this callback.
+ *
+ * When OtaJobEventParseCustomJob is received, that means OTA received an unknown job from cloud.
+ * User can parse the job by casting pData to OtaJobDocument_t, then check the pJobDocJson and
+ * pJobId in the document. User should set the result to parseErr if it's a custom job.
+ *
+ * When OtaJobEventReceivedJob is received, that means OTA has addressed the json file provided by
+ * user successfully. Let user know to handler the buffer.
+ *
+ * When OtaJobEventUpdateComplete is received, that means OTA has downloaded a full image for the
+ * file type which is different from configOTA_FIRMWARE_UPDATE_FILE_TYPE_ID.
+ *
+ * When OtaJobEventNoActiveJob is received, that means OTA has received a job document without valid
+ * job ID and job document key.
+ *
  * @param[in] eEvent An OTA update event from the OtaJobEvent_t enum.
  *
  * @param[in] pData Optional data related to the event.
+ *
+ * eEvent|Structure of pData|Variable in pData
+ * ------|-----|-----------
+ * OtaJobEventActivate|OtaJobDocument_t|status and reason
+ * OtaJobEventFail|OtaJobDocument_t|status, reason and subReason
+ * OtaJobEventStartTest|NULL|nothing
+ * OtaJobEventProcessed|OtaEventData_t|data buffer inputed from user by OTA_SignalEvent
+ * OtaJobEventSelfTestFailed|NULL|nothing
+ * OtaJobEventParseCustomJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, and jobDocLength
+ * OtaJobEventReceivedJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, jobDocLength, and fileTypeId
+ * OtaJobEventUpdateComplete|OtaJobDocument_t|status, reason and subReason
+ * OtaJobEventNoActiveJob|NULL|nothing
+ *
  */
 typedef void (* OtaAppCallback_t)( OtaJobEvent_t eEvent,
-                                   const void * pData );
+                                   void * pData );
 
 /*--------------------------- OTA structs ----------------------------*/
 
@@ -308,6 +352,7 @@ typedef struct OtaAgentContext
     const OtaInterfaces_t * pOtaInterface;                 /*!< Collection of all interfaces used by the agent. */
     OtaAppCallback_t OtaAppCallback;                       /*!< OTA App callback. */
     uint8_t unsubscribeOnShutdown;                         /*!< Flag to indicate if unsubscribe from job topics should be done at shutdown. */
+    uint8_t isOtaInterfaceInited;                          /*!< Flag to indicate if pOtaInterface is initialized. */
 } OtaAgentContext_t;
 
 /*------------------------- OTA Public API --------------------------*/
@@ -393,7 +438,7 @@ typedef struct OtaAgentContext
  * @endcode
  */
 /* @[declare_ota_init] */
-OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
+OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
                    const OtaInterfaces_t * pOtaInterfaces,
                    const uint8_t * pThingName,
                    OtaAppCallback_t OtaAppCallback );
@@ -404,6 +449,9 @@ OtaErr_t OTA_Init( OtaAppBuffer_t * pOtaBuffer,
  *
  * Signals the OTA agent task to shut down. The OTA agent will unsubscribe from all MQTT job
  * notification topics, stop in progress OTA jobs, if any, and clear all resources.
+ *
+ * OTA needs a processing task running OTA_EventProcessingTask to handle shutdown event, or
+ * OTA will shutdown after the processing task is created and scheduled.
  *
  * @param[in] ticksToWait The number of ticks to wait for the OTA Agent to complete the shutdown process.
  * If this is set to zero, the function will return immediately without waiting. The actual state is
@@ -666,9 +714,25 @@ OtaErr_t OTA_Resume( void );
  * please see the [demos in AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota).
  */
 /* @[declare_ota_eventprocessingtask] */
-void OTA_EventProcessingTask( void * pUnused );
+void OTA_EventProcessingTask( const void * pUnused );
 /* @[declare_ota_eventprocessingtask] */
 
+
+/**
+ * @brief OTA agent event process cycler.
+ *
+ * This is the main agent event handler for OTA update and needs to be called repeatedly
+ * by an application task. This is functionally equivalent to @ref OTA_EventProcessingTask, except
+ * instead of forever looping internally, the user is responsible for periodically calling this function.
+ *
+ * @note This is NOT thread safe with @ref OTA_EventProcessingTask and the two should never be used in conjunction.
+ *
+ * @return The state of the ota agent after this single event process cycle
+ *
+ */
+/* @[declare_ota_eventprocess] */
+OtaState_t OTA_EventProcess( void );
+/* @[declare_ota_eventprocess] */
 
 /**
  * @brief Signal event to the OTA Agent task.

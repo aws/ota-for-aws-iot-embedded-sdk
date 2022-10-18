@@ -48,6 +48,7 @@ bytesreceived
 bytessent
 bytestorecv
 bytestosend
+byteswritten
 c89
 c90
 ca
@@ -277,6 +278,7 @@ ip
 ip
 isinselftest
 iso
+isotainterfaceinited
 jobcallback
 jobdoc
 jobdoclength
@@ -297,6 +299,7 @@ jobstatusinprogress
 jobstatusrejected
 json
 jsondoc 
+lastbyte
 lastupdatedat
 len
 lf
@@ -324,6 +327,7 @@ messagesize
 mfln
 min
 misra
+mit
 mockoseventsendthenstop
 modelparams
 modelparamtype
@@ -453,6 +457,7 @@ otainterfaces
 otajobdocmodelparamstructure
 otajobeventactivate
 otajobeventfail
+otajobeventnoactivejob
 otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventreceivedjob
@@ -629,6 +634,8 @@ png
 pnumdatainbuffer
 pnumpadding
 pnumwhitespace
+pollin
+pollout
 popensslcredentials
 portsleep
 posix
@@ -697,6 +704,7 @@ prvpal
 prxblockbitmap
 prxstreamtopic
 pserverinfo
+psig
 psignature
 psrckey
 pssl
@@ -746,6 +754,7 @@ requestjobhandler
 requestmomentum
 requesttimercallback
 resetdevice
+reseteventqueue
 resumehandler
 retryutilsretriesexhausted
 retryutilssuccess
@@ -775,6 +784,7 @@ setplatformimagestate
 shutdownhandler
 sig
 sigalrm
+sigbuffer
 sizeof
 sleeptimems
 sni
@@ -889,6 +899,7 @@ validateandstartjob
 validatedatablock
 validatejson
 validateupdateversion
+valuecopy
 valuelength
 verifyactivejobstatus
 verifyrequiredparamsextracted

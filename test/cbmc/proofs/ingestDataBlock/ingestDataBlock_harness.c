@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -31,8 +33,7 @@
 
 extern OtaAgentContext_t otaAgent;
 extern IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                       const uint8_t * pRawMsg,
-                                       uint32_t messageSize,
+                                       const OtaEventData_t * pEventData,
                                        OtaPalStatus_t * pCloseResult );
 
 IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
@@ -99,12 +100,11 @@ void ingestDataBlock_harness()
     OtaInterfaces_t otaInterface;
     OtaFileContext_t fileContext;
     OtaPalStatus_t closeResult;
-    uint8_t rawMsg[ OTA_DATA_BLOCK_SIZE ];
-    uint32_t messageSize;
+    OtaEventData_t eventData;
 
     uint32_t decodeMemMaxSize;
 
-    __CPROVER_assume( messageSize <= OTA_DATA_BLOCK_SIZE );
+    __CPROVER_assume( eventData.dataLength <= OTA_DATA_BLOCK_SIZE );
 
     /* CBMC preconditions. */
 
@@ -115,5 +115,5 @@ void ingestDataBlock_harness()
     otaInterface.os.mem.free = freeMemStub;
     otaAgent.pOtaInterface = &otaInterface;
 
-    ( void ) ingestDataBlock( &fileContext, rawMsg, messageSize, &closeResult );
+    ( void ) ingestDataBlock( &fileContext, &eventData, &closeResult );
 }

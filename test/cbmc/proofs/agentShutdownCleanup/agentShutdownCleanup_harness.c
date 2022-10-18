@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -32,11 +34,18 @@
 /* Global static variable defined in ota.c for managing the state machine. */
 extern OtaControlInterface_t otaControlInterface;
 extern OtaDataInterface_t otaDataInterface;
+extern OtaAgentContext_t otaAgent;
 extern void agentShutdownCleanup( void );
 
 void agentShutdownCleanup_harness()
 {
     OtaInterfaces_t otaInterface;
+
+    /* Initialize os timers functions. */
+    otaInterface.os.timer.stop = stopTimerStub;
+    otaInterface.os.timer.delete = deleteTimerStub;
+
+    otaAgent.pOtaInterface = &otaInterface;
 
     /* Initialize the function pointers to stubs. */
     otaControlInterface.cleanup = cleanupStub;

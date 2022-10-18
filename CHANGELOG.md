@@ -1,4 +1,22 @@
 # Changelog for AWS IoT Over-the-air Update Library
+
+### v3.4.0 (October 2022)
+ - [#450](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/450) Remove assertion check to make out-of-order packet work
+ - [#449](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/449) MISRA C:2012 compliance updates
+ - [#443](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/443) Removal of const for pData
+ - [#441](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/441) Add user callable agent cycler
+ - [#440](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/440) Keep event/callback functions to avoid access NULL
+ - [#439](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/439) Self timer restart bug fix
+ - [#436](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/436) Update OtaPalWriteBlock_t comment with a note about returning from the function and exception condition.
+ - [#433](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/433) Replace mq_send/mq_receive with mq_timedsend/mq_timedreceive.
+ - [#432](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/432) Change default signature size to 384 to support RSA-3072
+ - [#436](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/432) Fix the length judgement in custom job, and move OtaAppCallback to make sure job ID is valid.
+ - [#428](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/428) Ignore duplicate packet and wait for valid file blocks
+ - [#427](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/427) Add new event for application callback when no active jobs are available
+ - [#426](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/426) Send status update on first block received
+ - [#419](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/419) Move cleanup of job id to after OtaAppCallback
+ - [#413](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/413) Clear timers in shutdown and suspend
+
 ### v3.3.0 (December 2021)
  - Added CBMC proofs of all public and private functions in the OTA library. 
  - [#373](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/373) Updated compiler flag for tinycbor source files

@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +41,7 @@ void decodeAndStoreKey_harness()
     OtaFileContext_t * fileContext;
     const char pValueInJson[ OTA_FILE_BLOCK_SIZE ];
     size_t valueLength;
-    Sig256_t value;
+    Sig_t value;
     void * pParamAdd;
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
@@ -50,7 +52,7 @@ void decodeAndStoreKey_harness()
     __CPROVER_assume( valueLength < OTA_FILE_BLOCK_SIZE );
 
     /* decodeAndStoreKey is called only when the value pointed in pValueInJson is of
-     * Sig256_t type. pParamAdd is a pointer to the pSignature in the fileContext and hence
+     * Sig_t type. pParamAdd is a pointer to the pSignature in the fileContext and hence
      * cannot be NULL. */
     otaAgent.fileContext.pSignature = &value;
     pParamAdd = &( otaAgent.fileContext.pSignature );

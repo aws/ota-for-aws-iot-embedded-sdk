@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -38,12 +40,6 @@ void OTA_Shutdown_harness()
     OtaInterfaces_t otaInterface;
 
     otaAgent.state = state;
-
-    /* Initialize os timers functions. */
-    otaInterface.os.timer.stop = stopTimerStub;
-    otaInterface.os.timer.delete = deleteTimerStub;
-
-    otaAgent.pOtaInterface = &otaInterface;
 
     /* This assumption is required to have an upper bound on the unwinding of while loop in
      * OTA_Shutdown. This does not model the exact behavior of the code since the limitation of CBMC

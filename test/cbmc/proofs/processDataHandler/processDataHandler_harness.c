@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -35,8 +37,7 @@ extern OtaErr_t processDataHandler( const OtaEventData_t * pEventData );
 
 /* Stub for ingestDataBlock. */
 IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
-                                const uint8_t * pRawMsg,
-                                uint32_t messageSize,
+                                const OtaEventData_t * pEventData,
                                 OtaPalStatus_t * pCloseResult )
 {
     IngestResult_t result;
@@ -44,7 +45,6 @@ IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
 
     __CPROVER_assert( pFileContext != NULL, "Error: pFileContext cannot be NULL" );
     __CPROVER_assert( pCloseResult != NULL, "Error: pCloseResult cannot be NULL" );
-    __CPROVER_assert( pRawMsg != NULL, "Error: pRawMsg buffer cannot be NULL." );
 
     return result;
 }

@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -290,6 +292,16 @@
  */
 #ifndef configOTA_PRIMARY_DATA_PROTOCOL
     #define configOTA_PRIMARY_DATA_PROTOCOL    ( OTA_DATA_OVER_MQTT )
+#endif
+
+/**
+ * @brief The polling timeout (milliseconds) to receive messages from event queue.
+ *
+ * <b>Possible values:</b> Any unsigned 32 integer. <br>
+ * <b>Default value:</b> '1000'
+ */
+#ifndef configOTA_POLLING_EVENTS_TIMEOUT_MS
+    #define configOTA_POLLING_EVENTS_TIMEOUT_MS    ( 1000U )
 #endif
 
 /**

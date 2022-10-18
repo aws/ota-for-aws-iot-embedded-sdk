@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -30,6 +32,50 @@
 
 /* Includes for ota private struct types. */
 #include "ota_private.h"
+#include <poll.h>
+#include <mqueue.h>
+
+/* Counter for the number of iterations. */
+static int count = 0;
+
+int poll( struct pollfd * fds,
+          nfds_t nfds,
+          int timeout )
+{
+    __CPROVER_assert( fds != NULL, "fds pointer cannot be NULL" );
+    __CPROVER_havoc_object( fds );
+
+    count++;
+
+    if( count >= BOUND )
+    {
+        /* Return value greater than 0 with event set to POLLIN. */
+        fds->revents = POLLIN;
+        return 1;
+    }
+
+    return nondet_int();
+}
+
+ssize_t mq_receive( mqd_t mqdes,
+                    char * msg_ptr,
+                    size_t msg_len,
+                    unsigned int * msg_prio )
+{
+    __CPROVER_assert( msg_ptr != NULL, "msg_ptr cannot be NULL" );
+    __CPROVER_havoc_object( msg_ptr );
+
+    if( count >= BOUND )
+    {
+        /* Reset the counter to 0. */
+        count = 0;
+
+        /* Return success. */
+        return 0;
+    }
+
+    return nondet_int();
+}
 
 void Posix_OtaReceiveEvent_harness()
 {

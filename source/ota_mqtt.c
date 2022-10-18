@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -168,7 +170,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
  * @param[in] qos Quality of service level for mqtt.
  * @return OtaMqttStatus_t OtaMqttSuccess if the message is publish is successful.
  */
-static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
+static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx,
                                              const char * pMsg,
                                              uint32_t msgSize,
                                              uint8_t qos );
@@ -229,7 +231,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
  */
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
-                             const char * strings[] );
+                             const char * const strings[] );
 
 /**
  * @brief Build a string with the decimal representation of a uint32_t value.
@@ -257,10 +259,10 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
 
 static size_t stringBuilder( char * pBuffer,
                              size_t bufferSizeBytes,
-                             const char * strings[] )
+                             const char * const strings[] )
 {
     size_t curLen = 0;
-    int i;
+    size_t i;
     size_t thisLength = 0;
 
     pBuffer[ 0 ] = '\0';
@@ -271,7 +273,7 @@ static size_t stringBuilder( char * pBuffer,
 
         /* Assert if there is not enough buffer space. */
 
-        assert( thisLength + curLen + 1 <= bufferSizeBytes );
+        assert( ( thisLength + curLen + 1U ) <= bufferSizeBytes );
 
         ( void ) strncat( pBuffer, strings[ i ], bufferSizeBytes - curLen - 1U );
         curLen += thisLength;
@@ -287,6 +289,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     char workBuf[ U32_MAX_LEN ];
     char * pCur = workBuf;
     char * pDest = pBuffer;
+    uint32_t valueCopy = value;
     size_t size = 0;
 
     /* Assert if there is not enough buffer space. */
@@ -294,18 +297,22 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( value > 0U )
+    while( valueCopy > 0U )
     {
-        *pCur++ = asciiDigits[ ( value % 10U ) ];
-        value /= 10U;
+        *pCur = asciiDigits[ ( valueCopy % 10U ) ];
+        pCur++;
+        valueCopy /= 10U;
     }
 
     while( pCur > workBuf )
     {
-        pDest[ size++ ] = *--pCur;
+        pCur--;
+        pDest[ size ] = *pCur;
+        size++;
     }
 
-    pDest[ size++ ] = '\0';
+    pDest[ size ] = '\0';
+    size++;
     return size;
 }
 
@@ -317,7 +324,8 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     char * pCur = workBuf;
     char * pDest = pBuffer;
     size_t size = 0;
-    int i;
+    uint32_t valueCopy = value;
+    size_t i;
 
     /* Assert if there is not enough buffer space. */
 
@@ -325,18 +333,22 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
-    for( i = 0; i < 8; i++ )
+    for( i = 0U; i < 8U; i++ )
     {
-        *pCur++ = asciiDigits[ value & 15U ]; /* 15U = 0xF*/
-        value >>= 4;
+        *pCur = asciiDigits[ valueCopy & 15U ]; /* 15U = 0xF*/
+        pCur++;
+        valueCopy >>= 4;
     }
 
     while( pCur > workBuf )
     {
-        pDest[ size++ ] = *--pCur;
+        pCur--;
+        pDest[ size ] = *pCur;
+        size++;
     }
 
-    pDest[ size++ ] = '\0';
+    pDest[ size ] = '\0';
+    size++;
     return size;
 }
 
@@ -521,7 +533,7 @@ static OtaMqttStatus_t unsubscribeFromJobNotificationTopic( const OtaAgentContex
 /*
  * Publish a message to the job status topic.
  */
-static OtaMqttStatus_t publishStatusMessage( OtaAgentContext_t * pAgentCtx,
+static OtaMqttStatus_t publishStatusMessage( const OtaAgentContext_t * pAgentCtx,
                                              const char * pMsg,
                                              uint32_t msgSize,
                                              uint8_t qos )
@@ -603,7 +615,6 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     uint32_t numBlocks = 0;
     uint32_t received = 0;
     uint32_t msgSize = 0;
-
     /* NULL-terminated list of JSON payload components */
     /* NOTE: this must conform to the following format, do not add spaces, etc. */
     /*       "\"%s\":\"%u/%u\"}}" */
@@ -627,8 +638,10 @@ static uint32_t buildStatusMessageReceiving( char * pMsgBuffer,
     numBlocks = ( pOTAFileCtx->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
     received = numBlocks - pOTAFileCtx->blocksRemaining;
 
-    /* Output a status update once in a while. */
-    if( ( received % otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U )
+    /* Output a status update when receiving first file block to let user know the OTA job status
+     * more clearly. Then output a status update once in a while. */
+
+    if( ( received == 1U ) || ( ( received % ( uint32_t ) otaconfigOTA_UPDATE_STATUS_FREQUENCY ) == 0U ) )
     {
         payloadStringParts[ 0 ] = pOtaJobStatusStrings[ status ];
         payloadStringParts[ 3 ] = receivedString;
@@ -837,7 +850,7 @@ static uint32_t prvBuildStatusMessageFinish( char * pMsgBuffer,
  * a "get next job" message to the job service.
  */
 
-OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
+OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     /* This buffer is used to store the generated MQTT topic. The static size
      * is calculated from the template and the corresponding parameters. */
@@ -937,7 +950,7 @@ OtaErr_t requestJob_Mqtt( OtaAgentContext_t * pAgentCtx )
 /*
  * Update the job status on the service side with progress or completion info.
  */
-OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
+OtaErr_t updateJobStatus_Mqtt( const OtaAgentContext_t * pAgentCtx,
                                OtaJobStatus_t status,
                                int32_t reason,
                                int32_t subReason )
@@ -1005,7 +1018,7 @@ OtaErr_t updateJobStatus_Mqtt( OtaAgentContext_t * pAgentCtx,
 /*
  * Init file transfer by subscribing to the OTA data stream topic.
  */
-OtaErr_t initFileTransfer_Mqtt( OtaAgentContext_t * pAgentCtx )
+OtaErr_t initFileTransfer_Mqtt( const OtaAgentContext_t * pAgentCtx )
 {
     OtaErr_t result = OtaErrInitFileTransferFailed;
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
@@ -1181,7 +1194,7 @@ OtaErr_t decodeFileBlock_Mqtt( const uint8_t * pMessageBuffer,
                                int32_t * pFileId,
                                int32_t * pBlockId,
                                int32_t * pBlockSize,
-                               uint8_t ** pPayload,
+                               uint8_t * const * pPayload,
                                size_t * pPayloadSize )
 {
     OtaErr_t result = OtaErrFailedToDecodeCbor;

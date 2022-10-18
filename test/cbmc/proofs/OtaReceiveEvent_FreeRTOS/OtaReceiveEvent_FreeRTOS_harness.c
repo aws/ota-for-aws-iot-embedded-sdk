@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -27,6 +29,7 @@
 /*  FreeRTOS includes for OTA library. */
 #include "ota_os_freertos.h"
 #include "ota_private.h"
+#include "FreeRTOSConfig.h"
 
 void OtaReceiveEvent_FreeRTOS_harness()
 {
@@ -39,6 +42,9 @@ void OtaReceiveEvent_FreeRTOS_harness()
 
     /* pEventMsg is statically declared before it is used in this function. */
     __CPROVER_assume( pEventMsg != NULL );
+
+    /* To avoid pdMS_TO_TICKS from integer overflow. */
+    __CPROVER_assume( timeout < ( UINT32_MAX / ( configTICK_RATE_HZ ) ) );
 
     osStatus = OtaReceiveEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
 

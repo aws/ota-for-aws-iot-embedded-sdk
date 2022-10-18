@@ -18,11 +18,6 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
 
-RESTRICT_FUNCTION_POINTER += OTA_Shutdown.function_pointer_call.1/stopTimerStub
-RESTRICT_FUNCTION_POINTER += OTA_Shutdown.function_pointer_call.2/deleteTimerStub
-RESTRICT_FUNCTION_POINTER += OTA_Shutdown.function_pointer_call.3/stopTimerStub
-RESTRICT_FUNCTION_POINTER += OTA_Shutdown.function_pointer_call.4/deleteTimerStub
-
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
 # restrict the number of EXPENSIVE CBMC jobs running at once. See the

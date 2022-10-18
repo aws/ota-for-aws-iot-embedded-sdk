@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -52,7 +54,7 @@ static StaticQueue_t staticQueue;
 static QueueHandle_t otaEventQueue;
 
 /* OTA App Timer callback.*/
-static OtaTimerCallback_t otaTimerCallback;
+static OtaTimerCallback_t otaTimerCallbackPtr;
 
 /* OTA Timer handles.*/
 static TimerHandle_t otaTimer[ OtaNumOfTimers ];
@@ -131,9 +133,8 @@ OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     uint8_t buff[ sizeof( OtaEventMsg_t ) ];
 
     ( void ) pEventCtx;
-    ( void ) timeout;
 
-    retVal = xQueueReceive( otaEventQueue, &buff, portMAX_DELAY );
+    retVal = xQueueReceive( otaEventQueue, &buff, pdMS_TO_TICKS( timeout ) );
 
     if( retVal == pdTRUE )
     {
@@ -145,7 +146,7 @@ OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
     {
         otaOsStatus = OtaOsEventQueueReceiveFailed;
 
-        LogError( ( "Failed to receive event from OTA Event Queue: "
+        LogDebug( ( "Failed to receive event or timeout from OTA Event Queue: "
                     "xQueueReceive returned error: "
                     "OtaOsStatus_t=%i ",
                     otaOsStatus ) );
@@ -178,9 +179,9 @@ static void selfTestTimerCallback( TimerHandle_t T )
     LogDebug( ( "Self-test expired within %ums\r\n",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaSelfTestTimer );
+        otaTimerCallbackPtr( OtaSelfTestTimer );
     }
     else
     {
@@ -195,9 +196,9 @@ static void requestTimerCallback( TimerHandle_t T )
     LogDebug( ( "Request timer expired in %ums \r\n",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
-    if( otaTimerCallback != NULL )
+    if( otaTimerCallbackPtr != NULL )
     {
-        otaTimerCallback( OtaRequestTimer );
+        otaTimerCallbackPtr( OtaRequestTimer );
     }
     else
     {
@@ -217,7 +218,7 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
     configASSERT( pTimerName != NULL );
 
     /* Set OTA lib callback. */
-    otaTimerCallback = callback;
+    otaTimerCallbackPtr = callback;
 
     /* If timer is not created.*/
     if( otaTimer[ otaTimerId ] == NULL )
