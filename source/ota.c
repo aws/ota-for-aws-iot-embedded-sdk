@@ -2532,8 +2532,8 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
         ( ( blockIndex == lastBlock ) && ( blockSize == ( pFileContext->fileSize - ( lastBlock * OTA_FILE_BLOCK_SIZE ) ) ) ) )
     {
         ret = true;
-        LogInfo( ( "Received valid file block: Block index=%u, Size=%u",
-                   blockIndex, blockSize ) );
+        LogDebug( ( "Received valid file block: Block index=%u, Size=%u",
+                    blockIndex, blockSize ) );
     }
 
     return ret;
@@ -2766,10 +2766,6 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             eIngestResult = IngestResultBadFileHandle;
         }
     }
-    else
-    {
-        LogInfo( ( "Number of blocks remaining: %u", pFileContext->blocksRemaining ) );
-    }
 
     return eIngestResult;
 }
@@ -2813,6 +2809,19 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         eIngestResult = ingestDataBlockCleanup( pFileContext, pCloseResult );
+    }
+
+    if( eIngestResult == IngestResultAccepted_Continue )
+    {
+        LogDebug( ( "Ingested received block %u",
+                    uBlockIndex ) );
+
+        /* Print progress every 32 blocks received */
+        if( ( pFileContext->blocksRemaining & 0x1Fu ) == 0u )
+        {
+            LogInfo( ( "Number of blocks remaining: %u",
+                       pFileContext->blocksRemaining ) );
+        }
     }
 
     /* Free the payload if it's dynamically allocated by us. */
@@ -2922,7 +2931,14 @@ static void executeHandler( uint32_t index,
 
     if( err == OtaErrNone )
     {
-        LogDebug( ( "Executing handler for state transition: " ) );
+        LogDebug( ( "Executing handler for state transition:" ) );
+
+        LogDebug( ( "Current State=[%s]"
+                    ", Event=[%s]"
+                    ", New state=[%s]",
+                    pOtaAgentStateStrings[ otaAgent.state ],
+                    pOtaEventStrings[ pEventMsg->eventId ],
+                    pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
 
         /*
          * Update the current state in OTA agent context.
@@ -2931,17 +2947,17 @@ static void executeHandler( uint32_t index,
     }
     else
     {
-        LogDebug( ( "Failed to execute state transition handler: "
+        LogError( ( "Failed to execute state transition handler: "
                     "Handler returned error: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
-    }
 
-    LogInfo( ( "Current State=[%s]"
-               ", Event=[%s]"
-               ", New state=[%s]",
-               pOtaAgentStateStrings[ otaAgent.state ],
-               pOtaEventStrings[ pEventMsg->eventId ],
-               pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
+        LogError( ( "Current State=[%s]"
+                    ", Event=[%s]"
+                    ", New state=[%s]",
+                    pOtaAgentStateStrings[ otaAgent.state ],
+                    pOtaEventStrings[ pEventMsg->eventId ],
+                    pOtaAgentStateStrings[ otaTransitionTable[ index ].nextState ] ) );
+    }
 }
 
 static uint32_t searchTransition( const OtaEventMsg_t * pEventMsg )
