@@ -1163,9 +1163,9 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
         if( mqttStatus == OtaMqttSuccess )
         {
-            LogInfo( ( "Published to MQTT topic to request the next block: "
-                       "topic=%s",
-                       pTopicBuffer ) );
+            LogDebug( ( "Published to MQTT topic to request the next block: "
+                        "topic=%s",
+                        pTopicBuffer ) );
             result = OtaErrNone;
         }
         else
