@@ -178,6 +178,9 @@ Macros</h2></td></tr>
 <tr class="memitem:adf1e3fc7dc9fc4ff54e5b777e0a636c1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1">configOTA_POLLING_EVENTS_TIMEOUT_MS</a>&#160;&#160;&#160;( 1000U )</td></tr>
 <tr class="memdesc:adf1e3fc7dc9fc4ff54e5b777e0a636c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The polling timeout (milliseconds) to receive messages from event queue.  <a href="ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1">More...</a><br /></td></tr>
 <tr class="separator:adf1e3fc7dc9fc4ff54e5b777e0a636c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a958c91675d269babba46c1dbaa629"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a60a958c91675d269babba46c1dbaa629">OTA_USE_NONCONST_APPVERSION</a>&#160;&#160;&#160;( 0U )</td></tr>
+<tr class="memdesc:a60a958c91675d269babba46c1dbaa629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether to use const qualifier for the appFirmwareVersion variable.  <a href="ota__config__defaults_8h.html#a60a958c91675d269babba46c1dbaa629">More...</a><br /></td></tr>
+<tr class="separator:a60a958c91675d269babba46c1dbaa629"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d9dbaaa88129137a4c68ba0456a18b1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1">LogError</a>(message)</td></tr>
 <tr class="memdesc:a8d9dbaaa88129137a4c68ba0456a18b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro that is called in the OTA library for logging "Error" level messages.  <a href="ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1">More...</a><br /></td></tr>
 <tr class="separator:a8d9dbaaa88129137a4c68ba0456a18b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -535,6 +538,27 @@ Only MQTT is supported at this time for control operations.</dd></dl>
 <p>The polling timeout (milliseconds) to receive messages from event queue. </p>
 <p ><b>Possible values:</b> Any unsigned 32 integer. <br  />
  <b>Default value:</b> '1000' </p>
+
+</div>
+</div>
+<a id="a60a958c91675d269babba46c1dbaa629" name="a60a958c91675d269babba46c1dbaa629"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60a958c91675d269babba46c1dbaa629">&#9670;&nbsp;</a></span>OTA_USE_NONCONST_APPVERSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define OTA_USE_NONCONST_APPVERSION&#160;&#160;&#160;( 0U )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether to use const qualifier for the appFirmwareVersion variable. </p>
+<dl class="section note"><dt>Note</dt><dd>In some cases the appFirmwareVersion variable cannot be declared as const because the version is read out during runtime.</dd></dl>
+<p><b>Possible values:</b><br  />
+ appFirmwareVersion is const - ( 0 ) <br  />
+ appFirmwareVersion is non-const - ( 1 ) <br  />
+ <b>Default value:</b> '0' </p>
 
 </div>
 </div>

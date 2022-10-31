@@ -208,29 +208,33 @@ $(document).ready(function(){initNavTree('ota__config__defaults_8h_source.html',
 <div class="line"><a id="l00304" name="l00304"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#adf1e3fc7dc9fc4ff54e5b777e0a636c1">  304</a></span><span class="preprocessor">    #define configOTA_POLLING_EVENTS_TIMEOUT_MS    ( 1000U )</span></div>
 <div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="preprocessor">#ifndef LogError</span></div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1">  325</a></span><span class="preprocessor">    #define LogError( message )</span></div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span><span class="preprocessor">#ifndef LogWarn</span></div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a7da92048aaf0cbfcacde9539c98a0e05">  346</a></span><span class="preprocessor">    #define LogWarn( message )</span></div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span><span class="preprocessor">#ifndef LogInfo</span></div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba">  367</a></span><span class="preprocessor">    #define LogInfo( message )</span></div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span> </div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span><span class="preprocessor">#ifndef LogDebug</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#af60e8ffc327d136e5d0d8441ed98c98d">  388</a></span><span class="preprocessor">    #define LogDebug( message )</span></div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span> </div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span><span class="comment">/* *INDENT-OFF* */</span></div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    }</div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span><span class="comment">/* *INDENT-ON* */</span></div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span> </div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span><span class="preprocessor">#endif </span><span class="comment">/* ifndef OTA_CONFIG_DEFAULTS_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="preprocessor">#ifndef OTA_USE_NONCONST_APPVERSION</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a60a958c91675d269babba46c1dbaa629">  319</a></span><span class="preprocessor">    #define OTA_USE_NONCONST_APPVERSION    ( 0U )</span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="preprocessor">#ifndef LogError</span></div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1">  340</a></span><span class="preprocessor">    #define LogError( message )</span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span><span class="preprocessor">#ifndef LogWarn</span></div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a7da92048aaf0cbfcacde9539c98a0e05">  361</a></span><span class="preprocessor">    #define LogWarn( message )</span></div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span><span class="preprocessor">#ifndef LogInfo</span></div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba">  382</a></span><span class="preprocessor">    #define LogInfo( message )</span></div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span> </div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span><span class="preprocessor">#ifndef LogDebug</span></div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno"><a class="line" href="ota__config__defaults_8h.html#af60e8ffc327d136e5d0d8441ed98c98d">  403</a></span><span class="preprocessor">    #define LogDebug( message )</span></div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span> </div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span><span class="comment">/* *INDENT-OFF* */</span></div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>    }</div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span><span class="comment">/* *INDENT-ON* */</span></div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span> </div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span><span class="preprocessor">#endif </span><span class="comment">/* ifndef OTA_CONFIG_DEFAULTS_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
