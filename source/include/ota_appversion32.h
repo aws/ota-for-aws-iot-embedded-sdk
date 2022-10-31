@@ -75,7 +75,11 @@ typedef struct
     } u; /*!< @brief Version based on configuration in big endian or little endian. */
 } AppVersion32_t;
 
-extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage. */
+#if ( defined( OTA_USE_NONCONST_APPVERSION ) && ( OTA_USE_NONCONST_APPVERSION == 1 ) )
+    extern AppVersion32_t appFirmwareVersion;       /*!< @brief Making the version number available globally through external linkage, without const qualifier. */
+#else
+    extern const AppVersion32_t appFirmwareVersion; /*!< @brief Making the version number available globally through external linkage, with const qualifier. */
+#endif
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

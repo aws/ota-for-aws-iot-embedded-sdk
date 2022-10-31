@@ -305,6 +305,21 @@
 #endif
 
 /**
+ * @brief Whether to use const qualifier for the appFirmwareVersion variable.
+ *
+ * @note In some cases the appFirmwareVersion variable cannot be declared as const
+ * because the version is read out during runtime.
+ *
+ * <b>Possible values:</b><br>
+ * appFirmwareVersion is const - ( 0 ) <br>
+ * appFirmwareVersion is non-const - ( 1 ) <br>
+ * <b>Default value:</b>  '0'
+ */
+#ifndef OTA_USE_NONCONST_APPVERSION
+    #define OTA_USE_NONCONST_APPVERSION    ( 0U )
+#endif
+
+/**
  * @brief Macro that is called in the OTA library for logging "Error" level
  * messages.
  *
