@@ -1,7 +1,7 @@
 # Changelog for AWS IoT Over-the-air Update Library
 
 ### v3.4.1 (November 2022)
- - [#458](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/458) Fix tinyCBOR submodule to match manifest
+ - [#458](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/458) Updated tinyCBOR submodule to match manifest
 
 ### v3.4.0 (October 2022)
  - [#450](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/450) Remove assertion check to make out-of-order packet work
