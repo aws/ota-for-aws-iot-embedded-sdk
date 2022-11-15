@@ -2,6 +2,8 @@
  * AWS IoT Over-the-air Update v3.4.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
+ * SPDX-License-Identifier: MIT
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
@@ -2456,6 +2458,10 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
         else
         {
             assert( pUpdateFile->pRxBlockBitmap != NULL );
+
+            /* This value is checked for NULL using an assert. When building coverity_analysis
+             * asserts are disabled, leading to a violation. */
+            /* coverity[var_deref_model] */
             ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
         }
 

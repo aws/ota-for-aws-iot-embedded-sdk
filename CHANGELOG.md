@@ -1,9 +1,10 @@
 # Changelog for AWS IoT Over-the-air Update Library
 
+
 ### v3.4.1. (November 2022)
  - [#458](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/458) Fix tinyCBOR submodule to match manifest 
 
-### v3.4.0 (August 2022)
+### v3.4.0 (October 2022)
  - [#450](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/450) Remove assertion check to make out-of-order packet work
  - [#449](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/449) MISRA C:2012 compliance updates
  - [#443](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/443) Removal of const for pData
