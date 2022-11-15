@@ -1,6 +1,7 @@
 {
   "name": "AWS IoT Over-the-air Update Library",
   "releases": [
+    "v3.4.1",
     "v3.4.0",
     "v3.3.0",
     "v3.2.0",
