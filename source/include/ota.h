@@ -1,5 +1,5 @@
 /*
- * AWS IoT Over-the-air Update v3.4.0
+ * AWS IoT Over-the-air Update v3.4.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
