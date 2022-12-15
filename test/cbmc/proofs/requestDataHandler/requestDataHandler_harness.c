@@ -34,7 +34,7 @@
 
 extern OtaAgentContext_t otaAgent;
 extern OtaDataInterface_t otaDataInterface;
-extern void requestDataHandler( const OtaEventData_t * pEventData );
+extern OtaErr_t requestDataHandler( const OtaEventData_t * pEventData );
 
 void requestDataHandler_harness()
 {
