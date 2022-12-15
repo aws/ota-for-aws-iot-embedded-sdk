@@ -101,7 +101,7 @@ void test_OTA_posix_SendAndRecvEvent( void )
  */
 void test_OTA_posix_InvalidEventQueue( void )
 {
-    OtaOsStatus_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
 
     result = event.init( event.pEventContext );
     TEST_ASSERT_EQUAL( OtaOsSuccess, result );
