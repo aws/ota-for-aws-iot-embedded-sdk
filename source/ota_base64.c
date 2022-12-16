@@ -403,22 +403,6 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     return returnVal;
 }
 
-/**
- * @brief Decode Base64 encoded data.
- *
- * @param[out] pDest Pointer to a buffer for storing the decoded result.
- * @param[in]  destLen Length of the pDest buffer.
- * @param[out] pResultLen Pointer to the length of the decoded result.
- * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded
- *             data that is intended to be decoded.
- * @param[in]  encodedLen Length of the pEncodedData buffer.
- *
- * @return     One of the following:
- *             - #Base64Success if the Base64 encoded data was valid
- *               and successfully decoded.
- *             - An error code defined in ota_base64_private.h if the
- *               encoded data or input parameters are invalid.
- */
 Base64Status_t base64Decode( uint8_t * pDest,
                              const size_t destLen,
                              size_t * pResultLen,
