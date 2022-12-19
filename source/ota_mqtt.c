@@ -896,7 +896,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaJobsGetNextTopicTemplate;
     ( void ) pOtaGetNextJobMsgTemplate;
 
-    /* Client token max length is 64. It is a combination of request counter (max 10 characters), a seperator colon, and the ThingName. */
+    /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
     xThingNameLength = strlen((const char *) pAgentCtx->pThingName);
     strncpy(pcClientTokenThingName, (const char *) pAgentCtx->pThingName, (xThingNameLength > 53) ? 53 : xThingNameLength);
 
