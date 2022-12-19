@@ -1025,10 +1025,20 @@ void test_OTA_InitWithNullName()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_InitWithNameAtMaxLength()
+{
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 129 ] = { 0 };
+
+    memset( long_name, 1, sizeof( long_name ) - 1 );
+    otaInit( long_name, mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
 void test_OTA_InitWithNameTooLong()
 {
-    /* OTA does not accept name longer than 64. Explicitly test long client name. */
-    char long_name[ 100 ] = { 0 };
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 130 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
     otaInit( long_name, mockAppCallback );

@@ -866,6 +866,8 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
+    size_t xThingNameLength = 0;
+    char pcClientTokenThingName[54] = { '\0' };
 
     /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
@@ -895,9 +897,8 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaGetNextJobMsgTemplate;
 
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a seperator colon, and the ThingName. */
-    size_t xThingNameLength = strlen(pAgentCtx->pThingName);
-    char pcClientTokenThingName[54] = { '\0' };
-    strncpy(pcClientTokenThingName, pAgentCtx->pThingName, (xThingNameLength > 53) ? 53 : xThingNameLength);
+    xThingNameLength = strlen((const char *) pAgentCtx->pThingName);
+    strncpy(pcClientTokenThingName, (const char *) pAgentCtx->pThingName, (xThingNameLength > 53) ? 53 : xThingNameLength);
 
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pPayloadParts[ 1 ] = reqCounterString;
