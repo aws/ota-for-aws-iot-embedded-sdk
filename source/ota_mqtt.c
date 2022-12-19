@@ -894,9 +894,14 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaJobsGetNextTopicTemplate;
     ( void ) pOtaGetNextJobMsgTemplate;
 
+    /* Client token max length is 64. It is a combination of request counter (max 10 characters), a seperator colon, and the ThingName. */
+    size_t xThingNameLength = strlen(pAgentCtx->pThingName);
+    char pcClientTokenThingName[54] = { '\0' };
+    strncpy(pcClientTokenThingName, pAgentCtx->pThingName, (xThingNameLength > 53) ? 53 : xThingNameLength);
+
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pPayloadParts[ 1 ] = reqCounterString;
-    pPayloadParts[ 3 ] = ( const char * ) pAgentCtx->pThingName;
+    pPayloadParts[ 3 ] = (const char *) pcClientTokenThingName;
 
     ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
