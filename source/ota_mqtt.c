@@ -45,24 +45,27 @@
 #include "ota_appversion32.h"
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN             "rdy"                  /*!< Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN                      "rdy"         /*!< Arbitrary client token sent in the stream "GET" message. */
+
+/* Maximum length of ThingName appended onto the ClientToken*/
+#define OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN    53 /* Max client token length (64) - Max request count length (10) - 1 (colon separator). */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE      128U               /*!< Max length of a job status message to the service. */
+#define OTA_STATUS_MSG_MAX_SIZE               128U      /*!< Max length of a job status message to the service. */
 
 /**
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
  */
-#define MQTT_API_THINGS              "$aws/things/"                   /*!< Topic prefix for thing APIs. */
-#define MQTT_API_JOBS_NEXT_GET       "/jobs/$next/get"                /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS_NOTIFY_NEXT    "/jobs/notify-next"              /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS                "/jobs/"                         /*!< Job API identifier. */
-#define MQTT_API_UPDATE              "/update"                        /*!< Job API identifier. */
-#define MQTT_API_STREAMS             "/streams/"                      /*!< Stream API identifier. */
-#define MQTT_API_DATA_CBOR           "/data/cbor"                     /*!< Stream API suffix. */
-#define MQTT_API_GET_CBOR            "/get/cbor"                      /*!< Stream API suffix. */
+#define MQTT_API_THINGS                       "$aws/things/"          /*!< Topic prefix for thing APIs. */
+#define MQTT_API_JOBS_NEXT_GET                "/jobs/$next/get"       /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NOTIFY_NEXT             "/jobs/notify-next"     /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS                         "/jobs/"                /*!< Job API identifier. */
+#define MQTT_API_UPDATE                       "/update"               /*!< Job API identifier. */
+#define MQTT_API_STREAMS                      "/streams/"             /*!< Stream API identifier. */
+#define MQTT_API_DATA_CBOR                    "/data/cbor"            /*!< Stream API suffix. */
+#define MQTT_API_GET_CBOR                     "/get/cbor"             /*!< Stream API suffix. */
 
 /* NOTE: The format specifiers in this string are placeholders only; the lengths of these
  * strings are used to calculate buffer sizes.
@@ -867,7 +870,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
     size_t xThingNameLength = 0;
-    char pcClientTokenThingName[54] = { '\0' };
+    char pcClientTokenThingName[ 54 ] = { '\0' };
 
     /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
@@ -897,12 +900,12 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaGetNextJobMsgTemplate;
 
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
-    xThingNameLength = strlen((const char *) pAgentCtx->pThingName);
-    strncpy(pcClientTokenThingName, (const char *) pAgentCtx->pThingName, (xThingNameLength > 53) ? 53 : xThingNameLength);
+    xThingNameLength = strlen( ( const char * ) pAgentCtx->pThingName );
+    strncpy( pcClientTokenThingName, ( const char * ) pAgentCtx->pThingName, ( xThingNameLength > OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN ) ? OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN : xThingNameLength );
 
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pPayloadParts[ 1 ] = reqCounterString;
-    pPayloadParts[ 3 ] = (const char *) pcClientTokenThingName;
+    pPayloadParts[ 3 ] = ( const char * ) pcClientTokenThingName;
 
     ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
