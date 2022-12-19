@@ -48,10 +48,10 @@
 #define OTA_CLIENT_TOKEN                      "rdy"         /*!< Arbitrary client token sent in the stream "GET" message. */
 
 /* Maximum length of ThingName appended onto the ClientToken*/
-#define OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN    53 /*<!  Max ThingName length = Max client token length (64) - Max request count length (10) - 1 (colon separator) */
+#define OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN    53U           /*!<  Max ThingName length = Max client token length (64) - Max request count length (10) - 1 (colon separator) */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE               128U      /*!< Max length of a job status message to the service. */
+#define OTA_STATUS_MSG_MAX_SIZE               128U          /*!< Max length of a job status message to the service. */
 
 /**
  *  @brief Topic strings used by the OTA process.
