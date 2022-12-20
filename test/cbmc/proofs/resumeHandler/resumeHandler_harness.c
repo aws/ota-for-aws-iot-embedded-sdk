@@ -30,7 +30,7 @@
 #include "ota.h"
 
 /* Mangled name definition of the static function. */
-void __CPROVER_file_local_ota_c_resumeHandler( const OtaEventData_t * pEventData );
+OtaErr_t __CPROVER_file_local_ota_c_resumeHandler( const OtaEventData_t * pEventData );
 
 void resumeHandler_harness()
 {
