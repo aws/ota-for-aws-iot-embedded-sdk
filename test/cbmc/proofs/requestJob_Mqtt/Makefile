@@ -9,6 +9,8 @@ PROOF_UID = requestJob_Mqtt
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
+UNWINDSET += strlen.0:150
+
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
 # restrict the number of EXPENSIVE CBMC jobs running at once. See the
