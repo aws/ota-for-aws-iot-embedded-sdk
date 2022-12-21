@@ -95,12 +95,16 @@ void requestJob_Mqtt_harness()
 {
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
+    size_t size;
+
+    __CPROVER_assume(size < 128U);
 
     /* publish reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
     otaInterface.mqtt.publish = stubMqttPublish;
 
     agent.pOtaInterface = &otaInterface;
+    agent.pThingName[size] = '\0';
 
     /* Ota agent is declared globally and cannot be NULL. */
     requestJob_Mqtt( &agent );

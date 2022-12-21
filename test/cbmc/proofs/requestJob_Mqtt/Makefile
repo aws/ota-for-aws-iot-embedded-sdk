@@ -9,8 +9,8 @@ PROOF_UID = requestJob_Mqtt
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
-UNWINDSET += strlen.0:300
-UNWINDSET += strncpy.0:300
+UNWINDSET += strlen.0:150
+UNWINDSET += strncpy.0:200
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
