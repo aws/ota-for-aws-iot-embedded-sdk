@@ -3282,9 +3282,6 @@ OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
          */
         otaAgent.pOtaInterface = pOtaInterfaces;
 
-        /* Initialize application buffers. */
-        initializeAppBuffers( pOtaBuffer );
-
         /* Initialize local buffers. */
         initializeLocalBuffers();
 
@@ -3310,26 +3307,36 @@ OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
             resetEventQueue();
         }
 
-        if( pThingName == NULL )
+        if( pOtaBuffer == NULL )
         {
-            LogError( ( "Error: Thing name is NULL.\r\n" ) );
+            LogError( ( "Error: pOtaBuffer is NULL.\r\n" ) );
         }
         else
         {
-            uint32_t strLength = ( uint32_t ) ( strlen( ( const char * ) pThingName ) );
+            /* Initialize application buffers. */
+            initializeAppBuffers( pOtaBuffer );
 
-            if( strLength <= otaconfigMAX_THINGNAME_LEN )
+            if( pThingName == NULL )
             {
-                /*
-                 * Store the Thing name to be used for topics later. Include zero terminator
-                 * when saving the Thing name.
-                 */
-                ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL );
-                returnStatus = OtaErrNone;
+                LogError( ( "Error: Thing name is NULL.\r\n" ) );
             }
             else
             {
-                LogError( ( "Error: Thing name is too long.\r\n" ) );
+                uint32_t strLength = ( uint32_t ) ( strlen( ( const char * ) pThingName ) );
+
+                if( strLength <= otaconfigMAX_THINGNAME_LEN )
+                {
+                    /*
+                     * Store the Thing name to be used for topics later. Include zero terminator
+                     * when saving the Thing name.
+                     */
+                    ( void ) memcpy( otaAgent.pThingName, pThingName, strLength + 1UL );
+                    returnStatus = OtaErrNone;
+                }
+                else
+                {
+                    LogError( ( "Error: Thing name is too long.\r\n" ) );
+                }
             }
         }
 
