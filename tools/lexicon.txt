@@ -55,8 +55,8 @@ ca
 cbmc
 cbor
 cborarray
-cbordatatoolarge
 cborerror
+cborerrordatatoolarge
 cbormap
 cbormaptype
 cborstring
