@@ -39,6 +39,34 @@
 /* ========================================================================== */
 
 /**
+ * @brief  Gets int32_t from Cbor on systems with narrower int type.
+ * @param[in] cborValue cborValue to read
+ * @param[out] pResult value read, if successful
+ * @return CborError from cbor_value_get_int64 or
+ * CborDataTooLarge if narrowing result would truncate.
+ */
+static CborError OTA_CBOR_Get_Int32_Checked( const CborValue * cborValue,
+                                             int32_t * pResult )
+{
+    int64_t result64;
+    CborError err = cbor_value_get_int64( cborValue, &result64 );
+
+    if( err == CborNoError )
+    {
+        if( ( result64 < INT32_MIN ) || ( result64 > INT32_MAX ) )
+        {
+            err = CborErrorDataTooLarge;
+        }
+        else
+        {
+            *pResult = ( int32_t ) result64;
+        }
+    }
+
+    return err;
+}
+
+/**
  * @brief Helper function to verify the data type of the value in map.
  *
  * @param[in] expectedType Data type expected.
@@ -131,8 +159,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pFileId );
+        cborResult = OTA_CBOR_Get_Int32_Checked( &cborValue, pFileId );
     }
 
     /* Find the block ID. */
@@ -150,8 +177,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pBlockId );
+        cborResult = OTA_CBOR_Get_Int32_Checked( &cborValue, pBlockId );
     }
 
     /* Find the block size. */
@@ -169,8 +195,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
 
     if( CborNoError == cborResult )
     {
-        cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pBlockSize );
+        cborResult = OTA_CBOR_Get_Int32_Checked( &cborValue, pBlockSize );
     }
 
     /* Find the payload bytes. */
