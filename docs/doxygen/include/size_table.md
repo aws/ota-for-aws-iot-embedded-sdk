@@ -29,7 +29,7 @@
     </tr>
     <tr>
         <td>ota_cbor.c</td>
-        <td><center>0.8K</center></td>
+        <td><center>0.7K</center></td>
         <td><center>0.6K</center></td>
     </tr>
     <tr>
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td><b>Total estimates</b></td>
-        <td><b><center>12.5K</center></b></td>
+        <td><b><center>12.4K</center></b></td>
         <td><b><center>11.3K</center></b></td>
     </tr>
 </table>
