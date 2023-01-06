@@ -55,6 +55,7 @@ ca
 cbmc
 cbor
 cborarray
+cbordatatoolarge
 cborerror
 cbormap
 cbormaptype
@@ -298,7 +299,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
-jsondoc 
+jsondoc
 lastbyte
 lastupdatedat
 len
