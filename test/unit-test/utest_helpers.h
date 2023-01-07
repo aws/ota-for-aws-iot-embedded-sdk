@@ -38,7 +38,7 @@
  */
 CborError createOtaStreamingMessage( uint8_t * pMessageBuffer,
                                      size_t messageBufferSize,
-                                     int blockIndex,
+                                     int64_t blockIndex,
                                      uint8_t * pBlockPayload,
                                      size_t blockPayloadSize,
                                      size_t * pEncodedSize,

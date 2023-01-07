@@ -387,3 +387,75 @@ void test_OTA_CborDecodeStreamResponse_InvalidMap()
         &payloadSize );
     TEST_ASSERT_FALSE( result );
 }
+
+/**
+ * @brief Test OTA_CBOR_Decode throws an error if
+ *  a number too large is encoded.
+ */
+void test_OTA_CborDecodeStreamResponse_BlockIndexTooLarge()
+{
+    uint8_t blockPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t cborWork[ CBOR_TEST_MESSAGE_BUFFER_SIZE ] = { 0 };
+    size_t encodedSize = 0;
+    int32_t fileId = -1;
+    int32_t blockIndex = -1;
+    int32_t blockSize = -1;
+    uint8_t decodedPayload[ OTA_FILE_BLOCK_SIZE ] = { 0 };
+    uint8_t * pDecodedPayload = decodedPayload;
+    size_t payloadSize = -1;
+    bool result = false;
+    bool msgValidity = true;
+    int i = 0;
+
+    /* Test OTA_CBOR_Decode_GetStreamResponseMessage( ). */
+    for( i = 0; i < ( int ) sizeof( blockPayload ); i++ )
+    {
+        blockPayload[ i ] = i % UINT8_MAX;
+    }
+
+    /* Encode the above payload with too large a block index. */
+    result = createOtaStreamingMessage(
+        cborWork,
+        sizeof( cborWork ),
+        ( int64_t ) INT32_MAX + 1,
+        blockPayload,
+        sizeof( blockPayload ),
+        &encodedSize,
+        msgValidity );
+
+    TEST_ASSERT_EQUAL( CborNoError, result );
+
+    result = OTA_CBOR_Decode_GetStreamResponseMessage(
+        cborWork,
+        encodedSize,
+        &fileId,
+        &blockIndex,
+        &blockSize,
+        &pDecodedPayload,
+        &payloadSize );
+
+    TEST_ASSERT_FALSE( result );
+
+    /* Re-encode the above payload with too small a block index. */
+    result = createOtaStreamingMessage(
+        cborWork,
+        sizeof( cborWork ),
+        ( int64_t ) INT32_MIN - 1,
+        blockPayload,
+        sizeof( blockPayload ),
+        &encodedSize,
+        msgValidity );
+
+    TEST_ASSERT_EQUAL( CborNoError, result );
+
+    result = OTA_CBOR_Decode_GetStreamResponseMessage(
+        cborWork,
+        encodedSize,
+        &fileId,
+        &blockIndex,
+        &blockSize,
+        &pDecodedPayload,
+        &payloadSize );
+
+    TEST_ASSERT_FALSE( result );
+}

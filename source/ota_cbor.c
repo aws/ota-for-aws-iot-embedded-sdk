@@ -50,7 +50,14 @@ static CborError OTA_CBOR_Get_Int32( const CborValue * cborValue,
     int64_t result64;
     CborError err = cbor_value_get_int64( cborValue, &result64 );
 
-    *pResult = ( int32_t ) result64;
+    if( ( result64 < INT32_MIN ) || ( result64 > INT32_MAX ) )
+    {
+        err = CborErrorDataTooLarge;
+    }
+    else
+    {
+        *pResult = ( int32_t ) result64;
+    }
 
     return err;
 }
