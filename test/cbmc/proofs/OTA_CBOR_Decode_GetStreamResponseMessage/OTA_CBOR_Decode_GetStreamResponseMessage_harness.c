@@ -76,6 +76,13 @@ CborError __CPROVER_file_local_cbor_h_cbor_value_get_int( const CborValue * valu
     return returnCborError();
 }
 
+/* Stub to get an int64_t from cborvalue. */
+CborError __CPROVER_file_local_cbor_h_cbor_value_get_int64( const CborValue * value,
+                                                            int64_t * result )
+{
+    return returnCborError();
+}
+
 /* Stub to calculate the string length that value points at and store it in len. */
 CborError cbor_value_calculate_string_length( const CborValue * value,
                                               size_t * len )
