@@ -884,7 +884,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     /* NULL-terminated list of payload parts */
 
-    assert( pAgentgit stCtx != NULL );
+    assert( pAgentCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaJobsGetNextTopicTemplate;
