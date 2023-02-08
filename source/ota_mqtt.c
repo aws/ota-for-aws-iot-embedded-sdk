@@ -900,12 +900,12 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaGetNextJobMsgTemplate;
 
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
-    xThingNameLength = strlen( ( const char * ) pAgentCtx->pThingName );
-    ( void ) strncpy( pcClientTokenThingName, ( const char * ) pAgentCtx->pThingName, ( xThingNameLength > OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN ) ? OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN : xThingNameLength );
+    xThingNameLength = strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
+    ( void ) strncpy( pcClientTokenThingName, ( const char * ) pAgentCtx->pThingName, xThingNameLength );
 
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
     pPayloadParts[ 1 ] = reqCounterString;
-    pPayloadParts[ 3 ] = ( const char * ) pcClientTokenThingName;
+    pPayloadParts[ 3 ] = pcClientTokenThingName;
 
     ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
