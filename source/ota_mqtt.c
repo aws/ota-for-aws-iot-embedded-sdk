@@ -862,7 +862,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     /* The following buffer is big enough to hold a dynamically constructed
      * $next/get job message. It contains a client token that is used to track
      * how many requests have been made. */
-    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ];
+    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ] = { '\0' };
 
     static uint32_t reqCounter = 0;
     OtaErr_t otaError = OtaErrRequestJobFailed;
@@ -870,7 +870,6 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
     size_t xThingNameLength = 0;
-    char pcClientTokenThingName[ 54 ] = { '\0' };
 
     /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
@@ -882,16 +881,6 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     };
     char reqCounterString[ U32_MAX_LEN + 1 ];
     /* NULL-terminated list of payload parts */
-    /* NOTE: this must agree with pOtaGetNextJobMsgTemplate, do not add spaces, etc. */
-    const char * pPayloadParts[] =
-    {
-        "{\"clientToken\":\"",
-        NULL, /* Request counter string not available at compile time, initialized below. */
-        ":",
-        NULL, /* Thing Name not available at compile time, initialized below. */
-        "\"}",
-        NULL
-    };
 
     assert( pAgentCtx != NULL );
 
@@ -901,13 +890,19 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
     xThingNameLength = strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
-    ( void ) strncpy( pcClientTokenThingName, ( const char * ) pAgentCtx->pThingName, xThingNameLength );
 
-    pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
-    pPayloadParts[ 1 ] = reqCounterString;
-    pPayloadParts[ 3 ] = pcClientTokenThingName;
+    size_t reqCounterStringLength =  stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
-    ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
+    strncpy(pMsg, "{\"clientToken\":\"", strlen("{\"clientToken\":\"")); 
+    msgSize = strlen("{\"clientToken\":\"");
+    strncpy(&pMsg[msgSize], reqCounterString, reqCounterStringLength);
+    msgSize += reqCounterStringLength;
+    strncpy(&pMsg[msgSize], ":", 1U);
+    msgSize++;
+    strncpy(&pMsg[msgSize], ( const char * ) pAgentCtx->pThingName, xThingNameLength);
+    msgSize += xThingNameLength;
+    strncpy(&pMsg[msgSize], "\"}", 2U);
+    msgSize += 2;
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
@@ -915,11 +910,6 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     if( mqttStatus == OtaMqttSuccess )
     {
         LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-
-        msgSize = ( uint32_t ) stringBuilder(
-            pMsg,
-            sizeof( pMsg ),
-            pPayloadParts );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
