@@ -869,7 +869,8 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
-    size_t xThingNameLength = 0;
+    uint32_t xThingNameLength = 0;
+    uint32_t reqCounterStringLength = 0;
 
     /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
@@ -883,18 +884,18 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     /* NULL-terminated list of payload parts */
 
-    assert( pAgentCtx != NULL );
+    assert( pAgentgit stCtx != NULL );
 
     /* Suppress warnings about unused variables. */
     ( void ) pOtaJobsGetNextTopicTemplate;
     ( void ) pOtaGetNextJobMsgTemplate;
 
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
-    xThingNameLength = strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
+    xThingNameLength = ( uint32_t ) strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
 
-    size_t reqCounterStringLength = stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
+    reqCounterStringLength = ( uint32_t ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
-    /* Assemble the string by copying the peices into the buffer. This is done manually since we know the size of the thingname. */
+    /* Assemble the string by copying the pieces into the buffer. This is done manually since we know the size of the thingname. */
     strcat( pMsg, "{\"clientToken\":\"" );
     msgSize = strlen( "{\"clientToken\":\"" );
     strncpy( &pMsg[ msgSize ], reqCounterString, reqCounterStringLength );
@@ -902,7 +903,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     strcat( &pMsg[ msgSize ], ":" );
     msgSize++;
     strncpy( &pMsg[ msgSize ], ( const char * ) pAgentCtx->pThingName, xThingNameLength );
-    msgSize += xThingNameLength + 1;
+    msgSize += xThingNameLength + 1U;
     strcat( &pMsg[ msgSize ], "\"}" );
     msgSize += 2;
 
