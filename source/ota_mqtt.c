@@ -880,6 +880,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
         NULL
     };
     char reqCounterString[ U32_MAX_LEN + 1 ];
+
     /* NULL-terminated list of payload parts */
 
     assert( pAgentCtx != NULL );
@@ -891,17 +892,18 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
     xThingNameLength = strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
 
-    size_t reqCounterStringLength =  stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
+    size_t reqCounterStringLength = stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
-    strncpy(pMsg, "{\"clientToken\":\"", strlen("{\"clientToken\":\"")); 
-    msgSize = strlen("{\"clientToken\":\"");
-    strncpy(&pMsg[msgSize], reqCounterString, reqCounterStringLength);
+    /* Assemble the string by copying the peices into the buffer. This is done manually since we know the size of the thingname. */
+    strcat( pMsg, "{\"clientToken\":\"" );
+    msgSize = strlen( "{\"clientToken\":\"" );
+    strncpy( &pMsg[ msgSize ], reqCounterString, reqCounterStringLength );
     msgSize += reqCounterStringLength;
-    strncpy(&pMsg[msgSize], ":", 1U);
+    strcat( &pMsg[ msgSize ], ":" );
     msgSize++;
-    strncpy(&pMsg[msgSize], ( const char * ) pAgentCtx->pThingName, xThingNameLength);
-    msgSize += xThingNameLength;
-    strncpy(&pMsg[msgSize], "\"}", 2U);
+    strncpy( &pMsg[ msgSize ], ( const char * ) pAgentCtx->pThingName, xThingNameLength );
+    msgSize += xThingNameLength + 1;
+    strcat( &pMsg[ msgSize ], "\"}" );
     msgSize += 2;
 
     /* Subscribe to the OTA job notification topic. */
