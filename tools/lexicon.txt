@@ -819,6 +819,7 @@ stringsize
 strlength
 stringbuilder
 stringsize
+strnlen
 struct
 structs
 sublicense
