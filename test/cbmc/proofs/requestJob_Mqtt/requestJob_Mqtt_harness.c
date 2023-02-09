@@ -60,6 +60,9 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal( char * pBuffe
 {
     size_t buffersize;
 
+    /* Output can only be at most 10 characters as max unsigned 32-bit integer value is 10 characters long */
+    __CPROVER_assume( buffersize <= 10U );
+
     /* pBuffer is always initialized before passing it to the stringBuilderUInt32Decimal
      * function and thus should not be NULL. */
     __CPROVER_assert( pBuffer != NULL,

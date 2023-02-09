@@ -903,7 +903,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     strcat( &pMsg[ msgSize ], ":" );
     msgSize++;
     strncpy( &pMsg[ msgSize ], ( const char * ) pAgentCtx->pThingName, xThingNameLength );
-    msgSize += xThingNameLength + 1U;
+    msgSize += xThingNameLength;
     strcat( &pMsg[ msgSize ], "\"}" );
     msgSize += 2;
 
