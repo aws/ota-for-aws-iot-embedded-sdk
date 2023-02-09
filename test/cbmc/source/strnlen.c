@@ -30,7 +30,7 @@ size_t strnlen_impl( const char * s,
 {
 __CPROVER_HIDE:;
     #ifdef __CPROVER_STRING_ABSTRACTION
-        __CPROVER_precondition( __CPROVER_is_zero_string( s ), "strlen zero-termination" );
+        __CPROVER_precondition( __CPROVER_is_zero_string( s ), "strnlen zero-termination" );
         return __CPROVER_zero_string_length( s );
     #else
         __CPROVER_size_t len = 0;
