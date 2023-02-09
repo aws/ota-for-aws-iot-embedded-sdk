@@ -85,14 +85,14 @@
 #define OTA_FILE_BITMAP_SIZE              50
 #define OTA_UPDATE_URL_SIZE               100
 #define OTA_AUTH_SCHEME_SIZE              50
-#define OTA_APP_BUFFER_SIZE       \
-    ( OTA_UPDATE_FILE_PATH_SIZE + \
-      OTA_CERT_FILE_PATH_SIZE +   \
-      OTA_STREAM_NAME_SIZE +      \
-      OTA_DECODE_MEMORY_SIZE +    \
-      OTA_FILE_BITMAP_SIZE +      \
-      OTA_UPDATE_URL_SIZE +       \
-      OTA_AUTH_SCHEME_SIZE )
+#define OTA_APP_BUFFER_SIZE           \
+        ( OTA_UPDATE_FILE_PATH_SIZE + \
+          OTA_CERT_FILE_PATH_SIZE +   \
+          OTA_STREAM_NAME_SIZE +      \
+          OTA_DECODE_MEMORY_SIZE +    \
+          OTA_FILE_BITMAP_SIZE +      \
+          OTA_UPDATE_URL_SIZE +       \
+          OTA_AUTH_SCHEME_SIZE )
 
 #define min( x, y )    ( x < y ? x : y )
 
@@ -117,6 +117,8 @@ const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sh
 /* OTA client name. */
 static const char * pOtaDefaultClientId = "ota_utest";
 
+/* Longest supported OTA Thingname*/
+static const char * longestThingname = "AReallyLongThingNameWhichIs128CharactersAndMatchesTheAWSIoTSpecificationForThingnameLengthMaximums12345678901234567890123456789";
 /* OTA job doc. */
 static const char * pOtaJobDoc = NULL;
 
@@ -461,6 +463,37 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     ( void ) unused_3;
     ( void ) unused_4;
     ( void ) unused_5;
+
+    return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * const unused_1,
+                                                                   uint16_t unused_2,
+                                                                   const char * msg,
+                                                                   uint32_t msgSize,
+                                                                   uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum message size is 64 characters for client token + 19 characters for JSON formatting */
+    TEST_ASSERT_LESS_OR_EQUAL( 83U, msgSize );
+    TEST_ASSERT_GREATER_THAN( 19U, msgSize );
+
+
+    char expected[ 54 ] = { 0 };
+    char actual[ 54 ] = { 0 };
+
+    /*Calculate the start of the thingname */
+    int offset = msgSize - 53U - 2;
+
+    /*Copy out the first 53 characters of the thingname */
+    memcpy( expected, longestThingname, 53U );
+    /*Copy out the 53 characters of the truncated thingname */
+    memcpy( actual, msg + ( offset ), 53U );
+
+    TEST_ASSERT_EQUAL_STRING( expected, actual );
 
     return OtaMqttSuccess;
 }
@@ -2737,6 +2770,20 @@ void test_OTA_MQTT_JobSubscribingFailed()
     otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
     err = requestJob_Mqtt( &otaAgent );
     TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, err );
+}
+
+/* Test thingname is truncated in requestJob_Mqtt */
+void test_OTA_MQTT_ThingNameTruncated()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInit( longestThingname, mockAppCallback );
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublishOnlySuccedsIfTruncatedValue;
+
+    err = requestJob_Mqtt( &otaAgent );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
 }
 
 /* Test that initFileTransfer_Mqtt fails if the Subscribe fails. */

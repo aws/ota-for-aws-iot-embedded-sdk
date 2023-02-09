@@ -905,7 +905,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     strncpy( &pMsg[ msgSize ], ( const char * ) pAgentCtx->pThingName, xThingNameLength );
     msgSize += xThingNameLength;
     strcat( &pMsg[ msgSize ], "\"}" );
-    msgSize += 2;
+    msgSize += 2U;
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
