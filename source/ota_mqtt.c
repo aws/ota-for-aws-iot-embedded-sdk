@@ -896,8 +896,8 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     reqCounterStringLength = ( uint32_t ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
 
     /* Assemble the string by copying the pieces into the buffer. This is done manually since we know the size of the thingname. */
-    strcat( pMsg, "{\"clientToken\":\"" );
-    msgSize = strlen( "{\"clientToken\":\"" );
+    strcat( &pMsg[ msgSize ], "{\"clientToken\":\"" );
+    msgSize = 17U;
     strncpy( &pMsg[ msgSize ], reqCounterString, reqCounterStringLength );
     msgSize += reqCounterStringLength;
     strcat( &pMsg[ msgSize ], ":" );
