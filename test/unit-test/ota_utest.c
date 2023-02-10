@@ -487,6 +487,12 @@ static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * 
     /* Calculate the start of the thingname */
     int offset = msgSize - 53U - 2;
 
+    memcpy(actual, msg, 16U);
+
+    TEST_ASSERT_EQUAL_STRING("{\"clientToken\":\"", actual);
+
+    TEST_ASSERT_EQUAL_CHAR(':', *(msg + ( offset - 1 )));
+
     /* Copy out the first 53 characters of the thingname */
     memcpy( expected, longestThingname, 53U );
     /* Copy out the 53 characters of the truncated thingname */

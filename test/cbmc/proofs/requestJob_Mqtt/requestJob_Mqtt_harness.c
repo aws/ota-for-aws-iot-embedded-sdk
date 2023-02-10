@@ -34,23 +34,23 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilder( char * pBuffer,
                                                       size_t bufferSizeBytes,
                                                       const char * strings[] )
 {
-    size_t stringLength;
+	size_t stringLength;
 
-    /* pBuffer is initialized in requestJob_Mqtt function before passing it to the
-     * stringBuilder function and thus cannot be NULL. */
-    __CPROVER_assert( pBuffer != NULL,
-                      "Unable to use pBuffer: passed pointer value is NULL." );
+	/* pBuffer is initialized in requestJob_Mqtt function before passing it to the
+	 * stringBuilder function and thus cannot be NULL. */
+	__CPROVER_assert( pBuffer != NULL,
+	                  "Unable to use pBuffer: passed pointer value is NULL." );
 
-    /* strings is initialized requestJob_Mqtt function before passing it to the
-     * stringBuilder function and thus cannot be NULL. */
-    __CPROVER_assert( strings != NULL,
-                      "Unable to use strings: passed pointer value is NULL." );
+	/* strings is initialized requestJob_Mqtt function before passing it to the
+	 * stringBuilder function and thus cannot be NULL. */
+	__CPROVER_assert( strings != NULL,
+	                  "Unable to use strings: passed pointer value is NULL." );
 
-    /* The size of the static pbuffer is declared inside requestJob_Mqtt
-     * function. */
-    __CPROVER_assume( stringLength > 0U && stringLength < bufferSizeBytes );
+	/* The size of the static pbuffer is declared inside requestJob_Mqtt
+	 * function. */
+	__CPROVER_assume( stringLength > 0U && stringLength < bufferSizeBytes );
 
-    return stringLength;
+	return stringLength;
 }
 
 /* Stub required to convert a decimal number into a string. */
@@ -58,26 +58,26 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal( char * pBuffe
                                                                    size_t bufferSizeBytes,
                                                                    uint32_t value )
 {
-    size_t buffersize;
+	size_t buffersize;
 
-    /* Output can only be at most 10 characters as max unsigned 32-bit integer value is 10 characters long */
-    __CPROVER_assume( buffersize <= 10U );
+	/* Output can only be at most 10 characters as max unsigned 32-bit integer value is 10 characters long */
+	__CPROVER_assume( buffersize > 0 && buffersize <= 10U );
 
-    /* pBuffer is always initialized before passing it to the stringBuilderUInt32Decimal
-     * function and thus should not be NULL. */
-    __CPROVER_assert( pBuffer != NULL,
-                      "Unable to use pBuffer: passed pointer value is NULL." );
+	/* pBuffer is always initialized before passing it to the stringBuilderUInt32Decimal
+	 * function and thus should not be NULL. */
+	__CPROVER_assert( pBuffer != NULL,
+	                  "Unable to use pBuffer: passed pointer value is NULL." );
 
 
-    return buffersize;
+	return buffersize;
 }
 
 /* Stub required to convert a hexadecimal number into a string. */
 OtaMqttStatus_t __CPROVER_file_local_ota_mqtt_c_subscribeToJobNotificationTopics( const OtaAgentContext_t * pAgentCtx )
 {
-    OtaMqttStatus_t mqttStatus;
+	OtaMqttStatus_t mqttStatus;
 
-    return mqttStatus;
+	return mqttStatus;
 }
 
 /* Stub to user defined MQTT-publish operation. */
@@ -87,28 +87,28 @@ OtaMqttStatus_t stubMqttPublish( const char * const pacTopic,
                                  uint32_t ulMsgSize,
                                  uint8_t ucQoS )
 {
-    OtaMqttStatus_t mqttstatus;
+	OtaMqttStatus_t mqttstatus;
 
-    return mqttstatus;
+	return mqttstatus;
 }
 
 /*****************************************************************************/
 
 void requestJob_Mqtt_harness()
 {
-    OtaAgentContext_t agent;
-    OtaInterfaces_t otaInterface;
-    size_t size;
+	OtaAgentContext_t agent;
+	OtaInterfaces_t otaInterface;
+	size_t size;
 
-    __CPROVER_assume( size < 128U );
+	__CPROVER_assume( size >= 1 && size < 128U );
 
-    /* publish reference to the mqtt function is expected to be assigned by the user and thus
-     * assumed not to be NULL. */
-    otaInterface.mqtt.publish = stubMqttPublish;
+	/* publish reference to the mqtt function is expected to be assigned by the user and thus
+	 * assumed not to be NULL. */
+	otaInterface.mqtt.publish = stubMqttPublish;
 
-    agent.pOtaInterface = &otaInterface;
-    agent.pThingName[ size ] = '\0';
+	agent.pOtaInterface = &otaInterface;
+	agent.pThingName[ size ] = '\0';
 
-    /* Ota agent is declared globally and cannot be NULL. */
-    requestJob_Mqtt( &agent );
+	/* Ota agent is declared globally and cannot be NULL. */
+	requestJob_Mqtt( &agent );
 }

@@ -10,9 +10,13 @@ PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROOF_SOURCES += $(PROOF_STUB)/strnlen.c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
-UNWINDSET += strcat.1:165
-UNWINDSET += strncpy.0:75
-UNWINDSET += strnlen_impl.0:54
+# The strncpy bound is large due to requestJob_Mqtt copying message peices
+# into a buffer. This is much higher than the 84 characters of the buffer
+# as null characters are used after the copied in strin to fill the buffer.
+UNWINDSET += __builtin___strncpy_chk.0:220
+# The strnlen function is used when calculating the maximum thingname length 
+# which can be used to generate the client token.
+UNWINDSET += strnlen.0:54
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will
