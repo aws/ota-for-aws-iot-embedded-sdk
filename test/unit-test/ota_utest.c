@@ -481,16 +481,15 @@ static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * 
     TEST_ASSERT_LESS_OR_EQUAL( 83U, msgSize );
     TEST_ASSERT_GREATER_THAN( 19U, msgSize );
 
-
     char expected[ 54 ] = { 0 };
     char actual[ 54 ] = { 0 };
 
-    /*Calculate the start of the thingname */
+    /* Calculate the start of the thingname */
     int offset = msgSize - 53U - 2;
 
-    /*Copy out the first 53 characters of the thingname */
+    /* Copy out the first 53 characters of the thingname */
     memcpy( expected, longestThingname, 53U );
-    /*Copy out the 53 characters of the truncated thingname */
+    /* Copy out the 53 characters of the truncated thingname */
     memcpy( actual, msg + ( offset ), 53U );
 
     TEST_ASSERT_EQUAL_STRING( expected, actual );
