@@ -85,14 +85,14 @@
 #define OTA_FILE_BITMAP_SIZE              50
 #define OTA_UPDATE_URL_SIZE               100
 #define OTA_AUTH_SCHEME_SIZE              50
-#define OTA_APP_BUFFER_SIZE           \
-        ( OTA_UPDATE_FILE_PATH_SIZE + \
-          OTA_CERT_FILE_PATH_SIZE +   \
-          OTA_STREAM_NAME_SIZE +      \
-          OTA_DECODE_MEMORY_SIZE +    \
-          OTA_FILE_BITMAP_SIZE +      \
-          OTA_UPDATE_URL_SIZE +       \
-          OTA_AUTH_SCHEME_SIZE )
+#define OTA_APP_BUFFER_SIZE       \
+    ( OTA_UPDATE_FILE_PATH_SIZE + \
+      OTA_CERT_FILE_PATH_SIZE +   \
+      OTA_STREAM_NAME_SIZE +      \
+      OTA_DECODE_MEMORY_SIZE +    \
+      OTA_FILE_BITMAP_SIZE +      \
+      OTA_UPDATE_URL_SIZE +       \
+      OTA_AUTH_SCHEME_SIZE )
 
 #define min( x, y )    ( x < y ? x : y )
 
