@@ -176,7 +176,7 @@ static void selfTestTimerCallback( TimerHandle_t T )
 {
     ( void ) T;
 
-    LogDebug( ( "Self-test expired within %ums\r\n",
+    LogDebug( ( "Self-test expired within %ums",
                 otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
@@ -185,7 +185,7 @@ static void selfTestTimerCallback( TimerHandle_t T )
     }
     else
     {
-        LogWarn( ( "Self-test timer event unhandled.\r\n" ) );
+        LogWarn( ( "Self-test timer event unhandled." ) );
     }
 }
 
@@ -193,7 +193,7 @@ static void requestTimerCallback( TimerHandle_t T )
 {
     ( void ) T;
 
-    LogDebug( ( "Request timer expired in %ums \r\n",
+    LogDebug( ( "Request timer expired in %ums",
                 otaconfigFILE_REQUEST_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
@@ -202,7 +202,7 @@ static void requestTimerCallback( TimerHandle_t T )
     }
     else
     {
-        LogWarn( ( "Request timer event unhandled.\r\n" ) );
+        LogWarn( ( "Request timer event unhandled." ) );
     }
 }
 
