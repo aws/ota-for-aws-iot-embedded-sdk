@@ -17,7 +17,6 @@ PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
-REMOVE_FUNCTION_BODY += setDataInterface
 REMOVE_FUNCTION_BODY += setImageStateWithReason
 REMOVE_FUNCTION_BODY += getFileContextFromJob
 
@@ -26,6 +25,7 @@ RESTRICT_FUNCTION_POINTER += OTA_SignalEvent.function_pointer_call.1/sendEventSt
 RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
 RESTRICT_FUNCTION_POINTER += processValidFileContext.function_pointer_call.1/resetPalStub
 
+UNWINDSET += strlen.0:255
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

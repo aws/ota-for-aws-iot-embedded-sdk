@@ -159,6 +159,11 @@ static bool bSelfTestTimerIsActive = false;
 /* A boolean reflecting the state of the data request timer. */
 static bool bRequestTimerIsActive = false;
 
+/* A setting to configure user callback behavior for "OtaJobEventStartOtaJob" and
+ * set to 0xFF when "OtaJobEventStartOtaJob" is called. */
+static uint8_t bIsOtaJobStartCallbackSetting = 0; /* 0: callback with pass, 1: callback with failed,
+                                                   * 0xFF: callback function is called. */
+
 /* ========================================================================== */
 
 /* Global static variable defined in ota.c for managing the state machine. */
@@ -765,6 +770,20 @@ static void mockAppCallback( OtaJobEvent_t event,
     {
         jobDoc = ( OtaJobDocument_t * ) pData;
         jobDoc->parseErr = OtaJobParseErrNone;
+    }
+
+    if( event == OtaJobEventStartOtaJob )
+    {
+        jobDoc = ( OtaJobDocument_t * ) pData;
+        TEST_ASSERT_EQUAL( 0, memcmp( jobDoc->pJobId, &otaAgent.pActiveJobName, jobDoc->jobIdLength ) );
+
+        if( bIsOtaJobStartCallbackSetting == 1 )
+        {
+            /* Reject the job. */
+            jobDoc->status = JobStatusRejected;
+        }
+
+        bIsOtaJobStartCallbackSetting = 0xFF;
     }
 }
 
@@ -1551,12 +1570,15 @@ void test_OTA_ProcessJobDocumentInvalidJson()
 {
     pOtaJobDoc = JOB_DOC_INVALID;
 
+    bIsOtaJobStartCallbackSetting = 0;
+
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+    TEST_ASSERT_EQUAL( 0, bIsOtaJobStartCallbackSetting );
 }
 
 /**
@@ -1680,7 +1702,7 @@ void test_OTA_ProcessJobDocumentInvalidProtocol()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentInvalidProtocolPalFails()
@@ -1693,12 +1715,14 @@ void test_OTA_ProcessJobDocumentInvalidProtocolPalFails()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
-    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentValidJson()
 {
     pOtaJobDoc = JOB_DOC_A;
+
+    bIsOtaJobStartCallbackSetting = 0;
 
     otaGoToState( OtaAgentStateWaitingForJob );
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
@@ -1706,6 +1730,26 @@ void test_OTA_ProcessJobDocumentValidJson()
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    TEST_ASSERT_EQUAL( 0xFF, bIsOtaJobStartCallbackSetting );
+
+    bIsOtaJobStartCallbackSetting = 0;
+}
+
+void test_OTA_ProcessJobDocumentUserAbortedAtCallback()
+{
+    pOtaJobDoc = JOB_DOC_A;
+
+    bIsOtaJobStartCallbackSetting = 1;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+    TEST_ASSERT_EQUAL( 0xFF, bIsOtaJobStartCallbackSetting );
+
+    bIsOtaJobStartCallbackSetting = 0;
 }
 
 void test_OTA_ProcessJobDocumentPalCreateFileFail()

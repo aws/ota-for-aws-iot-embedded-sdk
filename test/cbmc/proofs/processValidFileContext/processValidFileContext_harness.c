@@ -57,6 +57,7 @@ void processValidFileContext_harness()
      * in the receiveAndProcessOtaEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
     otaAgent.fileContext = fileContext;
+    otaAgent.OtaAppCallback = otaAppCallbackStub;
 
     err = processValidFileContext();
 

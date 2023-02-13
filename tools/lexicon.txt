@@ -26,6 +26,7 @@ aws
 backoff
 backoffdelay
 basedefs
+bisotajobstartcallbacksetting
 bitmaplen
 bitmask
 blockbitmapmaxsize
@@ -462,6 +463,7 @@ otajobeventparsecustomjob
 otajobeventprocessed
 otajobeventreceivedjob
 otajobeventselftestfailed
+otajobeventstartotajob
 otajobeventstarttest
 otajobeventupdatecomplete
 otajobparseerrbadmodelinitparams
