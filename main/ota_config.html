@@ -157,8 +157,9 @@ otaconfigFILE_REQUEST_WAIT_MS</h1>
 otaconfigMAX_THINGNAME_LEN</h1>
 <p>The maximum allowed length of the thing name used by the OTA agent.  </p>
 <dl class="section note"><dt>Note</dt><dd>AWS IoT requires Thing names to be unique for each device that connects to the broker. Likewise, the OTA agent requires the developer to construct and pass in the Thing name when initializing the OTA agent. The agent uses this size to allocate static storage for the Thing name used in all OTA base topics. Namely $aws/things/thingName</dd></dl>
-<p><b>Possible values:</b> Any unsigned 32 integer. <br  />
- <b>Default value:</b> '64'  </p>
+<p>AWS IoT Core limits the ThingName length to 128 characters maximum. For more, see the AWS IoT Core Quotas here - <a href="https://console.aws.amazon.com/servicequotas/home/services/iotcore/quotas/L-83BC2FA9">https://console.aws.amazon.com/servicequotas/home/services/iotcore/quotas/L-83BC2FA9</a></p>
+<p><b>Possible values:</b> Any unsigned 32 integer - though practical limit is 128 <br  />
+ <b>Default value:</b> '128'  </p>
 <h1><a class="anchor" id="otaconfigMAX_NUM_REQUEST_MOMENTUM"></a>
 otaconfigMAX_NUM_REQUEST_MOMENTUM</h1>
 <p>The maximum number of requests allowed to send without a response before we abort.  </p>

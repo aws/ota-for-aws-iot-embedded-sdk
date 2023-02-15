@@ -146,7 +146,7 @@ Macros</h2></td></tr>
 <tr class="memitem:a19a42bab9dafd45b4c85709e55137534"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a19a42bab9dafd45b4c85709e55137534">otaconfigFILE_REQUEST_WAIT_MS</a>&#160;&#160;&#160;10000U</td></tr>
 <tr class="memdesc:a19a42bab9dafd45b4c85709e55137534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Milliseconds to wait before requesting data blocks from the OTA service if nothing is happening.  <br /></td></tr>
 <tr class="separator:a19a42bab9dafd45b4c85709e55137534"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9d4bbcc883e6ecff39f478a929df35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a5f9d4bbcc883e6ecff39f478a929df35">otaconfigMAX_THINGNAME_LEN</a>&#160;&#160;&#160;64U</td></tr>
+<tr class="memitem:a5f9d4bbcc883e6ecff39f478a929df35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a5f9d4bbcc883e6ecff39f478a929df35">otaconfigMAX_THINGNAME_LEN</a>&#160;&#160;&#160;128U</td></tr>
 <tr class="memdesc:a5f9d4bbcc883e6ecff39f478a929df35"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum allowed length of the thing name used by the OTA agent.  <br /></td></tr>
 <tr class="separator:a5f9d4bbcc883e6ecff39f478a929df35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac052a7234601140e882f0075f196554"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#aac052a7234601140e882f0075f196554">otaconfigMAX_NUM_BLOCKS_REQUEST</a>&#160;&#160;&#160;1U</td></tr>
@@ -320,15 +320,16 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define otaconfigMAX_THINGNAME_LEN&#160;&#160;&#160;64U</td>
+          <td class="memname">#define otaconfigMAX_THINGNAME_LEN&#160;&#160;&#160;128U</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>The maximum allowed length of the thing name used by the OTA agent. </p>
 <dl class="section note"><dt>Note</dt><dd>AWS IoT requires Thing names to be unique for each device that connects to the broker. Likewise, the OTA agent requires the developer to construct and pass in the Thing name when initializing the OTA agent. The agent uses this size to allocate static storage for the Thing name used in all OTA base topics. Namely $aws/things/thingName</dd></dl>
-<p><b>Possible values:</b> Any unsigned 32 integer. <br  />
- <b>Default value:</b> '64' </p>
+<p>AWS IoT Core limits the ThingName length to 128 characters maximum. For more, see the AWS IoT Core Quotas here - <a href="https://console.aws.amazon.com/servicequotas/home/services/iotcore/quotas/L-83BC2FA9">https://console.aws.amazon.com/servicequotas/home/services/iotcore/quotas/L-83BC2FA9</a></p>
+<p><b>Possible values:</b> Any unsigned 32 integer - though practical limit is 128 <br  />
+ <b>Default value:</b> '128' </p>
 
 </div>
 </div>

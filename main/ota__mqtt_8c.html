@@ -147,6 +147,8 @@ Include dependency graph for ota_mqtt.c:</div>
 Macros</h2></td></tr>
 <tr class="memitem:a43ee155a18e8bdb84648246627a52b95"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#a43ee155a18e8bdb84648246627a52b95">OTA_CLIENT_TOKEN</a>&#160;&#160;&#160;&quot;rdy&quot;</td></tr>
 <tr class="separator:a43ee155a18e8bdb84648246627a52b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3b6e027316699d6bdd9b235168a881e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#ae3b6e027316699d6bdd9b235168a881e">OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN</a>&#160;&#160;&#160;53U</td></tr>
+<tr class="separator:ae3b6e027316699d6bdd9b235168a881e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a202644e333fe75c092efb34e46041024"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#a202644e333fe75c092efb34e46041024">OTA_STATUS_MSG_MAX_SIZE</a>&#160;&#160;&#160;128U</td></tr>
 <tr class="separator:a202644e333fe75c092efb34e46041024"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa098f692be289771870d2a7e87f08ade"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#aa098f692be289771870d2a7e87f08ade">MQTT_API_THINGS</a>&#160;&#160;&#160;&quot;$aws/things/&quot;</td></tr>
@@ -194,7 +196,7 @@ Macros</h2></td></tr>
 <tr class="separator:a98df5e30bd64d854c055c4777681d7a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abff52aba6234bddab939c8fd6bd23d7c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#abff52aba6234bddab939c8fd6bd23d7c">TOPIC_GET_STREAM_BUFFER_SIZE</a>&#160;&#160;&#160;( <a class="el" href="ota__mqtt_8c.html#a31795da29bdaa9216955b56fa6d695aa">TOPIC_PLUS_THINGNAME_LEN</a>( <a class="el" href="ota__mqtt_8c.html#ac02c2b09d852a17138aace423ee73ac5">pOtaGetStreamTopicTemplate</a> ) + <a class="el" href="ota__mqtt_8c.html#af85a24df201760600c421734be5b6b43">STREAM_NAME_MAX_LEN</a> )</td></tr>
 <tr class="separator:abff52aba6234bddab939c8fd6bd23d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46d3e2c694c79c58da14d865547545e5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#a46d3e2c694c79c58da14d865547545e5">MSG_GET_NEXT_BUFFER_SIZE</a>&#160;&#160;&#160;( <a class="el" href="ota__mqtt_8c.html#a31795da29bdaa9216955b56fa6d695aa">TOPIC_PLUS_THINGNAME_LEN</a>( <a class="el" href="ota__mqtt_8c.html#ae97dec2af5c1d024f58c0e7248412217">pOtaGetNextJobMsgTemplate</a> ) + <a class="el" href="ota__mqtt_8c.html#a25ffab2259b4cc083e3c63f26d4f1f3b">U32_MAX_LEN</a> )</td></tr>
+<tr class="memitem:a46d3e2c694c79c58da14d865547545e5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__mqtt_8c.html#a46d3e2c694c79c58da14d865547545e5">MSG_GET_NEXT_BUFFER_SIZE</a>&#160;&#160;&#160;( <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;{\&quot;clientToken\&quot;:\&quot;&quot; ) + <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;:&quot; ) + <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;\&quot;}&quot; ) + <a class="el" href="ota__mqtt_8c.html#ae3b6e027316699d6bdd9b235168a881e">OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN</a> + <a class="el" href="ota__mqtt_8c.html#a25ffab2259b4cc083e3c63f26d4f1f3b">U32_MAX_LEN</a> + 1 )</td></tr>
 <tr class="separator:a46d3e2c694c79c58da14d865547545e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -295,6 +297,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Arbitrary client token sent in the stream "GET" message. </p>
+
+</div>
+</div>
+<a id="ae3b6e027316699d6bdd9b235168a881e" name="ae3b6e027316699d6bdd9b235168a881e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3b6e027316699d6bdd9b235168a881e">&#9670;&#160;</a></span>OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN&#160;&#160;&#160;53U</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Max ThingName length = Max client token length (64) - Max request count length (10) - 1 (colon separator) </p>
 
 </div>
 </div>
@@ -656,7 +673,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MSG_GET_NEXT_BUFFER_SIZE&#160;&#160;&#160;( <a class="el" href="ota__mqtt_8c.html#a31795da29bdaa9216955b56fa6d695aa">TOPIC_PLUS_THINGNAME_LEN</a>( <a class="el" href="ota__mqtt_8c.html#ae97dec2af5c1d024f58c0e7248412217">pOtaGetNextJobMsgTemplate</a> ) + <a class="el" href="ota__mqtt_8c.html#a25ffab2259b4cc083e3c63f26d4f1f3b">U32_MAX_LEN</a> )</td>
+          <td class="memname">#define MSG_GET_NEXT_BUFFER_SIZE&#160;&#160;&#160;( <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;{\&quot;clientToken\&quot;:\&quot;&quot; ) + <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;:&quot; ) + <a class="el" href="ota_8h.html#a2714f6afa56c8777b5e570a390a69a58">CONST_STRLEN</a>( &quot;\&quot;}&quot; ) + <a class="el" href="ota__mqtt_8c.html#ae3b6e027316699d6bdd9b235168a881e">OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN</a> + <a class="el" href="ota__mqtt_8c.html#a25ffab2259b4cc083e3c63f26d4f1f3b">U32_MAX_LEN</a> + 1 )</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1673,10 +1690,10 @@ Variables</h2></td></tr>
 <div class="line">    <span class="stringliteral">&quot;{\&quot;status\&quot;:\&quot;&quot;</span><a class="code hl_define" href="ota__mqtt_8c.html#aa856801466e59ece1094805a5664d80d">JOBS_API_STATUS_REJECTED</a> <span class="stringliteral">&quot;\&quot;,\&quot;statusDetails\&quot;:{&quot;</span>,</div>
 <div class="line">    <span class="stringliteral">&quot;{\&quot;status\&quot;:\&quot;&quot;</span><a class="code hl_define" href="ota__mqtt_8c.html#a593d7e0360443075b28b79abdf8365f7">JOBS_API_STATUS_FAILED</a> <span class="stringliteral">&quot;\&quot;,\&quot;statusDetails\&quot;:{&quot;</span>, </div>
 <div class="line">}</div>
-<div class="ttc" id="aota__mqtt_8c_html_a33538872ddc4e588809f5e3589b1ca80"><div class="ttname"><a href="ota__mqtt_8c.html#a33538872ddc4e588809f5e3589b1ca80">JOBS_API_STATUS_IN_PROGRESS</a></div><div class="ttdeci">#define JOBS_API_STATUS_IN_PROGRESS</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:84</div></div>
-<div class="ttc" id="aota__mqtt_8c_html_a4e66ea77d83acb7c0de30cb628bafdb8"><div class="ttname"><a href="ota__mqtt_8c.html#a4e66ea77d83acb7c0de30cb628bafdb8">JOBS_API_STATUS_SUCCEEDED</a></div><div class="ttdeci">#define JOBS_API_STATUS_SUCCEEDED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:86</div></div>
-<div class="ttc" id="aota__mqtt_8c_html_a593d7e0360443075b28b79abdf8365f7"><div class="ttname"><a href="ota__mqtt_8c.html#a593d7e0360443075b28b79abdf8365f7">JOBS_API_STATUS_FAILED</a></div><div class="ttdeci">#define JOBS_API_STATUS_FAILED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:85</div></div>
-<div class="ttc" id="aota__mqtt_8c_html_aa856801466e59ece1094805a5664d80d"><div class="ttname"><a href="ota__mqtt_8c.html#aa856801466e59ece1094805a5664d80d">JOBS_API_STATUS_REJECTED</a></div><div class="ttdeci">#define JOBS_API_STATUS_REJECTED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:87</div></div>
+<div class="ttc" id="aota__mqtt_8c_html_a33538872ddc4e588809f5e3589b1ca80"><div class="ttname"><a href="ota__mqtt_8c.html#a33538872ddc4e588809f5e3589b1ca80">JOBS_API_STATUS_IN_PROGRESS</a></div><div class="ttdeci">#define JOBS_API_STATUS_IN_PROGRESS</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:87</div></div>
+<div class="ttc" id="aota__mqtt_8c_html_a4e66ea77d83acb7c0de30cb628bafdb8"><div class="ttname"><a href="ota__mqtt_8c.html#a4e66ea77d83acb7c0de30cb628bafdb8">JOBS_API_STATUS_SUCCEEDED</a></div><div class="ttdeci">#define JOBS_API_STATUS_SUCCEEDED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:89</div></div>
+<div class="ttc" id="aota__mqtt_8c_html_a593d7e0360443075b28b79abdf8365f7"><div class="ttname"><a href="ota__mqtt_8c.html#a593d7e0360443075b28b79abdf8365f7">JOBS_API_STATUS_FAILED</a></div><div class="ttdeci">#define JOBS_API_STATUS_FAILED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:88</div></div>
+<div class="ttc" id="aota__mqtt_8c_html_aa856801466e59ece1094805a5664d80d"><div class="ttname"><a href="ota__mqtt_8c.html#aa856801466e59ece1094805a5664d80d">JOBS_API_STATUS_REJECTED</a></div><div class="ttdeci">#define JOBS_API_STATUS_REJECTED</div><div class="ttdef"><b>Definition:</b> ota_mqtt.c:90</div></div>
 </div><!-- fragment -->
 <p>List of all the status cases a job can be in. </p>
 
