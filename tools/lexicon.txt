@@ -274,6 +274,7 @@ int
 intel
 ioffset
 iot
+iotcore
 ip
 ip
 isinselftest
@@ -316,6 +317,7 @@ malloc
 mac
 maxattempts
 maxfragmentlength
+maxlen
 mcu
 md
 mem
@@ -776,6 +778,7 @@ sendtimeout
 sendtimeoutms
 serverfileid
 serverinfo
+servicequotas
 setcontrolinterface
 setdatainterface
 setimagestate
@@ -817,6 +820,7 @@ stringsize
 strlength
 stringbuilder
 stringsize
+strnlen
 struct
 structs
 sublicense

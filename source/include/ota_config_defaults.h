@@ -133,11 +133,15 @@
  * agent uses this size to allocate static storage for the Thing name used in
  * all OTA base topics. Namely $aws/things/thingName
  *
- * <b>Possible values:</b> Any unsigned 32 integer. <br>
- * <b>Default value:</b> '64'
+ * AWS IoT Core limits the ThingName length to 128 characters maximum. For more,
+ * see the AWS IoT Core Quotas here -
+ * https://console.aws.amazon.com/servicequotas/home/services/iotcore/quotas/L-83BC2FA9
+ *
+ * <b>Possible values:</b> Any unsigned 32 integer - though practical limit is 128 <br>
+ * <b>Default value:</b> '128'
  */
 #ifndef otaconfigMAX_THINGNAME_LEN
-    #define otaconfigMAX_THINGNAME_LEN    64U
+    #define otaconfigMAX_THINGNAME_LEN    128U
 #endif
 
 /**

@@ -117,6 +117,8 @@ const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sh
 /* OTA client name. */
 static const char * pOtaDefaultClientId = "ota_utest";
 
+/* Longest supported OTA Thingname*/
+static const char * longestThingname = "AReallyLongThingNameWhichIs128CharactersAndMatchesTheAWSIoTSpecificationForThingnameLengthMaximums12345678901234567890123456789";
 /* OTA job doc. */
 static const char * pOtaJobDoc = NULL;
 
@@ -461,6 +463,42 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     ( void ) unused_3;
     ( void ) unused_4;
     ( void ) unused_5;
+
+    return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * const unused_1,
+                                                                   uint16_t unused_2,
+                                                                   const char * msg,
+                                                                   uint32_t msgSize,
+                                                                   uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum message size is 64 characters for client token + 19 characters for JSON formatting */
+    TEST_ASSERT_LESS_OR_EQUAL( 83U, msgSize );
+    TEST_ASSERT_GREATER_THAN( 19U, msgSize );
+
+    char expected[ 54 ] = { 0 };
+    char actual[ 54 ] = { 0 };
+
+    /* Calculate the start of the thingname */
+    int offset = msgSize - 53U - 2;
+
+    memcpy( actual, msg, 16U );
+
+    TEST_ASSERT_EQUAL_STRING( "{\"clientToken\":\"", actual );
+
+    TEST_ASSERT_EQUAL_CHAR( ':', *( msg + ( offset - 1 ) ) );
+
+    /* Copy out the first 53 characters of the thingname */
+    memcpy( expected, longestThingname, 53U );
+    /* Copy out the 53 characters of the truncated thingname */
+    memcpy( actual, msg + ( offset ), 53U );
+
+    TEST_ASSERT_EQUAL_STRING( expected, actual );
 
     return OtaMqttSuccess;
 }
@@ -1025,10 +1063,20 @@ void test_OTA_InitWithNullName()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_InitWithNameAtMaxLength()
+{
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 129 ] = { 0 };
+
+    memset( long_name, 1, sizeof( long_name ) - 1 );
+    otaInit( long_name, mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
 void test_OTA_InitWithNameTooLong()
 {
-    /* OTA does not accept name longer than 64. Explicitly test long client name. */
-    char long_name[ 100 ] = { 0 };
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 130 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
     otaInit( long_name, mockAppCallback );
@@ -2727,6 +2775,20 @@ void test_OTA_MQTT_JobSubscribingFailed()
     otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
     err = requestJob_Mqtt( &otaAgent );
     TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, err );
+}
+
+/* Test thingname is truncated in requestJob_Mqtt */
+void test_OTA_MQTT_ThingNameTruncated()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInit( longestThingname, mockAppCallback );
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublishOnlySuccedsIfTruncatedValue;
+
+    err = requestJob_Mqtt( &otaAgent );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
 }
 
 /* Test that initFileTransfer_Mqtt fails if the Subscribe fails. */

@@ -60,6 +60,9 @@ size_t __CPROVER_file_local_ota_mqtt_c_stringBuilderUInt32Decimal( char * pBuffe
 {
     size_t buffersize;
 
+    /* Output can only be at most 10 characters as max unsigned 32-bit integer value is 10 characters long */
+    __CPROVER_assume( buffersize > 0 && buffersize <= 10U );
+
     /* pBuffer is always initialized before passing it to the stringBuilderUInt32Decimal
      * function and thus should not be NULL. */
     __CPROVER_assert( pBuffer != NULL,
@@ -95,12 +98,16 @@ void requestJob_Mqtt_harness()
 {
     OtaAgentContext_t agent;
     OtaInterfaces_t otaInterface;
+    size_t size;
+
+    __CPROVER_assume( size >= 1 && size < 128U );
 
     /* publish reference to the mqtt function is expected to be assigned by the user and thus
      * assumed not to be NULL. */
     otaInterface.mqtt.publish = stubMqttPublish;
 
     agent.pOtaInterface = &otaInterface;
+    agent.pThingName[ size ] = '\0';
 
     /* Ota agent is declared globally and cannot be NULL. */
     requestJob_Mqtt( &agent );
