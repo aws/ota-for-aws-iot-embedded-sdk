@@ -3234,7 +3234,7 @@ static void resetEventQueue( void )
 
     while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
     {
-        LogWarn( ( "Event(%d) is dropped.\r\n", eventMsg.eventId ) );
+        LogWarn( ( "Event(%d) is dropped.", eventMsg.eventId ) );
 
         /* Call handleUnexpectedEvents to notify user to release resources if necessary. */
         handleUnexpectedEvents( &eventMsg );
@@ -3312,7 +3312,7 @@ OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
 
         if( pThingName == NULL )
         {
-            LogError( ( "Error: Thing name is NULL.\r\n" ) );
+            LogError( ( "Error: Thing name is NULL." ) );
         }
         else
         {
@@ -3329,7 +3329,7 @@ OtaErr_t OTA_Init( const OtaAppBuffer_t * pOtaBuffer,
             }
             else
             {
-                LogError( ( "Error: Thing name is too long.\r\n" ) );
+                LogError( ( "Error: Thing name is too long." ) );
             }
         }
 
