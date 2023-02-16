@@ -88,6 +88,23 @@ The `test/cbmc/proofs` directory contains CBMC proofs.
 
 In order to run these proofs you will need to install CBMC and other tools by following the instructions [here](https://model-checking.github.io/cbmc-training/installation.html).
 
+### CBMC Locally
+To run a single CBMC proof locally, you can build the Makefile in any of the CBMC proofs. The Makefile is located in the `test/cbmc/proof/<the proof you want>/` directory.
+
+Running `make` will produce a HTML-based report nearly identical to the one produced by the CI step.
+
+**A couple notes about CBMC Proofs**
+* Mac doesn't implement POSIX message queues (mqueue.h)
+* It is possible that Mac fails to recognize your loop unwinding identifiers. For this case, you'll want to use the `__builtin___<function>_chk` identifier.
+  * For example, the **requestJob_Mqtt** proof  fails on my MAC with the following error
+
+```
+Loop unwinding failures
+[trace] __builtin___strncpy_chk.unwind.0 in line 36 in file <builtin-library-__builtin___strncpy_chk>
+```
+
+To solve this, replace `strncpy` with `__builtin___strncpy_ch on [this line](https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/test/cbmc/proofs/requestJob_Mqtt/Makefile#L16).
+
 ## Reference examples
 
 Please refer to the demos of the AWS IoT Over-the-air Updates library in the following location for reference examples on POSIX and FreeRTOS:
