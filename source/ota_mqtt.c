@@ -300,12 +300,12 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
 
-    while( valueCopy > 0U )
+    do
     {
         *pCur = asciiDigits[ ( valueCopy % 10U ) ];
         pCur++;
         valueCopy /= 10U;
-    }
+    } while( valueCopy > 0U );
 
     while( pCur > workBuf )
     {
