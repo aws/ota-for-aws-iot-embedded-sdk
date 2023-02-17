@@ -94,16 +94,16 @@ To run a single CBMC proof locally, you can build the Makefile in any of the CBM
 Running `make` will produce a HTML-based report nearly identical to the one produced by the CI step.
 
 **A couple notes about CBMC Proofs**
-* Mac doesn't implement POSIX message queues (mqueue.h)
-* It is possible that Mac fails to recognize your loop unwinding identifiers. For this case, you'll want to use the `__builtin___<function>_chk` identifier.
-  * For example, the **requestJob_Mqtt** proof  fails on my MAC with the following error
+* macOS doesn't implement POSIX message queues (`mqueue.h`);
+* It is possible that macOS fails to recognize your loop unwinding identifiers for function from the C standard libraries. For this case, you'll want to use the `__builtin___<function>_chk` identifier, e.g., instead of using `memcpy` add `__builtin___memcpy_chk`.
+  * For example, the **requestJob_Mqtt** proof fails on macOS with the following error:
 
 ```
 Loop unwinding failures
 [trace] __builtin___strncpy_chk.unwind.0 in line 36 in file <builtin-library-__builtin___strncpy_chk>
 ```
 
-To solve this, replace `strncpy` with `__builtin___strncpy_ch on [this line](https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/test/cbmc/proofs/requestJob_Mqtt/Makefile#L16).
+To solve this issue, replace `strncpy` with `__builtin___strncpy_ch` on [this line](https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main/test/cbmc/proofs/requestJob_Mqtt/Makefile#L16).
 
 ## Reference examples
 
