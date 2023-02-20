@@ -297,7 +297,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
 
     /* Assert if there is not enough buffer space. */
 
-    assert( bufferSizeBytes >= U32_MAX_LEN );
+    assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
     ( void ) bufferSizeBytes;
 
     do
@@ -315,7 +315,6 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     }
 
     pDest[ size ] = '\0';
-    size++;
     return size;
 }
 
@@ -332,7 +331,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
 
     /* Assert if there is not enough buffer space. */
 
-    assert( bufferSizeBytes >= U32_MAX_LEN );
+    assert( bufferSizeBytes >= U32_MAX_LEN + 1);
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
@@ -351,7 +350,6 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     }
 
     pDest[ size ] = '\0';
-    size++;
     return size;
 }
 
