@@ -282,6 +282,8 @@ static size_t stringBuilder( char * pBuffer,
         curLen += thisLength;
     }
 
+    pBuffer[ curLen ] = '\0';
+
     return curLen;
 }
 
