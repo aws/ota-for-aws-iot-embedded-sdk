@@ -503,6 +503,28 @@ static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * 
     return OtaMqttSuccess;
 }
 
+static OtaMqttStatus_t stubMqttPublishZeroBlocksReceived( const char * const unused_1,
+                                                          uint16_t unused_2,
+                                                          const char * msg,
+                                                          uint32_t msgSize,
+                                                          uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum message size is 77 characters */
+    TEST_ASSERT_LESS_OR_EQUAL( 77U, msgSize );
+
+    char actual[ 19 ] = { 0 };
+
+    memcpy( actual, msg, 18U );
+
+    TEST_ASSERT_EQUAL_STRING( "{\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"receive\":\"0/2\"}}", actual );
+
+    return OtaMqttSuccess;
+}
+
 OtaErr_t mockControlInterfaceRequestJobAlwaysFail( const OtaAgentContext_t * unused )
 {
     ( void ) unused;
@@ -2644,6 +2666,24 @@ void test_OTA_ReceiveFileBlockCompleteMqttCountUpdateJobCalledTime()
     test_OTA_ReceiveFileBlockCompleteMqtt();
 
     TEST_ASSERT_EQUAL( OTA_TEST_FILE_NUM_BLOCKS, otaReceivedFileBlockNumber );
+}
+
+void test_OTA_UpdateJobStatus()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+
+    /* Verify the conversion of the value 0U and 2U to a string */
+    otaInterfaces.mqtt.publish = stubMqttPublishZeroBlocksReceived;
+
+    /* Set the file size to an arbitrary value < block size to ensure 2 blocks for the OTA */
+    otaAgent.fileContext.fileSize = 100U;
+    /* With 2 blocks remaining, status message will say '0/2' blocks received */
+    otaAgent.fileContext.blocksRemaining = 2U;
+
+    err = updateJobStatus_Mqtt( &otaAgent, JobStatusInProgress, 0, 0 );
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
 }
 
 void test_OTA_EventProcessingTask_ExitOnAbort()
