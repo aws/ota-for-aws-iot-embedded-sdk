@@ -331,7 +331,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
 
     /* Assert if there is not enough buffer space. */
 
-    assert( bufferSizeBytes >= U32_MAX_LEN + 1);
+    assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
     ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
