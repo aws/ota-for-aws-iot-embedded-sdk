@@ -10,7 +10,7 @@ PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROOF_SOURCES += $(PROOF_STUB)/strnlen.c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 
-# The strncpy bound is large due to requestJob_Mqtt copying message peices
+# The strncpy bound is large due to requestJob_Mqtt copying message pieces
 # into a buffer. This is much higher than the 84 characters of the buffer
 # as null characters are used after the copied in strin to fill the buffer.
 UNWINDSET += strncpy.0:220

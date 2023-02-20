@@ -100,6 +100,8 @@ void requestJob_Mqtt_harness()
     OtaInterfaces_t otaInterface;
     size_t size;
 
+    /* This variable is used to size the thingname. A device thingname must
+     * have a minimum length of 1 and a maximum length of 128. */
     __CPROVER_assume( size >= 1 && size < 128U );
 
     /* publish reference to the mqtt function is expected to be assigned by the user and thus
