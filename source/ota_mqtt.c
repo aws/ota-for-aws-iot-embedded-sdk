@@ -297,6 +297,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     uint32_t valueCopy = value;
     size_t size = 0;
 
+    ( void ) bufferSizeBytes;
     /* Assert if there is not enough buffer space. */
     assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
 
@@ -329,6 +330,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     uint32_t valueCopy = value;
     size_t i;
 
+    ( void ) bufferSizeBytes;
     /* Assert if there is not enough buffer space. */
     assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
 
