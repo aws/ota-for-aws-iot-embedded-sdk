@@ -298,9 +298,7 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     size_t size = 0;
 
     /* Assert if there is not enough buffer space. */
-
     assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
-    ( void ) bufferSizeBytes;
 
     do
     {
@@ -332,9 +330,7 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     size_t i;
 
     /* Assert if there is not enough buffer space. */
-
     assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
-    ( void ) bufferSizeBytes;
 
     /* Render all 8 digits, including leading zeros. */
     for( i = 0U; i < 8U; i++ )
@@ -870,6 +866,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
     uint32_t xThingNameLength = 0;
+    char reqCounterString[ U32_MAX_LEN + 1 ];
     uint32_t reqCounterStringLength = 0;
 
     /* NULL-terminated list of topic string parts. */
@@ -880,7 +877,6 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
         MQTT_API_JOBS_NEXT_GET,
         NULL
     };
-    char reqCounterString[ U32_MAX_LEN + 1 ];
 
     /* NULL-terminated list of payload parts */
 
