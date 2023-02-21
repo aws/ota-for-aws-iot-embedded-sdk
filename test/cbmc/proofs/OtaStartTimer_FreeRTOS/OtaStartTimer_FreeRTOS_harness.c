@@ -30,6 +30,8 @@
 #include "ota_os_freertos.h"
 #include "FreeRTOSConfig.h"
 
+#include <stdlib.h>
+
 void otaCallback( OtaTimerId_t otaTimerId )
 {
     __CPROVER_assert( otaTimerId == OtaRequestTimer || otaTimerId == OtaSelfTestTimer,

@@ -29,6 +29,8 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
+#include <stdlib.h>
+
 /* Mangled name definition of the static function. */
 OtaErr_t __CPROVER_file_local_ota_c_resumeHandler( const OtaEventData_t * pEventData );
 

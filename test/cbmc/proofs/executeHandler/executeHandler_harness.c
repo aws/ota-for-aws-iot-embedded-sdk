@@ -29,6 +29,8 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
+#include <stdlib.h>
+
 void __CPROVER_file_local_ota_c_executeHandler( uint32_t index,
                                                 const OtaEventMsg_t * const pEventMsg );
 

@@ -46,7 +46,7 @@ void handleJobParsingError_harness()
     /* handleJobParsingError is only called with otaAgent.fileContext as it's argument.
      * otaAgent.fileContext.pJobName is pointing to a local buffer which is initialized in initializeLocalBuffers
      * function which is again called in OTA_Init.*/
-    fileContext.pJobName = &jobNameBuffer;
+    fileContext.pJobName = jobNameBuffer;
 
     /* Havoc otaAgent to non-deterministically set all the bytes in
      * the structure. */

@@ -30,6 +30,8 @@
 #include "ota.h"
 #include <stdlib.h>
 
+void resetEventQueue( void );
+
 OtaOsStatus_t recv( OtaEventContext_t * pEventCtx,
                     void * pEventMsg,
                     uint32_t timeout )

@@ -32,11 +32,11 @@
 #include <stdlib.h>
 
 extern OtaAgentContext_t otaAgent;
-extern uint32_t extractAndStoreArray( const char * pKey,
-                                      const char * pValueInJson,
-                                      size_t valueLength,
-                                      void * pParamAdd,
-                                      uint32_t * pParamSizeAdd );
+extern DocParseErr_t extractAndStoreArray( const char * pKey,
+                                           const char * pValueInJson,
+                                           size_t valueLength,
+                                           void * pParamAdd,
+                                           uint32_t * pParamSizeAdd );
 
 void extractAndStoreArray_harness()
 {

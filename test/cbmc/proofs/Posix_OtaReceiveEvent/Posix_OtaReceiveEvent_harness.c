@@ -35,6 +35,8 @@
 #include <poll.h>
 #include <mqueue.h>
 
+int nondet_int();
+
 /* Counter for the number of iterations. */
 static int count = 0;
 

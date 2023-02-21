@@ -31,6 +31,8 @@
 #include "FreeRTOS.h"
 #include "timers.h"
 
+#include <stdlib.h>
+
 /* Declaration of the mangled name function created by CBMC for static functions.*/
 void __CPROVER_file_local_ota_os_freertos_c_requestTimerCallback( TimerHandle_t timer );
 

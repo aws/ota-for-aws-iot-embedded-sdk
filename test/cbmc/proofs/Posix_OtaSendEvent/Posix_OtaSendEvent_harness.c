@@ -34,6 +34,8 @@
 /* Counter for the number of iterations. */
 static int count = 0;
 
+int nondet_int();
+
 int poll( struct pollfd * fds,
           nfds_t nfds,
           int timeout )
