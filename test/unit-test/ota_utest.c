@@ -3544,7 +3544,6 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
 
     TEST_ASSERT_NULL( pContext );
     TEST_ASSERT_EQUAL( false, updateJob );
-    otaAgent.fileContext.blocksRemaining = 0;
 }
 
 void test_OTA_extractParameterFailInvalidJobDocModel()
