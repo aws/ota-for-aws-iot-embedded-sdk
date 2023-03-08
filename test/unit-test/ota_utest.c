@@ -3528,6 +3528,24 @@ void test_OTA_parseJobFailsNullJsonDocument()
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
+void test_OTA_parseJobFailsMoreBlocksThanBitmap()
+{
+    OtaFileContext_t * pContext;
+    bool updateJob = false;
+    JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
+    {
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
+    };
+
+    /* The document structure has an invalid value for ModelParamType_t. */
+    otaAgent.fileContext.blocksRemaining = OTA_MAX_BLOCK_BITMAP_SIZE + 1;
+    otaInitDefault();
+    pContext = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+
+    TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( false, updateJob );
+}
+
 void test_OTA_extractParameterFailInvalidJobDocModel()
 {
     OtaFileContext_t * pContext;

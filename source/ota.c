@@ -2365,6 +2365,12 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
     {
         err = OtaJobParseErrBadModelInitParams;
     }
+    else if( pFileContext->blocksRemaining > OTA_MAX_BLOCK_BITMAP_SIZE )
+    {
+        err = OtaJobParseErrBadModelInitParams;
+        LogWarn( ( "OTA size (%u blocks) greater than can be tracked. Increase `OTA_MAX_BLOCK_BITMAP_SIZE`",
+                   pFileContext->blocksRemaining ) );
+    }
     else
     {
         parseError = parseJSONbyModel( pJson, messageLength, &otaJobDocModel );
