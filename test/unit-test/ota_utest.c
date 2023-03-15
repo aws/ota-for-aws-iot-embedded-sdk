@@ -483,9 +483,9 @@ static OtaMqttStatus_t stubMqttPublishOnlySuccedsTopicIsCorrect( const char * co
 
     char expected[ 129 ] = { 0 };
 
-    strcat(expected, "$aws/things/");
-    strcat(expected, pOtaDefaultClientId);
-    strcat(expected, "/jobs/$next/get");
+    strcat( expected, "$aws/things/" );
+    strcat( expected, pOtaDefaultClientId );
+    strcat( expected, "/jobs/$next/get" );
 
     TEST_ASSERT_EQUAL_STRING( expected, topic );
 
