@@ -164,7 +164,8 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
  * @return OtaFileContext_t* Information of file to be streamed.
  */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                 uint32_t messageLength );
+                                                 uint32_t messageLength,
+                                                 bool *emptyJobDoc );
 
 /**
  * @brief Validate JSON document and the DocModel.
@@ -297,7 +298,8 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
                                        uint16_t numJobParams,
                                        const char * pJson,
                                        uint32_t messageLength,
-                                       bool * pUpdateJob );
+                                       bool * pUpdateJob,
+                                       bool * emptyJobDoc );
 
 /**
  * @brief Validate block index and block size of the data block.
@@ -460,7 +462,8 @@ static void freeFileContextMem( OtaFileContext_t * const pFileContext );
  * @param[in] err Parsing error of type OtaJobParseErr_t.
  */
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
-                                   OtaJobParseErr_t err );
+                                   OtaJobParseErr_t err,
+                                   bool * emptyJobDoc );
 
 /**
  * @brief Receive and process the next available event from the event queue.
@@ -998,8 +1001,9 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
     /*
      * Parse the job document and update file information in the file context.
      */
+    bool emptyJobDoc = false;
     pOtaFileContext = getFileContextFromJob( ( const char * ) pEventData->data,
-                                             pEventData->dataLength );
+                                             pEventData->dataLength, &emptyJobDoc );
 
     /*
      * A null context here could either mean we didn't receive a valid job or it could
@@ -1009,7 +1013,15 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
      */
     if( pOtaFileContext == NULL )
     {
-        retVal = processNullFileContext();
+        if( emptyJobDoc == true )
+        {
+            LogWarn( ( "Empty job doc received" ) );
+            retVal = OtaErrNoOutstandingJob;
+        }
+        else
+        {
+            retVal = processNullFileContext();
+        }
     }
     else
     {
@@ -2268,7 +2280,8 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 
 /* This function is called only if there is an error with the job parsing. */
 static void handleJobParsingError( const OtaFileContext_t * pFileContext,
-                                   OtaJobParseErr_t err )
+                                   OtaJobParseErr_t err,
+                                   bool * emptyJobDoc )
 {
     OtaErr_t otaErr = OtaErrNone;
 
@@ -2300,6 +2313,7 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
 
             /* Callback when no active job is available to be processed. */
             callOtaCallback( OtaJobEventNoActiveJob, NULL );
+            *emptyJobDoc = true;
 
             break;
 
@@ -2346,7 +2360,8 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
                                        uint16_t numJobParams,
                                        const char * pJson,
                                        uint32_t messageLength,
-                                       bool * pUpdateJob )
+                                       bool * pUpdateJob,
+                                       bool * emptyJobDoc )
 {
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     DocParseErr_t parseError = DocParseErrNone;
@@ -2404,7 +2419,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
     else
     {
         /* Handle job parsing error. */
-        handleJobParsingError( pFileContext, err );
+        handleJobParsingError( pFileContext, err, emptyJobDoc );
     }
 
     /* Return pointer to populated file context or NULL if it failed. */
@@ -2413,7 +2428,8 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
 
 /* Called to update the filecontext structure from the job. */
 static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                 uint32_t messageLength )
+                                                 uint32_t messageLength,
+                                                 bool *emptyJobDoc )
 {
     uint32_t index;
     uint32_t numBlocks;             /* How many data pages are in the expected update image. */
@@ -2426,7 +2442,7 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
 
     /* Populate an OTA file context from the OTA job document. */
 
-    pUpdateFile = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob );
+    pUpdateFile = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob, emptyJobDoc );
 
     if( updateJob == true )
     {
@@ -2951,7 +2967,7 @@ static void executeHandler( uint32_t index,
          */
         otaAgent.state = otaTransitionTable[ index ].nextState;
     }
-    else
+    else if ( err != OtaErrNoOutstandingJob )
     {
         LogError( ( "Failed to execute state transition handler: "
                     "Handler returned error: OtaErr_t=%s",
