@@ -467,6 +467,31 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     return OtaMqttSuccess;
 }
 
+static OtaMqttStatus_t stubMqttPublishOnlySuccedsTopicIsCorrect( const char * const topic,
+                                                                 uint16_t topicLength,
+                                                                 const char * unused_1,
+                                                                 uint32_t unused_2,
+                                                                 uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum topic size is 128 characters for IoT Core */
+    TEST_ASSERT_LESS_OR_EQUAL( 128U, topicLength );
+    TEST_ASSERT_GREATER_THAN( 1U, topicLength );
+
+    char expected[ 129 ] = { 0 };
+
+    strcat( expected, "$aws/things/" );
+    strcat( expected, pOtaDefaultClientId );
+    strcat( expected, "/jobs/$next/get" );
+
+    TEST_ASSERT_EQUAL_STRING( expected, topic );
+
+    return OtaMqttSuccess;
+}
+
 static OtaMqttStatus_t stubMqttPublishOnlySuccedsIfTruncatedValue( const char * const unused_1,
                                                                    uint16_t unused_2,
                                                                    const char * msg,
@@ -2815,6 +2840,20 @@ void test_OTA_MQTT_JobSubscribingFailed()
     otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
     err = requestJob_Mqtt( &otaAgent );
     TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, err );
+}
+
+/* Test the publish topic is assembled correctly */
+void test_OTA_MQTT_PublishesToCorrectTopic()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublishOnlySuccedsTopicIsCorrect;
+
+    err = requestJob_Mqtt( &otaAgent );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
 }
 
 /* Test thingname is truncated in requestJob_Mqtt */
