@@ -913,7 +913,7 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
 
     if( mqttStatus == OtaMqttSuccess )
     {
-        LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
+        LogDebug( ( "MQTT job request number: counter=%u", ( unsigned ) reqCounter ) );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );

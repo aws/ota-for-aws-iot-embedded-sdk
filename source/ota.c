@@ -630,7 +630,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
         OtaEventMsg_t xEventMsg = { 0 };
 
         LogDebug( ( "Self-test expired within %ums",
-                    otaconfigFILE_REQUEST_WAIT_MS ) );
+                    ( unsigned ) otaconfigFILE_REQUEST_WAIT_MS ) );
 
         xEventMsg.eventId = OtaAgentEventRequestTimer;
 
@@ -643,7 +643,7 @@ static void otaTimerCallback( OtaTimerId_t otaTimerId )
     else /*  otaTimerId == OtaSelfTestTimer  */
     {
         LogError( ( "Self test failed to complete within %ums",
-                    otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
+                    ( unsigned ) otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
         ( void ) otaAgent.pOtaInterface->pal.reset( &otaAgent.fileContext );
     }
@@ -764,8 +764,8 @@ static OtaErr_t setImageStateWithReason( OtaImageState_t stateToSet,
                    ", reason=%d",
                    OTA_Err_strerror( err ),
                    OTA_PalStatus_strerror( OTA_PAL_MAIN_ERR( palStatus ) ),
-                   stateToSet,
-                   reasonToSet ) );
+                   ( int ) stateToSet,
+                   ( int ) reasonToSet ) );
     }
 
     return err;
@@ -1171,7 +1171,7 @@ static void dataHandlerCleanup( void )
         LogWarn( ( "Failed to trigger closing file: "
                    "Unable to signal event: "
                    "event=%d",
-                   eventMsg.eventId ) );
+                   ( int ) eventMsg.eventId ) );
     }
 }
 
@@ -1235,7 +1235,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
     }
     else if( result < IngestResultFileComplete )
     {
-        LogError( ( "Failed to ingest data block, rejecting image: ingestDataBlock returned error: OtaErr_t=%d", result ) );
+        LogError( ( "Failed to ingest data block, rejecting image: ingestDataBlock returned error: OtaErr_t=%d", ( int ) result ) );
 
         /* Call the platform specific code to reject the image. */
         ( void ) otaAgent.pOtaInterface->pal.setPlatformImageState( &( otaAgent.fileContext ), OtaImageStateRejected );
@@ -1284,7 +1284,7 @@ static OtaErr_t processDataHandler( const OtaEventData_t * pEventData )
 
             if( OTA_SignalEvent( &eventMsg ) == false )
             {
-                LogWarn( ( "Failed to trigger requesting the next block: Unable to signal event=%d", eventMsg.eventId ) );
+                LogWarn( ( "Failed to trigger requesting the next block: Unable to signal event=%d", ( int ) eventMsg.eventId ) );
             }
         }
     }
@@ -1314,7 +1314,7 @@ static OtaErr_t closeFileHandler( const OtaEventData_t * pEventData )
 
     LogInfo( ( "Closing file: "
                "file index=%u",
-               otaAgent.fileIndex ) );
+               ( unsigned ) otaAgent.fileIndex ) );
 
     ( void ) otaClose( &( otaAgent.fileContext ) );
 
@@ -1563,7 +1563,7 @@ static DocParseErr_t validateJSON( const char * pJson,
             LogError( ( "Invalid JSON document: "
                         "JSON_Validate returned error: "
                         "JSONStatus_t=%d",
-                        result ) );
+                        ( int ) result ) );
             err = DocParseErr_InvalidJSONBuffer;
         }
     }
@@ -1598,7 +1598,7 @@ static DocParseErr_t decodeAndStoreKey( const char * pValueInJson,
         LogError( ( "Failed to decode Base64 data: "
                     "base64Decode returned error: "
                     "error=%d",
-                    base64Status ) );
+                    ( int ) base64Status ) );
         err = DocParseErrBase64Decode;
     }
     else
@@ -1717,7 +1717,7 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
         if( ( errno == 0 ) && ( pEnd == &pValueInJson[ valueLength ] ) )
         {
             LogInfo( ( "Extracted parameter: [key: value]=[%s: %u]",
-                       docParam.pSrcKey, *pUint32 ) );
+                       docParam.pSrcKey, ( unsigned ) *pUint32 ) );
         }
         else
         {
@@ -1737,13 +1737,13 @@ static DocParseErr_t extractParameter( JsonDocParam_t docParam,
     }
     else
     {
-        LogWarn( ( "Invalid parameter type: %d", docParam.modelParamType ) );
+        LogWarn( ( "Invalid parameter type: %d", ( int ) docParam.modelParamType ) );
     }
 
     if( err != DocParseErrNone )
     {
         LogDebug( ( "Failed to extract document parameter: error=%d, paramter key=%s",
-                    err, docParam.pSrcKey ) );
+                    ( int ) err, docParam.pSrcKey ) );
     }
 
     return err;
@@ -1856,7 +1856,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     {
         LogDebug( ( "Failed to parse JSON document as AFR_OTA job: "
                     "DocParseErr_t=%d",
-                    err ) );
+                    ( int ) err ) );
     }
 
     return err;
@@ -1892,8 +1892,8 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
         LogError( ( "Parameter check failed: "
                     "Document model has %u parameters: "
                     "Document model should have <= %u parameters.",
-                    numJobParams,
-                    OTA_DOC_MODEL_MAX_PARAMS ) );
+                    ( unsigned ) numJobParams,
+                    ( unsigned ) OTA_DOC_MODEL_MAX_PARAMS ) );
         err = DocParseErrTooManyParams;
     }
     else
@@ -1921,7 +1921,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
     if( err != DocParseErrNone )
     {
         LogError( ( "Failed to initialize document model: "
-                    "DocParseErr_t=%d", err ) );
+                    "DocParseErr_t=%d", ( int ) err ) );
     }
 
     return err;
@@ -1970,8 +1970,8 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
             LogInfo( ( "New image has a higher version number than the current image: "
                        "New image version=%u.%u.%u"
                        ", Previous image version=%u.%u.%u",
-                       appFirmwareVersion.u.x.major, appFirmwareVersion.u.x.minor, appFirmwareVersion.u.x.build,
-                       previousVersion.u.x.major, previousVersion.u.x.minor, previousVersion.u.x.build ) );
+                       ( unsigned ) appFirmwareVersion.u.x.major, ( unsigned ) appFirmwareVersion.u.x.minor, ( unsigned ) appFirmwareVersion.u.x.build,
+                       ( unsigned ) previousVersion.u.x.major, ( unsigned ) previousVersion.u.x.minor, ( unsigned ) previousVersion.u.x.build ) );
         }
     }
 
@@ -2141,7 +2141,7 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
     #if ( otaconfigAllowDowngrade == 1U )
         {
             LogWarn( ( "OTA Config Allow Downgrade has been set to 1, bypassing version check: Begin testing file: File ID=%d",
-                       otaAgent.serverFileID ) );
+                       ( int ) otaAgent.serverFileID ) );
 
             /* Downgrade is allowed so this means we're ready to start self test phase.
              * Set image state accordingly and update job status with self test identifier.
@@ -2161,7 +2161,7 @@ static void handleSelfTestJobDoc( const OtaFileContext_t * pFileContext )
             if( errVersionCheck == OtaErrNone )
             {
                 LogInfo( ( "Image version is valid: Begin testing file: File ID=%d",
-                           otaAgent.serverFileID ) );
+                           ( int ) otaAgent.serverFileID ) );
 
                 /* The running firmware version is newer than the firmware that performed
                  * the update so this means we're ready to start the self test phase.
@@ -2369,7 +2369,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
     {
         err = OtaJobParseErrBadModelInitParams;
         LogWarn( ( "OTA size (%u blocks) greater than can be tracked. Increase `OTA_MAX_BLOCK_BITMAP_SIZE`",
-                   pFileContext->blocksRemaining ) );
+                   ( unsigned ) pFileContext->blocksRemaining ) );
     }
     else
     {
@@ -2539,7 +2539,7 @@ static bool validateDataBlock( const OtaFileContext_t * pFileContext,
     {
         ret = true;
         LogDebug( ( "Received valid file block: Block index=%u, Size=%u",
-                    blockIndex, blockSize ) );
+                    ( unsigned ) blockIndex, ( unsigned ) blockSize ) );
     }
 
     return ret;
@@ -2575,7 +2575,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
         {
             LogError( ( "Block range check failed: Received a block outside of the expected range: "
                         "Block index=%u, Block size=%u",
-                        uBlockIndex, uBlockSize ) );
+                        ( unsigned ) uBlockIndex, ( unsigned ) uBlockSize ) );
             eIngestResult = IngestResultBlockOutOfRange;
         }
     }
@@ -2591,9 +2591,9 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
         if( ( ( pFileContext->pRxBlockBitmap[ byte ] ) & bitMask ) == 0U )
         {
             LogWarn( ( "Received a duplicate block: Block index=%u, Block size=%u",
-                       uBlockIndex, uBlockSize ) );
+                       ( unsigned ) uBlockIndex, ( unsigned ) uBlockSize ) );
             LogDebug( ( "Number of blocks remaining: %u",
-                        pFileContext->blocksRemaining ) );
+                        ( unsigned ) pFileContext->blocksRemaining ) );
 
             eIngestResult = IngestResultDuplicate_Continue;
             *pCloseResult = OTA_PAL_COMBINE_ERR( OtaPalSuccess, 0 ); /* This is a success path. */
@@ -2617,7 +2617,7 @@ static IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
         {
             eIngestResult = IngestResultWriteBlockFailed;
             LogError( ( "Failed to ingest received block: iBytesWritten: %d, IngestResult_t=%d",
-                        iBytesWritten, eIngestResult ) );
+                        ( int ) iBytesWritten, ( int ) eIngestResult ) );
         }
     }
 
@@ -2751,7 +2751,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
             else
             {
                 LogError( ( "Failed to close the OTA file: Error=(%s:0x%06x)",
-                            OTA_PalStatus_strerror( otaPalMainErr ), otaPalSubErr ) );
+                            OTA_PalStatus_strerror( otaPalMainErr ), ( unsigned ) otaPalSubErr ) );
 
                 if( otaPalMainErr == ( uint32_t ) OtaPalSignatureCheckFailed )
                 {
@@ -2820,13 +2820,13 @@ static IngestResult_t ingestDataBlock( OtaFileContext_t * pFileContext,
     if( eIngestResult == IngestResultAccepted_Continue )
     {
         LogDebug( ( "Ingested received block %u",
-                    uBlockIndex ) );
+                    ( unsigned ) uBlockIndex ) );
 
         /* Print progress every 32 blocks received */
         if( ( pFileContext->blocksRemaining & 0x1Fu ) == 0u )
         {
             LogInfo( ( "Number of blocks remaining: %u",
-                       pFileContext->blocksRemaining ) );
+                       ( unsigned ) pFileContext->blocksRemaining ) );
         }
     }
 
@@ -3040,7 +3040,7 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
     }
     else
     {
-        LogWarn( ( "OtaAppCallback is not registered, event=%d", eEvent ) );
+        LogWarn( ( "OtaAppCallback is not registered, event=%d", ( int ) eEvent ) );
     }
 }
 
@@ -3240,7 +3240,7 @@ static void resetEventQueue( void )
 
     while( otaAgent.pOtaInterface->os.event.recv( NULL, &eventMsg, 0 ) == OtaOsSuccess )
     {
-        LogWarn( ( "Event(%d) is dropped.", eventMsg.eventId ) );
+        LogWarn( ( "Event(%d) is dropped.", ( int ) eventMsg.eventId ) );
 
         /* Call handleUnexpectedEvents to notify user to release resources if necessary. */
         handleUnexpectedEvents( &eventMsg );
@@ -3366,7 +3366,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
 
     LogDebug( ( "Number of ticks to idle while the OTA Agent shuts down: "
                 "ticks=%u",
-                ticks ) );
+                ( unsigned ) ticks ) );
 
     if( ( otaAgent.state != OtaAgentStateStopped ) && ( otaAgent.state != OtaAgentStateShuttingDown ) ) /* LCOV_EXCL_BR_LINE */
     {
@@ -3403,7 +3403,7 @@ OtaState_t OTA_Shutdown( uint32_t ticksToWait,
 
     LogDebug( ( "Number of ticks remaining when OTA Agent shutdown: "
                 "ticks=%u",
-                ticks ) );
+                ( unsigned ) ticks ) );
 
     return otaAgent.state;
 }

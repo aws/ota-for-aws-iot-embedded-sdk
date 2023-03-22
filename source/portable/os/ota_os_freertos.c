@@ -81,8 +81,8 @@ OtaOsStatus_t OtaInitEvent_FreeRTOS( OtaEventContext_t * pEventCtx )
 
         LogError( ( "Failed to create OTA Event Queue: "
                     "xQueueCreateStatic returned error: "
-                    "OtaOsStatus_t=%i ",
-                    otaOsStatus ) );
+                    "OtaOsStatus_t=%d ",
+                    ( int ) otaOsStatus ) );
     }
     else
     {
@@ -115,8 +115,8 @@ OtaOsStatus_t OtaSendEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
 
         LogError( ( "Failed to send event to OTA Event Queue: "
                     "xQueueSendToBack returned error: "
-                    "OtaOsStatus_t=%i ",
-                    otaOsStatus ) );
+                    "OtaOsStatus_t=%d ",
+                    ( int ) otaOsStatus ) );
     }
 
     return otaOsStatus;
@@ -148,8 +148,8 @@ OtaOsStatus_t OtaReceiveEvent_FreeRTOS( OtaEventContext_t * pEventCtx,
 
         LogDebug( ( "Failed to receive event or timeout from OTA Event Queue: "
                     "xQueueReceive returned error: "
-                    "OtaOsStatus_t=%i ",
-                    otaOsStatus ) );
+                    "OtaOsStatus_t=%d ",
+                    ( int ) otaOsStatus ) );
     }
 
     return otaOsStatus;
@@ -177,7 +177,7 @@ static void selfTestTimerCallback( TimerHandle_t T )
     ( void ) T;
 
     LogDebug( ( "Self-test expired within %ums",
-                otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
+                ( unsigned ) otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
     {
@@ -194,7 +194,7 @@ static void requestTimerCallback( TimerHandle_t T )
     ( void ) T;
 
     LogDebug( ( "Request timer expired in %ums",
-                otaconfigFILE_REQUEST_WAIT_MS ) );
+                ( unsigned ) otaconfigFILE_REQUEST_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
     {
@@ -236,8 +236,8 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
             LogError( ( "Failed to create OTA timer: "
                         "timerCreate returned NULL "
-                        "OtaOsStatus_t=%i ",
-                        otaOsStatus ) );
+                        "OtaOsStatus_t=%d ",
+                        ( int ) otaOsStatus ) );
         }
         else
         {
@@ -274,8 +274,8 @@ OtaOsStatus_t OtaStartTimer_FreeRTOS( OtaTimerId_t otaTimerId,
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
-                        "OtaOsStatus_t=%i ",
-                        otaOsStatus ) );
+                        "OtaOsStatus_t=%d ",
+                        ( int ) otaOsStatus ) );
         }
     }
 
@@ -294,21 +294,21 @@ OtaOsStatus_t OtaStopTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
         if( retVal == pdTRUE )
         {
-            LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
+            LogDebug( ( "OTA Timer Stopped for Timerid=%d.", ( int ) otaTimerId ) );
         }
         else
         {
             LogError( ( "Failed to stop OTA timer: "
                         "timer_settime returned error: "
-                        "OtaOsStatus_t=%i ",
-                        otaOsStatus ) );
+                        "OtaOsStatus_t=%d ",
+                        ( int ) otaOsStatus ) );
 
             otaOsStatus = OtaOsTimerStopFailed;
         }
     }
     else
     {
-        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%d, can't stop.", ( int ) otaTimerId ) );
     }
 
     return otaOsStatus;
@@ -335,15 +335,15 @@ OtaOsStatus_t OtaDeleteTimer_FreeRTOS( OtaTimerId_t otaTimerId )
 
             LogError( ( "Failed to delete OTA timer: "
                         "timer_delete returned error: "
-                        "OtaOsStatus_t=%i ",
-                        otaOsStatus ) );
+                        "OtaOsStatus_t=%d ",
+                        ( int ) otaOsStatus ) );
         }
     }
     else
     {
         otaOsStatus = OtaOsTimerDeleteFailed;
 
-        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%d, can't delete.", ( int ) otaTimerId ) );
     }
 
     return otaOsStatus;
