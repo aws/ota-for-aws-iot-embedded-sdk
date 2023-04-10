@@ -102,7 +102,7 @@ typedef enum OtaErr
     OtaErrFailedToDecodeCbor,     /*!< @brief Failed to decode CBOR object from streaming service response. */
     OtaErrActivateFailed,         /*!< @brief Failed to activate the new image. */
     OtaErrFileSizeOverflow,       /*!< @brief Firmware file size greater than the max allowed size. */
-    OtaErrEmptyJobDocument        /*!< @brief Empty job document found - this happens on start up. */ 
+    OtaErrEmptyJobDocument        /*!< @brief Empty job document found - this happens on start up. */
 } OtaErr_t;
 
 /**
