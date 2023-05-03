@@ -302,7 +302,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
  * @param[in] pJson JSON job document.
  * @param[in] messageLength Length of the job document.
  * @param[in] pUpdateJob Represents if the job is accepted.
- * @param[out] OtaFileContext_t* File context to store file information.
+ * @param[out] OtaFileContext_t** File context to store file information.
  * @return DocParseErr_t found when parsing the document
  */
 static DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
@@ -2441,9 +2441,8 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
                                        OtaFileContext_t ** pFileContext )
 {
     uint32_t index;
-    uint32_t numBlocks;                                 /* How many data pages are in the expected update image. */
-    uint32_t bitmapLen;                                 /* Length of the file block bitmap in bytes. */
-    OtaFileContext_t * pUpdateFile = ( *pFileContext ); /* Pointer to an OTA update context. */
+    uint32_t numBlocks; /* How many data pages are in the expected update image. */
+    uint32_t bitmapLen; /* Length of the file block bitmap in bytes. */
     OtaErr_t err = OtaErrNone;
     DocParseErr_t parseErr = DocParseErrNone;
     OtaPalStatus_t palStatus;
@@ -2451,52 +2450,52 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
     bool updateJob = false;
 
     /* Populate an OTA file context from the OTA job document. */
-    parseErr = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob, &pUpdateFile );
+    parseErr = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob, pFileContext );
 
     if( updateJob == true )
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
+    if( ( ( *pFileContext ) != NULL ) && ( ( ( *pFileContext )->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
 
-    if( ( err == OtaErrNone ) && ( updateJob == false ) && ( platformInSelftest() == false ) && ( pUpdateFile != NULL ) )
+    if( ( err == OtaErrNone ) && ( updateJob == false ) && ( platformInSelftest() == false ) && ( ( *pFileContext ) != NULL ) )
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-        numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+        numBlocks = ( ( *pFileContext )->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
         /* This conditional statement has been excluded from the coverage report because one of branches in the
          * if conditions cannot be reached because it is not possible for the code to have
-         * pUpdateFile->blockBitmapMaxSize not equal to 0 and pUpdateFile->pRxBlockBitmap equal to NULL. */
+         * (*pFileContext)->blockBitmapMaxSize not equal to 0 and (*pFileContext)->pRxBlockBitmap equal to NULL. */
 
         /* LCOV_EXCL_START */
-        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
+        if( ( ( *pFileContext )->pRxBlockBitmap != NULL ) && ( ( *pFileContext )->blockBitmapMaxSize == 0u ) )
         {
-            otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+            otaAgent.pOtaInterface->os.mem.free( ( *pFileContext )->pRxBlockBitmap );
         }
 
         /* LCOV_EXCL_STOP */
 
-        if( pUpdateFile->blockBitmapMaxSize == 0u )
+        if( ( *pFileContext )->blockBitmapMaxSize == 0u )
         {
-            pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+            ( *pFileContext )->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
         }
         else
         {
-            assert( pUpdateFile->pRxBlockBitmap != NULL );
+            assert( ( *pFileContext )->pRxBlockBitmap != NULL );
 
             /* This value is checked for NULL using an assert. When building coverity_analysis
              * asserts are disabled, leading to a violation. */
             /* coverity[var_deref_model] */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+            ( void ) memset( ( *pFileContext )->pRxBlockBitmap, 0, ( *pFileContext )->blockBitmapMaxSize );
         }
 
-        if( pUpdateFile->pRxBlockBitmap != NULL )
+        if( ( *pFileContext )->pRxBlockBitmap != NULL )
         {
             /* Mark as used any pages in the bitmap that are out of range, based on the file size.
              * This keeps us from requesting those pages during retry processing or if using a windowed
@@ -2509,39 +2508,39 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
             uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
 
             /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
+            ( void ) memset( ( *pFileContext )->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
+                ( *pFileContext )->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
                 bit >>= 1U;
             }
 
-            pUpdateFile->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
+            ( *pFileContext )->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
 
             /* Create/Open the OTA file on the file system. */
-            palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
+            palStatus = otaAgent.pOtaInterface->pal.createFile( ( *pFileContext ) );
 
             if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
             {
                 err = setImageStateWithReason( OtaImageStateAborted, palStatus );
-                ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
-                pUpdateFile = NULL;
+                ( void ) otaClose( ( *pFileContext ) ); /* Ignore false result since we're setting the pointer to null on the next line. */
+                ( *pFileContext ) = NULL;
             }
         }
     }
 
-    if( ( err != OtaErrNone ) || ( ( pUpdateFile != NULL ) && ( pUpdateFile->pRxBlockBitmap == NULL ) ) )
+    if( ( err != OtaErrNone ) || ( ( ( *pFileContext ) != NULL ) && ( ( *pFileContext )->pRxBlockBitmap == NULL ) ) )
     {
-        ( void ) otaClose( pUpdateFile );
-        pUpdateFile = NULL;
+        ( void ) otaClose( ( *pFileContext ) );
+        ( *pFileContext ) = NULL;
 
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
 
     /* Translate any parsing errors*/
-    if( pUpdateFile == NULL )
+    if( ( *pFileContext ) == NULL )
     {
         LogWarn( ( "Translating known document parsing errors to an OtaErr type" ) );
 

@@ -203,11 +203,12 @@ extern DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
-extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
-                                       uint16_t numJobParams,
-                                       const char * pJson,
-                                       uint32_t messageLength,
-                                       bool * pUpdateJob );
+extern DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonDoc,
+                                  uint16_t numJobParams,
+                                  const char * pJson,
+                                  uint32_t messageLength,
+                                  bool * pUpdateJob,
+                                  OtaFileContext_t ** pFileContext );
 
 extern DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
@@ -2416,6 +2417,8 @@ void test_OTA_ProcessJobDocumentFileIdNotZero()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaImageStateTesting, OTA_GetImageState() );
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
@@ -3559,11 +3562,13 @@ void test_OTA_parseJobFailsNullJsonDocument()
 {
     OtaFileContext_t * pContext = NULL;
     bool updateJob = false;
+    DocParseErr_t err;
 
     otaInitDefault();
-    pContext = parseJobDoc( NULL, 0, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+    err = parseJobDoc( NULL, 0, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
     TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNullBodyPointer, err );
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
@@ -3571,6 +3576,7 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
 {
     OtaFileContext_t * pContext;
     bool updateJob = false;
+    DocParseErr_t err;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
         { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
@@ -3579,9 +3585,10 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
     /* The document structure has an invalid value for ModelParamType_t. */
     otaAgent.fileContext.blocksRemaining = OTA_MAX_BLOCK_BITMAP_SIZE + 1;
     otaInitDefault();
-    pContext = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+    err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
     TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNone, err );
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
@@ -3589,6 +3596,7 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
 {
     OtaFileContext_t * pContext;
     bool updateJob = false;
+    DocParseErr_t err;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
         { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
@@ -3597,9 +3605,10 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     /* The document structure has an invalid value for ModelParamType_t. */
 
     otaInitDefault();
-    pContext = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+    err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
     TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNone, err );
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
