@@ -170,7 +170,7 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
  *
  * @param[in] pRawMsg Raw job document.
  * @param[in] messageLength length of document.
- * @param[out] OtaFileContext_t** Information of file to be streamed.
+ * @param[out] pFileContext Information of file to be streamed.
  * @return OtaErr_t any OTA error while determining file context
  */
 static OtaErr_t getFileContextFromJob( const char * pRawMsg,
@@ -302,7 +302,7 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
  * @param[in] pJson JSON job document.
  * @param[in] messageLength Length of the job document.
  * @param[in] pUpdateJob Represents if the job is accepted.
- * @param[out] OtaFileContext_t** File context to store file information.
+ * @param[out] pFileContext File context to store file information.
  * @return DocParseErr_t found when parsing the document
  */
 static DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
@@ -2966,7 +2966,7 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    LogWarn( ( "Index: %lu. OTA event id: %i", index, ( int ) pEventMsg->eventId ) );
+    LogWarn( ( "Index: %u. OTA event id: %i", index, ( int ) pEventMsg->eventId ) );
 
     assert( otaTransitionTable[ index ].handler != NULL );
 

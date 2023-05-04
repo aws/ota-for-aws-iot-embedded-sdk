@@ -135,6 +135,7 @@ dns
 docmodel
 docparam
 docparseerrduplicatesnotallowed
+docparseerremptyjobdoc
 docparseerrfieldtypemismatch
 docparseerrinvalidmodelparamtype
 docparseerrinvalidnumchar
@@ -419,6 +420,7 @@ otaerragentstopped
 otaerrcleanupcontrolfailed
 otaerrcleanupdatafailed
 otaerrdowngradenotallowed
+otaerremptyjobdocument
 otaerrfailedtodecodecbor
 otaerrfailedtoencodecbor
 otaerrfilesizeoverflow

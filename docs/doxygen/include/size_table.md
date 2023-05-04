@@ -9,7 +9,7 @@
     </tr>
     <tr>
         <td>ota.c</td>
-        <td><center>8.5K</center></td>
+        <td><center>8.6K</center></td>
         <td><center>7.7K</center></td>
     </tr>
     <tr>
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td><b>Total estimates</b></td>
-        <td><b><center>12.7K</center></b></td>
+        <td><b><center>12.8K</center></b></td>
         <td><b><center>11.6K</center></b></td>
     </tr>
 </table>
