@@ -1795,6 +1795,13 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         err = DocParseErrMalformedDoc;
     }
 
+    /* The original error will be document malformed because if missing parameters. If only client token and
+     * timestamp are set, then this is an empty job document. */
+    if( pDocModel->paramsReceivedBitmap == EMPTY_JOB_DOC_PARAMETER_BITMAP )
+    {
+        err = DocParseErrEmptyJobDoc;
+    }
+
     return err;
 }
 
@@ -1867,13 +1874,6 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     if( err == DocParseErrNone )
     {
         err = verifyRequiredParamsExtracted( pModelParam, pDocModel );
-    }
-
-    /* The original error will be document malformed because if missing parameters. If only client token and
-     * timestamp are set, then this is an empty job document. */
-    if( ( err == DocParseErrMalformedDoc ) && ( pDocModel->paramsReceivedBitmap == EMPTY_JOB_DOC_PARAMETER_BITMAP ) )
-    {
-        err = DocParseErrEmptyJobDoc;
     }
 
     if( err != DocParseErrNone )
@@ -2452,6 +2452,13 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
     /* Populate an OTA file context from the OTA job document. */
     parseErr = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob, pFileContext );
 
+    if( parseErr == DocParseErrEmptyJobDoc )
+    {
+        /* Return an error type here for the empty job doc. This 'error' be handled by the caller */
+        LogInfo( ( "Emtpy job document found" ) );
+        err = OtaErrEmptyJobDocument;
+    }
+
     if( updateJob == true )
     {
         LogInfo( ( "Job document for receiving an update received." ) );
@@ -2537,17 +2544,6 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
 
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
-    }
-
-    /* Translate any parsing errors*/
-    if( ( *pFileContext ) == NULL )
-    {
-        LogWarn( ( "Translating known document parsing errors to an OtaErr type" ) );
-
-        if( parseErr == DocParseErrEmptyJobDoc )
-        {
-            err = OtaErrEmptyJobDocument;
-        }
     }
 
     return err; /* Return any error when discovering file context */
