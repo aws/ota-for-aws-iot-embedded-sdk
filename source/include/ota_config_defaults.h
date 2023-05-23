@@ -99,6 +99,16 @@
 #endif
 
 /**
+ * @brief number of blocks to statically track in an OTA.
+ *
+ * <b>Possible values:</b> Any unsigned integer. <br>
+ * <b>Default value:</b> '128'
+ */
+#ifndef otaconfigMAX_BLOCK_BITMAP_SIZE
+    #define otaconfigMAX_BLOCK_BITMAP_SIZE    128U
+#endif
+
+/**
  * @brief Milliseconds to wait for the self test phase to succeed before we
  * force reset.
  *
