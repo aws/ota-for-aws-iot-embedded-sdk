@@ -132,7 +132,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pFileId );
+                                         ( int * ) pFileId );
     }
 
     /* Find the block ID. */
@@ -151,7 +151,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pBlockId );
+                                         ( int * ) pBlockId );
     }
 
     /* Find the block size. */
@@ -170,7 +170,7 @@ bool OTA_CBOR_Decode_GetStreamResponseMessage( const uint8_t * pMessageBuffer,
     if( CborNoError == cborResult )
     {
         cborResult = cbor_value_get_int( &cborValue,
-                                         ( int32_t * ) pBlockSize );
+                                         ( int * ) pBlockSize );
     }
 
     /* Find the payload bytes. */
