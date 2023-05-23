@@ -140,6 +140,9 @@ Macros</h2></td></tr>
 <tr class="memitem:a65facf4428a072324825abebb2b0e550"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a65facf4428a072324825abebb2b0e550">otaconfigLOG2_FILE_BLOCK_SIZE</a>&#160;&#160;&#160;12UL</td></tr>
 <tr class="memdesc:a65facf4428a072324825abebb2b0e550"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log base 2 of the size of the file data block message (excluding the header).  <br /></td></tr>
 <tr class="separator:a65facf4428a072324825abebb2b0e550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7352e2287a1ce8a35fd9422958825d76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a7352e2287a1ce8a35fd9422958825d76">otaconfigMAX_BLOCK_BITMAP_SIZE</a>&#160;&#160;&#160;128U</td></tr>
+<tr class="memdesc:a7352e2287a1ce8a35fd9422958825d76"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of blocks to statically track in an OTA.  <br /></td></tr>
+<tr class="separator:a7352e2287a1ce8a35fd9422958825d76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68e7932e806aed9025cb815b1cbf2104"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ota__config__defaults_8h.html#a68e7932e806aed9025cb815b1cbf2104">otaconfigSELF_TEST_RESPONSE_WAIT_MS</a>&#160;&#160;&#160;16000U</td></tr>
 <tr class="memdesc:a68e7932e806aed9025cb815b1cbf2104"><td class="mdescLeft">&#160;</td><td class="mdescRight">Milliseconds to wait for the self test phase to succeed before we force reset.  <br /></td></tr>
 <tr class="separator:a68e7932e806aed9025cb815b1cbf2104"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -273,6 +276,24 @@ Macros</h2></td></tr>
 <p>Log base 2 of the size of the file data block message (excluding the header). </p>
 <p><b>Possible values:</b> Any unsigned 32 integer. <br  />
  <b>Default value:</b> '12' </p>
+
+</div>
+</div>
+<a id="a7352e2287a1ce8a35fd9422958825d76" name="a7352e2287a1ce8a35fd9422958825d76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7352e2287a1ce8a35fd9422958825d76">&#9670;&#160;</a></span>otaconfigMAX_BLOCK_BITMAP_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define otaconfigMAX_BLOCK_BITMAP_SIZE&#160;&#160;&#160;128U</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>number of blocks to statically track in an OTA. </p>
+<p><b>Possible values:</b> Any unsigned integer. <br  />
+ <b>Default value:</b> '128' </p>
 
 </div>
 </div>
