@@ -105,7 +105,7 @@
  * <b>Default value:</b> '128'
  */
 #ifndef otaconfigMAX_BLOCK_BITMAP_SIZE
-    #define otaconfigMAX_BLOCK_BITMAP_SIZE   128U
+    #define otaconfigMAX_BLOCK_BITMAP_SIZE    128U
 #endif
 
 /**
