@@ -206,7 +206,8 @@ typedef enum
     DocParseErrTooManyParams,         /*!< The document model has more parameters than we can handle. */
     DocParseErrParamKeyNotInModel,    /*!< The document model does not include the specified parameter key. */
     DocParseErrInvalidModelParamType, /*!< The document model specified an invalid parameter type. */
-    DocParseErrInvalidToken           /*!< The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrInvalidToken,          /*!< The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrEmptyJobDoc            /*!< The document is valid but does not contain all necessary fields. */
 } DocParseErr_t;
 
 /**

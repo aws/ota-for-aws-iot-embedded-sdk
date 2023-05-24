@@ -50,6 +50,6 @@ void verifyRequiredParamsExtracted_harness()
 
     err = __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( &modelParams, &docModel );
 
-    __CPROVER_assert( ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
+    __CPROVER_assert( ( DocParseErrEmptyJobDoc == err ) || ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
                       "Error: Expected return value to be either DocParseErrNone or DocParseErrMalformedDoc" );
 }

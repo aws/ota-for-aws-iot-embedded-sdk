@@ -78,6 +78,15 @@
 #define U16_OFFSET( type, member )    ( ( uint16_t ) offsetof( type, member ) )
 
 /**
+ * @brief Resulting bitmap value from empty OTA job document.
+ *
+ * Empty OTA job documents will contain only the ClientToken
+ * (bit 0) and Timestamp (bit 1) values.
+ * Value is determined by the `otaJobDocModelParamStructure` mapping.
+ */
+#define EMPTY_JOB_DOC_PARAMETER_BITMAP    3U
+
+/**
  * @brief OTA event handler definition.
  */
 typedef OtaErr_t ( * OtaEventHandler_t )( const OtaEventData_t * pEventMsg );
@@ -161,10 +170,12 @@ static IngestResult_t ingestDataBlockCleanup( OtaFileContext_t * pFileContext,
  *
  * @param[in] pRawMsg Raw job document.
  * @param[in] messageLength length of document.
- * @return OtaFileContext_t* Information of file to be streamed.
+ * @param[out] pFileContext Information of file to be streamed.
+ * @return OtaErr_t any OTA error while determining file context
  */
-static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                 uint32_t messageLength );
+static OtaErr_t getFileContextFromJob( const char * pRawMsg,
+                                       uint32_t messageLength,
+                                       OtaFileContext_t ** pFileContext );
 
 /**
  * @brief Validate JSON document and the DocModel.
@@ -291,13 +302,15 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
  * @param[in] pJson JSON job document.
  * @param[in] messageLength Length of the job document.
  * @param[in] pUpdateJob Represents if the job is accepted.
- * @return OtaFileContext_t* File context to store file information.
+ * @param[out] pFileContext File context to store file information.
+ * @return DocParseErr_t found when parsing the document
  */
-static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
-                                       uint16_t numJobParams,
-                                       const char * pJson,
-                                       uint32_t messageLength,
-                                       bool * pUpdateJob );
+static DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
+                                  uint16_t numJobParams,
+                                  const char * pJson,
+                                  uint32_t messageLength,
+                                  bool * pUpdateJob,
+                                  OtaFileContext_t ** pFileContext );
 
 /**
  * @brief Validate block index and block size of the data block.
@@ -993,13 +1006,14 @@ static OtaErr_t processValidFileContext( void )
 static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
 {
     OtaErr_t retVal = OtaErrNone;
-    const OtaFileContext_t * pOtaFileContext = NULL;
+    OtaFileContext_t * pOtaFileContext = NULL;
 
     /*
      * Parse the job document and update file information in the file context.
      */
-    pOtaFileContext = getFileContextFromJob( ( const char * ) pEventData->data,
-                                             pEventData->dataLength );
+    retVal = getFileContextFromJob( ( const char * ) pEventData->data,
+                                    pEventData->dataLength,
+                                    &pOtaFileContext );
 
     /*
      * A null context here could either mean we didn't receive a valid job or it could
@@ -1009,7 +1023,10 @@ static OtaErr_t processJobHandler( const OtaEventData_t * pEventData )
      */
     if( pOtaFileContext == NULL )
     {
-        retVal = processNullFileContext();
+        if( retVal != OtaErrEmptyJobDocument )
+        {
+            retVal = processNullFileContext();
+        }
     }
     else
     {
@@ -1778,6 +1795,13 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
         err = DocParseErrMalformedDoc;
     }
 
+    /* The original error will be document malformed because if missing parameters. If only client token and
+     * timestamp are set, then this is an empty job document. */
+    if( pDocModel->paramsReceivedBitmap == EMPTY_JOB_DOC_PARAMETER_BITMAP )
+    {
+        err = DocParseErrEmptyJobDoc;
+    }
+
     return err;
 }
 
@@ -1854,9 +1878,9 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
 
     if( err != DocParseErrNone )
     {
-        LogDebug( ( "Failed to parse JSON document as AFR_OTA job: "
-                    "DocParseErr_t=%d",
-                    ( int ) err ) );
+        LogWarn( ( "Failed to parse JSON document as AFR_OTA job: "
+                   "DocParseErr_t=%d",
+                   ( int ) err ) );
     }
 
     return err;
@@ -2342,15 +2366,15 @@ static void handleJobParsingError( const OtaFileContext_t * pFileContext,
  * OTA context if valid otherwise return NULL.
  */
 
-static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
-                                       uint16_t numJobParams,
-                                       const char * pJson,
-                                       uint32_t messageLength,
-                                       bool * pUpdateJob )
+static DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
+                                  uint16_t numJobParams,
+                                  const char * pJson,
+                                  uint32_t messageLength,
+                                  bool * pUpdateJob,
+                                  OtaFileContext_t ** pFinalFile )
 {
     OtaJobParseErr_t err = OtaJobParseErrUnknown;
     DocParseErr_t parseError = DocParseErrNone;
-    OtaFileContext_t * pFinalFile = NULL;
     OtaFileContext_t * pFileContext = &( otaAgent.fileContext );
     JsonDocModel_t otaJobDocModel;
     OtaJobDocument_t jobDoc = { 0 };
@@ -2377,7 +2401,7 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
 
         if( parseError == DocParseErrNone )
         {
-            err = validateAndStartJob( pFileContext, &pFinalFile, pUpdateJob );
+            err = validateAndStartJob( pFileContext, pFinalFile, pUpdateJob );
         }
         else
         {
@@ -2407,71 +2431,78 @@ static OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParam
         handleJobParsingError( pFileContext, err );
     }
 
-    /* Return pointer to populated file context or NULL if it failed. */
-    return pFinalFile;
+    /* Return parsing error */
+    return parseError;
 }
 
 /* Called to update the filecontext structure from the job. */
-static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
-                                                 uint32_t messageLength )
+static OtaErr_t getFileContextFromJob( const char * pRawMsg,
+                                       uint32_t messageLength,
+                                       OtaFileContext_t ** pFileContext )
 {
     uint32_t index;
-    uint32_t numBlocks;             /* How many data pages are in the expected update image. */
-    uint32_t bitmapLen;             /* Length of the file block bitmap in bytes. */
-    OtaFileContext_t * pUpdateFile; /* Pointer to an OTA update context. */
+    uint32_t numBlocks; /* How many data pages are in the expected update image. */
+    uint32_t bitmapLen; /* Length of the file block bitmap in bytes. */
     OtaErr_t err = OtaErrNone;
+    DocParseErr_t parseErr = DocParseErrNone;
     OtaPalStatus_t palStatus;
 
     bool updateJob = false;
 
     /* Populate an OTA file context from the OTA job document. */
+    parseErr = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob, pFileContext );
 
-    pUpdateFile = parseJobDoc( otaJobDocModelParamStructure, OTA_NUM_JOB_PARAMS, pRawMsg, messageLength, &updateJob );
+    if( parseErr == DocParseErrEmptyJobDoc )
+    {
+        /* Return an error type here for the empty job doc. This 'error' be handled by the caller */
+        LogInfo( ( "Emtpy job document found" ) );
+        err = OtaErrEmptyJobDocument;
+    }
 
     if( updateJob == true )
     {
         LogInfo( ( "Job document for receiving an update received." ) );
     }
 
-    if( ( pUpdateFile != NULL ) && ( ( pUpdateFile->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
+    if( ( ( *pFileContext ) != NULL ) && ( ( ( *pFileContext )->fileSize ) > ( OTA_MAX_FILE_SIZE ) ) )
     {
         err = OtaErrFileSizeOverflow;
     }
 
-    if( ( err == OtaErrNone ) && ( updateJob == false ) && ( platformInSelftest() == false ) && ( pUpdateFile != NULL ) )
+    if( ( err == OtaErrNone ) && ( updateJob == false ) && ( platformInSelftest() == false ) && ( ( *pFileContext ) != NULL ) )
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-        numBlocks = ( pUpdateFile->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+        numBlocks = ( ( *pFileContext )->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
         /* This conditional statement has been excluded from the coverage report because one of branches in the
          * if conditions cannot be reached because it is not possible for the code to have
-         * pUpdateFile->blockBitmapMaxSize not equal to 0 and pUpdateFile->pRxBlockBitmap equal to NULL. */
+         * (*pFileContext)->blockBitmapMaxSize not equal to 0 and (*pFileContext)->pRxBlockBitmap equal to NULL. */
 
         /* LCOV_EXCL_START */
-        if( ( pUpdateFile->pRxBlockBitmap != NULL ) && ( pUpdateFile->blockBitmapMaxSize == 0u ) )
+        if( ( ( *pFileContext )->pRxBlockBitmap != NULL ) && ( ( *pFileContext )->blockBitmapMaxSize == 0u ) )
         {
-            otaAgent.pOtaInterface->os.mem.free( pUpdateFile->pRxBlockBitmap );
+            otaAgent.pOtaInterface->os.mem.free( ( *pFileContext )->pRxBlockBitmap );
         }
 
         /* LCOV_EXCL_STOP */
 
-        if( pUpdateFile->blockBitmapMaxSize == 0u )
+        if( ( *pFileContext )->blockBitmapMaxSize == 0u )
         {
-            pUpdateFile->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
+            ( *pFileContext )->pRxBlockBitmap = ( uint8_t * ) otaAgent.pOtaInterface->os.mem.malloc( bitmapLen );
         }
         else
         {
-            assert( pUpdateFile->pRxBlockBitmap != NULL );
+            assert( ( *pFileContext )->pRxBlockBitmap != NULL );
 
             /* This value is checked for NULL using an assert. When building coverity_analysis
              * asserts are disabled, leading to a violation. */
             /* coverity[var_deref_model] */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, 0, pUpdateFile->blockBitmapMaxSize );
+            ( void ) memset( ( *pFileContext )->pRxBlockBitmap, 0, ( *pFileContext )->blockBitmapMaxSize );
         }
 
-        if( pUpdateFile->pRxBlockBitmap != NULL )
+        if( ( *pFileContext )->pRxBlockBitmap != NULL )
         {
             /* Mark as used any pages in the bitmap that are out of range, based on the file size.
              * This keeps us from requesting those pages during retry processing or if using a windowed
@@ -2484,38 +2515,38 @@ static OtaFileContext_t * getFileContextFromJob( const char * pRawMsg,
             uint32_t numOutOfRange = ( bitmapLen * BITS_PER_BYTE ) - numBlocks;
 
             /* Set all bits in the bitmap to the erased state (we use 1 for erased just like flash memory). */
-            ( void ) memset( pUpdateFile->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
+            ( void ) memset( ( *pFileContext )->pRxBlockBitmap, ( int32_t ) OTA_ERASED_BLOCKS_VAL, bitmapLen );
 
             for( index = 0U; index < numOutOfRange; index++ )
             {
-                pUpdateFile->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
+                ( *pFileContext )->pRxBlockBitmap[ bitmapLen - 1U ] &= ( uint8_t ) ( ( uint8_t ) 0xFFU & ( ~bit ) );
                 bit >>= 1U;
             }
 
-            pUpdateFile->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
+            ( *pFileContext )->blocksRemaining = numBlocks; /* Initialize our blocks remaining counter. */
 
             /* Create/Open the OTA file on the file system. */
-            palStatus = otaAgent.pOtaInterface->pal.createFile( pUpdateFile );
+            palStatus = otaAgent.pOtaInterface->pal.createFile( ( *pFileContext ) );
 
             if( OTA_PAL_MAIN_ERR( palStatus ) != OtaPalSuccess )
             {
                 err = setImageStateWithReason( OtaImageStateAborted, palStatus );
-                ( void ) otaClose( pUpdateFile ); /* Ignore false result since we're setting the pointer to null on the next line. */
-                pUpdateFile = NULL;
+                ( void ) otaClose( ( *pFileContext ) ); /* Ignore false result since we're setting the pointer to null on the next line. */
+                ( *pFileContext ) = NULL;
             }
         }
     }
 
-    if( ( err != OtaErrNone ) || ( ( pUpdateFile != NULL ) && ( pUpdateFile->pRxBlockBitmap == NULL ) ) )
+    if( ( err != OtaErrNone ) || ( ( ( *pFileContext ) != NULL ) && ( ( *pFileContext )->pRxBlockBitmap == NULL ) ) )
     {
-        ( void ) otaClose( pUpdateFile );
-        pUpdateFile = NULL;
+        ( void ) otaClose( ( *pFileContext ) );
+        ( *pFileContext ) = NULL;
 
         LogDebug( ( "Failed to parse the file context from the job document: OtaErr_t=%s",
                     OTA_Err_strerror( err ) ) );
     }
 
-    return pUpdateFile; /* Return the OTA file context. */
+    return err; /* Return any error when discovering file context */
 }
 
 /*
@@ -2931,6 +2962,8 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
+    LogWarn( ( "Index: %u. OTA event id: %i", index, ( int ) pEventMsg->eventId ) );
+
     assert( otaTransitionTable[ index ].handler != NULL );
 
     err = otaTransitionTable[ index ].handler( pEventMsg->pEventData );
@@ -2950,6 +2983,10 @@ static void executeHandler( uint32_t index,
          * Update the current state in OTA agent context.
          */
         otaAgent.state = otaTransitionTable[ index ].nextState;
+    }
+    else if( err == OtaErrEmptyJobDocument )
+    {
+        LogInfo( ( "Empty job docuemnt found for event=[%s]", pOtaEventStrings[ pEventMsg->eventId ] ) );
     }
     else
     {
