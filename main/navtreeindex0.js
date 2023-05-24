@@ -100,6 +100,7 @@ var NAVTREEINDEX0 =
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2da8de27454ca774732ca584803d1ab5888":[11,0,0,5],
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2daa7c1391bb361ec9857470b984cd31346":[11,0,0,9],
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2dad4008e18cf533002f2f194a491f859e1":[11,0,0,11],
+"group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2dad509d2bda46fe24c83794db66e7ef8f4":[11,0,0,24],
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2dad57de41d65cd3bd5de28228883e83084":[11,0,0,20],
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2dad8a8f3c4637db28866f53fbc91fe6427":[11,0,0,16],
 "group__ota__enum__types.html#gga7ab3c74dc057383c56c6cb9aa6bf0b2dae40f5144d7881fb9d8a7f403c44a3133":[11,0,0,10],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "struct_ota_file_context__t.html#a49d365eb241b8f22e341f9cf9c88f121":[11,2,12,12],
 "struct_ota_file_context__t.html#a4bed61a2b0553f841bbaca9abd0a1560":[11,2,12,20],
 "struct_ota_file_context__t.html#a5bfc26add016d1883c2373a63c2bf5b0":[11,2,12,9],
-"struct_ota_file_context__t.html#a66b88f4b4d9ce8f7d40c5d306bc588c8":[11,2,12,15],
-"struct_ota_file_context__t.html#a67c5ddb9341a368e755b6ca386ea5d6f":[11,2,12,18]
+"struct_ota_file_context__t.html#a66b88f4b4d9ce8f7d40c5d306bc588c8":[11,2,12,15]
 };
