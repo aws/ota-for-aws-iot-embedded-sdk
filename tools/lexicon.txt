@@ -300,7 +300,7 @@ jobstatusfailedwithval
 jobstatusinprogress
 jobstatusrejected
 json
-jsondoc 
+jsondoc
 lastbyte
 lastupdatedat
 len

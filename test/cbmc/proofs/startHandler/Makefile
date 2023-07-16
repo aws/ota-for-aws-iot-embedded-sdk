@@ -18,8 +18,8 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 
 REMOVE_FUNCTION_BODY += OTA_SignalEvent
 
-RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub 
-RESTRICT_FUNCTION_POINTER += startHandler.function_pointer_call.1/startTimerStub 
+RESTRICT_FUNCTION_POINTER += platformInSelftest.function_pointer_call.1/getPlatformImageStateStub
+RESTRICT_FUNCTION_POINTER += startHandler.function_pointer_call.1/startTimerStub
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

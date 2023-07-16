@@ -18,17 +18,17 @@
  - [#413](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/413) Clear timers in shutdown and suspend
 
 ### v3.3.0 (December 2021)
- - Added CBMC proofs of all public and private functions in the OTA library. 
+ - Added CBMC proofs of all public and private functions in the OTA library.
  - [#373](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/373) Updated compiler flag for tinycbor source files
  - [#407](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/407) Added checks to prevent arithmetic overflows
  - [#390](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/390) Make OTA file type configurable.
- - [#329](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/329) Misc fixes to remove build warnings 
+ - [#329](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/329) Misc fixes to remove build warnings
  - [#356](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/356) Add type cast to event functions as per POSIX spec
- 
+
 ### v3.2.0 (November 2021)
- - [#275](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276) Updated the doxygen version from 1.8.20 to 1.9.2 
+ - [#275](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/276) Updated the doxygen version from 1.8.20 to 1.9.2
  - [#236](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/236) Added C++ guards
- - [#231](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/231) Added checks for http interface functions. 
+ - [#231](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/231) Added checks for http interface functions.
 
 ### v3.1.0 (August 2021)
  - [#232](https://github.com/aws/ota-for-aws-iot-embedded-sdk/pull/232) Add updater version to the status details when job succeeds

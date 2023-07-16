@@ -20,7 +20,7 @@ REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeAppBuffers
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_initializeLocalBuffers
 REMOVE_FUNCTION_BODY += __CPROVER_file_local_ota_c_resetEventQueue
 
-RESTRICT_FUNCTION_POINTER += OTA_Init.function_pointer_call.1/init 
+RESTRICT_FUNCTION_POINTER += OTA_Init.function_pointer_call.1/init
 
 # If this proof is found to consume huge amounts of RAM, you can set the
 # EXPENSIVE variable. With new enough versions of the proof tools, this will

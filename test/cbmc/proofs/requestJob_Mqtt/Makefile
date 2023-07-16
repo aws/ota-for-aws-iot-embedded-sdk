@@ -14,7 +14,7 @@ PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
 # into a buffer. This is much higher than the 84 characters of the buffer
 # as null characters are used after the copied in strin to fill the buffer.
 UNWINDSET += strncpy.0:220
-# The strnlen function is used when calculating the maximum thingname length 
+# The strnlen function is used when calculating the maximum thingname length
 # which can be used to generate the client token.
 UNWINDSET += strnlen.0:54
 
