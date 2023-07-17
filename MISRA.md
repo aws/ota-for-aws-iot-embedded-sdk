@@ -84,6 +84,6 @@ _Ref 21.3.2_
 #### Rule 21.8
 _Ref 21.8.1_
 
-- MISRA C-2012 Rule 21.8 Does not allow the use of some of the functions in stdlib.h. One of the OTA platform 
+- MISRA C-2012 Rule 21.8 Does not allow the use of some of the functions in stdlib.h. One of the OTA platform
     abstraction layer interfaces `abort` is flagged for this violation. This is implemented by a platform
     abstraction layer and always called through the OTA PAL interface.
