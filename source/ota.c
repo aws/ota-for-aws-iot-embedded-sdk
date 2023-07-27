@@ -1818,7 +1818,7 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     const char * pFileParams = NULL;
     uint32_t fileParamsLength = 0;
 
-    LogDebug( ( "JSON received: %s", pJson ) );
+    LogDebug( ( "JSON received: %.*s", messageLength, pJson ) );
 
     /* Fetch the model parameters from the DocModel*/
     pModelParam = pDocModel->pBodyDef;
