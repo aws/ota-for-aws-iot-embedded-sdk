@@ -1817,8 +1817,20 @@ static DocParseErr_t parseJSONbyModel( const char * pJson,
     uint16_t paramIndex = 0;
     const char * pFileParams = NULL;
     uint32_t fileParamsLength = 0;
+    static char cJsonBuffer[ OTA_MAX_JSON_STR_LEN ];
 
-    LogDebug( ( "JSON received: %.*s", messageLength, pJson ) );
+    if( messageLength < OTA_MAX_JSON_STR_LEN - 1 )
+    {
+        memcpy( cJsonBuffer, pJson, messageLength );
+        cJsonBuffer[ messageLength + 1 ] = 0;
+    }
+    else
+    {
+        memcpy( cJsonBuffer, pJson, OTA_MAX_JSON_STR_LEN - 2 );
+        cJsonBuffer[ OTA_MAX_JSON_STR_LEN - 1 ] = 0;
+    }
+
+    LogDebug( ( "JSON received: %s", cJsonBuffer ) );
 
     /* Fetch the model parameters from the DocModel*/
     pModelParam = pDocModel->pBodyDef;
