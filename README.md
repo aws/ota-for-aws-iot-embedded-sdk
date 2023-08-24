@@ -10,6 +10,15 @@ See memory requirements for this library [here](./docs/doxygen/include/size_tabl
 
 **AWS IoT Over-the-air Update Library v3.3.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.3.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
 
+## Future Releases
+
+The AWS IoT OTA Updates library receive a major version bump Spring 2024. These library changes are being made to enhance modifiability, code modularity, and to greatly simplify integrating your device more easily operating along with common MCU tooling. At a high level, these changes will do the following...
+1. Split portions of this existing OTA library into smaller component libraries. Examples components include: An AWS IoT Jobs library, an MQTT streaming library, and a OTA parsing library.
+2. Provide example 'orchestrator'(s) (which are similar to the current OTA Agent) which orders the various calls to the component libraries to accomplish the OTA update processing
+3. Remove the bootloader PAL component from the OTA library, allowing for easier use of existing bootloading tools (i.e. MCUBoot, wolfBoot)
+
+To see our current progress towards this goal, please see [FreeRTOS/Labs-Project-ota-example-for-aws-iot-core](https://github.com/FreeRTOS/Labs-Project-ota-example-for-aws-iot-core)
+
 ## AWS IoT Over-the-air Updates Config File
 
 The AWS IoT Over-the-air Updates library exposes configuration macros that are required for building the library. A list of all the configurations and their default values are defined in [ota_config_defaults.h](source/include/ota_config_defaults.h). To provide custom values for the configuration macros, a custom config file named `ota_config.h` can be provided by the user application to the library.
