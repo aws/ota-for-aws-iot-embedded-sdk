@@ -1,6 +1,6 @@
 # Include filepaths for source and include.
 include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
-include( ${MODULE_ROOT_DIR}/otaDependenyFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/otaDependencyFilePaths.cmake )
 
 # ====================  Define your project name (edit) ========================
 set(project_name "aws_ota")

@@ -1,0 +1,2 @@
+https://dummy-url.com/ota.bin
+

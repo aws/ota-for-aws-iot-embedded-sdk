@@ -112,7 +112,7 @@ Please refer to the demos of the AWS IoT Over-the-air Updates library in the fol
 | Platform | Location |
 | :-: | :-: |
 | POSIX | [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota) |
-| FreeRTOS | [FreeRTOS/FreeRTOS](https://github.com/FreeRTOS/FreeRTOS/tree/main/FreeRTOS-Plus/Demo/AWS/Ota_Windows_Simulator) | 
+| FreeRTOS | [FreeRTOS/FreeRTOS](https://github.com/FreeRTOS/FreeRTOS/tree/main/FreeRTOS-Plus/Demo/AWS/Ota_Windows_Simulator) |
 | FreeRTOS | [FreeRTOS AWS Reference Integrations](https://github.com/aws/amazon-freertos/tree/main/demos/ota) |
 
 ## Documentation

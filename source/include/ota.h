@@ -278,7 +278,7 @@ typedef struct OtaJobDocument
  * OtaJobEventActivate|OtaJobDocument_t|status and reason
  * OtaJobEventFail|OtaJobDocument_t|status, reason and subReason
  * OtaJobEventStartTest|NULL|nothing
- * OtaJobEventProcessed|OtaEventData_t|data buffer inputed from user by OTA_SignalEvent
+ * OtaJobEventProcessed|OtaEventData_t|data buffer inputted from user by OTA_SignalEvent
  * OtaJobEventSelfTestFailed|NULL|nothing
  * OtaJobEventParseCustomJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, and jobDocLength
  * OtaJobEventReceivedJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, jobDocLength, and fileTypeId

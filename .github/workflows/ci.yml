@@ -150,6 +150,7 @@ jobs:
         uses: FreeRTOS/CI-CD-Github-Actions/link-verifier@v2
         with:
           path: ./
+          allowlist-file: .github/.exclude-urls.txt
 
   verify-manifest:
     runs-on: ubuntu-latest
