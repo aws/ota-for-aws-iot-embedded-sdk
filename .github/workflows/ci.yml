@@ -30,7 +30,7 @@ jobs:
       - name: Setup
         run: sudo apt-get install complexity
       - name: Complexity
-        uses: FreeRTOS/CI-CD-Github-Actions/complexity@v2
+        uses: FreeRTOS/CI-CD-Github-Actions/complexity@main
         with:
           path: ./
           horrid_threshold: 14
@@ -70,7 +70,7 @@ jobs:
           cmake --build build/ --target coverage
 
       - name: Check Coverage
-        uses: FreeRTOS/CI-CD-Github-Actions/coverage-cop@v2
+        uses: FreeRTOS/CI-CD-Github-Actions/coverage-cop@main
         with:
           coverage-file: ./build/coverage.info
           line-coverage-min: 100
@@ -168,7 +168,7 @@ jobs:
         run: git submodule update --checkout --init --recursive
 
       - name: Run manifest verifier
-        uses: FreeRTOS/CI-CD-GitHub-Actions/manifest-verifier@v2
+        uses: FreeRTOS/CI-CD-GitHub-Actions/manifest-verifier@main
         with:
           path: ./
           fail-on-incorrect-version: true
