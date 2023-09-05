@@ -53,7 +53,7 @@ void OtaStartTimer_FreeRTOS_harness()
     __CPROVER_assume( pTimerName != NULL );
 
     /* callback is statically defined in ota.c before passing it to
-     * OtaStartTiemr_FreeRTOS. */
+     * OtaStartTimer_FreeRTOS. */
     __CPROVER_assume( callback != NULL );
 
     /* To avoid pdMS_TO_TICKS from integer overflow. */

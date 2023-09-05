@@ -119,7 +119,7 @@
  *        This table assumes that the padding symbol is the Ascii character '='
  *
  *        Valid Base64 symbols will have an index ranging from 0-63. The Base64 digits being used
- *        are "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the
+ *        are "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the
  *        0th index of the Base64 symbols and '/' is the 63rd index.
  *
  *        Outside of the numbers 0-63, there are magic numbers in this table:

@@ -24,7 +24,7 @@ _Ref 8.13.1_
 - MISRA C-2012 Rule 8.13 There are multiple functions that all use the same function header so that
     they can be assigned to function pointers in a seamless manner. There are a few that modify the
     OtaAgentContext_t that gets passed in. In order to allow convienent assignment of these function pointers
-    we supress this rule on this function that can't have const added.
+    we suppress this rule on this function that can't have const added.
 
 #### Rule 10.1
 _Ref 10.1.1_
@@ -44,7 +44,7 @@ _Ref 10.8.1_
 _Ref 11.8.1_
 
 - Misra C-2012 Rule 11.8  will raise an error if certain variables are not marked as const, even if the variables do get
-    modified in that function. As such there are two occurences where to get around that error, we supress these.
+    modified in that function. As such there are two occurrences where to get around that error, we suppress these.
 
 #### Rule 19.2
 _Ref 19.2.1_
