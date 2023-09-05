@@ -10,14 +10,11 @@ See memory requirements for this library [here](./docs/doxygen/include/size_tabl
 
 **AWS IoT Over-the-air Update Library v3.3.0 [source code](https://github.com/aws/ota-for-aws-iot-embedded-sdk/tree/v3.3.0/source) is part of the [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS) release.**
 
-## Future Releases
+## Upcoming Changes
 
-The AWS IoT OTA Updates library receive a major version bump Spring 2024. These library changes are being made to enhance modifiability, code modularity, and to greatly simplify integrating your device more easily operating along with common MCU tooling. At a high level, these changes will do the following...
-1. Split portions of this existing OTA library into smaller component libraries. Examples components include: An AWS IoT Jobs library, an MQTT streaming library, and a OTA parsing library.
-2. Provide example 'orchestrator'(s) (which are similar to the current OTA Agent) which orders the various calls to the component libraries to accomplish the OTA update processing
-3. Remove the bootloader PAL component from the OTA library, allowing for easier use of existing bootloading tools (i.e. MCUBoot, wolfBoot)
+Intended for release in Q4 2023, a major version update of this library will make it compliant with the FreeRTOS “core” branded libraries design goal of being free of any dependencies other than the C library. The monolithic design of the existing OTA library doesn't make it easy to make use case specific modifications, such as changing the OTA update source. The new major version will refactor the library, amongst other things, to increase modularity and simplify the use of any firmware source or communication mechanism, both supported by AWS and not.
 
-To see our current progress towards this goal, please see [FreeRTOS/Labs-Project-ota-example-for-aws-iot-core](https://github.com/FreeRTOS/Labs-Project-ota-example-for-aws-iot-core)
+While the old version of this library will remain available, we will not be developing it further and will instead focus on the newer major versions going forward. To see our current progress towards this goal, please see [FreeRTOS/Labs-Project-ota-example-for-aws-iot-core](https://github.com/FreeRTOS/Labs-Project-ota-example-for-aws-iot-core).
 
 ## AWS IoT Over-the-air Updates Config File
 
