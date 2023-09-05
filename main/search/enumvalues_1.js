@@ -17,5 +17,5 @@ var searchData=
   ['docparseerrparamkeynotinmodel_14',['DocParseErrParamKeyNotInModel',['../ota__private_8h.html#ae7f5ab8221031b60eb2704cf840679eca0c472f25591b09af6db35b5bca2237c1',1,'ota_private.h']]],
   ['docparseerrtoomanyparams_15',['DocParseErrTooManyParams',['../ota__private_8h.html#ae7f5ab8221031b60eb2704cf840679ecaf655a0d5a94d161ff50886d442b7f035',1,'ota_private.h']]],
   ['docparseerrunknown_16',['DocParseErrUnknown',['../ota__private_8h.html#ae7f5ab8221031b60eb2704cf840679ecac7cc7639b100a09d35f11c8165a8131e',1,'ota_private.h']]],
-  ['docparseerruserbufferinsuffcient_17',['DocParseErrUserBufferInsuffcient',['../ota__private_8h.html#ae7f5ab8221031b60eb2704cf840679eca94a365911296b23442e5a2be1cb7c530',1,'ota_private.h']]]
+  ['docparseerruserbufferinsufficient_17',['DocParseErrUserBufferInsufficient',['../ota__private_8h.html#ae7f5ab8221031b60eb2704cf840679eca38b5a88c40aa1a51bc8cb8efcf9a5c6b',1,'ota_private.h']]]
 ];

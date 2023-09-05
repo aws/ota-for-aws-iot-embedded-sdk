@@ -504,7 +504,7 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 <p>This table takes is indexed by an Ascii character and returns the respective Base64 index. The Ascii character used to index into this table is assumed to represent a symbol in a string of Base64 encoded data. There are three kinds of possible ascii characters: 1) Base64 Symbols. These are the digits of a Base 64 number system. 2) Formatting characters. These are newline, whitespace, and padding. 3) Symbols that are impossible to have inside of correctly Base64 encoded data. </p>
 <p>This table assumes that the padding symbol is the Ascii character '='</p>
-<p>Valid Base64 symbols will have an index ranging from 0-63. The Base64 digits being used are "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the 0th index of the Base64 symbols and '/' is the 63rd index.</p>
+<p>Valid Base64 symbols will have an index ranging from 0-63. The Base64 digits being used are "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the 0th index of the Base64 symbols and '/' is the 63rd index.</p>
 <p>Outside of the numbers 0-63, there are magic numbers in this table:</p><ul>
 <li>The 11th entry in this table has the number 64. This is to identify the ascii character '<br  />
 ' as a newline character.</li>
