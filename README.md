@@ -35,6 +35,12 @@ is part of the
 [FreeRTOS 202012.01 LTS](https://github.com/FreeRTOS/FreeRTOS-LTS/tree/202012.01-LTS)
 release.**
 
+## Upcoming Changes
+
+Intended for release in Q4 2023, a major version update of this library will make it compliant with the FreeRTOS “core” branded libraries design goal of being free of any dependencies other than the C library. The monolithic design of the existing OTA library doesn't make it easy to make use case specific modifications, such as changing the OTA update source. The new major version will refactor the library, amongst other things, to increase modularity and simplify the use of any firmware source or communication mechanism, both supported by AWS and not.
+
+While the old version of this library will remain available, we will not be developing it further and will instead focus on the newer major versions going forward. To see our current progress towards this goal, please see [FreeRTOS/Labs-Project-ota-example-for-aws-iot-core](https://github.com/FreeRTOS/Labs-Project-ota-example-for-aws-iot-core).
+
 ## AWS IoT Over-the-air Updates Config File
 
 The AWS IoT Over-the-air Updates library exposes configuration macros that are
