@@ -45,11 +45,11 @@
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
-static bool timerCallbackInovked = false;
+static bool timerCallbackInvoked = false;
 
 static void timerCallback()
 {
-    timerCallbackInovked = true;
+    timerCallbackInvoked = true;
 }
 /* ============================   UNITY FIXTURES ============================ */
 
@@ -68,7 +68,7 @@ void setUp( void )
 
 void tearDown( void )
 {
-    timerCallbackInovked = false;
+    timerCallbackInvoked = false;
 }
 
 /* ========================================================================== */
@@ -123,14 +123,14 @@ void timerCreateAndStop( OtaTimerId_t timer_id )
     TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     /* Wait for the timer callback to be invoked. */
-    while( timerCallbackInovked == false && wait > 0 )
+    while( timerCallbackInvoked == false && wait > 0 )
     {
         /* Sleep 1 ms. */
         usleep( 1000 );
         --wait;
     }
 
-    TEST_ASSERT_EQUAL( true, timerCallbackInovked );
+    TEST_ASSERT_EQUAL( true, timerCallbackInvoked );
 
     result = timer.stop( timer_id );
     TEST_ASSERT_EQUAL( OtaOsSuccess, result );

@@ -190,24 +190,24 @@ typedef enum
  */
 typedef enum
 {
-    DocParseErrUnknown = -1,          /*!< The error code has not yet been set by a logic path. */
-    DocParseErrNone = 0,              /*!< No error in parsing the document. */
-    DocParseErrOutOfMemory,           /*!< We failed to allocate enough dynamic memory for a field. */
-    DocParseErrUserBufferInsuffcient, /*!< The supplied user buffer is insufficient for a field. */
-    DocParseErrFieldTypeMismatch,     /*!< The field type parsed does not match the document model. */
-    DocParseErrBase64Decode,          /*!< There was an error decoding the base64 data. */
-    DocParseErrInvalidNumChar,        /*!< There was an invalid character in a numeric value field. */
-    DocParseErrDuplicatesNotAllowed,  /*!< A duplicate parameter was found in the job document. */
-    DocParseErrMalformedDoc,          /*!< The document didn't fulfill the model requirements. */
-    DocParseErr_InvalidJSONBuffer,    /*!< When the JSON is malformed and not parsed correctly. */
-    DocParseErrNullModelPointer,      /*!< The pointer to the document model was NULL. */
-    DocParseErrNullBodyPointer,       /*!< The document model's internal body pointer was NULL. */
-    DocParseErrNullDocPointer,        /*!< The pointer to the JSON document was NULL. */
-    DocParseErrTooManyParams,         /*!< The document model has more parameters than we can handle. */
-    DocParseErrParamKeyNotInModel,    /*!< The document model does not include the specified parameter key. */
-    DocParseErrInvalidModelParamType, /*!< The document model specified an invalid parameter type. */
-    DocParseErrInvalidToken,          /*!< The Jasmine token was invalid, producing a NULL pointer. */
-    DocParseErrEmptyJobDoc            /*!< The document is valid but does not contain all necessary fields. */
+    DocParseErrUnknown = -1,           /*!< The error code has not yet been set by a logic path. */
+    DocParseErrNone = 0,               /*!< No error in parsing the document. */
+    DocParseErrOutOfMemory,            /*!< We failed to allocate enough dynamic memory for a field. */
+    DocParseErrUserBufferInsufficient, /*!< The supplied user buffer is insufficient for a field. */
+    DocParseErrFieldTypeMismatch,      /*!< The field type parsed does not match the document model. */
+    DocParseErrBase64Decode,           /*!< There was an error decoding the base64 data. */
+    DocParseErrInvalidNumChar,         /*!< There was an invalid character in a numeric value field. */
+    DocParseErrDuplicatesNotAllowed,   /*!< A duplicate parameter was found in the job document. */
+    DocParseErrMalformedDoc,           /*!< The document didn't fulfill the model requirements. */
+    DocParseErr_InvalidJSONBuffer,     /*!< When the JSON is malformed and not parsed correctly. */
+    DocParseErrNullModelPointer,       /*!< The pointer to the document model was NULL. */
+    DocParseErrNullBodyPointer,        /*!< The document model's internal body pointer was NULL. */
+    DocParseErrNullDocPointer,         /*!< The pointer to the JSON document was NULL. */
+    DocParseErrTooManyParams,          /*!< The document model has more parameters than we can handle. */
+    DocParseErrParamKeyNotInModel,     /*!< The document model does not include the specified parameter key. */
+    DocParseErrInvalidModelParamType,  /*!< The document model specified an invalid parameter type. */
+    DocParseErrInvalidToken,           /*!< The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrEmptyJobDoc             /*!< The document is valid but does not contain all necessary fields. */
 } DocParseErr_t;
 
 /**

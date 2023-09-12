@@ -77,7 +77,7 @@ void extractAndStoreArray_harness()
     /* The maximum returned by extractAndStoreArray is the length of the otaTransitionTable which
      * is defined by TRANSITION_TABLE_LEN in the Makefile. */
     __CPROVER_assert( ( err == DocParseErrNone ) || ( err == DocParseErrOutOfMemory ) ||
-                      ( err == DocParseErrUserBufferInsuffcient ),
+                      ( err == DocParseErrUserBufferInsufficient ),
                       "Error: Return value from processValidFileContext should follow values of OtaErr_t enum." );
 
     free( pParamAdd );

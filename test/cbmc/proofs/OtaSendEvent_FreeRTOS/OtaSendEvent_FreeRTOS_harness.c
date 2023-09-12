@@ -44,5 +44,5 @@ void OtaSendEvent_FreeRTOS_harness()
     osStatus = OtaSendEvent_FreeRTOS( pEventCtx, pEventMsg, timeout );
 
     __CPROVER_assert( osStatus == OtaOsSuccess || osStatus == OtaOsEventQueueSendFailed,
-                      "Invalid return value:osStatus should either be OtaOsSuccess or OtaOsEventeQueueSendFailed." );
+                      "Invalid return value:osStatus should either be OtaOsSuccess or OtaOsEventQueueSendFailed." );
 }
