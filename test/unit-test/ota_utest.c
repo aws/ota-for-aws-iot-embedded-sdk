@@ -3587,7 +3587,7 @@ void test_OTA_parseJobFailsNullJsonDocument()
 
 void test_OTA_parseJobFailsMoreBlocksThanBitmap()
 {
-    OtaFileContext_t * pContext;
+    OtaFileContext_t * pContext = NULL;
     bool updateJob = false;
     DocParseErr_t err;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
@@ -3607,7 +3607,7 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
 
 void test_OTA_extractParameterFailInvalidJobDocModel()
 {
-    OtaFileContext_t * pContext;
+    OtaFileContext_t * pContext = NULL;
     bool updateJob = false;
     DocParseErr_t err;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
