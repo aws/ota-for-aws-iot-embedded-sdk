@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -31,12 +33,14 @@
 #include "ota_interface_private.h"
 
 extern OtaAgentContext_t otaAgent;
+
 extern JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ];
-extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
-                                       uint16_t numJobParams,
-                                       const char * pJson,
-                                       uint32_t messageLength,
-                                       bool * pUpdateJob );
+extern DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
+                                  uint16_t numJobParams,
+                                  const char * pJson,
+                                  uint32_t messageLength,
+                                  bool * pUpdateJob,
+                                  OtaFileContext_t ** pFileContext );
 
 /* Stub to initialize the json docModel. */
 DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
@@ -103,6 +107,7 @@ OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
 
 void parseJobDoc_harness()
 {
+    OtaFileContext_t * pFileContext;
     JsonDocParam_t * pJsonExpectedParams;
     uint16_t numJobParams;
     char * pJson;
@@ -130,5 +135,5 @@ void parseJobDoc_harness()
     otaAgent.OtaAppCallback = otaAppCallbackStub;
 
     ( void ) parseJobDoc( otaJobDocModelParamStructure,
-                          numJobParams, pJson, messageLength, &updateJob );
+                          numJobParams, pJson, messageLength, &updateJob, &pFileContext );
 }

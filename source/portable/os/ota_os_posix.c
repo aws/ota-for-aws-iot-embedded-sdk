@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -118,9 +120,9 @@ OtaOsStatus_t Posix_OtaInitEvent( OtaEventContext_t * pEventCtx )
 
         LogError( ( "Failed to create OTA Event Queue: "
                     "mq_open returned error: "
-                    "OtaOsStatus_t=%i "
+                    "OtaOsStatus_t=%d "
                     ",errno=%s",
-                    otaOsStatus,
+                    ( int ) otaOsStatus,
                     strerror( errno ) ) );
     }
     else
@@ -147,7 +149,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
 
         LogError( ( "Invalid input, Posix_OtaSendEvent supports timeout < INT_MAX, "
                     "timeout = %u",
-                    timeout ) );
+                    ( unsigned ) timeout ) );
     }
 
     if( otaOsStatus == OtaOsSuccess )
@@ -163,7 +165,7 @@ OtaOsStatus_t Posix_OtaSendEvent( OtaEventContext_t * pEventCtx,
                         "Posix_OtaSendEvent returned error: "
                         "OtaOsStatus_t=%i "
                         ",errno=%s ",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
     }
@@ -207,7 +209,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
 
         LogError( ( "Invalid input, Posix_OtaReceiveEvent supports timeout < INT_MAX, "
                     "timeout = %u",
-                    timeout ) );
+                    ( unsigned ) timeout ) );
     }
 
     if( otaOsStatus == OtaOsSuccess )
@@ -223,7 +225,7 @@ OtaOsStatus_t Posix_OtaReceiveEvent( OtaEventContext_t * pEventCtx,
                         "Posix_OtaReceiveEvent returned error: "
                         "OtaOsStatus_t=%i "
                         ",errno=%s ",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
     }
@@ -268,7 +270,7 @@ OtaOsStatus_t Posix_OtaDeinitEvent( OtaEventContext_t * pEventCtx )
                     "mq_unlink returned error: "
                     "OtaOsStatus_t=%i "
                     ",errno=%s",
-                    otaOsStatus,
+                    ( int ) otaOsStatus,
                     strerror( errno ) ) );
     }
     else
@@ -283,8 +285,8 @@ static void selfTestTimerCallback( union sigval arg )
 {
     ( void ) arg;
 
-    LogDebug( ( "Self-test expired within %ums\r\n",
-                otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
+    LogDebug( ( "Self-test expired within %ums",
+                ( unsigned ) otaconfigSELF_TEST_RESPONSE_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
     {
@@ -292,7 +294,7 @@ static void selfTestTimerCallback( union sigval arg )
     }
     else
     {
-        LogWarn( ( "Self-test timer event unhandled.\r\n" ) );
+        LogWarn( ( "Self-test timer event unhandled." ) );
     }
 }
 
@@ -300,8 +302,8 @@ static void requestTimerCallback( union sigval arg )
 {
     ( void ) arg;
 
-    LogDebug( ( "Request timer expired in %ums \r\n",
-                otaconfigFILE_REQUEST_WAIT_MS ) );
+    LogDebug( ( "Request timer expired in %ums",
+                ( unsigned ) otaconfigFILE_REQUEST_WAIT_MS ) );
 
     if( otaTimerCallbackPtr != NULL )
     {
@@ -309,7 +311,7 @@ static void requestTimerCallback( union sigval arg )
     }
     else
     {
-        LogWarn( ( "Request timer event unhandled.\r\n" ) );
+        LogWarn( ( "Request timer event unhandled." ) );
     }
 }
 
@@ -376,12 +378,12 @@ static OtaOsStatus_t pollAndSend( const void * buff,
     {
         LogError( ( "Failed to send event to OTA Event Queue: "
                     "mq_send timeout: "
-                    "OtaOsStatus_t=%i"
+                    "OtaOsStatus_t=%d"
                     ", errno=%s"
                     ", revents=%x",
-                    otaOsStatus,
+                    ( int ) otaOsStatus,
                     strerror( errno ),
-                    fds.revents ) );
+                    ( unsigned ) fds.revents ) );
     }
 
     return otaOsStatus;
@@ -418,12 +420,12 @@ static OtaOsStatus_t pollAndReceive( char * buff,
     {
         LogError( ( "Failed to receive event to OTA Event Queue: "
                     "mq_receive timeout: "
-                    "OtaOsStatus_t=%i"
+                    "OtaOsStatus_t=%d"
                     ", errno=%s"
                     ", revents=%x",
-                    otaOsStatus,
+                    ( int ) otaOsStatus,
                     strerror( errno ),
-                    fds.revents ) );
+                    ( unsigned ) fds.revents ) );
     }
     else
     {
@@ -472,9 +474,9 @@ OtaOsStatus_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
 
             LogError( ( "Failed to create OTA timer: "
                         "timer_create returned error: "
-                        "OtaOsStatus_t=%i "
+                        "OtaOsStatus_t=%d "
                         ",errno=%s",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
         else
@@ -494,9 +496,9 @@ OtaOsStatus_t Posix_OtaStartTimer( OtaTimerId_t otaTimerId,
 
             LogError( ( "Failed to set OTA timer timeout: "
                         "timer_settime returned error: "
-                        "OtaOsStatus_t=%i "
+                        "OtaOsStatus_t=%d "
                         ",errno=%s",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
         else
@@ -532,19 +534,19 @@ OtaOsStatus_t Posix_OtaStopTimer( OtaTimerId_t otaTimerId )
 
             LogError( ( "Failed to stop OTA timer: "
                         "timer_settime returned error: "
-                        "OtaOsStatus_t=%i "
+                        "OtaOsStatus_t=%d "
                         ",errno=%s",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
         else
         {
-            LogDebug( ( "OTA Timer Stopped for Timerid=%i.", otaTimerId ) );
+            LogDebug( ( "OTA Timer Stopped for Timerid=%d.", ( int ) otaTimerId ) );
         }
     }
     else
     {
-        LogDebug( ( "OTA Timer handle NULL for Timerid=%i, can't stop.", otaTimerId ) );
+        LogDebug( ( "OTA Timer handle NULL for Timerid=%d, can't stop.", ( int ) otaTimerId ) );
 
         otaOsStatus = OtaOsTimerStopFailed;
     }
@@ -567,9 +569,9 @@ OtaOsStatus_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
 
             LogError( ( "Failed to delete OTA timer: "
                         "timer_delete returned error: "
-                        "OtaOsStatus_t=%i "
+                        "OtaOsStatus_t=%d "
                         ",errno=%s",
-                        otaOsStatus,
+                        ( int ) otaOsStatus,
                         strerror( errno ) ) );
         }
         else
@@ -581,7 +583,7 @@ OtaOsStatus_t Posix_OtaDeleteTimer( OtaTimerId_t otaTimerId )
     }
     else
     {
-        LogWarn( ( "OTA Timer handle NULL for Timerid=%i, can't delete.", otaTimerId ) );
+        LogWarn( ( "OTA Timer handle NULL for Timerid=%d, can't delete.", ( int ) otaTimerId ) );
 
         otaOsStatus = OtaOsTimerDeleteFailed;
     }

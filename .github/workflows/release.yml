@@ -11,12 +11,12 @@ on:
         required: true
 
 jobs:
-  generate-sbom-and-tag-commit:
+  tag-commit:
     name: Tag commit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.commit_id }}
       - name: Configure git identity
@@ -53,7 +53,7 @@ jobs:
       - name: Install ZIP tools
         run: sudo apt-get install zip unzip
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.commit_id }}
           path: ota-for-aws-iot-embedded-sdk

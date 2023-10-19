@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -51,7 +53,7 @@ void OtaStartTimer_FreeRTOS_harness()
     __CPROVER_assume( pTimerName != NULL );
 
     /* callback is statically defined in ota.c before passing it to
-     * OtaStartTiemr_FreeRTOS. */
+     * OtaStartTimer_FreeRTOS. */
     __CPROVER_assume( callback != NULL );
 
     /* To avoid pdMS_TO_TICKS from integer overflow. */

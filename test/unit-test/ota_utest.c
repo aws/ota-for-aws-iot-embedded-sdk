@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -52,6 +54,7 @@
 #define OTA_TEST_FILE_NUM_BLOCKS          ( OTA_TEST_FILE_SIZE / OTA_FILE_BLOCK_SIZE + 1 )
 #define OTA_TEST_DUPLICATE_NUM_BLOCKS     3
 #define OTA_TEST_FILE_SIZE_STR            "10240"
+#define JOB_DOC_EMPTY                     "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143}"
 #define JOB_DOC_A                         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_B                         "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob21\",\"status\":\"QUEUED\",\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
 #define JOB_DOC_SELF_TEST                 "{\"clientToken\":\"0:testclient\",\"timestamp\":1602795143,\"execution\":{\"jobId\":\"AFR_OTA-testjob20\",\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"self_test\":\"ready\",\"updatedBy\":\"0x1000000\"},\"queuedAt\":1602795128,\"lastUpdatedAt\":1602795128,\"versionNumber\":1,\"executionNumber\":1,\"jobDocument\":{\"afr_ota\":{\"protocols\":[\"MQTT\"],\"streamname\":\"AFR_OTA-XYZ\",\"files\":[{\"filepath\":\"/test/demo\",\"filesize\":" OTA_TEST_FILE_SIZE_STR ",\"fileid\":0,\"certfile\":\"test.crt\",\"sig-sha256-ecdsa\":\"MEQCIF2QDvww1G/kpRGZ8FYvQrok1bSZvXjXefRk7sqNcyPTAiB4dvGt8fozIY5NC0vUDJ2MY42ZERYEcrbwA4n6q7vrBg==\"}] }}}}"
@@ -115,6 +118,8 @@ const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sh
 /* OTA client name. */
 static const char * pOtaDefaultClientId = "ota_utest";
 
+/* Longest supported OTA Thingname*/
+static const char * longestThingname = "AReallyLongThingNameWhichIs128CharactersAndMatchesTheAWSIoTSpecificationForThingnameLengthMaximums12345678901234567890123456789";
 /* OTA job doc. */
 static const char * pOtaJobDoc = NULL;
 
@@ -199,11 +204,12 @@ extern DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
                                    uint32_t contextSize,
                                    uint16_t numJobParams );
 
-extern OtaFileContext_t * parseJobDoc( const JsonDocParam_t * pJsonDoc,
-                                       uint16_t numJobParams,
-                                       const char * pJson,
-                                       uint32_t messageLength,
-                                       bool * pUpdateJob );
+extern DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonDoc,
+                                  uint16_t numJobParams,
+                                  const char * pJson,
+                                  uint32_t messageLength,
+                                  bool * pUpdateJob,
+                                  OtaFileContext_t ** pFileContext );
 
 extern DocParseErr_t validateJSON( const char * pJson,
                                    uint32_t messageLength );
@@ -459,6 +465,89 @@ static OtaMqttStatus_t stubMqttPublish( const char * const unused_1,
     ( void ) unused_3;
     ( void ) unused_4;
     ( void ) unused_5;
+
+    return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttPublishOnlySucceedsTopicIsCorrect( const char * const topic,
+                                                                  uint16_t topicLength,
+                                                                  const char * unused_1,
+                                                                  uint32_t unused_2,
+                                                                  uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum topic size is 128 characters for IoT Core */
+    TEST_ASSERT_LESS_OR_EQUAL( 128U, topicLength );
+    TEST_ASSERT_GREATER_THAN( 1U, topicLength );
+
+    char expected[ 129 ] = { 0 };
+
+    strcat( expected, "$aws/things/" );
+    strcat( expected, pOtaDefaultClientId );
+    strcat( expected, "/jobs/$next/get" );
+
+    TEST_ASSERT_EQUAL_STRING( expected, topic );
+
+    return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttPublishOnlySucceedsIfTruncatedValue( const char * const unused_1,
+                                                                    uint16_t unused_2,
+                                                                    const char * msg,
+                                                                    uint32_t msgSize,
+                                                                    uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum message size is 64 characters for client token + 19 characters for JSON formatting */
+    TEST_ASSERT_LESS_OR_EQUAL( 83U, msgSize );
+    TEST_ASSERT_GREATER_THAN( 19U, msgSize );
+
+    char expected[ 54 ] = { 0 };
+    char actual[ 54 ] = { 0 };
+
+    /* Calculate the start of the thingname */
+    int offset = msgSize - 53U - 2;
+
+    memcpy( actual, msg, 16U );
+
+    TEST_ASSERT_EQUAL_STRING( "{\"clientToken\":\"", actual );
+
+    TEST_ASSERT_EQUAL_CHAR( ':', *( msg + ( offset - 1 ) ) );
+
+    /* Copy out the first 53 characters of the thingname */
+    memcpy( expected, longestThingname, 53U );
+    /* Copy out the 53 characters of the truncated thingname */
+    memcpy( actual, msg + ( offset ), 53U );
+
+    TEST_ASSERT_EQUAL_STRING( expected, actual );
+
+    return OtaMqttSuccess;
+}
+
+static OtaMqttStatus_t stubMqttPublishZeroBlocksReceived( const char * const unused_1,
+                                                          uint16_t unused_2,
+                                                          const char * msg,
+                                                          uint32_t msgSize,
+                                                          uint8_t unused_3 )
+{
+    ( void ) unused_1;
+    ( void ) unused_2;
+    ( void ) unused_3;
+
+    /* Maximum message size is 77 characters */
+    TEST_ASSERT_LESS_OR_EQUAL( 77U, msgSize );
+
+    char actual[ 19 ] = { 0 };
+
+    memcpy( actual, msg, 18U );
+
+    TEST_ASSERT_EQUAL_STRING( "{\"status\":\"IN_PROGRESS\",\"statusDetails\":{\"receive\":\"0/2\"}}", actual );
 
     return OtaMqttSuccess;
 }
@@ -1023,10 +1112,20 @@ void test_OTA_InitWithNullName()
     TEST_ASSERT_EQUAL( OtaAgentStateStopped, OTA_GetState() );
 }
 
+void test_OTA_InitWithNameAtMaxLength()
+{
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 129 ] = { 0 };
+
+    memset( long_name, 1, sizeof( long_name ) - 1 );
+    otaInit( long_name, mockAppCallback );
+    TEST_ASSERT_EQUAL( OtaAgentStateInit, OTA_GetState() );
+}
+
 void test_OTA_InitWithNameTooLong()
 {
-    /* OTA does not accept name longer than 64. Explicitly test long client name. */
-    char long_name[ 100 ] = { 0 };
+    /* OTA does not accept name longer than 128. Explicitly test long client name. */
+    char long_name[ 130 ] = { 0 };
 
     memset( long_name, 1, sizeof( long_name ) - 1 );
     otaInit( long_name, mockAppCallback );
@@ -1437,7 +1536,7 @@ void test_OTA_ImageStateAbortUpdateStatusFail()
     TEST_ASSERT_EQUAL( OtaImageStateAborted, OTA_GetImageState() );
 }
 
-void test_OTA_ImageStateRjectWithActiveJob()
+void test_OTA_ImageStateRejectWithActiveJob()
 {
     otaGoToState( OtaAgentStateWaitingForFileBlock );
 
@@ -1445,7 +1544,7 @@ void test_OTA_ImageStateRjectWithActiveJob()
     TEST_ASSERT_EQUAL( OtaImageStateRejected, OTA_GetImageState() );
 }
 
-void test_OTA_ImageStateRjectWithNoJob()
+void test_OTA_ImageStateRejectWithNoJob()
 {
     otaGoToState( OtaAgentStateReady );
     TEST_ASSERT_EQUAL( OtaAgentStateReady, OTA_GetState() );
@@ -1704,6 +1803,18 @@ void test_OTA_ProcessJobDocumentValidJson()
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+}
+
+void test_OTA_ProcessEmptyJobDocumentValidJson()
+{
+    pOtaJobDoc = JOB_DOC_EMPTY;
+
+    otaGoToState( OtaAgentStateWaitingForJob );
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
+
+    otaReceiveJobDocument();
+    receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
 }
 
 void test_OTA_ProcessJobDocumentPalCreateFileFail()
@@ -2319,6 +2430,8 @@ void test_OTA_ProcessJobDocumentFileIdNotZero()
 
     otaReceiveJobDocument();
     receiveAndProcessOtaEvent();
+    TEST_ASSERT_EQUAL( OtaAgentStateCreatingFile, OTA_GetState() );
+    TEST_ASSERT_EQUAL( OtaImageStateTesting, OTA_GetImageState() );
     receiveAndProcessOtaEvent();
     TEST_ASSERT_EQUAL( OtaAgentStateWaitingForJob, OTA_GetState() );
     TEST_ASSERT_EQUAL( OtaImageStateAccepted, OTA_GetImageState() );
@@ -2596,6 +2709,24 @@ void test_OTA_ReceiveFileBlockCompleteMqttCountUpdateJobCalledTime()
     TEST_ASSERT_EQUAL( OTA_TEST_FILE_NUM_BLOCKS, otaReceivedFileBlockNumber );
 }
 
+void test_OTA_UpdateJobStatus()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+
+    /* Verify the conversion of the value 0U and 2U to a string */
+    otaInterfaces.mqtt.publish = stubMqttPublishZeroBlocksReceived;
+
+    /* Set the file size to an arbitrary value < block size to ensure 2 blocks for the OTA */
+    otaAgent.fileContext.fileSize = 100U;
+    /* With 2 blocks remaining, status message will say '0/2' blocks received */
+    otaAgent.fileContext.blocksRemaining = 2U;
+
+    err = updateJobStatus_Mqtt( &otaAgent, JobStatusInProgress, 0, 0 );
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
+}
+
 void test_OTA_EventProcessingTask_ExitOnAbort()
 {
     OtaEventMsg_t otaEvent = { 0 };
@@ -2725,6 +2856,34 @@ void test_OTA_MQTT_JobSubscribingFailed()
     otaInterfaces.mqtt.subscribe = stubMqttSubscribeAlwaysFail;
     err = requestJob_Mqtt( &otaAgent );
     TEST_ASSERT_EQUAL( OtaErrRequestJobFailed, err );
+}
+
+/* Test the publish topic is assembled correctly */
+void test_OTA_MQTT_PublishesToCorrectTopic()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInitDefault();
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublishOnlySucceedsTopicIsCorrect;
+
+    err = requestJob_Mqtt( &otaAgent );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
+}
+
+/* Test thingname is truncated in requestJob_Mqtt */
+void test_OTA_MQTT_ThingNameTruncated()
+{
+    OtaErr_t err = OtaErrNone;
+
+    otaInit( longestThingname, mockAppCallback );
+    otaInterfaces.mqtt.subscribe = stubMqttSubscribe;
+    otaInterfaces.mqtt.publish = stubMqttPublishOnlySucceedsIfTruncatedValue;
+
+    err = requestJob_Mqtt( &otaAgent );
+
+    TEST_ASSERT_EQUAL( OtaErrNone, err );
 }
 
 /* Test that initFileTransfer_Mqtt fails if the Subscribe fails. */
@@ -3416,18 +3575,41 @@ void test_OTA_parseJobFailsNullJsonDocument()
 {
     OtaFileContext_t * pContext = NULL;
     bool updateJob = false;
+    DocParseErr_t err;
 
     otaInitDefault();
-    pContext = parseJobDoc( NULL, 0, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+    err = parseJobDoc( NULL, 0, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
     TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNullBodyPointer, err );
+    TEST_ASSERT_EQUAL( false, updateJob );
+}
+
+void test_OTA_parseJobFailsMoreBlocksThanBitmap()
+{
+    OtaFileContext_t * pContext = NULL;
+    bool updateJob = false;
+    DocParseErr_t err;
+    JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
+    {
+        { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
+    };
+
+    /* The document structure has an invalid value for ModelParamType_t. */
+    otaAgent.fileContext.blocksRemaining = OTA_MAX_BLOCK_BITMAP_SIZE + 1;
+    otaInitDefault();
+    err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
+
+    TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNone, err );
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
 void test_OTA_extractParameterFailInvalidJobDocModel()
 {
-    OtaFileContext_t * pContext;
+    OtaFileContext_t * pContext = NULL;
     bool updateJob = false;
+    DocParseErr_t err;
     JsonDocParam_t otaCustomJobDocModelParamStructure[ 1 ] =
     {
         { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
@@ -3436,9 +3618,10 @@ void test_OTA_extractParameterFailInvalidJobDocModel()
     /* The document structure has an invalid value for ModelParamType_t. */
 
     otaInitDefault();
-    pContext = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob );
+    err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
     TEST_ASSERT_NULL( pContext );
+    TEST_ASSERT_EQUAL( DocParseErrNone, err );
     TEST_ASSERT_EQUAL( false, updateJob );
 }
 
@@ -3640,7 +3823,7 @@ void test_OTA_jobIdMaxLength()
 
 /* Enlarge job name and size in doc param to simulate if the size of pJobNameBuffer in ota.c
  * and pActiveJobName in OtaAgentContext_t is different. */
-void test_OTA_jobBufferLargerThanpActiveJobName()
+void test_OTA_jobBufferLargerThanActiveJobName()
 {
     pOtaJobDoc = JOB_DOC_INVALID_JOB_ID_LEN_MAX;
 

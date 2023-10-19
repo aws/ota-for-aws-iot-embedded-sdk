@@ -9,7 +9,7 @@ PROOF_UID = setImageStateWithReason_harness
 DEFINES += -Dstatic=""
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
-INCLUDES += -I$(SRCDIR)/test/cbmc/include 
+INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 

@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -57,6 +59,6 @@ void processJobHandler_harness()
 
     /* processJobHandler returns the values which follow OtaErr_t enum. If it does not, then
      * there is a problem. */
-    __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrActivateFailed ),
+    __CPROVER_assert( ( err >= OtaErrNone ) && ( err <= OtaErrEmptyJobDocument ),
                       "Invalid return value from processJobHandler: Expected a value from OtaErr_t enum." );
 }

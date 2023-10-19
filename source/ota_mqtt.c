@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -43,24 +45,27 @@
 #include "ota_appversion32.h"
 
 /* Stream GET message constants. */
-#define OTA_CLIENT_TOKEN             "rdy"                  /*!< Arbitrary client token sent in the stream "GET" message. */
+#define OTA_CLIENT_TOKEN                      "rdy"         /*!< Arbitrary client token sent in the stream "GET" message. */
+
+/* Maximum length of ThingName appended onto the ClientToken*/
+#define OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN    53U           /*!<  Max ThingName length = Max client token length (64) - Max request count length (10) - 1 (colon separator) */
 
 /* Agent to Job Service status message constants. */
-#define OTA_STATUS_MSG_MAX_SIZE      128U               /*!< Max length of a job status message to the service. */
+#define OTA_STATUS_MSG_MAX_SIZE               128U          /*!< Max length of a job status message to the service. */
 
 /**
  *  @brief Topic strings used by the OTA process.
  *
  * These first few are topic extensions to the dynamic base topic that includes the Thing name.
  */
-#define MQTT_API_THINGS              "$aws/things/"                   /*!< Topic prefix for thing APIs. */
-#define MQTT_API_JOBS_NEXT_GET       "/jobs/$next/get"                /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS_NOTIFY_NEXT    "/jobs/notify-next"              /*!< Topic suffix for job API. */
-#define MQTT_API_JOBS                "/jobs/"                         /*!< Job API identifier. */
-#define MQTT_API_UPDATE              "/update"                        /*!< Job API identifier. */
-#define MQTT_API_STREAMS             "/streams/"                      /*!< Stream API identifier. */
-#define MQTT_API_DATA_CBOR           "/data/cbor"                     /*!< Stream API suffix. */
-#define MQTT_API_GET_CBOR            "/get/cbor"                      /*!< Stream API suffix. */
+#define MQTT_API_THINGS                       "$aws/things/"          /*!< Topic prefix for thing APIs. */
+#define MQTT_API_JOBS_NEXT_GET                "/jobs/$next/get"       /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS_NOTIFY_NEXT             "/jobs/notify-next"     /*!< Topic suffix for job API. */
+#define MQTT_API_JOBS                         "/jobs/"                /*!< Job API identifier. */
+#define MQTT_API_UPDATE                       "/update"               /*!< Job API identifier. */
+#define MQTT_API_STREAMS                      "/streams/"             /*!< Stream API identifier. */
+#define MQTT_API_DATA_CBOR                    "/data/cbor"            /*!< Stream API suffix. */
+#define MQTT_API_GET_CBOR                     "/get/cbor"             /*!< Stream API suffix. */
 
 /* NOTE: The format specifiers in this string are placeholders only; the lengths of these
  * strings are used to calculate buffer sizes.
@@ -127,13 +132,13 @@ static const char asciiDigits[] =
 /* Pre-calculate max buffer size for mqtt topics and messages. We make sure the buffer size is large
  * enough to hold a dynamically constructed topic and message string.
  */
-#define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )              /*!< Calculate max buffer size based on topic template and thing name length. */
-#define TOPIC_GET_NEXT_BUFFER_SIZE       ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                            /*!< Max buffer size for `jobs/$next/get` topic. */
-#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                         /*!< Max buffer size for `jobs/notify-next` topic. */
-#define TOPIC_JOB_STATUS_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )           /*!< Max buffer size for `jobs/<job_name>/update` topic. */
-#define TOPIC_STREAM_DATA_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN )       /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
-#define TOPIC_GET_STREAM_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )        /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
-#define MSG_GET_NEXT_BUFFER_SIZE         ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetNextJobMsgTemplate ) + U32_MAX_LEN )                 /*!< Max buffer size for message of `jobs/$next/get topic`. */
+#define TOPIC_PLUS_THINGNAME_LEN( topic )    ( CONST_STRLEN( topic ) + otaconfigMAX_THINGNAME_LEN + NULL_CHAR_LEN )                                                                     /*!< Calculate max buffer size based on topic template and thing name length. */
+#define TOPIC_GET_NEXT_BUFFER_SIZE       ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsGetNextTopicTemplate ) )                                                                                   /*!< Max buffer size for `jobs/$next/get` topic. */
+#define TOPIC_NOTIFY_NEXT_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobsNotifyNextTopicTemplate ) )                                                                                /*!< Max buffer size for `jobs/notify-next` topic. */
+#define TOPIC_JOB_STATUS_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaJobStatusTopicTemplate ) + JOB_NAME_MAX_LEN )                                                                  /*!< Max buffer size for `jobs/<job_name>/update` topic. */
+#define TOPIC_STREAM_DATA_BUFFER_SIZE    ( TOPIC_PLUS_THINGNAME_LEN( pOtaStreamDataTopicTemplate ) + STREAM_NAME_MAX_LEN )                                                              /*!< Max buffer size for `streams/<stream_name>/data/cbor` topic. */
+#define TOPIC_GET_STREAM_BUFFER_SIZE     ( TOPIC_PLUS_THINGNAME_LEN( pOtaGetStreamTopicTemplate ) + STREAM_NAME_MAX_LEN )                                                               /*!< Max buffer size for `streams/<stream_name>/get/cbor` topic. */
+#define MSG_GET_NEXT_BUFFER_SIZE         ( CONST_STRLEN( "{\"clientToken\":\"" ) + CONST_STRLEN( ":" ) + CONST_STRLEN( "\"}" ) + OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN + U32_MAX_LEN + 1 ) /*!< Max buffer size for message of `jobs/$next/get topic`. */
 
 /**
  * @brief Subscribe to the jobs notification topic (i.e. New file version available).
@@ -277,6 +282,8 @@ static size_t stringBuilder( char * pBuffer,
         curLen += thisLength;
     }
 
+    pBuffer[ curLen ] = '\0';
+
     return curLen;
 }
 
@@ -290,17 +297,16 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     uint32_t valueCopy = value;
     size_t size = 0;
 
-    /* Assert if there is not enough buffer space. */
-
-    assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
+    /* Assert if there is not enough buffer space. */
+    assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
 
-    while( valueCopy > 0U )
+    do
     {
         *pCur = asciiDigits[ ( valueCopy % 10U ) ];
         pCur++;
         valueCopy /= 10U;
-    }
+    } while( valueCopy > 0U );
 
     while( pCur > workBuf )
     {
@@ -310,7 +316,6 @@ static size_t stringBuilderUInt32Decimal( char * pBuffer,
     }
 
     pDest[ size ] = '\0';
-    size++;
     return size;
 }
 
@@ -325,10 +330,9 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     uint32_t valueCopy = value;
     size_t i;
 
-    /* Assert if there is not enough buffer space. */
-
-    assert( bufferSizeBytes >= U32_MAX_LEN );
     ( void ) bufferSizeBytes;
+    /* Assert if there is not enough buffer space. */
+    assert( bufferSizeBytes >= U32_MAX_LEN + 1 );
 
     /* Render all 8 digits, including leading zeros. */
     for( i = 0U; i < 8U; i++ )
@@ -346,7 +350,6 @@ static size_t stringBuilderUInt32Hex( char * pBuffer,
     }
 
     pDest[ size ] = '\0';
-    size++;
     return size;
 }
 
@@ -857,13 +860,16 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     /* The following buffer is big enough to hold a dynamically constructed
      * $next/get job message. It contains a client token that is used to track
      * how many requests have been made. */
-    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ];
+    char pMsg[ MSG_GET_NEXT_BUFFER_SIZE ] = { '\0' };
 
     static uint32_t reqCounter = 0;
     OtaErr_t otaError = OtaErrRequestJobFailed;
     OtaMqttStatus_t mqttStatus = OtaMqttSuccess;
     uint32_t msgSize = 0;
     uint16_t topicLen = 0;
+    uint32_t xThingNameLength = 0;
+    char reqCounterString[ U32_MAX_LEN + 1 ];
+    uint32_t reqCounterStringLength = 0;
 
     /* NULL-terminated list of topic string parts. */
     const char * pTopicParts[] =
@@ -873,18 +879,8 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
         MQTT_API_JOBS_NEXT_GET,
         NULL
     };
-    char reqCounterString[ U32_MAX_LEN + 1 ];
+
     /* NULL-terminated list of payload parts */
-    /* NOTE: this must agree with pOtaGetNextJobMsgTemplate, do not add spaces, etc. */
-    const char * pPayloadParts[] =
-    {
-        "{\"clientToken\":\"",
-        NULL, /* Request counter string not available at compile time, initialized below. */
-        ":",
-        NULL, /* Thing Name not available at compile time, initialized below. */
-        "\"}",
-        NULL
-    };
 
     assert( pAgentCtx != NULL );
 
@@ -893,22 +889,31 @@ OtaErr_t requestJob_Mqtt( const OtaAgentContext_t * pAgentCtx )
     ( void ) pOtaGetNextJobMsgTemplate;
 
     pTopicParts[ 1 ] = ( const char * ) pAgentCtx->pThingName;
-    pPayloadParts[ 1 ] = reqCounterString;
-    pPayloadParts[ 3 ] = ( const char * ) pAgentCtx->pThingName;
 
-    ( void ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
+    /* Client token max length is 64. It is a combination of request counter (max 10 characters), a separator colon, and the ThingName. */
+    xThingNameLength = ( uint32_t ) strnlen( ( const char * ) pAgentCtx->pThingName, OTA_CLIENT_TOKEN_MAX_THINGNAME_LEN );
+
+    reqCounterStringLength = ( uint32_t ) stringBuilderUInt32Decimal( reqCounterString, sizeof( reqCounterString ), reqCounter );
+
+    /* Assemble the string by copying the pieces into the buffer. This is done manually since we know the size of the thingname. */
+    strncpy( &pMsg[ msgSize ], "{\"clientToken\":\"", MSG_GET_NEXT_BUFFER_SIZE );
+    msgSize = 16U;
+    strncpy( &pMsg[ msgSize ], reqCounterString, reqCounterStringLength );
+    /* Do not count the terminating null byte on the request counter string */
+    msgSize += reqCounterStringLength - 1;
+    strncpy( &pMsg[ msgSize ], ":", MSG_GET_NEXT_BUFFER_SIZE - msgSize );
+    msgSize++;
+    strncpy( &pMsg[ msgSize ], ( const char * ) pAgentCtx->pThingName, xThingNameLength );
+    msgSize += xThingNameLength;
+    strncpy( &pMsg[ msgSize ], "\"}", MSG_GET_NEXT_BUFFER_SIZE - msgSize );
+    msgSize += 2U;
 
     /* Subscribe to the OTA job notification topic. */
     mqttStatus = subscribeToJobNotificationTopics( pAgentCtx );
 
     if( mqttStatus == OtaMqttSuccess )
     {
-        LogDebug( ( "MQTT job request number: counter=%u", reqCounter ) );
-
-        msgSize = ( uint32_t ) stringBuilder(
-            pMsg,
-            sizeof( pMsg ),
-            pPayloadParts );
+        LogDebug( ( "MQTT job request number: counter=%u", ( unsigned ) reqCounter ) );
 
         /* The buffer is static and the size is calculated to fit. */
         assert( ( msgSize > 0U ) && ( msgSize < sizeof( pMsg ) ) );
@@ -1161,9 +1166,9 @@ OtaErr_t requestFileBlock_Mqtt( OtaAgentContext_t * pAgentCtx )
 
         if( mqttStatus == OtaMqttSuccess )
         {
-            LogInfo( ( "Published to MQTT topic to request the next block: "
-                       "topic=%s",
-                       pTopicBuffer ) );
+            LogDebug( ( "Published to MQTT topic to request the next block: "
+                        "topic=%s",
+                        pTopicBuffer ) );
             result = OtaErrNone;
         }
         else

@@ -7,7 +7,7 @@ HARNESS_FILE = $(HARNESS_ENTRY)
 PROOF_UID = executeHandler_harness
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
-INCLUDES += -I$(SRCDIR)/test/cbmc/include 
+INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c

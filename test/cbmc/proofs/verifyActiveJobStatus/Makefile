@@ -9,10 +9,10 @@ PROOF_UID = verifyActiveJobStatus
 DEFINES += -Dstatic=""
 
 INCLUDES += -I$(SRCDIR)/source/dependency/coreJSON/source/include/
-INCLUDES += -I$(SRCDIR)/test/cbmc/include 
+INCLUDES += -I$(SRCDIR)/test/cbmc/include
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
-PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c 
+PROOF_SOURCES += $(SRCDIR)/test/cbmc/source/stubs.c
 
 PROJECT_SOURCES += $(SRCDIR)/source/ota.c
 

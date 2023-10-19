@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -43,11 +45,11 @@
 static OtaTimerInterface_t timer;
 static OtaEventInterface_t event;
 static OtaEventContext_t * pEventContext = NULL;
-static bool timerCallbackInovked = false;
+static bool timerCallbackInvoked = false;
 
 static void timerCallback()
 {
-    timerCallbackInovked = true;
+    timerCallbackInvoked = true;
 }
 /* ============================   UNITY FIXTURES ============================ */
 
@@ -66,7 +68,7 @@ void setUp( void )
 
 void tearDown( void )
 {
-    timerCallbackInovked = false;
+    timerCallbackInvoked = false;
 }
 
 /* ========================================================================== */
@@ -78,20 +80,20 @@ void test_OTA_posix_SendAndRecvEvent( void )
 {
     OtaEventMsg_t otaEventToSend = { 0 };
     OtaEventMsg_t otaEventToRecv = { 0 };
-    OtaErr_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
 
     otaEventToSend.eventId = OtaAgentEventStart;
     result = event.init( event.pEventContext );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     result = event.send( event.pEventContext, &otaEventToSend, 0 );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
     result = event.recv( event.pEventContext, &otaEventToRecv, 0 );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
     TEST_ASSERT_EQUAL( otaEventToSend.eventId, otaEventToRecv.eventId );
 
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 }
 
 /**
@@ -99,13 +101,13 @@ void test_OTA_posix_SendAndRecvEvent( void )
  */
 void test_OTA_posix_InvalidEventQueue( void )
 {
-    OtaErr_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
 
     result = event.init( event.pEventContext );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     /* Try to deinitialize a non-existing queue. */
     result = event.deinit( event.pEventContext );
@@ -114,27 +116,27 @@ void test_OTA_posix_InvalidEventQueue( void )
 
 void timerCreateAndStop( OtaTimerId_t timer_id )
 {
-    OtaErr_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
     int wait = 2 * OTA_DEFAULT_TIMEOUT; /* Wait for 2 times of the timeout specified. */
 
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, timerCallback );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     /* Wait for the timer callback to be invoked. */
-    while( timerCallbackInovked == false && wait > 0 )
+    while( timerCallbackInvoked == false && wait > 0 )
     {
         /* Sleep 1 ms. */
         usleep( 1000 );
         --wait;
     }
 
-    TEST_ASSERT_EQUAL( true, timerCallbackInovked );
+    TEST_ASSERT_EQUAL( true, timerCallbackInvoked );
 
     result = timer.stop( timer_id );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     result = timer.delete( timer_id );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 }
 
 /**
@@ -158,25 +160,25 @@ void test_OTA_posix_SelfTestTimerCreateAndStop( void )
  */
 void test_OTA_posix_InvalidTimerOperations( void )
 {
-    OtaErr_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
     OtaTimerId_t timer_id = OtaRequestTimer;
 
     result = timer.start( timer_id, TIMER_NAME, OTA_DEFAULT_TIMEOUT, NULL );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     /* Set the timeout to 0 and stop the timer*/
     result = timer.start( timer_id, TIMER_NAME, 0, NULL );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     result = timer.stop( timer_id );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     result = timer.delete( timer_id );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 
     /* Delete a timer that has been deleted. */
     result = timer.delete( timer_id );
-    TEST_ASSERT_NOT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_NOT_EQUAL( OtaOsSuccess, result );
 }
 
 /**
@@ -202,7 +204,7 @@ void test_OTA_posix_MemoryAllocAndFree( void )
 void test_OTA_posix_RecvEventTimeout( void )
 {
     OtaEventMsg_t otaEventToRecv = { 0 };
-    OtaErr_t result = OtaErrUninitialized;
+    OtaOsStatus_t result = OtaOsSuccess;
     time_t recvTimeoutMs = 3000;
     struct timespec tsStartTime = { 0 };
     struct timespec tsEndTime = { 0 };
@@ -232,5 +234,5 @@ void test_OTA_posix_RecvEventTimeout( void )
     TEST_ASSERT_GREATER_OR_EQUAL( ( recvTimeoutMs / 1000 ) - 1, timeDiffSec );
 
     result = event.deinit( event.pEventContext );
-    TEST_ASSERT_EQUAL( OtaErrNone, result );
+    TEST_ASSERT_EQUAL( OtaOsSuccess, result );
 }

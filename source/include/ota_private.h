@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -61,7 +63,7 @@
 #define BITS_PER_BYTE                ( ( uint32_t ) 1U << LOG2_BITS_PER_BYTE )            /*!< @brief Number of bits in a byte. This is used by the block bitmap implementation. */
 #define OTA_FILE_BLOCK_SIZE          ( ( uint32_t ) 1U << otaconfigLOG2_FILE_BLOCK_SIZE ) /*!< @brief Data section size of the file data block message (excludes the header). */
 #define OTA_MAX_FILES                1U                                                   /*!< @brief [MUST REMAIN 1! Future support.] Maximum number of concurrent OTA files. */
-#define OTA_MAX_BLOCK_BITMAP_SIZE    128U                                                 /*!< @brief Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
+#define OTA_MAX_BLOCK_BITMAP_SIZE    otaconfigMAX_BLOCK_BITMAP_SIZE                       /*!< @brief Max allowed number of bytes to track all blocks of an OTA file. Adjust block size if more range is needed. */
 #define OTA_REQUEST_MSG_MAX_SIZE     ( 3U * OTA_MAX_BLOCK_BITMAP_SIZE )                   /*!< @brief Maximum size of the message */
 #define OTA_REQUEST_URL_MAX_SIZE     ( 1500 )                                             /*!< @brief Maximum size of the S3 presigned URL */
 #define OTA_ERASED_BLOCKS_VAL        0xffU                                                /*!< @brief The starting state of a group of erased blocks in the Rx block bitmap. */
@@ -188,23 +190,24 @@ typedef enum
  */
 typedef enum
 {
-    DocParseErrUnknown = -1,          /*!< The error code has not yet been set by a logic path. */
-    DocParseErrNone = 0,              /*!< No error in parsing the document. */
-    DocParseErrOutOfMemory,           /*!< We failed to allocate enough dynamic memory for a field. */
-    DocParseErrUserBufferInsuffcient, /*!< The supplied user buffer is insufficient for a field. */
-    DocParseErrFieldTypeMismatch,     /*!< The field type parsed does not match the document model. */
-    DocParseErrBase64Decode,          /*!< There was an error decoding the base64 data. */
-    DocParseErrInvalidNumChar,        /*!< There was an invalid character in a numeric value field. */
-    DocParseErrDuplicatesNotAllowed,  /*!< A duplicate parameter was found in the job document. */
-    DocParseErrMalformedDoc,          /*!< The document didn't fulfill the model requirements. */
-    DocParseErr_InvalidJSONBuffer,    /*!< When the JSON is malformed and not parsed correctly. */
-    DocParseErrNullModelPointer,      /*!< The pointer to the document model was NULL. */
-    DocParseErrNullBodyPointer,       /*!< The document model's internal body pointer was NULL. */
-    DocParseErrNullDocPointer,        /*!< The pointer to the JSON document was NULL. */
-    DocParseErrTooManyParams,         /*!< The document model has more parameters than we can handle. */
-    DocParseErrParamKeyNotInModel,    /*!< The document model does not include the specified parameter key. */
-    DocParseErrInvalidModelParamType, /*!< The document model specified an invalid parameter type. */
-    DocParseErrInvalidToken           /*!< The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrUnknown = -1,           /*!< The error code has not yet been set by a logic path. */
+    DocParseErrNone = 0,               /*!< No error in parsing the document. */
+    DocParseErrOutOfMemory,            /*!< We failed to allocate enough dynamic memory for a field. */
+    DocParseErrUserBufferInsufficient, /*!< The supplied user buffer is insufficient for a field. */
+    DocParseErrFieldTypeMismatch,      /*!< The field type parsed does not match the document model. */
+    DocParseErrBase64Decode,           /*!< There was an error decoding the base64 data. */
+    DocParseErrInvalidNumChar,         /*!< There was an invalid character in a numeric value field. */
+    DocParseErrDuplicatesNotAllowed,   /*!< A duplicate parameter was found in the job document. */
+    DocParseErrMalformedDoc,           /*!< The document didn't fulfill the model requirements. */
+    DocParseErr_InvalidJSONBuffer,     /*!< When the JSON is malformed and not parsed correctly. */
+    DocParseErrNullModelPointer,       /*!< The pointer to the document model was NULL. */
+    DocParseErrNullBodyPointer,        /*!< The document model's internal body pointer was NULL. */
+    DocParseErrNullDocPointer,         /*!< The pointer to the JSON document was NULL. */
+    DocParseErrTooManyParams,          /*!< The document model has more parameters than we can handle. */
+    DocParseErrParamKeyNotInModel,     /*!< The document model does not include the specified parameter key. */
+    DocParseErrInvalidModelParamType,  /*!< The document model specified an invalid parameter type. */
+    DocParseErrInvalidToken,           /*!< The Jasmine token was invalid, producing a NULL pointer. */
+    DocParseErrEmptyJobDoc             /*!< The document is valid but does not contain all necessary fields. */
 } DocParseErr_t;
 
 /**

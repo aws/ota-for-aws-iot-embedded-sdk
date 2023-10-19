@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -48,6 +50,6 @@ void verifyRequiredParamsExtracted_harness()
 
     err = __CPROVER_file_local_ota_c_verifyRequiredParamsExtracted( &modelParams, &docModel );
 
-    __CPROVER_assert( ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
+    __CPROVER_assert( ( DocParseErrEmptyJobDoc == err ) || ( err == DocParseErrNone ) || ( err == DocParseErrMalformedDoc ),
                       "Error: Expected return value to be either DocParseErrNone or DocParseErrMalformedDoc" );
 }

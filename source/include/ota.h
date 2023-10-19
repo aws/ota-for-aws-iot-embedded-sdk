@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -99,7 +101,8 @@ typedef enum OtaErr
     OtaErrFailedToEncodeCbor,     /*!< @brief Failed to encode CBOR object for requesting data block from streaming service. */
     OtaErrFailedToDecodeCbor,     /*!< @brief Failed to decode CBOR object from streaming service response. */
     OtaErrActivateFailed,         /*!< @brief Failed to activate the new image. */
-    OtaErrFileSizeOverflow        /*!< @brief Firmware file size greater than the max allowed size. */
+    OtaErrFileSizeOverflow,       /*!< @brief Firmware file size greater than the max allowed size. */
+    OtaErrEmptyJobDocument        /*!< @brief Empty job document found - this happens on start up. */
 } OtaErr_t;
 
 /**
@@ -275,7 +278,7 @@ typedef struct OtaJobDocument
  * OtaJobEventActivate|OtaJobDocument_t|status and reason
  * OtaJobEventFail|OtaJobDocument_t|status, reason and subReason
  * OtaJobEventStartTest|NULL|nothing
- * OtaJobEventProcessed|OtaEventData_t|data buffer inputed from user by OTA_SignalEvent
+ * OtaJobEventProcessed|OtaEventData_t|data buffer inputted from user by OTA_SignalEvent
  * OtaJobEventSelfTestFailed|NULL|nothing
  * OtaJobEventParseCustomJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, and jobDocLength
  * OtaJobEventReceivedJob|OtaJobDocument_t|pJobId, jobIdLength, pJobDocJson, jobDocLength, and fileTypeId

@@ -1,6 +1,8 @@
 /*
- * AWS IoT Over-the-air Update v3.3.0
+ * AWS IoT Over-the-air Update v3.4.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -117,7 +119,7 @@
  *        This table assumes that the padding symbol is the Ascii character '='
  *
  *        Valid Base64 symbols will have an index ranging from 0-63. The Base64 digits being used
- *        are "ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the
+ *        are "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" where 'A' is the
  *        0th index of the Base64 symbols and '/' is the 63rd index.
  *
  *        Outside of the numbers 0-63, there are magic numbers in this table:
@@ -401,22 +403,6 @@ static Base64Status_t decodeBase64IndexBuffer( uint32_t * pBase64IndexBuffer,
     return returnVal;
 }
 
-/**
- * @brief Decode Base64 encoded data.
- *
- * @param[out] pDest Pointer to a buffer for storing the decoded result.
- * @param[in]  destLen Length of the pDest buffer.
- * @param[out] pResultLen Pointer to the length of the decoded result.
- * @param[in]  pEncodedData Pointer to a buffer containing the Base64 encoded
- *             data that is intended to be decoded.
- * @param[in]  encodedLen Length of the pEncodedData buffer.
- *
- * @return     One of the following:
- *             - #Base64Success if the Base64 encoded data was valid
- *               and successfully decoded.
- *             - An error code defined in ota_base64_private.h if the
- *               encoded data or input parameters are invalid.
- */
 Base64Status_t base64Decode( uint8_t * pDest,
                              const size_t destLen,
                              size_t * pResultLen,

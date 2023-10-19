@@ -37,7 +37,7 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
 # Include filepaths for source and include.
 include( ${MODULE_ROOT_DIR}/otaFilePaths.cmake )
-include( ${MODULE_ROOT_DIR}/otaDependenyFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/otaDependencyFilePaths.cmake )
 
 # Target for Coverity analysis that builds the library.
 add_library( coverity_analysis
