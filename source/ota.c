@@ -2974,7 +2974,7 @@ static void executeHandler( uint32_t index,
 {
     OtaErr_t err = OtaErrNone;
 
-    LogWarn( ( "Index: %u. OTA event id: %i", index, ( int ) pEventMsg->eventId ) );
+    LogWarn( ( "Index: %lu. OTA event id: %i", index, ( int ) pEventMsg->eventId ) );
 
     assert( otaTransitionTable[ index ].handler != NULL );
 
