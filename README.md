@@ -1,15 +1,15 @@
 # AWS IoT Over-the-air Update Library
 
 ## Getting Started With OTA
-As mentioned in the previous 'Upcoming changes' section, the new "core" OTA 
-libraries have been released. These modular and composable libraries can be 
-utilized to implement an OTA 'orchestrator' which sequences the libraries to 
-acheive Over-The-Air Update functionality. The composable nature of the OTA 
+As mentioned in the previous 'Upcoming changes' section, the new "core" OTA
+libraries have been released. These modular and composable libraries can be
+utilized to implement an OTA 'orchestrator' which sequences the libraries to
+achieve Over-The-Air Update functionality. The composable nature of the OTA
 orchestrator will allow for new backing services, both supported by AWS and
 not.
 
-**This library will remain available however it will not be developed further.** Support will instead be focused on 
-the new composable libraries and example orchestators. 
+**This library will remain available however it will not be developed further.** Support will instead be focused on
+the new composable libraries and example orchestrators.
 
 For more information, see the following:
 1. FreeRTOS.org webpage explaining the [modular OTA concept](https://www.freertos.org/freertos-core/over-the-air-updates/index.html)
@@ -17,7 +17,7 @@ For more information, see the following:
 2. Example: [OTA Agent Orchestrator](https://www.freertos.org/freertos-core/over-the-air-updates/mqtt-ota-agent-orchestrator.html)
     1. This one is written to ease the transition of applications using this SDK.
 
-And for the composable libraries, see: 
+And for the composable libraries, see:
 1. [Jobs Library](https://github.com/aws/Jobs-for-AWS-IoT-embedded-sdk/tree/main) which also contains additional support for [AWS IoT OTA jobs]()
 2. [MQTT Streaming Library](https://github.com/aws/aws-iot-core-mqtt-file-streams-embedded-c) for file block downloads over MQTT
 3. [coreHTTP](https://github.com/FreeRTOS/coreHTTP) for file block downloads over HTTP
