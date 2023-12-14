@@ -1,5 +1,29 @@
 # AWS IoT Over-the-air Update Library
 
+## Getting Started With OTA
+As mentioned in the previous 'Upcoming changes' section, the new "core" OTA
+libraries have been released. These modular and composable libraries can be
+utilized to implement an OTA 'orchestrator' which sequences the libraries to
+achieve Over-The-Air Update functionality. The composable nature of the OTA
+orchestrator will allow for new backing services, both supported by AWS and
+not.
+
+**This library will remain available however it will not be developed further.** Support will instead be focused on
+the new composable libraries and example orchestrators.
+
+For more information, see the following:
+1. FreeRTOS.org webpage explaining the [modular OTA concept](https://www.freertos.org/freertos-core/over-the-air-updates/index.html)
+1. Example: [Simple OTA Orchestrator](https://www.freertos.org/freertos-core/over-the-air-updates/mqtt-simple-orchestrator.html)
+2. Example: [OTA Agent Orchestrator](https://www.freertos.org/freertos-core/over-the-air-updates/mqtt-ota-agent-orchestrator.html)
+    1. This one is written to ease the transition of applications using this SDK.
+
+And for the composable libraries, see:
+1. [Jobs Library](https://github.com/aws/Jobs-for-AWS-IoT-embedded-sdk/tree/main) which also contains additional support for [AWS IoT OTA jobs]()
+2. [MQTT Streaming Library](https://github.com/aws/aws-iot-core-mqtt-file-streams-embedded-c) for file block downloads over MQTT
+3. [coreHTTP](https://github.com/FreeRTOS/coreHTTP) for file block downloads over HTTP
+
+## Description
+
 **[API Documentation Pages for current and previous releases of this library can be found here](https://aws.github.io/ota-for-aws-iot-embedded-sdk/)**
 
 The OTA library enables you to manage the notification of a newly available
@@ -37,9 +61,7 @@ release.**
 
 ## Upcoming Changes
 
-Intended for release in Q4 2023, a major version update of this library will make it compliant with the FreeRTOS “core” branded libraries design goal of being free of any dependencies other than the C library. The monolithic design of the existing OTA library doesn't make it easy to make use case specific modifications, such as changing the OTA update source. The new major version will refactor the library, amongst other things, to increase modularity and simplify the use of any firmware source or communication mechanism, both supported by AWS and not.
-
-While the old version of this library will remain available, we will not be developing it further and will instead focus on the newer major versions going forward. To see our current progress towards this goal, please see [FreeRTOS/Labs-Project-ota-example-for-aws-iot-core](https://github.com/FreeRTOS/Labs-Project-ota-example-for-aws-iot-core).
+This library will be deprecated in 2024. Please see [Getting Started With OTA](#getting-started-with-ota)
 
 ## AWS IoT Over-the-air Updates Config File
 
