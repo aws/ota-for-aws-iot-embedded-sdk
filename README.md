@@ -83,11 +83,12 @@ To build unit tests, the submodule dependency of CMock is required. Use the
 following command to clone the submodule:
 
 ```
-git submodule update --checkout --init --recursive test/unit-test/CMock source/dependency/coreJSON
+git submodule update --checkout --init --recursive test/unit-test/CMock source/dependency/coreJSON source/dependency/3rdparty/tinycbor
 ```
 
 ### Platform Prerequisites
 
+- Linux
 - For building the library, **CMake 3.13.0** or later and a **C90 compiler**.
 - For running unit tests, **Ruby 2.0.0** or later is additionally required for
   the CMock test framework (that we use).
