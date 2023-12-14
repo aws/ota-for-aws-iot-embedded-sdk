@@ -3596,7 +3596,7 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
     };
 
     /* The document structure has an invalid value for ModelParamType_t. */
-    otaAgent.fileContext.blocksRemaining = OTA_MAX_BLOCK_BITMAP_SIZE + 1;
+    otaAgent.fileContext.blocksRemaining = ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) + 1;
     otaInitDefault();
     err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
