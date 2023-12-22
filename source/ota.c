@@ -2265,9 +2265,9 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
     {
         err = OtaJobParseErrBadModelInitParams;
         LogError( ( "Parameter check failed: pFileContext->fileSize (%u) greater than can be tracked.",
-                   pFileContext->fileSize );
+                   pFileContext->fileSize ) );
         LogWarn( ( "Largest trackable size: OTA_MAX_BLOCK_BITMAP_SIZE (%u) * BITS_PER_BYTE (%u) = %u",
-                   OTA_MAX_BLOCK_BITMAP_SIZE, BITS_PER_BYTE, ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) );
+                   OTA_MAX_BLOCK_BITMAP_SIZE, BITS_PER_BYTE, ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) ) );
     }
     /* If there's an active job, verify that it's the same as what's being reported now. */
     /* We already checked for missing parameters so we SHOULD have a job name in the context. */
