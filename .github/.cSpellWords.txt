@@ -24,6 +24,7 @@ FOOBA
 FOOBDA
 getpacketid
 isystem
+itimerspec
 lcov
 lpthread
 misra
