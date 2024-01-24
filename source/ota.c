@@ -3102,7 +3102,7 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
 
 static uint32_t fileSizeToBlocks( uint32_t fileSize )
 {
-    return ( uint32_t ) ( ( fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE );
+    return ( uint32_t ) ( ( fileSize >> otaconfigLOG2_FILE_BLOCK_SIZE ) + (( OTA_FILE_BLOCK_SIZE - 1U ) >> otaconfigLOG2_FILE_BLOCK_SIZE));
 }
 
 void OTA_EventProcessingTask( const void * pUnused )
