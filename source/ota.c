@@ -498,7 +498,7 @@ static void resetEventQueue( void );
 /**
  * @brief Calculate the number of blocks required to download the file.
  */
-static uint16_t fileSizeToBlocks( uint32_t fileSize );
+static uint32_t fileSizeToBlocks( uint32_t fileSize );
 
 /* OTA state event handler functions. */
 
@@ -3100,9 +3100,9 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
     }
 }
 
-static uint16_t fileSizeToBlocks( uint32_t fileSize )
+static uint32_t fileSizeToBlocks( uint32_t fileSize )
 {
-    return ( uint16_t ) ( ( fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE );
+    return ( uint32_t ) ( ( fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE );
 }
 
 void OTA_EventProcessingTask( const void * pUnused )
