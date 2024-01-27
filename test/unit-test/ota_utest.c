@@ -3595,8 +3595,11 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
         { OTA_JSON_JOB_ID_KEY, OTA_JOB_PARAM_REQUIRED, U16_OFFSET( OtaFileContext_t, pJobName ), U16_OFFSET( OtaFileContext_t, jobNameMaxSize ), UINT16_MAX },
     };
 
-    /* The document structure has an invalid value for ModelParamType_t. */
-    otaAgent.fileContext.blocksRemaining = ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) + 1;
+    /* Set the file size to be more than the maximum that can be tracked using
+     * bitmap. */
+    otaAgent.fileContext.fileSize = ( ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) /* Maximum number of trackable blocks. */
+                                      * OTA_FILE_BLOCK_SIZE ) /* Size of each block. */
+                                    + 1; /* File size bigger than the maximum trackable. */
     otaInitDefault();
     err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
