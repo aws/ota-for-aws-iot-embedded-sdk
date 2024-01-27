@@ -3598,8 +3598,8 @@ void test_OTA_parseJobFailsMoreBlocksThanBitmap()
     /* Set the file size to be more than the maximum that can be tracked using
      * bitmap. */
     otaAgent.fileContext.fileSize = ( ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) /* Maximum number of trackable blocks. */
-                                      * OTA_FILE_BLOCK_SIZE ) /* Size of each block. */
-                                    + 1; /* File size bigger than the maximum trackable. */
+                                      * OTA_FILE_BLOCK_SIZE )                       /* Size of each block. */
+                                    + 1;                                            /* File size bigger than the maximum trackable. */
     otaInitDefault();
     err = parseJobDoc( otaCustomJobDocModelParamStructure, 1, JOB_DOC_A, strlen( JOB_DOC_A ), &updateJob, &pContext );
 
