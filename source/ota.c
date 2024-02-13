@@ -252,6 +252,7 @@ static DocParseErr_t extractAndStoreArray( const char * pKey,
 static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pModelParam,
                                                     const JsonDocModel_t * pDocModel );
 
+#if ( otaconfigAllowDowngrade == 0U )
 /**
  * @brief Validate the version of the update received.
  *
@@ -259,6 +260,7 @@ static DocParseErr_t verifyRequiredParamsExtracted( const JsonDocParam_t * pMode
  * @return OtaErr_t OtaErrNone if successful, other error codes if failure.
  */
 static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext );
+#endif /* #if ( otaconfigAllowDowngrade == 0U ) */
 
 /**
  * @brief Check if the JSON can be parsed through the app callback if initial parsing fails.
@@ -1968,6 +1970,7 @@ static DocParseErr_t initDocModel( JsonDocModel_t * pDocModel,
     return err;
 }
 
+#if ( otaconfigAllowDowngrade == 0U )
 /*
  * Validate the version of the update received.
  */
@@ -2018,6 +2021,7 @@ static OtaErr_t validateUpdateVersion( const OtaFileContext_t * pFileContext )
 
     return err;
 }
+#endif /* #if ( otaconfigAllowDowngrade == 0U ) */
 
 /* If there is an error in parsing the json, check if it can be handled by external callback. */
 static OtaJobParseErr_t handleCustomJob( const char * pJson,
