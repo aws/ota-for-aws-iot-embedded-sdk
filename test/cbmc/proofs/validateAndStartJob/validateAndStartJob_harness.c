@@ -60,6 +60,10 @@ void validateAndStartJob_harness()
      * the size of new job name. */
     __CPROVER_assume( activeJobNameSize > jobSize );
 
+    /* The maximum and the minimum size of the downloaded fileSize allowed to
+     * avoid buffer overflow. */
+    __CPROVER_assume( ( fileContext.fileSize > 0u ) && ( fileContext.fileSize < OTA_MAX_FILE_SIZE ) );
+
     fileContext.pJobName = jobName;
 
     /* Non-deterministically set the terminating character of the

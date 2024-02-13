@@ -495,6 +495,11 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
  */
 static void resetEventQueue( void );
 
+/**
+ * @brief Calculate the number of blocks required to download the file.
+ */
+static uint32_t fileSizeToBlocks( uint32_t fileSize );
+
 /* OTA state event handler functions. */
 
 static OtaErr_t startHandler( const OtaEventData_t * pEventData );           /*!< Start timers and initiate request for job document. */
@@ -2256,6 +2261,14 @@ static OtaJobParseErr_t validateAndStartJob( OtaFileContext_t * pFileContext,
         LogError( ( "Parameter check failed: pFileContext->fileSize is 0: File size should be > 0." ) );
         err = OtaJobParseErrZeroFileSize;
     }
+    else if( fileSizeToBlocks( pFileContext->fileSize ) > ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) )
+    {
+        err = OtaJobParseErrBadModelInitParams;
+        LogError( ( "Parameter check failed: pFileContext->fileSize (%u) greater than can be tracked.",
+                    pFileContext->fileSize ) );
+        LogWarn( ( "Largest trackable size: OTA_MAX_BLOCK_BITMAP_SIZE (%u) * BITS_PER_BYTE (%u) = %u",
+                   OTA_MAX_BLOCK_BITMAP_SIZE, BITS_PER_BYTE, ( OTA_MAX_BLOCK_BITMAP_SIZE * BITS_PER_BYTE ) ) );
+    }
     /* If there's an active job, verify that it's the same as what's being reported now. */
     /* We already checked for missing parameters so we SHOULD have a job name in the context. */
     else if( strlen( ( const char * ) otaAgent.pActiveJobName ) > 0u )
@@ -2401,12 +2414,6 @@ static DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
     {
         err = OtaJobParseErrBadModelInitParams;
     }
-    else if( pFileContext->blocksRemaining > OTA_MAX_BLOCK_BITMAP_SIZE )
-    {
-        err = OtaJobParseErrBadModelInitParams;
-        LogWarn( ( "OTA size (%u blocks) greater than can be tracked. Increase `OTA_MAX_BLOCK_BITMAP_SIZE`",
-                   ( unsigned ) pFileContext->blocksRemaining ) );
-    }
     else
     {
         parseError = parseJSONbyModel( pJson, messageLength, &otaJobDocModel );
@@ -2485,7 +2492,7 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
     {
         /* Calculate how many bytes we need in our bitmap for tracking received blocks.
          * The below calculation requires power of 2 page sizes. */
-        numBlocks = ( ( *pFileContext )->fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE;
+        numBlocks = fileSizeToBlocks( ( *pFileContext )->fileSize );
         bitmapLen = ( numBlocks + ( BITS_PER_BYTE - 1U ) ) >> LOG2_BITS_PER_BYTE;
 
         /* This conditional statement has been excluded from the coverage report because one of branches in the
@@ -3091,6 +3098,11 @@ static void callOtaCallback( OtaJobEvent_t eEvent,
     {
         LogWarn( ( "OtaAppCallback is not registered, event=%d", ( int ) eEvent ) );
     }
+}
+
+static uint32_t fileSizeToBlocks( uint32_t fileSize )
+{
+    return ( uint32_t ) ( ( fileSize + ( OTA_FILE_BLOCK_SIZE - 1U ) ) >> otaconfigLOG2_FILE_BLOCK_SIZE );
 }
 
 void OTA_EventProcessingTask( const void * pUnused )
