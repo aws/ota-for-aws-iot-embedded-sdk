@@ -29,6 +29,8 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
+#include <stdlib.h>
+
 void OTA_GetStatistics_harness()
 {
     OtaErr_t err;

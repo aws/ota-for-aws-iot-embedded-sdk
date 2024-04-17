@@ -34,6 +34,8 @@
 extern OtaAgentContext_t otaAgent;
 extern void freeFileContextMem( OtaFileContext_t * const pFileContext );
 
+__CPROVER_bool nondet_bool();
+
 void freeFileContextMem_harness()
 {
     OtaInterfaces_t otaInterface;

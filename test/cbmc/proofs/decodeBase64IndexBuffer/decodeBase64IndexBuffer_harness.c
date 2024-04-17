@@ -39,11 +39,11 @@
 #define MAX_NUM_BASE64_DATA            4U
 
 /* Declaration of the mangled name static function which is created by CBMC for static functions. */
-Base64Status_t __CPROVER_file_local_ota_base64_c_decodeBase64IndexBuffer( uint8_t * pDest,
-                                                                          const size_t destLen,
-                                                                          size_t * pResultLen,
+Base64Status_t __CPROVER_file_local_ota_base64_c_decodeBase64IndexBuffer( uint32_t * pDest,
+                                                                          uint32_t * destLen,
                                                                           const uint8_t * pEncodedData,
-                                                                          const size_t encodedLen );
+                                                                          const size_t encodedLen,
+                                                                          size_t * pResultLen );
 
 void decodeBase64IndexBuffer_harness()
 {

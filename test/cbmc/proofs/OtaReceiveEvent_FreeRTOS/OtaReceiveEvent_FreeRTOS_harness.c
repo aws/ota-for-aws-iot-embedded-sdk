@@ -31,11 +31,12 @@
 #include "ota_private.h"
 #include "FreeRTOSConfig.h"
 
+#include <stdlib.h>
+
 void OtaReceiveEvent_FreeRTOS_harness()
 {
     OtaEventContext_t * pEventCtx;
     OtaOsStatus_t osStatus;
-    void * pEventMsg;
     uint32_t timeout;
 
     void * pEventMsg = ( void * ) malloc( sizeof( OtaEventMsg_t ) );

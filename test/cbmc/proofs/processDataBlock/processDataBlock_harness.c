@@ -32,11 +32,11 @@
 #include <stdlib.h>
 
 extern OtaAgentContext_t otaAgent;
-extern uint32_t processDataBlock( OtaFileContext_t * pFileContext,
-                                  uint32_t uBlockIndex,
-                                  uint32_t uBlockSize,
-                                  OtaPalStatus_t * pCloseResult,
-                                  uint8_t * pPayload );
+extern IngestResult_t processDataBlock( OtaFileContext_t * pFileContext,
+                                        uint32_t uBlockIndex,
+                                        uint32_t uBlockSize,
+                                        OtaPalStatus_t * pCloseResult,
+                                        uint8_t * pPayload );
 
 /* Stub to validate incoming data block. */
 bool validateDataBlock( const OtaFileContext_t * pFileContext,

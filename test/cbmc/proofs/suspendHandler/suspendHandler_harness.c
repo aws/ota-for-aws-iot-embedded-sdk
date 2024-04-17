@@ -29,6 +29,8 @@
 /*  Ota Agent includes. */
 #include "ota.h"
 
+#include <stdlib.h>
+
 OtaErr_t __CPROVER_file_local_ota_c_suspendHandler( const OtaEventData_t * pEventData );
 
 void suspendHandler_harness()

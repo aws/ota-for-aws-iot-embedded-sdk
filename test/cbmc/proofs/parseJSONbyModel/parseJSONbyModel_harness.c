@@ -30,6 +30,8 @@
 #include "ota.h"
 #include "core_json.h"
 
+#include <stdlib.h>
+
 extern OtaAgentContext_t otaAgent;
 extern JsonDocParam_t otaJobDocModelParamStructure[ OTA_NUM_JOB_PARAMS ];
 extern DocParseErr_t parseJSONbyModel( const char * pJson,

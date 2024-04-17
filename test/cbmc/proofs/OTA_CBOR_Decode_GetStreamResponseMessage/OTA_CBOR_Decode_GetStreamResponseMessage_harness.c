@@ -30,6 +30,8 @@
 #include "cbor.h"
 #include "ota_cbor_private.h"
 
+#include <stdlib.h>
+
 /* Stub to return CBORerror type. */
 CborError returnCborError()
 {

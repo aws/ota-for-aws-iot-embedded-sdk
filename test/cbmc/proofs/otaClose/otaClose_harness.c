@@ -36,6 +36,8 @@ extern OtaDataInterface_t otaDataInterface;
 extern OtaAgentContext_t otaAgent;
 extern bool otaClose( OtaFileContext_t * const pFileContext );
 
+__CPROVER_bool nondet_bool();
+
 void otaClose_harness()
 {
     OtaFileContext_t * pFileContext;

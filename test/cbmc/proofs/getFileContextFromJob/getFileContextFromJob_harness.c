@@ -40,6 +40,8 @@ static OtaErr_t getFileContextFromJob( const char * pRawMsg,
                                        uint32_t messageLength,
                                        OtaFileContext_t ** pFileContext );
 
+__CPROVER_bool nondet_bool();
+
 DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
                            uint16_t numJobParams,
                            const char * pJson,
@@ -84,7 +86,7 @@ DocParseErr_t parseJobDoc( const JsonDocParam_t * pJsonExpectedParams,
 
 void getFileContextFromJob_harness()
 {
-    OtaFileContext_t * pFileContext;
+    OtaFileContext_t * pFileContext = &fileContext;
     OtaInterfaces_t otaInterface;
     char rawMsg[ OTA_DATA_BLOCK_SIZE ];
     uint32_t messageLength;
@@ -110,5 +112,5 @@ void getFileContextFromJob_harness()
      * Agent specifically in receiveAndProcessOTAEvent function.*/
     otaAgent.pOtaInterface = &otaInterface;
 
-    ( void ) getFileContextFromJob( &rawMsg, messageLength, &fileContext );
+    ( void ) getFileContextFromJob( rawMsg, messageLength, &pFileContext );
 }

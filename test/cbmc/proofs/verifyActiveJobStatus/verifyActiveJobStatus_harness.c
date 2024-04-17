@@ -39,6 +39,8 @@ extern OtaJobParseErr_t verifyActiveJobStatus( OtaFileContext_t * pFileContext,
                                                OtaFileContext_t ** pFinalFile,
                                                bool * pUpdateJob );
 
+__CPROVER_bool nondet_bool();
+
 void verifyActiveJobStatus_harness()
 {
     OtaInterfaces_t otaInterface;
