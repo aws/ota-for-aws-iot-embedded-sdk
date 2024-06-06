@@ -179,6 +179,8 @@ jobs:
     steps:
       - name: Set up CBMC runner
         uses: FreeRTOS/CI-CD-Github-Actions/set_up_cbmc_runner@main
+        with:
+          cbmc_version: "5.95.1"
       - run: |
           git submodule update --init --checkout --recursive --depth 1
       - name: Run CBMC
