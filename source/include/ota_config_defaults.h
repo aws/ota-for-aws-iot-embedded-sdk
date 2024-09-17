@@ -66,7 +66,7 @@
  * The configuration parameter specifies the size of the stack that will be allocated
  * to the task being created (the size is specified in words, not bytes!). The amount
  * of stack required is dependent on the application specific parameters,
- * for more information [Link](https://www.freertos.org/FAQMem.html#StackSize)
+ * for more information [Link](https://www.freertos.org/Why-FreeRTOS/FAQs/Memory-usage-boot-times-context#how-big-should-the-stack-be)
  *
  * <b>Possible values:</b> Any positive 32 bit integer. <br>
  * <b>Default value:</b> Varies by platform
