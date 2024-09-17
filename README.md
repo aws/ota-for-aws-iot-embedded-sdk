@@ -228,7 +228,6 @@ locations below:
 |                                                          Location                                                           |
 | :-------------------------------------------------------------------------------------------------------------------------: |
 |    [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C#releases-and-documentation)     |
-| [FreeRTOS.org](https://freertos.org/Documentation/api-ref/ota-for-aws-iot-embedded-sdk/docs/doxygen/output/html/index.html) |
 
 Note that the latest included version of coreMQTT may differ across
 repositories.
