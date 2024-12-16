@@ -23,6 +23,7 @@ FOOB
 FOOBA
 FOOBDA
 getpacketid
+isOtaInterfaceInited
 isystem
 itimerspec
 lcov
