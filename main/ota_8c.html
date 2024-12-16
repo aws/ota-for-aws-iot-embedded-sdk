@@ -2334,11 +2334,10 @@ static <a class="el" href="struct_ota_data_interface__t.html">OtaDataInterface_t
 <p>This is the main event loop to handle events for OTA update and needs to be called by the application task. This loop will continue to handle and execute events received for OTA Update until this tasks is terminated by the application.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">pUnused</td><td>Can be used to pass down functionality to the agent task, Unused for now. This can be a function pointer that executes as the first routine when the event loop starts.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pUnused</td><td>Can be used to pass down functionality to the agent task, Unused for now. This can be a function pointer that executes as the first routine when the event loop starts. </td></tr>
   </table>
   </dd>
 </dl>
-<p>For a Posix based reference of creating a thread with this task, please see the <a href="https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota">demos in AWS IoT Embedded C SDK repository</a>. </p>
 
 </div>
 </div>
@@ -2479,7 +2478,7 @@ static <a class="el" href="struct_ota_data_interface__t.html">OtaDataInterface_t
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>OtaErr_t The state of the OTA Agent upon return from the OtaState_t enum. If the agent was successfully initialized and ready to operate, the state will be OtaAgentStateReady. Otherwise, it will be one of the other OtaState_t enum values.</dd></dl>
 <p><b>Example</b> </p><div class="fragment"><div class="line"><span class="comment">// Application callback when the OTA agent has completed the job</span></div>
-<div class="line"><span class="comment">// or is in self test mode. For example see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)</span></div>
+<div class="line"><span class="comment">// or is in self test mode.</span></div>
 <div class="line"><span class="keywordtype">void</span> otaAppCallback( <a class="code hl_enumeration" href="group__ota__enum__types.html#ga96a2e1f5cfad783897e805196eee39a7">OtaJobEvent_t</a> event,</div>
 <div class="line">                     <span class="keyword">const</span> <span class="keywordtype">void</span> * pData );</div>
 <div class="line"> </div>
@@ -2504,7 +2503,6 @@ static <a class="el" href="struct_ota_data_interface__t.html">OtaDataInterface_t
 <div class="line"> </div>
 <div class="line"><span class="comment">// OTA interface context required for library interface functions</span></div>
 <div class="line"><span class="comment">// The functions set by these interfaces are assumed to be defined</span></div>
-<div class="line"><span class="comment">// For more information see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)</span></div>
 <div class="line"><a class="code hl_struct" href="struct_ota_interfaces__t.html">OtaInterfaces_t</a> pOtaInterfaces =</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// Initialize OTA library OS Interface.</span></div>

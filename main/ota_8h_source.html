@@ -308,90 +308,90 @@ $(document).ready(function(){initNavTree('ota_8h_source.html',''); initResizable
 <div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
 <div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span><span class="comment">/*------------------------- OTA Public API --------------------------*/</span></div>
 <div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
-<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span><span class="comment">/* @[declare_ota_init] */</span></div>
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a1764ba9b821dcdb693ec549e8349cc2e">OTA_Init</a>( <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_app_buffer__t.html">OtaAppBuffer_t</a> * pOtaBuffer,</div>
-<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>                   <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_interfaces__t.html">OtaInterfaces_t</a> * pOtaInterfaces,</div>
-<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>                   <span class="keyword">const</span> uint8_t * pThingName,</div>
-<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>                   <a class="code hl_typedef" href="group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec">OtaAppCallback_t</a> OtaAppCallback );</div>
-<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span><span class="comment">/* @[declare_ota_init] */</span></div>
-<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span> </div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span><span class="comment">/* @[declare_ota_shutdown] */</span></div>
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#ac779291eb93f4e0e6459816e60e13b09">OTA_Shutdown</a>( uint32_t ticksToWait,</div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>                         uint8_t unsubscribeFlag );</div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span><span class="comment">/* @[declare_ota_shutdown] */</span></div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span> </div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span><span class="comment">/* @[declare_ota_getstate] */</span></div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#a6db3f9cb417cb135cb0e68f5b5f2b11f">OTA_GetState</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span><span class="comment">/* @[declare_ota_getstate] */</span></div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span> </div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="comment">/* @[declare_ota_activatenewimage] */</span></div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a5169ba09148e7f5668a90e776e712f8b">OTA_ActivateNewImage</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="comment">/* @[declare_ota_activatenewimage] */</span></div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span> </div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="comment">/* @[declare_ota_setimagestate] */</span></div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#ab68cdf65934474e1f3d2cd1046314bea">OTA_SetImageState</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gad4909faa8b9c8672e7f7bef1bc6b5b84">OtaImageState_t</a> state );</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="comment">/* @[declare_ota_setimagestate] */</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span> </div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span><span class="comment">/* @[declare_ota_getimagestate] */</span></div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span><a class="code hl_enumeration" href="group__ota__enum__types.html#gad4909faa8b9c8672e7f7bef1bc6b5b84">OtaImageState_t</a> <a class="code hl_function" href="ota_8h.html#a9c5b25f9a7eff3ded8cdf088c2011742">OTA_GetImageState</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span><span class="comment">/* @[declare_ota_getimagestate] */</span></div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span> </div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><span class="comment">/* @[declare_ota_checkforupdate] */</span></div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a1178e8009eb05e6f55f6506b625c9fc2">OTA_CheckForUpdate</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="comment">/* @[declare_ota_checkforupdate] */</span></div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span> </div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span><span class="comment">/* @[declare_ota_suspend] */</span></div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a65b61ae5dd477e8b2e6c88ea0473c62b">OTA_Suspend</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="comment">/* @[declare_ota_suspend] */</span></div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span> </div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span><span class="comment">/* @[declare_ota_resume] */</span></div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#ae9d40388ac87e4ac93288de37c98a138">OTA_Resume</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span><span class="comment">/* @[declare_ota_resume] */</span></div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span> </div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span><span class="comment">/* @[declare_ota_eventprocessingtask] */</span></div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span><span class="keywordtype">void</span> <a class="code hl_function" href="ota_8h.html#a40ff1cf197537e4cac4e8e049c42a1e2">OTA_EventProcessingTask</a>( <span class="keyword">const</span> <span class="keywordtype">void</span> * pUnused );</div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span><span class="comment">/* @[declare_ota_eventprocessingtask] */</span></div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span> </div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span> </div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span><span class="comment">/* @[declare_ota_eventprocess] */</span></div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#a733199fef860721888bbf9ee46bd4056">OTA_EventProcess</a>( <span class="keywordtype">void</span> );</div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="comment">/* @[declare_ota_eventprocess] */</span></div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span> </div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span><span class="comment">/* @[declare_ota_signalevent] */</span></div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span><span class="keywordtype">bool</span> <a class="code hl_function" href="ota_8h.html#a2564144f284db077b8947ba58a6a72bb">OTA_SignalEvent</a>( <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_event_msg__t.html">OtaEventMsg_t</a> * <span class="keyword">const</span> pEventMsg );</div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span><span class="comment">/* @[declare_ota_signalevent] */</span></div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span> </div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span><span class="comment">/*---------------------------------------------------------------------------*/</span></div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span><span class="comment">/*                          Statistics API                                   */</span></div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span><span class="comment">/*---------------------------------------------------------------------------*/</span></div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span> </div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span><span class="comment">/* @[declare_ota_getstatistics] */</span></div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22">OTA_GetStatistics</a>( <a class="code hl_struct" href="struct_ota_agent_statistics__t.html">OtaAgentStatistics_t</a> * pStatistics );</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span><span class="comment">/* @[declare_ota_getstatistics] */</span></div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span> </div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span><span class="comment">/* @[declare_ota_err_strerror] */</span></div>
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a39a9b75e749cf89593c4cf411327ce47">OTA_Err_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> err );</div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span><span class="comment">/* @[declare_ota_err_strerror] */</span></div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span> </div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span><span class="comment">/* @[declare_ota_jobparse_strerror] */</span></div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#aaf68d300d6ff9a8b4728b3d9e5f52b6d">OTA_JobParse_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gab8e370b46d0ae5d51879710d533a7314">OtaJobParseErr_t</a> err );</div>
-<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span><span class="comment">/* @[declare_ota_jobparse_strerror] */</span></div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span> </div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span><span class="comment">/* @[declare_ota_palstatus_strerror] */</span></div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a5a58be1ac41b7d619eeeb4861be37c89">OTA_PalStatus_strerror</a>( <a class="code hl_typedef" href="group__ota__constants.html#gac5c3148205ee4a0cac4246b2c7797765">OtaPalMainStatus_t</a> status );</div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span><span class="comment">/* @[declare_ota_palstatus_strerror] */</span></div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span> </div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span><span class="comment">/* @[declare_ota_osstatus_strerror] */</span></div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a4951f4bb1bfbb7312850454ca2b282a4">OTA_OsStatus_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gaececff6c0dd8ba4d884544571bd368e7">OtaOsStatus_t</a> status );</div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span><span class="comment">/* @[declare_ota_osstatus_strerror] */</span></div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span> </div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span><span class="comment">/* *INDENT-OFF* */</span></div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>    }</div>
-<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span><span class="comment">/* *INDENT-ON* */</span></div>
-<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span> </div>
-<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span><span class="preprocessor">#endif </span><span class="comment">/* ifndef OTA_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span><span class="comment">/* @[declare_ota_init] */</span></div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a1764ba9b821dcdb693ec549e8349cc2e">OTA_Init</a>( <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_app_buffer__t.html">OtaAppBuffer_t</a> * pOtaBuffer,</div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>                   <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_interfaces__t.html">OtaInterfaces_t</a> * pOtaInterfaces,</div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>                   <span class="keyword">const</span> uint8_t * pThingName,</div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>                   <a class="code hl_typedef" href="group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec">OtaAppCallback_t</a> OtaAppCallback );</div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span><span class="comment">/* @[declare_ota_init] */</span></div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span> </div>
+<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span><span class="comment">/* @[declare_ota_shutdown] */</span></div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#ac779291eb93f4e0e6459816e60e13b09">OTA_Shutdown</a>( uint32_t ticksToWait,</div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span>                         uint8_t unsubscribeFlag );</div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span><span class="comment">/* @[declare_ota_shutdown] */</span></div>
+<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span> </div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span><span class="comment">/* @[declare_ota_getstate] */</span></div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#a6db3f9cb417cb135cb0e68f5b5f2b11f">OTA_GetState</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span><span class="comment">/* @[declare_ota_getstate] */</span></div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span> </div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="comment">/* @[declare_ota_activatenewimage] */</span></div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a5169ba09148e7f5668a90e776e712f8b">OTA_ActivateNewImage</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="comment">/* @[declare_ota_activatenewimage] */</span></div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span> </div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="comment">/* @[declare_ota_setimagestate] */</span></div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#ab68cdf65934474e1f3d2cd1046314bea">OTA_SetImageState</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gad4909faa8b9c8672e7f7bef1bc6b5b84">OtaImageState_t</a> state );</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><span class="comment">/* @[declare_ota_setimagestate] */</span></div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span> </div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span><span class="comment">/* @[declare_ota_getimagestate] */</span></div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span><a class="code hl_enumeration" href="group__ota__enum__types.html#gad4909faa8b9c8672e7f7bef1bc6b5b84">OtaImageState_t</a> <a class="code hl_function" href="ota_8h.html#a9c5b25f9a7eff3ded8cdf088c2011742">OTA_GetImageState</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span><span class="comment">/* @[declare_ota_getimagestate] */</span></div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span> </div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="comment">/* @[declare_ota_checkforupdate] */</span></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a1178e8009eb05e6f55f6506b625c9fc2">OTA_CheckForUpdate</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="comment">/* @[declare_ota_checkforupdate] */</span></div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span> </div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span><span class="comment">/* @[declare_ota_suspend] */</span></div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a65b61ae5dd477e8b2e6c88ea0473c62b">OTA_Suspend</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span><span class="comment">/* @[declare_ota_suspend] */</span></div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span> </div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span><span class="comment">/* @[declare_ota_resume] */</span></div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#ae9d40388ac87e4ac93288de37c98a138">OTA_Resume</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span><span class="comment">/* @[declare_ota_resume] */</span></div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span> </div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span><span class="comment">/* @[declare_ota_eventprocessingtask] */</span></div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span><span class="keywordtype">void</span> <a class="code hl_function" href="ota_8h.html#a40ff1cf197537e4cac4e8e049c42a1e2">OTA_EventProcessingTask</a>( <span class="keyword">const</span> <span class="keywordtype">void</span> * pUnused );</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span><span class="comment">/* @[declare_ota_eventprocessingtask] */</span></div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span> </div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span> </div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span><span class="comment">/* @[declare_ota_eventprocess] */</span></div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a> <a class="code hl_function" href="ota_8h.html#a733199fef860721888bbf9ee46bd4056">OTA_EventProcess</a>( <span class="keywordtype">void</span> );</div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span><span class="comment">/* @[declare_ota_eventprocess] */</span></div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span> </div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span><span class="comment">/* @[declare_ota_signalevent] */</span></div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span><span class="keywordtype">bool</span> <a class="code hl_function" href="ota_8h.html#a2564144f284db077b8947ba58a6a72bb">OTA_SignalEvent</a>( <span class="keyword">const</span> <a class="code hl_struct" href="struct_ota_event_msg__t.html">OtaEventMsg_t</a> * <span class="keyword">const</span> pEventMsg );</div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span><span class="comment">/* @[declare_ota_signalevent] */</span></div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span> </div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span><span class="comment">/*---------------------------------------------------------------------------*/</span></div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span><span class="comment">/*                          Statistics API                                   */</span></div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span><span class="comment">/*---------------------------------------------------------------------------*/</span></div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span> </div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span><span class="comment">/* @[declare_ota_getstatistics] */</span></div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span><a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> <a class="code hl_function" href="ota_8h.html#a63182243ef3c18d5f36cd427b83a1a22">OTA_GetStatistics</a>( <a class="code hl_struct" href="struct_ota_agent_statistics__t.html">OtaAgentStatistics_t</a> * pStatistics );</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span><span class="comment">/* @[declare_ota_getstatistics] */</span></div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span> </div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span><span class="comment">/* @[declare_ota_err_strerror] */</span></div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a39a9b75e749cf89593c4cf411327ce47">OTA_Err_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#ga7ab3c74dc057383c56c6cb9aa6bf0b2d">OtaErr_t</a> err );</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span><span class="comment">/* @[declare_ota_err_strerror] */</span></div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span> </div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span><span class="comment">/* @[declare_ota_jobparse_strerror] */</span></div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#aaf68d300d6ff9a8b4728b3d9e5f52b6d">OTA_JobParse_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gab8e370b46d0ae5d51879710d533a7314">OtaJobParseErr_t</a> err );</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span><span class="comment">/* @[declare_ota_jobparse_strerror] */</span></div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span> </div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span><span class="comment">/* @[declare_ota_palstatus_strerror] */</span></div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a5a58be1ac41b7d619eeeb4861be37c89">OTA_PalStatus_strerror</a>( <a class="code hl_typedef" href="group__ota__constants.html#gac5c3148205ee4a0cac4246b2c7797765">OtaPalMainStatus_t</a> status );</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span><span class="comment">/* @[declare_ota_palstatus_strerror] */</span></div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span> </div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span><span class="comment">/* @[declare_ota_osstatus_strerror] */</span></div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code hl_function" href="ota_8h.html#a4951f4bb1bfbb7312850454ca2b282a4">OTA_OsStatus_strerror</a>( <a class="code hl_enumeration" href="group__ota__enum__types.html#gaececff6c0dd8ba4d884544571bd368e7">OtaOsStatus_t</a> status );</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span><span class="comment">/* @[declare_ota_osstatus_strerror] */</span></div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span> </div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span><span class="comment">/* *INDENT-OFF* */</span></div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>    }</div>
+<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span><span class="comment">/* *INDENT-ON* */</span></div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span> </div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span><span class="preprocessor">#endif </span><span class="comment">/* ifndef OTA_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="agroup__ota__callback__types_html_ga737e6e873370cf18b0221373ae5590ec"><div class="ttname"><a href="group__ota__callback__types.html#ga737e6e873370cf18b0221373ae5590ec">OtaAppCallback_t</a></div><div class="ttdeci">void(* OtaAppCallback_t)(OtaJobEvent_t eEvent, void *pData)</div><div class="ttdoc">OTA update complete callback function typedef.</div><div class="ttdef"><b>Definition:</b> ota.h:289</div></div>
 <div class="ttc" id="agroup__ota__constants_html_gac5c3148205ee4a0cac4246b2c7797765"><div class="ttname"><a href="group__ota__constants.html#gac5c3148205ee4a0cac4246b2c7797765">OtaPalMainStatus_t</a></div><div class="ttdeci">uint32_t OtaPalMainStatus_t</div><div class="ttdoc">The OTA platform interface main status.</div><div class="ttdef"><b>Definition:</b> ota_platform_interface.h:80</div></div>
 <div class="ttc" id="agroup__ota__enum__types_html_ga1cb476a5e0ee81fa486f605e64419dcc"><div class="ttname"><a href="group__ota__enum__types.html#ga1cb476a5e0ee81fa486f605e64419dcc">OtaState_t</a></div><div class="ttdeci">OtaState_t</div><div class="ttdoc">OTA Agent states.</div><div class="ttdef"><b>Definition:</b> ota.h:117</div></div>
