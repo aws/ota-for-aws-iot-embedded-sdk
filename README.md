@@ -214,7 +214,6 @@ following location for reference examples on POSIX and FreeRTOS:
 
 | Platform |                                                     Location                                                     |
 | :------: | :--------------------------------------------------------------------------------------------------------------: |
-|  POSIX   |  [AWS IoT Device SDK for Embedded C](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)   |
 | FreeRTOS | [FreeRTOS/FreeRTOS](https://github.com/FreeRTOS/FreeRTOS/tree/main/FreeRTOS-Plus/Demo/AWS/Ota_Windows_Simulator) |
 | FreeRTOS |        [FreeRTOS AWS Reference Integrations](https://github.com/aws/amazon-freertos/tree/main/demos/ota)         |
 

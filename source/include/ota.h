@@ -377,7 +377,7 @@ typedef struct OtaAgentContext
  * <b>Example</b>
  * @code{c}
  * // Application callback when the OTA agent has completed the job
- * // or is in self test mode. For example see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)
+ * // or is in self test mode.
  * void otaAppCallback( OtaJobEvent_t event,
  *                      const void * pData );
  *
@@ -402,7 +402,6 @@ typedef struct OtaAgentContext
  *
  * // OTA interface context required for library interface functions
  * // The functions set by these interfaces are assumed to be defined
- * // For more information see [demos](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota)
  * OtaInterfaces_t pOtaInterfaces =
  * {
  *     // Initialize OTA library OS Interface.
@@ -711,8 +710,6 @@ OtaErr_t OTA_Resume( void );
  * This can be a function pointer that executes as the first routine when the
  * event loop starts.
  *
- * For a Posix based reference of creating a thread with this task,
- * please see the [demos in AWS IoT Embedded C SDK repository](https://github.com/aws/aws-iot-device-sdk-embedded-C/tree/main/demos/ota).
  */
 /* @[declare_ota_eventprocessingtask] */
 void OTA_EventProcessingTask( const void * pUnused );

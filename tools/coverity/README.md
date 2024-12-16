@@ -12,7 +12,7 @@ see the [MISRA.md](https://github.com/aws/ota-for-aws-iot-embedded-sdk/blob/main
 
 ## Getting Started
 ### Prerequisites
-You can run this on a platform supported by Coverity. The list and other details can be found [here](https://sig-docs.synopsys.com/polaris/topics/c_coverity-compatible-platforms.html).
+You can run this on a platform supported by Coverity. The list and other details can be found [here](https://documentation.blackduck.com/bundle/coverity-docs-2024.9/page/deploy-install-guide/topics/supported_platforms_for_coverity_analysis.html).
 To compile and run the Coverity target successfully, you must have the following:
 
 1. CMake version > 3.13.0 (You can check whether you have this by typing `cmake --version`)
