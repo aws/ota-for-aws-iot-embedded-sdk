@@ -756,6 +756,13 @@ OtaState_t OTA_EventProcess( void );
  *
  *     if( pData != NULL )
  *     {
+ *         // Validate the payload length against the destination buffer size
+ *         // before copying to avoid an out-of-bounds write.
+ *         if( pResponse->bodyLen > sizeof( pData->data ) )
+ *         {
+ *             return OtaHttpRequestFailed;
+ *         }
+ *
  *         memcpy( pData->data, pResponse->pBody, pResponse->bodyLen );
  *         pData->dataLength = pResponse->bodyLen;
  *
