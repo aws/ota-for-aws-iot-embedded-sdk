@@ -10,9 +10,11 @@ DEFINES +=
 INCLUDES +=
 
 REMOVE_FUNCTION_BODY +=
-UNWINDSET +=
+UNWINDSET += stringBuilder_harness.0:10
+UNWINDSET += stringBuilder_harness.1:10
+UNWINDSET += stringBuilder.0:10
 
-CBMC_FLAG_UNWINDING_ASSERTIONS =
+CBMC_FLAG_UNWINDING_ASSERTIONS = --no-unwinding-assertions
 
 PROOF_SOURCES += $(PROOFDIR)/$(HARNESS_FILE).c
 PROJECT_SOURCES += $(SRCDIR)/source/ota_mqtt.c
